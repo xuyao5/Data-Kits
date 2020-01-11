@@ -57,6 +57,11 @@
 				<artifactId>mybatis-generator-core</artifactId>
 				<version>1.4.0</version>
 			</dependency>
+			<dependency>
+				<groupId>org.mybatis.spring.boot</groupId>
+				<artifactId>mybatis-spring-boot-starter</artifactId>
+				<version>2.1.1</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
