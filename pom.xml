@@ -16,6 +16,7 @@
 	<description>Data Access Layer project for Spring Boot</description>
 
 	<modules>
+		<module>generator</module>
 		<module>core</module>
 		<module>web</module>
 		<module>demo</module>
