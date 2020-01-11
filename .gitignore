@@ -31,6 +31,6 @@ hs_err_pid*
 
 *.iml
 .idea/
-.gradle/
 .settings/
-.target/
+
+target/
