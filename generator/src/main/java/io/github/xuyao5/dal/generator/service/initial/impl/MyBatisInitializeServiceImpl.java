@@ -2,11 +2,11 @@ package io.github.xuyao5.dal.generator.service.initial.impl;
 
 import io.github.xuyao5.dal.generator.service.AbstractService;
 import io.github.xuyao5.dal.generator.service.initial.MyBatisInitializeService;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
-import org.mybatis.generator.config.xml.MyBatisGeneratorConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
@@ -38,5 +38,15 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
         } catch (IOException | SQLException | InterruptedException | InvalidConfigurationException | XMLParserException e) {
             log.error(e.getLocalizedMessage());
         }
+    }
+
+    @SneakyThrows
+    @Override
+    public File createTemplateFile() {
+        File configFile = ResourceUtils.getFile("classpath:generatorConfig.xml");
+
+
+
+        return configFile;
     }
 }
