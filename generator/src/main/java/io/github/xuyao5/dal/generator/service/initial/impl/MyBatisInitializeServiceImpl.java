@@ -5,6 +5,8 @@ import io.github.xuyao5.dal.generator.service.initial.MyBatisInitializeService;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
@@ -19,6 +21,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -49,7 +52,9 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
         final SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(ResourceUtils.getFile("classpath:generatorConfig.xml"));
 
-        document.addComment("abc");
+        final Node context = document.selectSingleNode("//jdbcConnection");
+        final Element parent = context.getParent();
+        parent.addComment("111111");
 
         FileWriter out = new FileWriter("/Users/xuyao/Downloads/MyGeneratorConfig.xml");
         document.write(out);
