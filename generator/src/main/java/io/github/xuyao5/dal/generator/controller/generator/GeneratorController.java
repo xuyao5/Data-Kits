@@ -1,8 +1,8 @@
 package io.github.xuyao5.dal.generator.controller.generator;
 
 import io.github.xuyao5.dal.generator.controller.AbstractController;
-import io.github.xuyao5.dal.generator.request.generator.GenerateMyBatisFilesRequest;
-import io.github.xuyao5.dal.generator.response.generator.GenerateMyBatisFilesResponse;
+import io.github.xuyao5.dal.generator.controller.request.generator.GenerateMyBatisFilesRequest;
+import io.github.xuyao5.dal.generator.controller.response.generator.GenerateMyBatisFilesResponse;
 import io.github.xuyao5.dal.generator.service.initial.MyBatisInitializeService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.PostMapping;

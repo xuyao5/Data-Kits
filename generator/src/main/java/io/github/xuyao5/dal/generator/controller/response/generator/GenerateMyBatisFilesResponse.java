@@ -1,6 +1,6 @@
-package io.github.xuyao5.dal.generator.response.generator;
+package io.github.xuyao5.dal.generator.controller.response.generator;
 
-import io.github.xuyao5.dal.generator.response.BaseResponse;
+import io.github.xuyao5.dal.generator.controller.response.BaseResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

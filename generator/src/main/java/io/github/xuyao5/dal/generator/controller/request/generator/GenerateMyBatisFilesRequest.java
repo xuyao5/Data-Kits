@@ -1,6 +1,6 @@
-package io.github.xuyao5.dal.generator.request.generator;
+package io.github.xuyao5.dal.generator.controller.request.generator;
 
-import io.github.xuyao5.dal.generator.request.BaseRequest;
+import io.github.xuyao5.dal.generator.controller.request.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

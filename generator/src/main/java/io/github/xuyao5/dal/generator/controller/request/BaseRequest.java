@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.generator.request;
+package io.github.xuyao5.dal.generator.controller.request;
 
 import lombok.Data;
 

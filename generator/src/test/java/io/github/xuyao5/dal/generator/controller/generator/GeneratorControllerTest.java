@@ -1,7 +1,7 @@
 package io.github.xuyao5.dal.generator.controller.generator;
 
 import io.github.xuyao5.AbstractTest;
-import io.github.xuyao5.dal.generator.request.generator.GenerateMyBatisFilesRequest;
+import io.github.xuyao5.dal.generator.controller.request.generator.GenerateMyBatisFilesRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
