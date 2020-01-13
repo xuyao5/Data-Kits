@@ -22,7 +22,8 @@ public class GeneratorController extends AbstractController {
 
     @PostMapping(path = "/generateMyBatisFiles")
     public GenerateMyBatisFilesResponse generateMyBatisFiles(@NotNull GenerateMyBatisFilesRequest request) {
-        myBatisInitializeService.createGeneratorConfigXmlFile();
+        myBatisInitializeService.createTemplateFile();
+//        myBatisInitializeService.createGeneratorConfigXmlFile();
         return GenerateMyBatisFilesResponse.of();
     }
 }

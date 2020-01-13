@@ -4,6 +4,8 @@ import io.github.xuyao5.dal.generator.service.AbstractService;
 import io.github.xuyao5.dal.generator.service.initial.MyBatisInitializeService;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -42,11 +45,14 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
 
     @SneakyThrows
     @Override
-    public File createTemplateFile() {
-        File configFile = ResourceUtils.getFile("classpath:generatorConfig.xml");
+    public void createTemplateFile() {
+        final SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(ResourceUtils.getFile("classpath:generatorConfig.xml"));
 
+        document.addComment("abc");
 
-
-        return configFile;
+        FileWriter out = new FileWriter("/Users/xuyao/Downloads/MyGeneratorConfig.xml");
+        document.write(out);
+        out.close();
     }
 }

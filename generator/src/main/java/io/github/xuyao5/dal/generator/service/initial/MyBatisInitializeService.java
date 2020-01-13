@@ -6,5 +6,5 @@ public interface MyBatisInitializeService {
 
     void createGeneratorConfigXmlFile();
 
-    File createTemplateFile();
+    void createTemplateFile();
 }
