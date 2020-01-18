@@ -5,6 +5,9 @@ import io.github.xuyao5.dal.generator.service.initial.MyBatisInitializeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class MyBatisInitializeServiceImplTest extends AbstractTest {
 
     @Autowired
@@ -18,7 +21,10 @@ class MyBatisInitializeServiceImplTest extends AbstractTest {
 
     @Test
     void createTemplateFile() {
-        myBatisInitializeService.createTemplateFile();
+        List<String> tableList = new ArrayList<>();
+        tableList.add("BATCH_JOB_INSTANCE");
+        tableList.add("BATCH_JOB_EXECUTION");
+        myBatisInitializeService.createTemplateFile(tableList);
         System.out.println("成功");
     }
 }

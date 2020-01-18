@@ -31,8 +31,6 @@
         <javaClientGenerator targetPackage="test.dao" targetProject="/Users/xuyao/Downloads/MyBatisDal">
             <property name="rootInterface" value="Object"/>
         </javaClientGenerator>
-
-        <table tableName="BATCH_JOB_INSTANCE"/>
-        <table tableName="BATCH_JOB_EXECUTION"/>
+        <table tableName=""/>
     </context>
 </generatorConfiguration>

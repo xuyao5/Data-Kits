@@ -17,11 +17,11 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -48,13 +48,23 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
 
     @SneakyThrows
     @Override
-    public void createTemplateFile() {
+    public void createTemplateFile(@NotNull List<String> tableList) {
         final SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(ResourceUtils.getFile("classpath:generatorConfig.xml"));
 
-        final Node context = document.selectSingleNode("//jdbcConnection");
+        final Node context = document.selectSingleNode("//table");
         final Element parent = context.getParent();
-        parent.addComment("111111");
+
+        tableList.forEach(s -> {
+            final Element myElement = (Element) context.clone();
+            myElement.addAttribute("tableName", s);
+
+            parent.addText("\r\n        ");
+            parent.add(myElement);
+        });
+        parent.addText("\r\n    ");
+
+        parent.remove(context);
 
         FileWriter out = new FileWriter("/Users/xuyao/Downloads/MyGeneratorConfig.xml");
         document.write(out);

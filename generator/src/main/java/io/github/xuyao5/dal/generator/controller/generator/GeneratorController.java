@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 
 @Log4j2
 @RestController
@@ -22,7 +23,7 @@ public class GeneratorController extends AbstractController {
 
     @PostMapping(path = "/generateMyBatisFiles")
     public GenerateMyBatisFilesResponse generateMyBatisFiles(@NotNull GenerateMyBatisFilesRequest request) {
-        myBatisInitializeService.createTemplateFile();
+        myBatisInitializeService.createTemplateFile(new ArrayList<>());
 //        myBatisInitializeService.createGeneratorConfigXmlFile();
         return GenerateMyBatisFilesResponse.of();
     }
