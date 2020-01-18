@@ -59,10 +59,10 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
             final Element myElement = (Element) context.clone();
             myElement.addAttribute("tableName", s);
 
-            parent.addText("\r\n        ");
+            parent.addText(System.lineSeparator() + "        ");
             parent.add(myElement);
         });
-        parent.addText("\r\n    ");
+        parent.addText(System.lineSeparator() + "    ");
 
         parent.remove(context);
 
