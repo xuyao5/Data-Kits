@@ -4,6 +4,7 @@ import io.github.xuyao5.dal.generator.service.AbstractService;
 import io.github.xuyao5.dal.generator.service.initial.MyBatisInitializeService;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -59,10 +60,10 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
             final Element myElement = (Element) context.clone();
             myElement.addAttribute("tableName", s);
 
-            parent.addText(System.lineSeparator() + "        ");
+            parent.addText(System.lineSeparator() + StringUtils.repeat(StringUtils.SPACE, 8));
             parent.add(myElement);
         });
-        parent.addText(System.lineSeparator() + "    ");
+        parent.addText(System.lineSeparator() + StringUtils.repeat(StringUtils.SPACE, 4));
 
         parent.remove(context);
 
