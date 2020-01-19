@@ -23,7 +23,8 @@ public class GeneratorController extends AbstractController {
 
     @PostMapping(path = "/generateMyBatisFiles")
     public GenerateMyBatisFilesResponse generateMyBatisFiles(@NotNull GenerateMyBatisFilesRequest request) {
-        myBatisInitializeService.createTemplateFile(new ArrayList<>());
+        final String filePath = myBatisInitializeService.generateFilePath(generatorPropertyBean.getGeneratorDirRoot(), request.getAppName());
+        myBatisInitializeService.createTemplateFile(filePath, new ArrayList<>());
 //        myBatisInitializeService.createGeneratorConfigXmlFile();
         return GenerateMyBatisFilesResponse.of();
     }

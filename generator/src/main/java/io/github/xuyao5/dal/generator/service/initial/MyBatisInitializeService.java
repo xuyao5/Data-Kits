@@ -5,7 +5,9 @@ import java.util.List;
 
 public interface MyBatisInitializeService {
 
-    void createGeneratorConfigXmlFile();
+    String generateFilePath(@NotNull String rootPath, @NotNull String appName);
 
-    void createTemplateFile(@NotNull List<String> tableList);
+    String createTemplateFile(@NotNull String filePath, @NotNull List<String> tableList);
+
+    void createSourceFile(@NotNull String templateFile);
 }

@@ -1,5 +1,6 @@
 package io.github.xuyao5.dal.generator.service.initial.impl;
 
+import io.github.xuyao5.dal.generator.consts.DriverClassConst;
 import io.github.xuyao5.dal.generator.service.AbstractService;
 import io.github.xuyao5.dal.generator.service.initial.MyBatisInitializeService;
 import lombok.SneakyThrows;
@@ -22,6 +23,8 @@ import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,11 +34,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MyBatisInitializeServiceImpl extends AbstractService implements MyBatisInitializeService {
 
     @Override
-    public void createGeneratorConfigXmlFile() {
+    public String generateFilePath(@NotNull String rootPath, @NotNull String appName) {
+        return rootPath + appName + "/";
+    }
+
+    @Override
+    public void createSourceFile(@NotNull String templateFile) {
         List<String> warningList = new CopyOnWriteArrayList<>();
 
         try {
-            File configFile = ResourceUtils.getFile("classpath:generatorConfig.xml");
+//            File configFile = ResourceUtils.getFile("classpath:generatorConfig.xml");
+            File configFile = Paths.get(templateFile).toFile();
             ConfigurationParser cp = new ConfigurationParser(warningList);
             Configuration config = cp.parseConfiguration(configFile);
             config.validate();
@@ -49,15 +58,18 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
 
     @SneakyThrows
     @Override
-    public void createTemplateFile(@NotNull List<String> tableList) {
+    public String createTemplateFile(@NotNull String filePath, @NotNull List<String> tableList) {
         final SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(ResourceUtils.getFile("classpath:generatorConfig.xml"));
 
-        final Node context = document.selectSingleNode("//table");
-        final Element parent = context.getParent();
+        /*
+         * 增加 Table Node
+         */
+        final Node tableNode = document.selectSingleNode("//table");
+        final Element parent = tableNode.getParent();
 
         tableList.forEach(s -> {
-            final Element myElement = (Element) context.clone();
+            final Element myElement = (Element) tableNode.clone();
             myElement.addAttribute("tableName", s);
 
             parent.addText(System.lineSeparator() + StringUtils.repeat(StringUtils.SPACE, 8));
@@ -65,10 +77,40 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
         });
         parent.addText(System.lineSeparator() + StringUtils.repeat(StringUtils.SPACE, 4));
 
-        parent.remove(context);
+        parent.remove(tableNode);
 
-        FileWriter out = new FileWriter("/Users/xuyao/Downloads/MyGeneratorConfig.xml");
+        /*
+         * 处理jdbcConnection变量替换
+         */
+        final Element jdbcConnectionElement = (Element) document.selectSingleNode("//jdbcConnection");
+        jdbcConnectionElement.addAttribute("driverClass", DriverClassConst.MYSQL_DRIVER.getDriverClass());
+        jdbcConnectionElement.addAttribute("connectionURL", "jdbc:mysql://127.0.0.1:32769/test?useUnicode=true&characterEncoding=UTF-8");
+        jdbcConnectionElement.addAttribute("userId", "root");
+        jdbcConnectionElement.addAttribute("password", "123456");
+
+        /*
+         * 处理javaModelGenerator变量替换
+         */
+        final Element javaModelGeneratorElement = (Element) document.selectSingleNode("//javaModelGenerator");
+        javaModelGeneratorElement.addAttribute("targetPackage", "test.model");
+        javaModelGeneratorElement.addAttribute("targetProject", filePath);
+
+        /*
+         * 处理javaClientGenerator变量替换
+         */
+        final Element javaClientGeneratorElement = (Element) document.selectSingleNode("//javaClientGenerator");
+        javaClientGeneratorElement.addAttribute("targetPackage", "test.dao");
+        javaClientGeneratorElement.addAttribute("targetProject", filePath);
+
+        if (!Files.exists(Paths.get(filePath))) {
+            Files.createDirectories(Paths.get(filePath));
+        }
+
+        final String templateFile = filePath + "generatorConfig.xml";
+        FileWriter out = new FileWriter(templateFile);
         document.write(out);
         out.close();
+
+        return templateFile;
     }
 }

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @AllArgsConstructor
-public enum SupportDatabase {
+public enum SupportDatabaseConst {
 
     ORACLE("ORACLE", "Oracle"),
     MYSQL("MYSQL", "MySql"),
@@ -20,9 +20,9 @@ public enum SupportDatabase {
     @Getter
     private final String description;
 
-    public static Optional<SupportDatabase> getSupportDatabaseByType(@NotNull String type) {
-        return Arrays.stream(SupportDatabase.values()).parallel()
-                .filter(supportDatabase -> supportDatabase.getType().equalsIgnoreCase(type))
+    public static Optional<SupportDatabaseConst> getSupportDatabaseByType(@NotNull String type) {
+        return Arrays.stream(SupportDatabaseConst.values()).parallel()
+                .filter(supportDatabaseConst -> supportDatabaseConst.getType().equalsIgnoreCase(type))
                 .findAny();
     }
 }

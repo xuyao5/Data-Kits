@@ -14,17 +14,14 @@ class MyBatisInitializeServiceImplTest extends AbstractTest {
     private MyBatisInitializeService myBatisInitializeService;
 
     @Test
-    void createGeneratorConfigXmlFile() {
-        myBatisInitializeService.createGeneratorConfigXmlFile();
-        System.out.println("成功");
-    }
-
-    @Test
-    void createTemplateFile() {
+    void generator() {
         List<String> tableList = new ArrayList<>();
         tableList.add("BATCH_JOB_INSTANCE");
         tableList.add("BATCH_JOB_EXECUTION");
-        myBatisInitializeService.createTemplateFile(tableList);
+
+        final String filePath = myBatisInitializeService.generateFilePath(generatorPropertyBean.getGeneratorDirRoot(), "PACES_MOS");
+        final String templateFile = myBatisInitializeService.createTemplateFile(filePath, tableList);
+        myBatisInitializeService.createSourceFile(templateFile);
         System.out.println("成功");
     }
 }

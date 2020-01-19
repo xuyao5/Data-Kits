@@ -4,4 +4,7 @@ import lombok.Data;
 
 @Data
 public abstract class BaseRequest {
+
+    String appName;
+    String appId;
 }
