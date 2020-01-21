@@ -29,7 +29,7 @@
         </javaModelGenerator>
 
         <javaClientGenerator targetPackage="test.dao" targetProject="/Users/xuyao/Downloads/MyBatisDal">
-            <property name="rootInterface" value="Object"/>
+            <property name="rootInterface" value="java.io.Serializable"/>
         </javaClientGenerator>
         <table tableName=""/>
     </context>

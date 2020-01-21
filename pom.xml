@@ -60,6 +60,11 @@
                 <version>2.1.1</version>
             </dependency>
             <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>3.5.3</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mybatis.dynamic-sql</groupId>
                 <artifactId>mybatis-dynamic-sql</artifactId>
                 <version>1.1.4</version>

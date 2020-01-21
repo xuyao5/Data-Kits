@@ -92,14 +92,14 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
          * 处理javaModelGenerator变量替换
          */
         final Element javaModelGeneratorElement = (Element) document.selectSingleNode("//javaModelGenerator");
-        javaModelGeneratorElement.addAttribute("targetPackage", "test.model");
+        javaModelGeneratorElement.addAttribute("targetPackage", "io.github.xuyao5.dal.generator.repository.paces.model");
         javaModelGeneratorElement.addAttribute("targetProject", filePath);
 
         /*
          * 处理javaClientGenerator变量替换
          */
         final Element javaClientGeneratorElement = (Element) document.selectSingleNode("//javaClientGenerator");
-        javaClientGeneratorElement.addAttribute("targetPackage", "test.dao");
+        javaClientGeneratorElement.addAttribute("targetPackage", "io.github.xuyao5.dal.generator.repository.paces.dao");
         javaClientGeneratorElement.addAttribute("targetProject", filePath);
 
         if (!Files.exists(Paths.get(filePath))) {
