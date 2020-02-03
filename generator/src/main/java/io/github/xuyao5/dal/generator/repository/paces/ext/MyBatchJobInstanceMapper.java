@@ -15,6 +15,9 @@ import javax.annotation.Generated;
 import static io.github.xuyao5.dal.generator.repository.paces.dao.BatchJobInstanceDynamicSqlSupport.batchJobInstance;
 import static io.github.xuyao5.dal.generator.repository.paces.dao.BatchJobInstanceDynamicSqlSupport.jobInstanceId;
 
+/**
+ * Some support for aggregates (avg, min, max, sum)
+ */
 @Mapper
 public interface MyBatchJobInstanceMapper extends BatchJobInstanceMapper {
 

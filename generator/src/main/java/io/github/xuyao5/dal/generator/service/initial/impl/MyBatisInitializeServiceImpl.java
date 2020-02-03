@@ -106,6 +106,10 @@ public class MyBatisInitializeServiceImpl extends AbstractService implements MyB
             Files.createDirectories(Paths.get(filePath));
         }
 
+        /*
+         * 之前是不是要清理一下目录？
+         */
+
         final String templateFile = filePath + "generatorConfig.xml";
         FileWriter out = new FileWriter(templateFile);
         document.write(out);
