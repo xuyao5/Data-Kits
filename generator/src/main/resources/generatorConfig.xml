@@ -29,7 +29,7 @@
         </javaModelGenerator>
 
         <javaClientGenerator targetPackage="test.dao" targetProject="/Users/xuyao/Downloads/MyBatisDal">
-            <property name="rootInterface" value="java.io.Serializable"/>
+            <property name="rootInterface" value="io.github.xuyao5.dal.generator.repository.BaseMapper"/>
         </javaClientGenerator>
         <table tableName=""/>
     </context>

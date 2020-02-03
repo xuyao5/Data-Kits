@@ -3,8 +3,8 @@ package io.github.xuyao5.dal.generator.repository.paces.dao;
 import static io.github.xuyao5.dal.generator.repository.paces.dao.BatchJobExecutionDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
+import io.github.xuyao5.dal.generator.repository.BaseMapper;
 import io.github.xuyao5.dal.generator.repository.paces.model.BatchJobExecution;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +34,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
-public interface BatchJobExecutionMapper extends Serializable {
+public interface BatchJobExecutionMapper extends BaseMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     BasicColumn[] selectList = BasicColumn.columnList(jobExecutionId, version, jobInstanceId, createTime, startTime, endTime, status, exitCode, exitMessage, lastUpdated, jobConfigurationLocation);
 
