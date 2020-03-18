@@ -1,7 +1,7 @@
 package io.github.xuyao5.dal.flatfile.writer;
 
 import io.github.xuyao5.dal.flatfile.AbstractTest;
-import io.github.xuyao5.dal.flatfile.pojo.MyFileFormat;
+import io.github.xuyao5.dal.flatfile.vo.MyFileFormat;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;

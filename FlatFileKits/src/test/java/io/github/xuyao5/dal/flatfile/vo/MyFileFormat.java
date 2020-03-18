@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.flatfile.pojo;
+package io.github.xuyao5.dal.flatfile.vo;
 
 import lombok.Data;
 
