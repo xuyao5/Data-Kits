@@ -9,15 +9,16 @@
     </parent>
     <groupId>io.github.xuyao5</groupId>
     <artifactId>dal</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Data Access Layer</name>
-    <description>Data Access Layer project for Spring Boot</description>
+    <description>Data Access Library project for Spring Boot</description>
 
     <modules>
         <module>generator</module>
         <module>core</module>
         <module>demo</module>
+        <module>FlatFileKits</module>
     </modules>
 
     <properties>
@@ -28,6 +29,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -78,6 +83,16 @@
                 <groupId>com.squareup</groupId>
                 <artifactId>javapoet</artifactId>
                 <version>1.12.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>28.2-jre</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.6</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
