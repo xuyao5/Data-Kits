@@ -16,6 +16,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dal-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
