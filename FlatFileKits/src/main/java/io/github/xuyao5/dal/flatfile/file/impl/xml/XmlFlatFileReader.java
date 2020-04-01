@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.flatfile.file.impl.xml;
 
-import io.github.xuyao5.dal.flatfile.configuration.Configuration;
+import io.github.xuyao5.dal.flatfile.configuration.FileCollectorConfig;
 import io.github.xuyao5.dal.flatfile.file.FileReader;
 import io.github.xuyao5.dal.flatfile.file.impl.AbstractFlatFile;
 
@@ -9,8 +9,8 @@ import java.util.List;
 
 public final class XmlFlatFileReader extends AbstractFlatFile implements FileReader {
 
-    public XmlFlatFileReader(Configuration config) {
-        super(config);
+    public XmlFlatFileReader(FileCollectorConfig fileCollectorConfig) {
+        super(fileCollectorConfig);
     }
 
     @Override

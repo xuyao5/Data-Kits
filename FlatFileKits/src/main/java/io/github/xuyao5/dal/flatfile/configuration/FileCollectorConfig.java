@@ -2,27 +2,29 @@ package io.github.xuyao5.dal.flatfile.configuration;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data(staticConstructor = "of")
-public class Configuration {
+public final class FileCollectorConfig {
 
     private Files files = Files.of();
 
     @Data(staticConstructor = "of")
-    public static class Files {
+    static class Files {
 
-        private File file = File.of();
+        private List<File> file = new ArrayList<>();
 
         @Data(staticConstructor = "of")
-        public static class File {
+        static class File {
 
-            private String id = UUID.randomUUID().toString();
-            private String name;
-            private String pattern;
-            private String localPath;
-            private String remotePath;
+            private @NotNull String id;
+            private @NotNull String name;
+            private @NotNull String pattern;
+            private @NotNull String localPath;
+            private @NotNull String remotePath;
             private String comments = "#";
             private String encoding = StandardCharsets.UTF_8.name();
             private String lineMapper;
@@ -30,7 +32,7 @@ public class Configuration {
             private int tailLinesToSkip = 0;
             private String recordSeparatorPolicy;
             private String skippedLinesCallback;
-            private String strict;
+            private boolean strict = false;
             private int batchSize = 1000;
         }
     }

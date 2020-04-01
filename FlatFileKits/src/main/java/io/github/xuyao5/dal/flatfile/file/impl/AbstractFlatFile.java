@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.flatfile.file.impl;
 
-import io.github.xuyao5.dal.flatfile.configuration.Configuration;
+import io.github.xuyao5.dal.flatfile.configuration.FileCollectorConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class AbstractFlatFile {
 
-    final protected Configuration configuration;
+    final protected FileCollectorConfig fileCollectorConfig;
 
     protected List<String> fileList = new CopyOnWriteArrayList<>();
 
@@ -21,7 +21,7 @@ public abstract class AbstractFlatFile {
 
     private List<Integer> skippedLines;
 
-    protected AbstractFlatFile(Configuration config) {
-        configuration = config;
+    protected AbstractFlatFile(FileCollectorConfig fileCollectorConfig) {
+        this.fileCollectorConfig = fileCollectorConfig;
     }
 }
