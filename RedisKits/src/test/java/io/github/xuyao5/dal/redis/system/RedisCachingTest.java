@@ -1,14 +1,14 @@
 package io.github.xuyao5.dal.redis.system;
 
 import io.github.xuyao5.dal.redis.AbstractTest;
-import io.github.xuyao5.dal.redis.annotation.EnableCachingKit;
+import io.github.xuyao5.dal.redis.annotation.EnableRedisCaching;
 import org.junit.jupiter.api.Test;
 
-@EnableCachingKit
-class CachingKitTest extends AbstractTest {
+@EnableRedisCaching
+class RedisCachingTest extends AbstractTest {
 
     @Test
-    void testApplicationProperties() {
+    void testRedisCaching() {
         System.out.println("Hello World!");
     }
 }

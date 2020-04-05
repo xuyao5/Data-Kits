@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.redis.annotation;
 
-import io.github.xuyao5.dal.redis.configuration.selector.CachingKitConfigurationSelector;
+import io.github.xuyao5.dal.redis.configuration.selector.RedisCachingConfigurationSelector;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
@@ -10,8 +10,8 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(CachingKitConfigurationSelector.class)
-public @interface EnableCachingKit {
+@Import(RedisCachingConfigurationSelector.class)
+public @interface EnableRedisCaching {
 
     boolean proxyTargetClass() default false;
 
