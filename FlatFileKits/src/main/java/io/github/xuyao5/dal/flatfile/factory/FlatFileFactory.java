@@ -1,6 +1,5 @@
 package io.github.xuyao5.dal.flatfile.factory;
 
-import io.github.xuyao5.dal.core.factory.AbstractFactory;
 import io.github.xuyao5.dal.flatfile.configuration.FileCollectorConfig;
 import io.github.xuyao5.dal.flatfile.reader.FlatFileReader;
 import io.github.xuyao5.dal.flatfile.writer.FlatFileWriter;
@@ -16,7 +15,7 @@ import java.io.FileNotFoundException;
 import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 @Component
-public final class FlatFileFactory<T, R> extends AbstractFactory {
+public final class FlatFileFactory<T, R> {
 
     private File configFile;
 
