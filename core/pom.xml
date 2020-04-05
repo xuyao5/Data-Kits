@@ -18,6 +18,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <layout>NONE</layout>
+                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
         </plugins>
