@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.generator.dao;
 
-import io.github.xuyao5.AbstractTest;
+import io.github.xuyao5.dal.generator.AbstractTest;
 import io.github.xuyao5.dal.generator.repository.paces.ext.MyBatchJobInstanceMapper;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package io.github.xuyao5.dal.generator.system;
 
 import com.squareup.javapoet.*;
-import io.github.xuyao5.AbstractTest;
+import io.github.xuyao5.dal.generator.AbstractTest;
 import org.junit.jupiter.api.Test;
 
 import javax.lang.model.element.Modifier;

@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.generator.service;
 
-import io.github.xuyao5.AbstractTest;
+import io.github.xuyao5.dal.generator.AbstractTest;
 import io.github.xuyao5.dal.generator.service.initial.MyBatisInitializeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
