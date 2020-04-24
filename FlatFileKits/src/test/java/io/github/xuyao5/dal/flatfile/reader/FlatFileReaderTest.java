@@ -9,7 +9,7 @@ public class FlatFileReaderTest extends AbstractTest {
     void process() {
         FlatFileReader myFlatFileReader = flatFileFactory.getFlatFileReader();
 
-        System.out.println(flatFileFactory.getFileCollectorConfig());
+        System.out.println(flatFileFactory.getFlatFileKitsConfig());
 
         final long start = System.currentTimeMillis();
 //        myFlatFileReader.process(null);

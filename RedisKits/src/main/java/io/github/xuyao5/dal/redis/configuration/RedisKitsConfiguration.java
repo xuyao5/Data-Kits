@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Role;
 
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-public class ProxyRedisCachingConfiguration {//extends AbstractCachingConfiguration
+public class RedisKitsConfiguration {//extends AbstractCachingConfiguration
 
 }

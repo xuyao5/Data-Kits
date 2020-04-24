@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.flatfile.file.impl.json;
 
-import io.github.xuyao5.dal.flatfile.configuration.FileCollectorConfig;
+import io.github.xuyao5.dal.flatfile.configuration.FlatFileKitsConfig;
 import io.github.xuyao5.dal.flatfile.file.FileReader;
 import io.github.xuyao5.dal.flatfile.file.impl.AbstractFlatFile;
 
@@ -9,8 +9,8 @@ import java.util.List;
 
 public final class JsonFlatFileReader extends AbstractFlatFile implements FileReader {
 
-    public JsonFlatFileReader(FileCollectorConfig fileCollectorConfig) {
-        super(fileCollectorConfig);
+    public JsonFlatFileReader(FlatFileKitsConfig flatFileKitsConfig) {
+        super(flatFileKitsConfig);
     }
 
     @Override

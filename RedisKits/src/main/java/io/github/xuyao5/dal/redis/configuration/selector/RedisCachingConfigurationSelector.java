@@ -1,7 +1,7 @@
 package io.github.xuyao5.dal.redis.configuration.selector;
 
 import io.github.xuyao5.dal.redis.annotation.EnableRedisCaching;
-import io.github.xuyao5.dal.redis.configuration.ProxyRedisCachingConfiguration;
+import io.github.xuyao5.dal.redis.configuration.RedisKitsConfiguration;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.AdviceModeImportSelector;
 import org.springframework.context.annotation.AutoProxyRegistrar;
@@ -24,7 +24,7 @@ public class RedisCachingConfigurationSelector extends AdviceModeImportSelector<
     }
 
     private String[] getProxyImports() {
-        return new String[]{AutoProxyRegistrar.class.getName(), ProxyRedisCachingConfiguration.class.getName()};
+        return new String[]{AutoProxyRegistrar.class.getName(), RedisKitsConfiguration.class.getName()};
     }
 
     private String[] getAspectJImports() {
