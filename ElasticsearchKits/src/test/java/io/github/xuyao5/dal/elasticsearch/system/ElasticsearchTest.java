@@ -3,6 +3,10 @@ package io.github.xuyao5.dal.elasticsearch.system;
 import io.github.xuyao5.dal.elasticsearch.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -21,6 +25,8 @@ import java.io.IOException;
 class ElasticsearchTest extends AbstractTest {
 
     private static final String INDEX = "twitter";
+    private static final String USERNAME = "";
+    private static final String PASSWORD = "";
 
     @Test
     void testElasticsearch() {
@@ -62,6 +68,10 @@ class ElasticsearchTest extends AbstractTest {
     }
 
     private RestHighLevelClient getRestHighLevelClient() {
-        return new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200, "http")));
+        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME, PASSWORD));
+        return new RestHighLevelClient(RestClient
+                .builder(new HttpHost("localhost", 9200, "http"))
+                .setHttpClientConfigCallback(httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider)));
     }
 }
