@@ -23,7 +23,7 @@ public final class ElasticsearchKitsFactory {
     private ElasticsearchKitsConfigBean configBean;
 
     public EsClient getElasticsearchClient() {
-        return EsClient.instance(getHttpHosts(), Optional.empty(), Optional.empty());
+        return EsClient.instance(new HttpHost[]{HttpHost.create(configBean.getEsClientHosts()[0])}, Optional.of(configBean.getEsClientUsername()), Optional.of(configBean.getEsClientPassword()));
     }
 
     public EsIndexSupporter getEsIndexSupporter() {
@@ -32,9 +32,5 @@ public final class ElasticsearchKitsFactory {
 
     public EsDocumentSupporter getEsDocumentSupporter() {
         return EsDocumentSupporter.instance();
-    }
-
-    private HttpHost[] getHttpHosts() {
-        return new HttpHost[10];
     }
 }

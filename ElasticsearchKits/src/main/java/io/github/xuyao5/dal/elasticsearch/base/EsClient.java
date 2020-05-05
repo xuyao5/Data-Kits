@@ -8,13 +8,12 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -24,16 +23,16 @@ import java.util.function.BiFunction;
  */
 @Slf4j
 @RequiredArgsConstructor(staticName = "instance")
-public final class EsClient<T, R> {
+public final class EsClient<T> {
 
     private final HttpHost[] HOSTS;
     private final Optional<String> USERNAME;
     private final Optional<String> PASSWORD;
 
     @SneakyThrows
-    public R execute(@NotNull BiFunction<RestHighLevelClient, RequestOptions, R> function) {
+    public T execute(@NotNull Function<RestHighLevelClient, T> function) {
         try (RestHighLevelClient client = getRestHighLevelClient()) {
-            return function.apply(client, getRequestOptions());
+            return function.apply(client);
         } finally {
             log.info("execute");
         }
@@ -43,9 +42,5 @@ public final class EsClient<T, R> {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME.get(), PASSWORD.get()));
         return new RestHighLevelClient(RestClient.builder(HOSTS).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)));
-    }
-
-    private RequestOptions getRequestOptions() {
-        return RequestOptions.DEFAULT;
     }
 }
