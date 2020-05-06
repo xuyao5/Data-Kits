@@ -4,10 +4,15 @@ import io.github.xuyao5.dal.elasticsearch.base.EsClient;
 import io.github.xuyao5.dal.elasticsearch.configuration.ElasticsearchKitsConfigBean;
 import io.github.xuyao5.dal.elasticsearch.document.EsDocumentSupporter;
 import io.github.xuyao5.dal.elasticsearch.index.EsIndexSupporter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,5 +37,18 @@ public final class ElasticsearchKitsFactory {
 
     public EsDocumentSupporter getEsDocumentSupporter() {
         return EsDocumentSupporter.instance();
+    }
+
+    private HttpHost[] urls2HttpHost(@NotNull String[] url) {
+        List<HttpHost> result = new ArrayList<>();
+        Arrays.asList(url).forEach(str -> {
+            if (StringUtils.isNoneEmpty(str)) {
+                HttpHost myHttpHost = HttpHost.create(str);
+                if (!result.contains(myHttpHost)) {
+                    result.add(myHttpHost);
+                }
+            }
+        });
+        return result.toArray(new HttpHost[result.size()]);
     }
 }
