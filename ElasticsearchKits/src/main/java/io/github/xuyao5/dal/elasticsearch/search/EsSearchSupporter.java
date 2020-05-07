@@ -2,7 +2,6 @@ package io.github.xuyao5.dal.elasticsearch.search;
 
 import io.github.xuyao5.dal.elasticsearch.base.AbstractSupporter;
 import io.github.xuyao5.dal.elasticsearch.search.param.*;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.elasticsearch.action.explain.ExplainRequest;
 import org.elasticsearch.action.explain.ExplainResponse;
@@ -22,6 +21,7 @@ import org.elasticsearch.script.mustache.MultiSearchTemplateResponse;
 import org.elasticsearch.script.mustache.SearchTemplateRequest;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -32,7 +32,7 @@ import java.util.*;
  * @apiNote EsIndexSupporter
  * @implNote EsIndexSupporter
  */
-@RequiredArgsConstructor(staticName = "instance")
+@Component("esSearchSupporter")
 public final class EsSearchSupporter extends AbstractSupporter {
 
     /**

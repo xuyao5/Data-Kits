@@ -12,6 +12,6 @@ public class GeneratorConfiguration {
 
     @Bean
     public GeneratorConfigBean createPropertyBean() {
-        return GeneratorConfigBean.bean();
+        return GeneratorConfigBean.of();
     }
 }

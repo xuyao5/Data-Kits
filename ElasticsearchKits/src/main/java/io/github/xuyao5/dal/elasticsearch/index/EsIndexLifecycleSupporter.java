@@ -1,7 +1,7 @@
 package io.github.xuyao5.dal.elasticsearch.index;
 
+import io.github.xuyao5.dal.elasticsearch.base.AbstractSupporter;
 import io.github.xuyao5.dal.elasticsearch.index.ilm.PutLifecyclePolicyParams;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -10,6 +10,7 @@ import org.elasticsearch.client.indexlifecycle.*;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
@@ -23,8 +24,8 @@ import java.util.concurrent.TimeUnit;
  * @apiNote EsIndexLifecycleSupporter
  * @implNote EsIndexLifecycleSupporter
  */
-@RequiredArgsConstructor(staticName = "instance")
-public final class EsIndexLifecycleSupporter {
+@Component("esIndexLifecycleSupporter")
+public final class EsIndexLifecycleSupporter extends AbstractSupporter {
 
     /**
      * Put Lifecycle Policy API

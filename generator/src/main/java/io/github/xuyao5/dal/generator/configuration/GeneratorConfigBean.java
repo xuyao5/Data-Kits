@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
 @Getter
-@RequiredArgsConstructor(staticName = "bean")
+@RequiredArgsConstructor(staticName = "of")
 public final class GeneratorConfigBean {
 
     @Value("${generator.dir.root}")

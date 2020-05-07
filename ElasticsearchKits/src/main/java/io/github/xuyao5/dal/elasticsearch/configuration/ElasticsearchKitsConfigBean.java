@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
  * @implNote ElasticsearchKitsConfigBean
  */
 @Getter
-@RequiredArgsConstructor(staticName = "bean")
+@RequiredArgsConstructor(staticName = "of")
 public final class ElasticsearchKitsConfigBean {
 
     @Value("${es.client.hosts}")

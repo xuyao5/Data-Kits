@@ -7,4 +7,6 @@ package io.github.xuyao5.dal.elasticsearch.base;
  * @implNote AbstractSupporter
  */
 public abstract class AbstractSupporter {
+
+    //todo snowflake
 }

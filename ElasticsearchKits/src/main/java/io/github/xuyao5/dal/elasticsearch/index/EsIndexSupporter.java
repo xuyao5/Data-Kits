@@ -2,7 +2,6 @@ package io.github.xuyao5.dal.elasticsearch.index;
 
 import io.github.xuyao5.dal.elasticsearch.base.AbstractSupporter;
 import io.github.xuyao5.dal.elasticsearch.index.idx.*;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -34,6 +33,7 @@ import org.elasticsearch.client.indices.rollover.RolloverResponse;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * @apiNote EsIndexSupporter
  * @implNote EsIndexSupporter
  */
-@RequiredArgsConstructor(staticName = "instance")
+@Component("esIndexSupporter")
 public final class EsIndexSupporter extends AbstractSupporter {
 
     /**

@@ -2,7 +2,6 @@ package io.github.xuyao5.dal.elasticsearch.document;
 
 import io.github.xuyao5.dal.elasticsearch.base.AbstractSupporter;
 import io.github.xuyao5.dal.elasticsearch.document.param.*;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -32,6 +31,7 @@ import org.elasticsearch.index.reindex.ReindexRequest;
 import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.elasticsearch.tasks.TaskId;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 
@@ -41,7 +41,7 @@ import javax.validation.constraints.NotNull;
  * @apiNote EsDocumentSupporter
  * @implNote EsDocumentSupporter
  */
-@RequiredArgsConstructor(staticName = "instance")
+@Component("esDocumentSupporter")
 public final class EsDocumentSupporter extends AbstractSupporter {
 
     /**
