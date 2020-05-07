@@ -19,7 +19,7 @@ class MyBatisInitializeServiceImplTest extends AbstractTest {
         tableList.add("BATCH_JOB_INSTANCE");
         tableList.add("BATCH_JOB_EXECUTION");
 
-        final String filePath = myBatisInitializeService.generateFilePath(generatorPropertyBean.getGeneratorDirRoot(), "PACES_MOS");
+        final String filePath = myBatisInitializeService.generateFilePath(generatorConfigBean.getGeneratorDirRoot(), "PACES_MOS");
         final String templateFile = myBatisInitializeService.createTemplateFile(filePath, tableList);
         myBatisInitializeService.createSourceFile(templateFile);
         System.out.println("成功");

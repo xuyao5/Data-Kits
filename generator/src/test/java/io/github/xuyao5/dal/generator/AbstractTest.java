@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.generator;
 
-import io.github.xuyao5.dal.generator.configuration.GeneratorPropertyBean;
+import io.github.xuyao5.dal.generator.configuration.GeneratorConfigBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -8,5 +8,5 @@ import org.springframework.boot.test.context.SpringBootTest;
 public abstract class AbstractTest {
 
     @Autowired
-    protected GeneratorPropertyBean generatorPropertyBean;
+    protected GeneratorConfigBean generatorConfigBean;
 }

@@ -3,6 +3,7 @@ package io.github.xuyao5.dal.elasticsearch;
 import io.github.xuyao5.dal.elasticsearch.base.EsClient;
 import io.github.xuyao5.dal.elasticsearch.configuration.ElasticsearchKitsConfigBean;
 import io.github.xuyao5.dal.elasticsearch.document.EsDocumentSupporter;
+import io.github.xuyao5.dal.elasticsearch.index.EsIndexLifecycleSupporter;
 import io.github.xuyao5.dal.elasticsearch.index.EsIndexSupporter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -37,6 +38,10 @@ public final class ElasticsearchKitsFactory {
 
     public EsDocumentSupporter getEsDocumentSupporter() {
         return EsDocumentSupporter.instance();
+    }
+
+    public EsIndexLifecycleSupporter getEsIndexLifecycleSupporter() {
+        return EsIndexLifecycleSupporter.instance();
     }
 
     private HttpHost[] urls2HttpHost(@NotNull String[] url) {

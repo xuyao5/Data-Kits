@@ -8,6 +8,6 @@ public class ElasticsearchKitsConfiguration {
 
     @Bean
     public ElasticsearchKitsConfigBean elasticsearchKitsConfigBean() {
-        return ElasticsearchKitsConfigBean.of();
+        return ElasticsearchKitsConfigBean.bean();
     }
 }

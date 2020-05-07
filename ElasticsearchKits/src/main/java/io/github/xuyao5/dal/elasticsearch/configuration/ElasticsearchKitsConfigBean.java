@@ -1,6 +1,7 @@
 package io.github.xuyao5.dal.elasticsearch.configuration;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -9,7 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
  * @apiNote ElasticsearchKitsConfigBean
  * @implNote ElasticsearchKitsConfigBean
  */
-@Data(staticConstructor = "of")
+@Getter
+@RequiredArgsConstructor(staticName = "bean")
 public final class ElasticsearchKitsConfigBean {
 
     @Value("${es.client.hosts}")
