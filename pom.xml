@@ -21,6 +21,7 @@
         <module>FlatFileKits</module>
         <module>RedisKits</module>
         <module>ElasticsearchKits</module>
+        <module>SnowflakeKits</module>
     </modules>
 
     <properties>
