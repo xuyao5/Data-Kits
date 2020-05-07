@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.elasticsearch.index.param;
+package io.github.xuyao5.dal.elasticsearch.index.idx;
 
 import lombok.Data;
 
