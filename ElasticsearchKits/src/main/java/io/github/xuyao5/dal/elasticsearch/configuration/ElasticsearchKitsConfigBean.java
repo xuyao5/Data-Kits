@@ -22,4 +22,13 @@ public final class ElasticsearchKitsConfigBean {
 
     @Value("${es.client.password}")
     private String esClientPassword;
+
+    @Value("${es.client.local}")
+    private boolean local;
+
+    @Value("${es.client.node-timeout}")
+    private boolean nodeTimeout;
+
+    @Value("${es.client.master-timeout}")
+    private boolean masterTimeout;
 }
