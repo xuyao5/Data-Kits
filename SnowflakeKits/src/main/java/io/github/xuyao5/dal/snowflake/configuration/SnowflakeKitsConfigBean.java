@@ -2,6 +2,7 @@ package io.github.xuyao5.dal.snowflake.configuration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
  * @apiNote SnowflakeKitsConfigBean
  * @implNote SnowflakeKitsConfigBean
  */
+@Slf4j
 @Getter
 @RequiredArgsConstructor(staticName = "of")
 public final class SnowflakeKitsConfigBean {

@@ -1,7 +1,7 @@
 package io.github.xuyao5.dal.flatfile.factory;
 
 import io.github.xuyao5.dal.core.factory.AbstractFactory;
-import io.github.xuyao5.dal.flatfile.configuration.FlatFileKitsConfig;
+import io.github.xuyao5.dal.flatfile.configuration.FlatFileKitsConfiguration;
 import io.github.xuyao5.dal.flatfile.reader.FlatFileReader;
 import io.github.xuyao5.dal.flatfile.writer.FlatFileWriter;
 import lombok.Getter;
@@ -21,12 +21,12 @@ public final class FlatFileFactory<T, R> extends AbstractFactory {
     private File configFile;
 
     @Getter
-    private FlatFileKitsConfig flatFileKitsConfig;
+    private FlatFileKitsConfiguration flatFileKitsConfiguration;
 
     @PostConstruct
     void initial() throws FileNotFoundException {
         configFile = ResourceUtils.getFile(CLASSPATH_URL_PREFIX + "FlatFileCollector.xml");
-        flatFileKitsConfig = JAXB.unmarshal(configFile, FlatFileKitsConfig.class);
+        flatFileKitsConfiguration = JAXB.unmarshal(configFile, FlatFileKitsConfiguration.class);
     }
 
     public FlatFileReader<T, R> getFlatFileReader() {

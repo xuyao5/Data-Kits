@@ -5,8 +5,8 @@ import lombok.Data;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 7/05/20 12:15
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote PutLifecyclePolicyParams
+ * @implNote PutLifecyclePolicyParams
  */
 @Data(staticConstructor = "of")
 public final class PutLifecyclePolicyParams {

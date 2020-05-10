@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data(staticConstructor = "of")
-public final class FlatFileKitsConfig {
+public final class FlatFileKitsConfiguration {
 
     private Files files = Files.of();
 
