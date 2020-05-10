@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class SnowflakeKitsConfiguration {
 
     @Bean
-    public SnowflakeKitsConfigBean elasticsearchKitsConfigBean() {
+    public SnowflakeKitsConfigBean snowflakeKitsConfigBean() {
         return SnowflakeKitsConfigBean.of();
     }
 }

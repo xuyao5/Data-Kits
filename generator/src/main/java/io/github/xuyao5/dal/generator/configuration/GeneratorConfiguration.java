@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
 public class GeneratorConfiguration {
 
     @Bean
-    public GeneratorConfigBean createPropertyBean() {
+    public GeneratorConfigBean generatorConfigBean() {
         return GeneratorConfigBean.of();
     }
 }
