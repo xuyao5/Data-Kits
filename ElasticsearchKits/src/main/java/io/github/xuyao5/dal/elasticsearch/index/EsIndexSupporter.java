@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.elasticsearch.index;
 
-import io.github.xuyao5.dal.elasticsearch.base.AbstractSupporter;
+import io.github.xuyao5.dal.elasticsearch.abstr.AbstractSupporter;
 import io.github.xuyao5.dal.elasticsearch.index.idx.*;
 import lombok.SneakyThrows;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;

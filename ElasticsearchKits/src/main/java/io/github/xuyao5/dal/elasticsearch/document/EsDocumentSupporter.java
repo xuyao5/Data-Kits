@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.elasticsearch.document;
 
-import io.github.xuyao5.dal.elasticsearch.base.AbstractSupporter;
+import io.github.xuyao5.dal.elasticsearch.abstr.AbstractSupporter;
 import io.github.xuyao5.dal.elasticsearch.document.param.*;
 import lombok.SneakyThrows;
 import org.elasticsearch.action.bulk.BulkRequest;

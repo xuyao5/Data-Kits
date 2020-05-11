@@ -1,7 +1,7 @@
 package io.github.xuyao5.dal.elasticsearch.system;
 
 import io.github.xuyao5.dal.elasticsearch.EsClient;
-import io.github.xuyao5.dal.elasticsearch.base.AbstractTest;
+import io.github.xuyao5.dal.elasticsearch.abstr.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

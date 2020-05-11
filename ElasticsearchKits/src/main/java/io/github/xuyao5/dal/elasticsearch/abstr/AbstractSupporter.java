@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.elasticsearch.base;
+package io.github.xuyao5.dal.elasticsearch.abstr;
 
 /**
  * @author Thomas.XU(xuyao)
