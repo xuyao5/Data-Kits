@@ -1,9 +1,9 @@
 package io.github.xuyao5.dal.flatfile.factory;
 
 import io.github.xuyao5.dal.core.factory.AbstractFactory;
+import io.github.xuyao5.dal.flatfile.FlatFileReader;
+import io.github.xuyao5.dal.flatfile.FlatFileWriter;
 import io.github.xuyao5.dal.flatfile.configuration.FlatFileKitsConfiguration;
-import io.github.xuyao5.dal.flatfile.reader.FlatFileReader;
-import io.github.xuyao5.dal.flatfile.writer.FlatFileWriter;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;

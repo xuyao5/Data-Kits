@@ -1,6 +1,7 @@
 package io.github.xuyao5.dal.flatfile.writer;
 
 import io.github.xuyao5.dal.flatfile.AbstractTest;
+import io.github.xuyao5.dal.flatfile.FlatFileWriter;
 import io.github.xuyao5.dal.flatfile.vo.MyFileFormat;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;

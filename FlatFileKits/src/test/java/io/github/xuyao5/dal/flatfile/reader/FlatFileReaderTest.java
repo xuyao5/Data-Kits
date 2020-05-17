@@ -1,6 +1,7 @@
 package io.github.xuyao5.dal.flatfile.reader;
 
 import io.github.xuyao5.dal.flatfile.AbstractTest;
+import io.github.xuyao5.dal.flatfile.FlatFileReader;
 import org.junit.jupiter.api.Test;
 
 public class FlatFileReaderTest extends AbstractTest {

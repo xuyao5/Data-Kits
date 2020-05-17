@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.flatfile.reader;
+package io.github.xuyao5.dal.flatfile;
 
 import java.io.File;
 import java.io.IOException;

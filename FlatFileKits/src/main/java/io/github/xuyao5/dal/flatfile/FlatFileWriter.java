@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.flatfile.writer;
+package io.github.xuyao5.dal.flatfile;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
