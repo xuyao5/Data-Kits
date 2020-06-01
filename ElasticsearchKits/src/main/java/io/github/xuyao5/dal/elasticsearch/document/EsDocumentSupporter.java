@@ -3,6 +3,8 @@ package io.github.xuyao5.dal.elasticsearch.document;
 import io.github.xuyao5.dal.elasticsearch.abstr.AbstractSupporter;
 import io.github.xuyao5.dal.elasticsearch.document.param.*;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -34,6 +36,7 @@ import org.elasticsearch.tasks.TaskId;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -41,6 +44,7 @@ import javax.validation.constraints.NotNull;
  * @apiNote EsDocumentSupporter
  * @implNote EsDocumentSupporter
  */
+@Slf4j
 @Component("esDocumentSupporter")
 public final class EsDocumentSupporter extends AbstractSupporter {
 
@@ -201,5 +205,49 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                 new TermVectorsRequest("authors", docBuilder);
         request.add(tvrequest2);
         return client.mtermvectors(request, RequestOptions.DEFAULT);
+    }
+
+    /**
+     * Bulk Processor
+     */
+    public void bulk(@NotNull RestHighLevelClient client, @NotNull List<IndexRequest> indexRequestList) {
+        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, RequestOptions.DEFAULT, bulkListener), new BulkProcessor.Listener() {
+            @Override
+            public void beforeBulk(long executionId, BulkRequest request) {
+                int numberOfActions = request.numberOfActions();
+                log.debug("Executing bulk [{}] with {} requests",
+                        executionId, numberOfActions);
+            }
+
+            @Override
+            public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+                if (response.hasFailures()) {
+                    log.warn("Bulk [{}] executed with failures", executionId);
+                } else {
+                    log.debug("Bulk [{}] completed in {} milliseconds", executionId, response.getTook().getMillis());
+                }
+            }
+
+            @Override
+            public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+                log.error("Failed to execute bulk", failure);
+            }
+        }).setBulkActions(500).build()) {
+            IndexRequest one = new IndexRequest("posts").id("1")
+                    .source(XContentType.JSON, "title",
+                            "In which order are my Elasticsearch queries executed?");
+            IndexRequest two = new IndexRequest("posts").id("2")
+                    .source(XContentType.JSON, "title",
+                            "Current status and upcoming changes in Elasticsearch");
+            IndexRequest three = new IndexRequest("posts").id("3")
+                    .source(XContentType.JSON, "title",
+                            "The Future of Federated Search in Elasticsearch");
+
+            bulkProcessor.add(one);
+            bulkProcessor.add(two);
+            bulkProcessor.add(three);
+
+            indexRequestList.parallelStream().forEachOrdered(bulkProcessor::add);
+        }
     }
 }
