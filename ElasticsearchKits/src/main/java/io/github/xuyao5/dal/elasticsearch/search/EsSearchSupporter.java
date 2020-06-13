@@ -3,6 +3,7 @@ package io.github.xuyao5.dal.elasticsearch.search;
 import io.github.xuyao5.dal.elasticsearch.abstr.AbstractSupporter;
 import io.github.xuyao5.dal.elasticsearch.search.param.*;
 import lombok.SneakyThrows;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.explain.ExplainRequest;
 import org.elasticsearch.action.explain.ExplainResponse;
 import org.elasticsearch.action.fieldcaps.FieldCapabilitiesRequest;
@@ -13,7 +14,10 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.NestedQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.rankeval.*;
 import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.script.mustache.MultiSearchTemplateRequest;
@@ -40,8 +44,11 @@ public final class EsSearchSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public SearchResponse search(@NotNull RestHighLevelClient client, @NotNull SearchParams params) {
-        SearchRequest searchRequest = new SearchRequest();
-        return client.search(searchRequest, RequestOptions.DEFAULT);
+        return client.search(new SearchRequest(params.getIndex()).source(new SearchSourceBuilder().query(params.getQueryBuilder())
+                        .from(0)
+                        .size(10)
+                        .timeout(TimeValue.timeValueSeconds(60))),
+                RequestOptions.DEFAULT);
     }
 
     /**
@@ -187,5 +194,25 @@ public final class EsSearchSupporter extends AbstractSupporter {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
         return client.count(countRequest, RequestOptions.DEFAULT);
+    }
+
+    public SearchResponse nested(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String path) {
+        QueryBuilder boolQuery = QueryBuilders.boolQuery()
+                .filter(QueryBuilders.termQuery("", ""))
+                .filter(QueryBuilders.termQuery("", ""))
+                .filter(QueryBuilders.termQuery("", ""));
+        NestedQueryBuilder nestedQueryBuilder = QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.None);
+        SearchParams searchParams = SearchParams.of(index);
+        searchParams.setQueryBuilder(nestedQueryBuilder);//设置nestedQueryBuilder
+        return search(client, searchParams);
+    }
+
+    public SearchResponse nested2(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String path) {
+        TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("", "");//??
+        NestedQueryBuilder nestedQueryBuilder = QueryBuilders.nestedQuery(path, termQueryBuilder, ScoreMode.None);
+        QueryBuilder boolQuery = QueryBuilders.boolQuery().filter(nestedQueryBuilder);
+        SearchParams searchParams = SearchParams.of(index);
+        searchParams.setQueryBuilder(boolQuery);//设置boolQuery
+        return search(client, searchParams);
     }
 }
