@@ -24,6 +24,9 @@ import org.elasticsearch.client.core.MultiTermVectorsRequest;
 import org.elasticsearch.client.core.MultiTermVectorsResponse;
 import org.elasticsearch.client.core.TermVectorsRequest;
 import org.elasticsearch.client.core.TermVectorsResponse;
+import org.elasticsearch.common.unit.ByteSizeUnit;
+import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -211,43 +214,34 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Bulk Processor
      */
     public void bulk(@NotNull RestHighLevelClient client, @NotNull List<IndexRequest> indexRequestList) {
-        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, RequestOptions.DEFAULT, bulkListener), new BulkProcessor.Listener() {
-            @Override
-            public void beforeBulk(long executionId, BulkRequest request) {
-                int numberOfActions = request.numberOfActions();
-                log.debug("Executing bulk [{}] with {} requests",
-                        executionId, numberOfActions);
-            }
+        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
+                new BulkProcessor.Listener() {
+                    @Override
+                    public void beforeBulk(long executionId, BulkRequest request) {
+                        int numberOfActions = request.numberOfActions();
+                        log.debug("Executing bulk [{}] with {} requests", executionId, numberOfActions);
+                    }
 
-            @Override
-            public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-                if (response.hasFailures()) {
-                    log.warn("Bulk [{}] executed with failures", executionId);
-                } else {
-                    log.debug("Bulk [{}] completed in {} milliseconds", executionId, response.getTook().getMillis());
-                }
-            }
+                    @Override
+                    public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+                        if (response.hasFailures()) {
+                            log.warn("Bulk [{}] executed with failures", executionId);
+                        } else {
+                            log.debug("Bulk [{}] completed in {} milliseconds", executionId, response.getTook().getMillis());
+                        }
+                    }
 
-            @Override
-            public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
-                log.error("Failed to execute bulk", failure);
-            }
-        }).setBulkActions(500).build()) {
-            IndexRequest one = new IndexRequest("posts").id("1")
-                    .source(XContentType.JSON, "title",
-                            "In which order are my Elasticsearch queries executed?");
-            IndexRequest two = new IndexRequest("posts").id("2")
-                    .source(XContentType.JSON, "title",
-                            "Current status and upcoming changes in Elasticsearch");
-            IndexRequest three = new IndexRequest("posts").id("3")
-                    .source(XContentType.JSON, "title",
-                            "The Future of Federated Search in Elasticsearch");
-
-            bulkProcessor.add(one);
-            bulkProcessor.add(two);
-            bulkProcessor.add(three);
-
+                    @Override
+                    public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+                        log.error("Failed to execute bulk", failure);
+                    }
+                }).setBulkActions(20000)
+                .setBulkSize(new ByteSizeValue(15, ByteSizeUnit.MB))
+                .setFlushInterval(TimeValue.timeValueSeconds(20))
+                .setConcurrentRequests(10)
+                .build()) {
             indexRequestList.parallelStream().forEachOrdered(bulkProcessor::add);
+            bulkProcessor.flush();
         }
     }
 }
