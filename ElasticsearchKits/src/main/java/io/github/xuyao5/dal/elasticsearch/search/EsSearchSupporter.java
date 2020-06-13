@@ -47,7 +47,8 @@ public final class EsSearchSupporter extends AbstractSupporter {
         return client.search(new SearchRequest(params.getIndex()).source(new SearchSourceBuilder().query(params.getQueryBuilder())
                         .from(0)
                         .size(10)
-                        .timeout(TimeValue.timeValueSeconds(60))),
+                        .timeout(TimeValue.timeValueSeconds(60))
+                        .fetchSource(false)),
                 RequestOptions.DEFAULT);
     }
 
