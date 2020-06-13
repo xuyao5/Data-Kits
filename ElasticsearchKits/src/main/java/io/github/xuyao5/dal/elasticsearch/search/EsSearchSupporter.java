@@ -17,7 +17,6 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.rankeval.*;
 import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.script.mustache.MultiSearchTemplateRequest;
@@ -209,8 +208,11 @@ public final class EsSearchSupporter extends AbstractSupporter {
     }
 
     public SearchResponse nested2(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String path) {
-        TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("", "");//??
-        NestedQueryBuilder nestedQueryBuilder = QueryBuilders.nestedQuery(path, termQueryBuilder, ScoreMode.None);
+        QueryBuilder boolQuery1 = QueryBuilders.boolQuery()
+                .filter(QueryBuilders.termQuery("", ""))
+                .filter(QueryBuilders.termQuery("", ""))
+                .filter(QueryBuilders.termQuery("", ""));
+        NestedQueryBuilder nestedQueryBuilder = QueryBuilders.nestedQuery(path, boolQuery1, ScoreMode.None);
         QueryBuilder boolQuery = QueryBuilders.boolQuery().filter(nestedQueryBuilder);
         SearchParams searchParams = SearchParams.of(index);
         searchParams.setQueryBuilder(boolQuery);//设置boolQuery
