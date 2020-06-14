@@ -26,7 +26,6 @@ import org.elasticsearch.client.core.TermVectorsRequest;
 import org.elasticsearch.client.core.TermVectorsResponse;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -235,9 +234,8 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                     public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
                         log.error("Failed to execute bulk", failure);
                     }
-                }).setBulkActions(20000)
-                .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
-                .setFlushInterval(TimeValue.timeValueSeconds(20))
+                }).setBulkActions(5000)//default:1000
+                .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))//default:5
                 .build()) {
             indexRequestList.parallelStream().forEachOrdered(bulkProcessor::add);
             bulkProcessor.flush();
