@@ -236,9 +236,8 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                         log.error("Failed to execute bulk", failure);
                     }
                 }).setBulkActions(20000)
-                .setBulkSize(new ByteSizeValue(15, ByteSizeUnit.MB))
+                .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
                 .setFlushInterval(TimeValue.timeValueSeconds(20))
-                .setConcurrentRequests(10)
                 .build()) {
             indexRequestList.parallelStream().forEachOrdered(bulkProcessor::add);
             bulkProcessor.flush();
