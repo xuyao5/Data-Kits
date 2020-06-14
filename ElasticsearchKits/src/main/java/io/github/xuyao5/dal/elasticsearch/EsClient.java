@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
+import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
+
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 1/05/20 22:45
@@ -58,7 +61,10 @@ public final class EsClient<T> {
     private RestHighLevelClient getRestHighLevelClient() {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username.get(), password.get()));
-        return new RestHighLevelClient(RestClient.builder(hosts).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)));
+        return new RestHighLevelClient(RestClient.builder(hosts).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * 10)
+                .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * 10)
+                .setDefaultCredentialsProvider(credentialsProvider)));
     }
 
     private HttpHost[] urls2HttpHost(@NotNull String[] url) {
