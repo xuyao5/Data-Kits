@@ -2,27 +2,25 @@ package io.github.xuyao5.dal.elasticsearch.system;
 
 import io.github.xuyao5.dal.elasticsearch.abstr.AbstractTest;
 import lombok.SneakyThrows;
-import org.apache.commons.io.FileUtils;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.apache.lucene.search.join.ScoreMode;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.ResourceUtils;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-
-import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 public class QueryBuilderTest extends AbstractTest {
 
     @SneakyThrows
     @Test
     void testQueryBuilder() {
-        File file = ResourceUtils.getFile(CLASSPATH_URL_PREFIX + "script/search/" + "MatchAll.json");
-        String script = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        System.out.println(script);
-
-        MatchAllQueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
-        System.out.println(queryBuilder);
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.filter(QueryBuilders.prefixQuery("scc", "11"));
+        boolQueryBuilder.filter(QueryBuilders.prefixQuery("scc", "92"));
+        boolQueryBuilder.filter(QueryBuilders.prefixQuery("scc", "20"));
+        boolQueryBuilder.filter(QueryBuilders.prefixQuery("scc", "23"));
+        boolQueryBuilder.filter(QueryBuilders.rangeQuery("age").from(20).to(65));
+        boolQueryBuilder.filter(QueryBuilders.termsQuery("org", "1", "2"));
+        NestedQueryBuilder myPath = QueryBuilders.nestedQuery("myPath", boolQueryBuilder, ScoreMode.None);
+        System.out.println(myPath);
     }
 }

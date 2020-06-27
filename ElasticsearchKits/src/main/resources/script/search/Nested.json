@@ -1,0 +1,68 @@
+{
+  "nested": {
+    "query": {
+      "bool": {
+        "filter": [
+          {
+            "prefix": {
+              "scc": {
+                "value": "11",
+                "boost": 1.0
+              }
+            }
+          },
+          {
+            "prefix": {
+              "scc": {
+                "value": "92",
+                "boost": 1.0
+              }
+            }
+          },
+          {
+            "prefix": {
+              "scc": {
+                "value": "20",
+                "boost": 1.0
+              }
+            }
+          },
+          {
+            "prefix": {
+              "scc": {
+                "value": "23",
+                "boost": 1.0
+              }
+            }
+          },
+          {
+            "range": {
+              "age": {
+                "from": 20,
+                "to": 65,
+                "include_lower": true,
+                "include_upper": true,
+                "boost": 1.0
+              }
+            }
+          },
+          {
+            "terms": {
+              "org": [
+                "1",
+                "2"
+              ],
+              "boost": 1.0
+            }
+          }
+        ],
+        "adjust_pure_negative": true,
+        "boost": 1.0
+      }
+    },
+    "path": "myPath",
+    "ignore_unmapped": false,
+    "score_mode": "none",
+    "boost": 1.0
+  }
+}
