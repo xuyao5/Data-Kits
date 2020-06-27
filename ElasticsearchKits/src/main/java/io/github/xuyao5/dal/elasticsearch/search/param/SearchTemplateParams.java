@@ -3,6 +3,7 @@ package io.github.xuyao5.dal.elasticsearch.search.param;
 import lombok.Data;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -15,5 +16,5 @@ public class SearchTemplateParams {
 
     private final String[] indices;
     private String script;
-    private Map<String, Object> scriptParams;
+    private Map<String, Object> scriptParams = new ConcurrentHashMap<>();
 }
