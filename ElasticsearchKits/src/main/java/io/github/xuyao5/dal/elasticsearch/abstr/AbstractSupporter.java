@@ -1,6 +1,8 @@
 package io.github.xuyao5.dal.elasticsearch.abstr;
 
+import io.github.xuyao5.dal.elasticsearch.configuration.ElasticsearchKitsConfigBean;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -11,5 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractSupporter {
 
-    //todo snowflake
+    @Autowired
+    protected ElasticsearchKitsConfigBean configBean;
 }

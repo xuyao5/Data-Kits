@@ -1,13 +1,13 @@
 package io.github.xuyao5.dal.flatfile.consts;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum FlatFileType {
 
     SINGLE("SINGLE", "单行"),
