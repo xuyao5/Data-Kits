@@ -18,18 +18,18 @@ import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 @RequiredArgsConstructor
 public enum ScriptConst {
 
-    MATCH_ALL(CLASSPATH_URL_PREFIX + "script/search/MatchAll.json", "MatchAll"),
+    MATCH_ALL("MatchAll", CLASSPATH_URL_PREFIX + "script/search/MatchAll.json"),
     ;
+
+    @Getter
+    private final String code;
 
     @Getter
     private final String path;
 
-    @Getter
-    private final String description;
-
-    public static Optional<ScriptConst> getFlatFileByType(@NotNull String path) {
+    public static Optional<ScriptConst> getScriptConstByCode(@NotNull String code) {
         return Arrays.stream(ScriptConst.values()).parallel()
-                .filter(scriptConst -> scriptConst.path.equalsIgnoreCase(path))
+                .filter(scriptConst -> scriptConst.code.equalsIgnoreCase(code))
                 .findAny();
     }
 }
