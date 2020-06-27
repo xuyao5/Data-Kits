@@ -97,20 +97,10 @@ public final class EsSearchSupporter extends AbstractSupporter {
     @SneakyThrows
     public SearchTemplateResponse searchTemplate(@NotNull RestHighLevelClient client, @NotNull SearchTemplateParams params) {
         SearchTemplateRequest request = new SearchTemplateRequest();
-        request.setRequest(new SearchRequest("posts"));
-
+        request.setRequest(new SearchRequest(params.getIndices()));
         request.setScriptType(ScriptType.INLINE);
-        request.setScript(
-                "{" +
-                        "  \"query\": { \"match\" : { \"{{field}}\" : \"{{value}}\" } }," +
-                        "  \"size\" : \"{{size}}\"" +
-                        "}");
-
-        Map<String, Object> scriptParams = new HashMap<>();
-        scriptParams.put("field", "title");
-        scriptParams.put("value", "elasticsearch");
-        scriptParams.put("size", 5);
-        request.setScriptParams(scriptParams);
+        request.setScript(params.getScript());
+        request.setScriptParams(params.getScriptParams());
         return client.searchTemplate(request, RequestOptions.DEFAULT);
     }
 
