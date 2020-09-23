@@ -1,12 +1,12 @@
-package io.github.xuyao5.dal.demo;
+package io.github.xuyao5.dal.file2es;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class File2EsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(File2EsApplication.class, args);
     }
 }
