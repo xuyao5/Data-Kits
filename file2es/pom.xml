@@ -17,5 +17,15 @@
             <artifactId>dal-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>elasticsearch-kits</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>flatfile-kits</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

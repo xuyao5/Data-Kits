@@ -7,7 +7,7 @@
         <artifactId>dal</artifactId>
         <version>1.0.0</version>
     </parent>
-    <artifactId>flat-file-kits</artifactId>
+    <artifactId>flatfile-kits</artifactId>
     <packaging>jar</packaging>
     <name>FlatFileKits Component</name>
 
