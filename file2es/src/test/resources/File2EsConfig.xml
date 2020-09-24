@@ -9,6 +9,7 @@
             <path>~/FFF/source</path><!-- 源路径 -->
             <encoding>UTF-8</encoding><!-- 编码格式 -->
             <pkColumn>1</pkColumn><!-- 主键列 -->
+            <uniqueColumn>1</uniqueColumn><!-- 主键列 -->
             <metadateLine>true</metadateLine><!-- 是否包含元数据列 -->
             <recordSeparator>0x1E</recordSeparator><!-- 分隔符 -->
             <batchSize>5000</batchSize>
