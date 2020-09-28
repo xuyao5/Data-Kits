@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.file2es.disruptor;
 
-import lombok.Data;
+import lombok.Setter;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -8,7 +8,8 @@ import lombok.Data;
  * @apiNote TODO 这里输入文件说明
  * @implNote TODO 这里输入实现说明
  */
-@Data(staticConstructor = "of")
+//@Data(staticConstructor = "of")
+@Setter
 public final class LongEvent {
 
     private long value;

@@ -23,7 +23,7 @@ public class DisruptorTest {
         int bufferSize = 1024;
 
         // Construct the Disruptor
-        Disruptor<LongEvent> disruptor = new Disruptor<>(new LongEventFactory(), bufferSize, DaemonThreadFactory.INSTANCE);
+        Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, DaemonThreadFactory.INSTANCE);
 
         // Connect the handler
         disruptor.handleEventsWith((event, sequence, endOfBatch) -> System.out.println("Event: " + event));

@@ -12,6 +12,6 @@ public final class LongEventFactory implements EventFactory<LongEvent> {
 
     @Override
     public LongEvent newInstance() {
-        return LongEvent.of();
+        return new LongEvent();
     }
 }
