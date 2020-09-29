@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <files>
+    <task>
+        <enable>true</enable><!-- 开关 -->
         <file>
-            <enable>true</enable><!-- 开关 -->
             <name>测试文件111</name><!-- 名称 -->
             <pattern>INT_PAB{0-9}.txt</pattern><!-- 正则 -->
             <confirm>P_PAB{0-9}.txt</confirm><!-- 确认 -->
@@ -15,6 +15,9 @@
             <batchSize>5000</batchSize>
             <comments>这是详细注释</comments>
         </file>
+        <es>
+
+        </es>
         <!--        <file>-->
         <!--            <id>B</id>-->
         <!--            <name>测试文件222</name>-->
@@ -31,5 +34,5 @@
         <!--            <strict>true</strict>-->
         <!--            <batchSize>5000</batchSize>-->
         <!--        </file>-->
-    </files>
+    </task>
 </configuration>
