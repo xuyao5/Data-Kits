@@ -1,7 +1,9 @@
 package io.github.xuyao5.dal.file2es.disruptor;
 
+import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,7 @@ public class DisruptorTest {
         int bufferSize = 1024;
 
         // Construct the Disruptor
-        Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, DaemonThreadFactory.INSTANCE);
+        Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
         // Connect the handler
         disruptor.handleEventsWith((event, sequence, endOfBatch) -> System.out.println("Event: " + event));
