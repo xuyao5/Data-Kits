@@ -1,30 +1,31 @@
 package io.github.xuyao5.dal.flatfile.writer;
 
+import com.google.common.base.Joiner;
 import io.github.xuyao5.dal.flatfile.AbstractTest;
 import io.github.xuyao5.dal.flatfile.FlatFileWriter;
 import io.github.xuyao5.dal.flatfile.vo.MyFileFormat;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 public class FlatFileWriterTest extends AbstractTest {
 
     @SneakyThrows
     @Test
     void process() {
-        Random rand = new Random();
+        final Random rand = new Random();
         FlatFileWriter<MyFileFormat> writer = new FlatFileWriter<>("");
         final MyFileFormat[] formatArray = new MyFileFormat[10000000];
         for (int i = 0; i < formatArray.length; i++) {
             MyFileFormat format = MyFileFormat.of();
-            format.setName(UUID.randomUUID().toString());
-            format.setScore(rand.nextInt(100));
+            format.setName(RandomStringUtils.randomAlphanumeric(5, 10));
+            format.setScore(rand.nextInt());
             formatArray[i] = format;
         }
 
@@ -32,7 +33,8 @@ public class FlatFileWriterTest extends AbstractTest {
 
         List<String> valList = new ArrayList<>();
         for (int i = 0; i < formatArray.length; i++) {
-            valList.add("学生|" + formatArray[i].getName() + "|成绩|" + formatArray[i].getScore() + "|");
+            char split = 0x1E;
+            valList.add(Joiner.on(split).join("学生", i, formatArray[i].getName(), formatArray[i].getScore()));
 
             if (i % 10000 == 0) {
                 FileUtils.writeLines(new File("/Users/xuyao/Downloads/test.txt"), "UTF-8", valList, true);
