@@ -8,5 +8,7 @@ final class DemoRunner extends AbstractTest {
     @Test
     void test() {
         System.out.println("EskitsServerUrl属性=" + file2EsPropertyBean.getEskitsServerUrl());
+        System.out.println("file2EsCollectorXml属性=" + file2EsCollectorXml.toString());
+        file2EsCollectorXml.getFiles().seek("file1").ifPresent(file2EsCollectorXmlFile -> System.out.println("找到=" + file2EsCollectorXmlFile));
     }
 }

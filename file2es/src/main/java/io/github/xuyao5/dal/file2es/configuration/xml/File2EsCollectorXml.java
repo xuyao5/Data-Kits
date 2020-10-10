@@ -9,7 +9,7 @@ import lombok.Data;
  * @implNote TODO 这里输入实现说明
  */
 @Data(staticConstructor = "of")
-public final class File2EsConfigXml {
+public final class File2EsCollectorXml {
 
-    private File2EsConfigXmlFiles files;
+    private File2EsCollectorXmlFiles files;
 }
