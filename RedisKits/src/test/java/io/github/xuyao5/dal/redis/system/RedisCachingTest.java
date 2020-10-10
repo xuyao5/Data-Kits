@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.redis.system;
 
-import io.github.xuyao5.dal.redis.AbstractTest;
+import io.github.xuyao5.dal.redis.abstr.AbstractTest;
 import io.github.xuyao5.dal.redis.annotation.EnableRedisCaching;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.elasticsearch;
+package io.github.xuyao5.dal.elasticsearch.client;
 
 import io.github.xuyao5.dal.elasticsearch.configuration.ElasticsearchKitsConfigBean;
 import lombok.SneakyThrows;
@@ -33,7 +33,7 @@ import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
  */
 @Slf4j
 @Component("esClient")
-public final class EsClient<T> {
+public final class EsClient {
 
     @Autowired
     private ElasticsearchKitsConfigBean configBean;
@@ -50,7 +50,7 @@ public final class EsClient<T> {
     }
 
     @SneakyThrows
-    public T execute(@NotNull Function<RestHighLevelClient, T> function) {
+    public <T> T execute(@NotNull Function<RestHighLevelClient, T> function) {
         try (RestHighLevelClient client = getRestHighLevelClient()) {
             return function.apply(client);
         } finally {

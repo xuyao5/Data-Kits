@@ -29,4 +29,8 @@
             <artifactId>disruptor</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}-lib-${project.version}</finalName>
+    </build>
 </project>

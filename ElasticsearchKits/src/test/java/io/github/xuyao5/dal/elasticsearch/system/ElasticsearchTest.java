@@ -1,7 +1,7 @@
 package io.github.xuyao5.dal.elasticsearch.system;
 
-import io.github.xuyao5.dal.elasticsearch.EsClient;
 import io.github.xuyao5.dal.elasticsearch.abstr.AbstractTest;
+import io.github.xuyao5.dal.elasticsearch.client.EsClient;
 import io.github.xuyao5.dal.elasticsearch.consts.ScriptConst;
 import io.github.xuyao5.dal.elasticsearch.search.param.SearchTemplateParams;
 import lombok.SneakyThrows;
@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 class ElasticsearchTest extends AbstractTest {
 
     @Resource(name = "esClient")
-    private EsClient<String> client;
+    private EsClient client;
 
     @SneakyThrows
     @Test

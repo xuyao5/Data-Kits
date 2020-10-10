@@ -9,9 +9,13 @@
     </parent>
     <artifactId>elasticsearch-kits</artifactId>
     <packaging>jar</packaging>
-    <name>ElasticsearchKits Component</name>
+    <name>ElasticsearchKits Server</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dal-core</artifactId>
