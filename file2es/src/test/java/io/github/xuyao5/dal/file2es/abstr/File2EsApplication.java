@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.file2es;
+package io.github.xuyao5.dal.file2es.abstr;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -2,6 +2,7 @@ package io.github.xuyao5.dal.core.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import javax.validation.constraints.NotNull;
@@ -13,8 +14,9 @@ import java.util.Date;
  * @apiNote MyDateFormatUtils
  * @implNote MyDateFormatUtils
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyDateFormatUtils extends DateFormatUtils {
+public final class MyDateUtils extends DateFormatUtils {
 
     public static String convertDate2String(@NotNull String date) {
         return null;

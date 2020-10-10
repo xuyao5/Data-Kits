@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Type;
@@ -16,8 +17,9 @@ import java.util.Optional;
  * @apiNote MyGsonUtils
  * @implNote MyGsonUtils
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyGsonUtils {
+public final class GsonUtils {
 
     @Getter
     private static final Gson GSON;
