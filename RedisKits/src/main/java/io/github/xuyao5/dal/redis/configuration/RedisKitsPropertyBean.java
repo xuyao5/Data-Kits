@@ -2,7 +2,6 @@ package io.github.xuyao5.dal.redis.configuration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -10,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  * @apiNote RedisKitsConfigBean
  * @implNote RedisKitsConfigBean
  */
-@Slf4j
 @Getter
 @RequiredArgsConstructor(staticName = "of")
-public final class RedisKitsConfigBean {
+public final class RedisKitsPropertyBean {
 }

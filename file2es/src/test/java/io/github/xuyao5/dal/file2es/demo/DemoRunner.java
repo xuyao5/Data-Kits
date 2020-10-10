@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 final class DemoRunner extends AbstractTest {
 
     @Test
-    void testDisruptorMain() {
+    void test() {
 
     }
 }

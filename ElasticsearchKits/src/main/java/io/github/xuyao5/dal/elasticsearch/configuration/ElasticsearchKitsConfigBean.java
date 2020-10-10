@@ -2,7 +2,6 @@ package io.github.xuyao5.dal.elasticsearch.configuration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
  * @apiNote ElasticsearchKitsConfigBean
  * @implNote ElasticsearchKitsConfigBean
  */
-@Slf4j
 @Getter
 @RequiredArgsConstructor(staticName = "of")
 public final class ElasticsearchKitsConfigBean {

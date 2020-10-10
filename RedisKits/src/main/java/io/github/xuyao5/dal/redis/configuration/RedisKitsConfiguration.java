@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Role;
 public class RedisKitsConfiguration {
 
     @Bean
-    public RedisKitsConfigBean redisKitsConfigBean() {
-        return RedisKitsConfigBean.of();
+    public RedisKitsPropertyBean redisKitsPropertyBean() {
+        return RedisKitsPropertyBean.of();
     }
 }

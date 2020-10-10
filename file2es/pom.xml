@@ -9,7 +9,7 @@
     </parent>
     <artifactId>file2es</artifactId>
     <packaging>jar</packaging>
-    <name>Import file date to elasticsearch</name>
+    <name>FILE2ES SDK</name>
 
     <dependencies>
         <dependency>

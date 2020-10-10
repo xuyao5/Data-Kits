@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <task>
-        <enable>true</enable><!-- 开关 -->
+    <files>
         <file>
+            <enable>true</enable><!-- 开关 -->
             <name>测试文件111</name><!-- 名称 -->
             <pattern>INT_PAB{0-9}.txt</pattern><!-- 正则 -->
             <confirm>P_PAB{0-9}.txt</confirm><!-- 确认 -->
@@ -10,29 +10,10 @@
             <encoding>UTF-8</encoding><!-- 编码格式 -->
             <pkColumn>1</pkColumn><!-- 主键列 -->
             <uniqueColumn>1</uniqueColumn><!-- 唯一列 -->
-            <metadateLine>true</metadateLine><!-- 是否包含元数据列 -->
+            <metadataLine>true</metadataLine><!-- 是否包含元数据列 -->
             <recordSeparator>0x1E</recordSeparator><!-- 分隔符 -->
             <batchSize>5000</batchSize>
             <comments>这是详细注释</comments>
         </file>
-        <es>
-
-        </es>
-        <!--        <file>-->
-        <!--            <id>B</id>-->
-        <!--            <name>测试文件222</name>-->
-        <!--            <pattern>PAIC{0-9}.txt</pattern>-->
-        <!--            <localPath>~/FFF/local</localPath>-->
-        <!--            <remotePath>~/FFF/remote</remotePath>-->
-        <!--            <comments>#</comments>-->
-        <!--            <encoding>UTF-8</encoding>-->
-        <!--            <lineMapper>SINGLE</lineMapper>-->
-        <!--            <headLinesToSkip>2</headLinesToSkip>-->
-        <!--            <tailLinesToSkip>2</tailLinesToSkip>-->
-        <!--            <recordSeparatorPolicy>LINE</recordSeparatorPolicy>-->
-        <!--            <skippedLinesCallback>callback</skippedLinesCallback>-->
-        <!--            <strict>true</strict>-->
-        <!--            <batchSize>5000</batchSize>-->
-        <!--        </file>-->
-    </task>
+    </files>
 </configuration>
