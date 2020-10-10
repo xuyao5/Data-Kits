@@ -1,9 +1,7 @@
 package io.github.xuyao5.dal.flatfile.writer;
 
 import com.google.common.base.Joiner;
-import io.github.xuyao5.dal.flatfile.AbstractTest;
 import io.github.xuyao5.dal.flatfile.FlatFileWriter;
-import io.github.xuyao5.dal.flatfile.vo.MyFileFormat;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -14,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class FlatFileWriterTest extends AbstractTest {
+public class FlatFileWriterTest {
 
     @SneakyThrows
     @Test

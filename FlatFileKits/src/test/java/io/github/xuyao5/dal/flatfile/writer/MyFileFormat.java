@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.flatfile.vo;
+package io.github.xuyao5.dal.flatfile.writer;
 
 import lombok.Data;
 

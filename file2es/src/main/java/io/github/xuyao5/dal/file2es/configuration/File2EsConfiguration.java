@@ -20,6 +20,8 @@ import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 @ComponentScan(basePackages = {"io.github.xuyao5.dal.file2es"})
 public class File2EsConfiguration {
 
+    private static final String XML_CONFIG_FILE = CLASSPATH_URL_PREFIX + "File2EsCollector.xml";
+
     @Bean
     public File2EsPropertyBean file2EsPropertyBean() {
         return File2EsPropertyBean.of();
@@ -28,8 +30,7 @@ public class File2EsConfiguration {
     @SneakyThrows
     @PostConstruct
     void initial() {
-        String configFile = CLASSPATH_URL_PREFIX + "File2EsConfig.xml";
-        File2EsConfigXml file2EsConfigXml = JAXB.unmarshal(ResourceUtils.getFile(configFile), File2EsConfigXml.class);
+        File2EsConfigXml file2EsConfigXml = JAXB.unmarshal(ResourceUtils.getFile(XML_CONFIG_FILE), File2EsConfigXml.class);
         log.info("获取配置文件:{}", file2EsConfigXml);
     }
 }

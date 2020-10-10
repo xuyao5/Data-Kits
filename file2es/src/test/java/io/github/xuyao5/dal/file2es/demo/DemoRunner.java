@@ -7,6 +7,6 @@ final class DemoRunner extends AbstractTest {
 
     @Test
     void test() {
-
+        System.out.println("EskitsServerUrl属性=" + file2EsPropertyBean.getEskitsServerUrl());
     }
 }
