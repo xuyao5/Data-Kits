@@ -1,10 +1,16 @@
 package io.github.xuyao5.dal.file2es.file.reader;
 
+import com.google.common.base.Splitter;
 import io.github.xuyao5.dal.file2es.file.reader.context.ReaderParams;
+import io.github.xuyao5.dal.file2es.file.reader.context.ReaderResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -16,7 +22,20 @@ import javax.validation.constraints.NotNull;
 @Component("flatFileReader")
 public final class FlatFileReader {
 
-    public void readLine(@NotNull ReaderParams params) {
-
+    public ReaderResult recordProcess(@NotNull ReaderParams params) {
+        ReaderResult readerResult = ReaderResult.of();
+        try (LineIterator lineIterator = FileUtils.lineIterator(params.getPath().toFile(), params.getCharset().name())) {
+            while (lineIterator.hasNext()) {
+                List<String> lineList = Splitter.on(params.getRecordSeparator())
+                        .trimResults()
+                        .omitEmptyStrings()
+                        .splitToList(lineIterator.nextLine());
+            }
+        } catch (IOException ex) {
+            log.error("", ex);
+        } finally {
+            log.info("");
+        }
+        return readerResult;
     }
 }
