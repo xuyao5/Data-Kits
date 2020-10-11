@@ -18,7 +18,6 @@
         <module>core</module>
         <module>generator</module>
         <module>file2es</module>
-        <module>FlatFileKits</module>
         <module>RedisKits</module>
         <module>ElasticsearchKits</module>
     </modules>
