@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -24,8 +25,10 @@ public final class FlatFileReader {
 
     public ReaderResult recordProcess(@NotNull ReaderParams params) {
         ReaderResult readerResult = ReaderResult.of();
+        AtomicInteger recordCount = new AtomicInteger(0);
         try (LineIterator lineIterator = FileUtils.lineIterator(params.getPath().toFile(), params.getCharset().name())) {
             while (lineIterator.hasNext()) {
+                int recordNo = recordCount.incrementAndGet();
                 List<String> lineList = Splitter.on(params.getRecordSeparator())
                         .trimResults()
                         .omitEmptyStrings()
