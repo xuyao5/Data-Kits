@@ -37,10 +37,10 @@ public class DisruptorTest {
         RingBuffer<LongEvent> ringBuffer = disruptor.getRingBuffer();
 
         ByteBuffer bb = ByteBuffer.allocate(8);
-        for (long l = 0; true; l++) {
+        for (long l = 0; l <= 1000000; l++) {
             bb.putLong(0, l);
             ringBuffer.publishEvent((event, sequence, buffer) -> event.setValue(buffer.getLong(0)), bb);
-            Thread.sleep(1000);
+//            Thread.sleep(1000);
         }
     }
 }
