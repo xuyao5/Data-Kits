@@ -22,7 +22,7 @@ public class DisruptorTest {
     @Test
     void test() {
         // Specify the size of the ring buffer, must be power of 2.
-        int bufferSize = 1024;
+        int bufferSize = 1 << 10;
 
         // Construct the Disruptor
         Disruptor<LongEvent> disruptor = new Disruptor<>(LongEvent::new, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
