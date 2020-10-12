@@ -1,14 +1,16 @@
-package io.github.xuyao5.dal.file2es.file.reader.context;
+package io.github.xuyao5.dal.core.standard;
 
 import lombok.Data;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 11/10/20 09:05
+ * @implSpec 13/10/20 01:51
  * @apiNote TODO 这里输入文件说明
  * @implNote TODO 这里输入实现说明
  */
 @Data(staticConstructor = "of")
-public final class ReaderResult {
+public class StandardFileLine {
 
+    private int lineNo;//行号
+    private String lineRecord;//行记录
 }
