@@ -5,9 +5,9 @@
             <id>file1</id><!-- 唯一ID -->
             <name>测试文件1</name><!-- 名称 -->
             <enable>true</enable><!-- 开关 -->
-            <path>/Users/xuyao/Downloads/test.txt</path><!-- 源路径 -->
+            <path>/Users/xuyao/Downloads/</path><!-- 源路径 -->
             <encoding>UTF-8</encoding><!-- 编码格式 -->
-            <pattern>INT_PAB{0-9}.txt</pattern><!-- 文件名正则 -->
+            <pattern>^.*INT_PAB_CC_TEST-NAME-LIST_\\d{8}_T_\\d{2}\\.txt$</pattern><!-- 文件名正则 -->
             <filenameSeparator>_</filenameSeparator><!-- 文件名分隔符 -->
             <recordSeparator>0x1E</recordSeparator><!-- 数据分隔符 -->
             <confirmPrefix>P</confirmPrefix><!-- 确认文件前缀 -->

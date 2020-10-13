@@ -18,20 +18,17 @@ import java.util.List;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 13/10/20 14:11
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote MyFileUtils
+ * @implNote MyFileUtils
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyFileUtils extends FileUtils {
 
-    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String fileRegex, @NotNull String fileSeparator, @NotNull String confirmFilePrefix, @NotNull String confirmFileSuffix) {
+    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String fileRegex) {
         final List<File> fileList = Lists.newCopyOnWriteArrayList();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(basePath), fileRegex)) {
-            directoryStream.forEach(path -> {
-                //判断是否有确认文件
-                System.out.println(path);
-            });
+            directoryStream.forEach(path -> fileList.add(path.toFile()));
         } catch (IOException ex) {
             log.error("", ex);
         }
