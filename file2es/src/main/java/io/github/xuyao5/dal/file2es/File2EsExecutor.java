@@ -5,9 +5,9 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dal.core.standard.StandardFileLine;
+import io.github.xuyao5.dal.core.util.MyFileUtils;
 import io.github.xuyao5.dal.file2es.configuration.xml.File2EsCollectorXml;
 import io.github.xuyao5.dal.file2es.file.FileLineProcess;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +37,7 @@ public final class File2EsExecutor {
             disruptor.handleEventsWith((event, sequence, endOfBatch) -> System.out.println("Event: " + event));
             disruptor.start();
             //TODO:需要增加文件正则搜索
-            fileLineProcess.recordPublish(FileUtils.getFile(file2EsCollectorXmlFile.getPath()), Charset.forName(file2EsCollectorXmlFile.getEncoding()).name(), disruptor.getRingBuffer());
+            fileLineProcess.recordPublish(MyFileUtils.getFile(file2EsCollectorXmlFile.getPath()), Charset.forName(file2EsCollectorXmlFile.getEncoding()).name(), disruptor.getRingBuffer());
         });
     }
 }

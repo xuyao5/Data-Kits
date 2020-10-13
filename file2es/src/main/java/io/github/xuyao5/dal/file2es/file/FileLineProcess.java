@@ -2,8 +2,8 @@ package io.github.xuyao5.dal.file2es.file;
 
 import com.lmax.disruptor.RingBuffer;
 import io.github.xuyao5.dal.core.standard.StandardFileLine;
+import io.github.xuyao5.dal.core.util.MyFileUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
 public final class FileLineProcess {
 
     public void recordPublish(@NotNull File file, @NotNull String charsetName, @NotNull RingBuffer<StandardFileLine> ringBuffer) {
-        try (LineIterator lineIterator = FileUtils.lineIterator(file, charsetName)) {
+        try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charsetName)) {
             //最简化循环操作
             for (int i = 0; lineIterator.hasNext(); i++) {
                 ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {

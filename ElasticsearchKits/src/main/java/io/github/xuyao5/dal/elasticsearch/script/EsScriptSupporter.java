@@ -19,6 +19,6 @@ public final class EsScriptSupporter extends AbstractSupporter {
     @SneakyThrows
     public String getScript(@NotNull ScriptConst scriptConst) {
         return "";
-//        return FileUtils.readFileToString(ResourceUtils.getFile(scriptConst.getPath()), StandardCharsets.UTF_8);
+//        return MyFileUtils.readFileToString(ResourceUtils.getFile(scriptConst.getPath()), StandardCharsets.UTF_8);
     }
 }
