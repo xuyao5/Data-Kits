@@ -2,8 +2,13 @@ package io.github.xuyao5.dal.elasticsearch.controller;
 
 import io.github.xuyao5.dal.core.util.GsonUtils;
 import io.github.xuyao5.dal.elasticsearch.abstr.AbstractController;
+import io.github.xuyao5.dal.elasticsearch.controller.context.Greeting;
+import io.github.xuyao5.dal.elasticsearch.controller.context.HelloMessage;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.Optional;
 
@@ -14,11 +19,19 @@ import java.util.Optional;
  * @implNote TODO 这里输入实现说明
  */
 @RestController
+@MessageMapping("query")
 public final class QueryController extends AbstractController {
 
     @GetMapping("/hello")
     public String hello() {
         Optional<String> hello = GsonUtils.obj2Json("{你好11}", String.class);
         return hello.isPresent() ? hello.get() : "无";
+    }
+
+    @MessageMapping("/hello")
+    @SendTo("/topic/greetings")
+    public Greeting greeting(HelloMessage message) throws Exception {
+        Thread.sleep(1000); // simulated delay
+        return Greeting.of("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
     }
 }
