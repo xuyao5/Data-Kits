@@ -28,7 +28,6 @@ public class ElasticsearchKitsConfiguration implements WebSocketMessageBrokerCon
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/gs-guide-websocket")
                 .setHandshakeHandler(new DefaultHandshakeHandler(new TomcatRequestUpgradeStrategy()))
-                .setAllowedOrigins("*")
-                .withSockJS();
+                .setAllowedOrigins("*");
     }
 }
