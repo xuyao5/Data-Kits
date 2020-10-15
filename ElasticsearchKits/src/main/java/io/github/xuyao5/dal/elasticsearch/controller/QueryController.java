@@ -19,7 +19,7 @@ import java.util.Optional;
  * @implNote TODO 这里输入实现说明
  */
 @RestController
-@MessageMapping("query")
+//@MessageMapping("query")
 public final class QueryController extends AbstractController {
 
     @GetMapping("/hello")
