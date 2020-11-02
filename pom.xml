@@ -18,8 +18,8 @@
         <module>core</module>
         <module>generator</module>
         <module>file2es</module>
-        <module>RedisKits</module>
-        <module>ElasticsearchKits</module>
+        <module>RedisKitsServer</module>
+        <module>ElasticsearchKitsServer</module>
     </modules>
 
     <properties>
