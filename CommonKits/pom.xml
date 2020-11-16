@@ -7,7 +7,7 @@
         <artifactId>dal</artifactId>
         <version>1.0.0</version>
     </parent>
-    <artifactId>common-kits</artifactId>
+    <artifactId>common-kits-lib</artifactId>
     <packaging>jar</packaging>
     <name>CommonKits Library</name>
 
