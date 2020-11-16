@@ -17,9 +17,9 @@
     <modules>
         <module>core</module>
         <module>generator</module>
-        <module>file2es</module>
+        <module>EsKits</module>
         <module>RedisKitsServer</module>
-        <module>ElasticsearchKitsServer</module>
+        <module>EsKitsServer</module>
     </modules>
 
     <properties>
