@@ -37,8 +37,4 @@
             <artifactId>disruptor</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <finalName>${project.artifactId}-${project.version}</finalName>
-    </build>
 </project>
