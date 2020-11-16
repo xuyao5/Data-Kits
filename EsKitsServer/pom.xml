@@ -7,9 +7,9 @@
         <artifactId>dal</artifactId>
         <version>1.0.0</version>
     </parent>
-    <artifactId>elasticsearch-kits</artifactId>
+    <artifactId>es-kits-server</artifactId>
     <packaging>jar</packaging>
-    <name>ElasticsearchKits Server</name>
+    <name>EsKits Server</name>
 
     <dependencies>
         <dependency>
@@ -30,6 +30,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-        <finalName>${project.artifactId}-server-${project.version}</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
     </build>
 </project>
