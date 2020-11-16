@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.core.util;
+package io.github.xuyao5.dal.common.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;

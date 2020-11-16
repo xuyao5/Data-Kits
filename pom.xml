@@ -15,11 +15,11 @@
     <description>Data Access Library project for Spring Boot</description>
 
     <modules>
-        <module>core</module>
-        <module>generator</module>
+        <module>CommonKits</module>
         <module>EsKits</module>
-        <module>RedisKitsServer</module>
         <module>EsKitsServer</module>
+        <module>generator</module>
+        <module>RedisKitsServer</module>
     </modules>
 
     <properties>

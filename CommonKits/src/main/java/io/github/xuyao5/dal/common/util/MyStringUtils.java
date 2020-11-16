@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.core.util;
+package io.github.xuyao5.dal.common.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

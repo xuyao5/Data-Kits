@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.core.helper;
+package io.github.xuyao5.dal.common.helper;
 
 /**
  * @author Thomas.XU(xuyao)
