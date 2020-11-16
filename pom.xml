@@ -12,7 +12,7 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Data Access Library</name>
-    <description>Data Access Library project for Spring Boot</description>
+    <description>Data Kits Library project for Spring Boot</description>
 
     <modules>
         <module>CommonKits</module>
