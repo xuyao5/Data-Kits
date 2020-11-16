@@ -19,7 +19,6 @@
         <module>EsKits</module>
         <module>EsKitsServer</module>
         <module>generator</module>
-        <module>RedisKitsServer</module>
     </modules>
 
     <properties>
