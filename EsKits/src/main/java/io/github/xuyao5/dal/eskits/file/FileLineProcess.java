@@ -1,8 +1,8 @@
 package io.github.xuyao5.dal.eskits.file;
 
 import com.lmax.disruptor.RingBuffer;
-import io.github.xuyao5.dal.core.standard.StandardFileLine;
-import io.github.xuyao5.dal.core.util.MyFileUtils;
+import io.github.xuyao5.dal.common.standard.StandardFileLine;
+import io.github.xuyao5.dal.common.util.MyFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package io.github.xuyao5.dal.eskitsserver.controller;
 
-import io.github.xuyao5.dal.core.util.GsonUtils;
+import io.github.xuyao5.dal.common.util.GsonUtils;
 import io.github.xuyao5.dal.eskitsserver.abstr.AbstractController;
 import io.github.xuyao5.dal.eskitsserver.controller.context.Greeting;
 import io.github.xuyao5.dal.eskitsserver.controller.context.HelloMessage;
