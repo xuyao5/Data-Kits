@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.eskits.file;
+package io.github.xuyao5.dal.common.file;
 
 import com.lmax.disruptor.RingBuffer;
 import io.github.xuyao5.dal.common.standard.StandardFileLine;

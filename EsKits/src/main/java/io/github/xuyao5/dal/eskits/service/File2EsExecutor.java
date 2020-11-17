@@ -1,13 +1,13 @@
-package io.github.xuyao5.dal.eskits;
+package io.github.xuyao5.dal.eskits.service;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
+import io.github.xuyao5.dal.common.file.FileLineProcess;
 import io.github.xuyao5.dal.common.standard.StandardFileLine;
 import io.github.xuyao5.dal.common.util.MyFileUtils;
 import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXml;
-import io.github.xuyao5.dal.eskits.file.FileLineProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
