@@ -3,13 +3,14 @@ package io.github.xuyao5.dal.common.file;
 import com.lmax.disruptor.RingBuffer;
 import io.github.xuyao5.dal.common.standard.StandardFileLine;
 import io.github.xuyao5.dal.common.util.MyFileUtils;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
-import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -18,11 +19,14 @@ import java.io.IOException;
  * @implNote TODO 这里输入实现说明
  */
 @Slf4j
-@Component("fileLineProcess")
+@Builder(toBuilder = true)
 public final class FileLineProcess {
 
-    public void recordPublish(@NotNull File file, @NotNull String charsetName, @NotNull RingBuffer<StandardFileLine> ringBuffer) {
-        try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charsetName)) {
+    private final File file;
+    private final Charset charset;
+
+    public void recordPublish(@NotNull RingBuffer<StandardFileLine> ringBuffer) {
+        try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
             //最简化循环操作
             for (int i = 0; lineIterator.hasNext(); i++) {
                 ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {

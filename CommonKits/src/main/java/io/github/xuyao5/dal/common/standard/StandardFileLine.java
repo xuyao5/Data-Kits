@@ -9,7 +9,7 @@ import lombok.Data;
  * @implNote TODO 这里输入实现说明
  */
 @Data(staticConstructor = "of")
-public class StandardFileLine {
+public final class StandardFileLine {
 
     private int lineNo;//行号
     private String lineRecord;//行记录

@@ -11,7 +11,6 @@ import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.nio.charset.Charset;
 
@@ -27,9 +26,6 @@ public final class File2EsExecutor {
     @Autowired
     private File2EsCollectorXml file2EsCollectorXml;
 
-    @Resource(name = "fileLineProcess")
-    private FileLineProcess fileLineProcess;
-
     public void execute(@NotNull String fileId) {
         file2EsCollectorXml.getFiles().seek(fileId).ifPresent(file2EsCollectorXmlFile -> {
             int bufferSize = 1 << 10;
@@ -37,7 +33,11 @@ public final class File2EsExecutor {
             disruptor.handleEventsWith((event, sequence, endOfBatch) -> System.out.println("Event: " + event));
             disruptor.start();
             //TODO:需要增加文件正则搜索
-            fileLineProcess.recordPublish(MyFileUtils.getFile(file2EsCollectorXmlFile.getPath()), Charset.forName(file2EsCollectorXmlFile.getEncoding()).name(), disruptor.getRingBuffer());
+            FileLineProcess.builder()
+                    .file(MyFileUtils.getFile(file2EsCollectorXmlFile.getPath()))
+                    .charset(Charset.forName(file2EsCollectorXmlFile.getEncoding()))
+                    .build()
+                    .recordPublish(disruptor.getRingBuffer());
         });
     }
 }
