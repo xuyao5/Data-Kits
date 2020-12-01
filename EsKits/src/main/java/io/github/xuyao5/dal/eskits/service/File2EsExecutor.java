@@ -7,10 +7,10 @@ import io.github.xuyao5.dal.common.standard.StandardFileLine;
 import io.github.xuyao5.dal.common.util.MyFileUtils;
 import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXml;
 import lombok.SneakyThrows;
-import org.springframework.util.ResourceUtils;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXB;
+import java.io.File;
 import java.nio.charset.Charset;
 
 /**
@@ -23,7 +23,8 @@ public final class File2EsExecutor {
 
     @SneakyThrows
     public void execute(@NotNull String fileId) {
-        File2EsCollectorXml file2EsCollectorXml = JAXB.unmarshal(ResourceUtils.getFile("classpath:File2EsCollector.xml"), File2EsCollectorXml.class);
+        //ResourceUtils.getFile("classpath:File2EsCollector.xml")
+        File2EsCollectorXml file2EsCollectorXml = JAXB.unmarshal(new File(""), File2EsCollectorXml.class);
         file2EsCollectorXml.getFiles().seek(fileId).ifPresent(file2EsCollectorXmlFile -> {
             Disruptor<StandardFileLine> disruptor = DisruptorBolts.builder()
                     .build()
