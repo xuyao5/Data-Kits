@@ -6,10 +6,11 @@ import io.github.xuyao5.dal.common.file.FileLineBolts;
 import io.github.xuyao5.dal.common.standard.StandardFileLine;
 import io.github.xuyao5.dal.common.util.MyFileUtils;
 import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXml;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.SneakyThrows;
+import org.springframework.util.ResourceUtils;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.JAXB;
 import java.nio.charset.Charset;
 
 /**
@@ -18,13 +19,11 @@ import java.nio.charset.Charset;
  * @apiNote File2EsExecutor
  * @implNote File2Es执行入口
  */
-@Component("file2EsExecutor")
 public final class File2EsExecutor {
 
-    @Autowired
-    private File2EsCollectorXml file2EsCollectorXml;
-
+    @SneakyThrows
     public void execute(@NotNull String fileId) {
+        File2EsCollectorXml file2EsCollectorXml = JAXB.unmarshal(ResourceUtils.getFile("classpath:File2EsCollector.xml"), File2EsCollectorXml.class);
         file2EsCollectorXml.getFiles().seek(fileId).ifPresent(file2EsCollectorXmlFile -> {
             Disruptor<StandardFileLine> disruptor = DisruptorBolts.builder()
                     .build()

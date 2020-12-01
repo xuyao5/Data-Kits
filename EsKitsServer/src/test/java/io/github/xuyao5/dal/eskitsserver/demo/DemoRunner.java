@@ -2,12 +2,15 @@ package io.github.xuyao5.dal.eskitsserver.demo;
 
 import io.github.xuyao5.dal.common.util.MyFileUtils;
 import io.github.xuyao5.dal.common.util.MyFilenameUtils;
+import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXml;
 import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXmlFile;
 import io.github.xuyao5.dal.eskits.service.File2EsExecutor;
 import io.github.xuyao5.dal.eskitsserver.abstr.AbstractTest;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.ResourceUtils;
 
-import javax.annotation.Resource;
+import javax.xml.bind.JAXB;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,14 +19,13 @@ import java.util.Optional;
 
 final class DemoRunner extends AbstractTest {
 
-    @Resource(name = "file2EsExecutor")
-    private File2EsExecutor file2EsExecutor;
-
+    @SneakyThrows
     @Test
     void test() {
-        System.out.println("EskitsServerUrl属性=" + file2EsPropertyBean.getEskitsServerUrl());
+        File2EsCollectorXml file2EsCollectorXml = JAXB.unmarshal(ResourceUtils.getFile("classpath:File2EsCollector.xml"), File2EsCollectorXml.class);
         System.out.println("file2EsCollectorXml属性=" + file2EsCollectorXml.toString());
-//        file2EsExecutor.execute("file1");
+        File2EsExecutor file2EsExecutor = new File2EsExecutor();
+        file2EsExecutor.execute("file1");
         Optional<File2EsCollectorXmlFile> file1 = file2EsCollectorXml.getFiles().seek("file1");
         file1.ifPresent(file2EsCollectorXmlFile -> {
             List<File> decisionFiles = MyFileUtils.getDecisionFiles(file2EsCollectorXmlFile.getPath(), file2EsCollectorXmlFile.getPattern());
