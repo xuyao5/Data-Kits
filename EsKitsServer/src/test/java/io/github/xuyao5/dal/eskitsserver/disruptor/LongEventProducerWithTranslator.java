@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.eskits.disruptor;
+package io.github.xuyao5.dal.eskitsserver.disruptor;
 
 import com.lmax.disruptor.EventTranslatorOneArg;
 import com.lmax.disruptor.RingBuffer;

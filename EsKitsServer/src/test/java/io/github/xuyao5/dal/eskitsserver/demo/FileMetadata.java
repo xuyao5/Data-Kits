@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.eskits.demo;
+package io.github.xuyao5.dal.eskitsserver.demo;
 
 import lombok.Data;
 

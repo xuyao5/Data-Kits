@@ -1,10 +1,10 @@
-package io.github.xuyao5.dal.eskits.demo;
+package io.github.xuyao5.dal.eskitsserver.demo;
 
 import io.github.xuyao5.dal.common.util.MyFileUtils;
 import io.github.xuyao5.dal.common.util.MyFilenameUtils;
-import io.github.xuyao5.dal.eskits.abstr.AbstractTest;
 import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXmlFile;
 import io.github.xuyao5.dal.eskits.service.File2EsExecutor;
+import io.github.xuyao5.dal.eskitsserver.abstr.AbstractTest;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;

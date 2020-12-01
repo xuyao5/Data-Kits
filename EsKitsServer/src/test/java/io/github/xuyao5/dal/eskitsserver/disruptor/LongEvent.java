@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.eskits.disruptor;
+package io.github.xuyao5.dal.eskitsserver.disruptor;
 
 import lombok.Data;
 
