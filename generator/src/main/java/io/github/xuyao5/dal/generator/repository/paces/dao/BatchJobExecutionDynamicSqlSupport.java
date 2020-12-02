@@ -1,10 +1,11 @@
 package io.github.xuyao5.dal.generator.repository.paces.dao;
 
-import java.sql.JDBCType;
-import java.util.Date;
-import javax.annotation.Generated;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+
+import javax.annotation.Generated;
+import java.sql.JDBCType;
+import java.util.Date;
 
 public final class BatchJobExecutionDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

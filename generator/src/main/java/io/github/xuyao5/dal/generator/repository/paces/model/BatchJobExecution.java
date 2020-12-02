@@ -1,49 +1,43 @@
 package io.github.xuyao5.dal.generator.repository.paces.model;
 
+import javax.annotation.Generated;
 import java.io.Serializable;
 import java.util.Date;
-import javax.annotation.Generated;
 
 public class BatchJobExecution implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private static final long serialVersionUID = 1L;
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long jobExecutionId;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long version;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long jobInstanceId;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date createTime;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date startTime;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date endTime;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String status;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String exitCode;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String exitMessage;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date lastUpdated;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String jobConfigurationLocation;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private static final long serialVersionUID = 1L;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getJobExecutionId() {
         return jobExecutionId;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setJobExecutionId(Long jobExecutionId) {
+        this.jobExecutionId = jobExecutionId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -53,13 +47,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setJobExecutionId(Long jobExecutionId) {
-        this.jobExecutionId = jobExecutionId;
+    public Long getVersion() {
+        return version;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Long getVersion() {
-        return version;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -69,13 +63,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setVersion(Long version) {
-        this.version = version;
+    public Long getJobInstanceId() {
+        return jobInstanceId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Long getJobInstanceId() {
-        return jobInstanceId;
+    public void setJobInstanceId(Long jobInstanceId) {
+        this.jobInstanceId = jobInstanceId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -85,13 +79,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setJobInstanceId(Long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public Date getCreateTime() {
+        return createTime;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getCreateTime() {
-        return createTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -101,13 +95,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public Date getStartTime() {
+        return startTime;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getStartTime() {
-        return startTime;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -117,13 +111,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public Date getEndTime() {
+        return endTime;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getEndTime() {
-        return endTime;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -133,13 +127,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public String getStatus() {
+        return status;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getStatus() {
-        return status;
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -149,13 +143,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
+    public String getExitCode() {
+        return exitCode;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getExitCode() {
-        return exitCode;
+    public void setExitCode(String exitCode) {
+        this.exitCode = exitCode == null ? null : exitCode.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -165,13 +159,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setExitCode(String exitCode) {
-        this.exitCode = exitCode == null ? null : exitCode.trim();
+    public String getExitMessage() {
+        return exitMessage;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getExitMessage() {
-        return exitMessage;
+    public void setExitMessage(String exitMessage) {
+        this.exitMessage = exitMessage == null ? null : exitMessage.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -181,13 +175,13 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setExitMessage(String exitMessage) {
-        this.exitMessage = exitMessage == null ? null : exitMessage.trim();
+    public Date getLastUpdated() {
+        return lastUpdated;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getLastUpdated() {
-        return lastUpdated;
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -197,24 +191,19 @@ public class BatchJobExecution implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
+    public String getJobConfigurationLocation() {
+        return jobConfigurationLocation;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getJobConfigurationLocation() {
-        return jobConfigurationLocation;
+    public void setJobConfigurationLocation(String jobConfigurationLocation) {
+        this.jobConfigurationLocation = jobConfigurationLocation == null ? null : jobConfigurationLocation.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public BatchJobExecution withJobConfigurationLocation(String jobConfigurationLocation) {
         this.setJobConfigurationLocation(jobConfigurationLocation);
         return this;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setJobConfigurationLocation(String jobConfigurationLocation) {
-        this.jobConfigurationLocation = jobConfigurationLocation == null ? null : jobConfigurationLocation.trim();
     }
 
     @Override
@@ -231,16 +220,16 @@ public class BatchJobExecution implements Serializable {
         }
         BatchJobExecution other = (BatchJobExecution) that;
         return (this.getJobExecutionId() == null ? other.getJobExecutionId() == null : this.getJobExecutionId().equals(other.getJobExecutionId()))
-            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
-            && (this.getJobInstanceId() == null ? other.getJobInstanceId() == null : this.getJobInstanceId().equals(other.getJobInstanceId()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getStartTime() == null ? other.getStartTime() == null : this.getStartTime().equals(other.getStartTime()))
-            && (this.getEndTime() == null ? other.getEndTime() == null : this.getEndTime().equals(other.getEndTime()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getExitCode() == null ? other.getExitCode() == null : this.getExitCode().equals(other.getExitCode()))
-            && (this.getExitMessage() == null ? other.getExitMessage() == null : this.getExitMessage().equals(other.getExitMessage()))
-            && (this.getLastUpdated() == null ? other.getLastUpdated() == null : this.getLastUpdated().equals(other.getLastUpdated()))
-            && (this.getJobConfigurationLocation() == null ? other.getJobConfigurationLocation() == null : this.getJobConfigurationLocation().equals(other.getJobConfigurationLocation()));
+                && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
+                && (this.getJobInstanceId() == null ? other.getJobInstanceId() == null : this.getJobInstanceId().equals(other.getJobInstanceId()))
+                && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
+                && (this.getStartTime() == null ? other.getStartTime() == null : this.getStartTime().equals(other.getStartTime()))
+                && (this.getEndTime() == null ? other.getEndTime() == null : this.getEndTime().equals(other.getEndTime()))
+                && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+                && (this.getExitCode() == null ? other.getExitCode() == null : this.getExitCode().equals(other.getExitCode()))
+                && (this.getExitMessage() == null ? other.getExitMessage() == null : this.getExitMessage().equals(other.getExitMessage()))
+                && (this.getLastUpdated() == null ? other.getLastUpdated() == null : this.getLastUpdated().equals(other.getLastUpdated()))
+                && (this.getJobConfigurationLocation() == null ? other.getJobConfigurationLocation() == null : this.getJobConfigurationLocation().equals(other.getJobConfigurationLocation()));
     }
 
     @Override

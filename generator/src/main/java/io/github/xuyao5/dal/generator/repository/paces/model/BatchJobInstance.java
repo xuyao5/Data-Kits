@@ -1,27 +1,28 @@
 package io.github.xuyao5.dal.generator.repository.paces.model;
 
-import java.io.Serializable;
 import javax.annotation.Generated;
+import java.io.Serializable;
 
 public class BatchJobInstance implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private static final long serialVersionUID = 1L;
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long jobInstanceId;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long version;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String jobName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String jobKey;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private static final long serialVersionUID = 1L;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getJobInstanceId() {
         return jobInstanceId;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setJobInstanceId(Long jobInstanceId) {
+        this.jobInstanceId = jobInstanceId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -31,13 +32,13 @@ public class BatchJobInstance implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setJobInstanceId(Long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
+    public Long getVersion() {
+        return version;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Long getVersion() {
-        return version;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -47,13 +48,13 @@ public class BatchJobInstance implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setVersion(Long version) {
-        this.version = version;
+    public String getJobName() {
+        return jobName;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getJobName() {
-        return jobName;
+    public void setJobName(String jobName) {
+        this.jobName = jobName == null ? null : jobName.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -63,24 +64,19 @@ public class BatchJobInstance implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setJobName(String jobName) {
-        this.jobName = jobName == null ? null : jobName.trim();
+    public String getJobKey() {
+        return jobKey;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getJobKey() {
-        return jobKey;
+    public void setJobKey(String jobKey) {
+        this.jobKey = jobKey == null ? null : jobKey.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public BatchJobInstance withJobKey(String jobKey) {
         this.setJobKey(jobKey);
         return this;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setJobKey(String jobKey) {
-        this.jobKey = jobKey == null ? null : jobKey.trim();
     }
 
     @Override
@@ -97,9 +93,9 @@ public class BatchJobInstance implements Serializable {
         }
         BatchJobInstance other = (BatchJobInstance) that;
         return (this.getJobInstanceId() == null ? other.getJobInstanceId() == null : this.getJobInstanceId().equals(other.getJobInstanceId()))
-            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
-            && (this.getJobName() == null ? other.getJobName() == null : this.getJobName().equals(other.getJobName()))
-            && (this.getJobKey() == null ? other.getJobKey() == null : this.getJobKey().equals(other.getJobKey()));
+                && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
+                && (this.getJobName() == null ? other.getJobName() == null : this.getJobName().equals(other.getJobName()))
+                && (this.getJobKey() == null ? other.getJobKey() == null : this.getJobKey().equals(other.getJobKey()));
     }
 
     @Override
