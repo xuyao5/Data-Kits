@@ -25,7 +25,7 @@ final class DemoRunner extends AbstractTest {
         File2EsCollectorXml file2EsCollectorXml = JAXB.unmarshal(ResourceUtils.getFile("classpath:File2EsCollector.xml"), File2EsCollectorXml.class);
         System.out.println("file2EsCollectorXml属性=" + file2EsCollectorXml.toString());
         File2EsExecutor file2EsExecutor = new File2EsExecutor();
-        file2EsExecutor.execute("file1");
+//        file2EsExecutor.execute("file1");
         Optional<File2EsCollectorXmlFile> file1 = file2EsCollectorXml.getFiles().seek("file1");
         file1.ifPresent(file2EsCollectorXmlFile -> {
             List<File> decisionFiles = MyFileUtils.getDecisionFiles(file2EsCollectorXmlFile.getPath(), file2EsCollectorXmlFile.getPattern());

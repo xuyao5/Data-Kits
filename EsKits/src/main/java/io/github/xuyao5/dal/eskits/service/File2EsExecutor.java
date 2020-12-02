@@ -10,7 +10,6 @@ import lombok.SneakyThrows;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXB;
-import java.io.File;
 import java.nio.charset.Charset;
 
 /**
@@ -24,7 +23,7 @@ public final class File2EsExecutor {
     @SneakyThrows
     public void execute(@NotNull String fileId) {
         //ResourceUtils.getFile("classpath:File2EsCollector.xml")
-        File2EsCollectorXml file2EsCollectorXml = JAXB.unmarshal(new File(""), File2EsCollectorXml.class);
+        File2EsCollectorXml file2EsCollectorXml = JAXB.unmarshal("classpath:File2EsCollector.xml", File2EsCollectorXml.class);
         file2EsCollectorXml.getFiles().seek(fileId).ifPresent(file2EsCollectorXmlFile -> {
             Disruptor<StandardFileLine> disruptor = DisruptorBolts.builder()
                     .build()
