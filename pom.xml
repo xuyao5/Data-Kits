@@ -8,11 +8,11 @@
         <version>2.4.0</version>
     </parent>
     <groupId>io.github.xuyao5</groupId>
-    <artifactId>dal</artifactId>
+    <artifactId>dkl</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
-    <name>Data Access Library</name>
-    <description>Data Kits Library project for Spring Boot</description>
+    <name>Data Kits Library</name>
+    <description>Data Kits Library Project without Spring Boot</description>
 
     <modules>
         <module>CommonKits</module>
