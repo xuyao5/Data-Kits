@@ -3,7 +3,6 @@ package io.github.xuyao5.dal.common.file;
 import com.lmax.disruptor.RingBuffer;
 import io.github.xuyao5.dal.common.standard.StandardFileLine;
 import io.github.xuyao5.dal.common.util.MyFileUtils;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
 
@@ -20,13 +19,19 @@ import java.nio.charset.StandardCharsets;
  * @implNote TODO 这里输入实现说明
  */
 @Slf4j
-@Builder(toBuilder = true)
 public final class FileLineBolts {
 
     private final File file;
+    private final Charset charset;
 
-    @Builder.Default
-    private final Charset charset = StandardCharsets.UTF_8;
+    public FileLineBolts(@NotNull File file, @NotNull Charset charset) {
+        this.file = file;
+        this.charset = charset;
+    }
+
+    public FileLineBolts(@NotNull File file) {
+        this(file, StandardCharsets.UTF_8);
+    }
 
     public void publishRecord(@NotNull RingBuffer<StandardFileLine> ringBuffer) {
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {

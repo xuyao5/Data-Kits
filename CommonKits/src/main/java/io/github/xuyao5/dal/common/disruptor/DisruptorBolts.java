@@ -5,7 +5,6 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dal.common.standard.StandardFileLine;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,11 +14,13 @@ import lombok.extern.slf4j.Slf4j;
  * @implNote TODO 这里输入实现说明
  */
 @Slf4j
-@Builder(toBuilder = true)
 public final class DisruptorBolts {
 
-    @Builder.Default
-    private final int bufferSize = 1 << 10;
+    private final int bufferSize;
+
+    public DisruptorBolts() {
+        bufferSize = 1 << 10;
+    }
 
     public Disruptor<StandardFileLine> startStandardFileLineDisruptor() {
         Disruptor<StandardFileLine> disruptor = new Disruptor<>(() -> StandardFileLine.of(), bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
