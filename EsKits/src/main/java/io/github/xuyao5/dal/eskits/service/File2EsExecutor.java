@@ -26,7 +26,6 @@ public final class File2EsExecutor {
 
     @SneakyThrows
     public void execute(@NotNull String fileId) {
-        //ResourceUtils.getFile("classpath:File2EsCollector.xml")
         File2EsCollectorXml file2EsCollectorXml = JAXB.unmarshal(getClass().getClassLoader().getResource("File2EsCollector.xml"), File2EsCollectorXml.class);
         file2EsCollectorXml.getFiles().seek(fileId).ifPresent(file2EsCollectorXmlFile -> {
             Disruptor<StandardFileLine> standardFileLineDisruptor = new DisruptorBolts().startStandardFileLineDisruptor();
