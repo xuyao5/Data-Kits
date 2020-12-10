@@ -17,7 +17,7 @@
     <modules>
         <module>CommonKits</module>
         <module>EsKits</module>
-        <module>EsKitsServer</module>
+        <module>DataKitsServer</module>
         <module>generator</module>
     </modules>
 
