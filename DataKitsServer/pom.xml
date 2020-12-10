@@ -7,9 +7,9 @@
         <artifactId>dkl</artifactId>
         <version>1.0.0</version>
     </parent>
-    <artifactId>es-kits-server</artifactId>
+    <artifactId>data-kits-server</artifactId>
     <packaging>jar</packaging>
-    <name>EsKits Server</name>
+    <name>DataKits Server</name>
 
     <dependencies>
         <dependency>
