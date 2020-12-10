@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.common.standard;
+package io.github.xuyao5.dkl.common.standard;
 
 import lombok.Data;
 

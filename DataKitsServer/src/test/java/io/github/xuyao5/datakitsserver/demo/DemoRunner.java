@@ -1,11 +1,11 @@
 package io.github.xuyao5.datakitsserver.demo;
 
-import io.github.xuyao5.dal.common.util.MyFileUtils;
-import io.github.xuyao5.dal.common.util.MyFilenameUtils;
-import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXml;
-import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXmlFile;
-import io.github.xuyao5.dal.eskits.service.File2EsExecutor;
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
+import io.github.xuyao5.dkl.common.util.MyFileUtils;
+import io.github.xuyao5.dkl.common.util.MyFilenameUtils;
+import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsCollectorXml;
+import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsCollectorXmlFile;
+import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.ResourceUtils;

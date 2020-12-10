@@ -1,11 +1,11 @@
-package io.github.xuyao5.dal.eskits.service;
+package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.dsl.Disruptor;
-import io.github.xuyao5.dal.common.disruptor.DisruptorBolts;
-import io.github.xuyao5.dal.common.file.FileLineBolts;
-import io.github.xuyao5.dal.common.standard.StandardFileLine;
-import io.github.xuyao5.dal.common.util.MyFileUtils;
-import io.github.xuyao5.dal.eskits.configuration.xml.File2EsCollectorXml;
+import io.github.xuyao5.dkl.common.disruptor.DisruptorBolts;
+import io.github.xuyao5.dkl.common.file.FileLineBolts;
+import io.github.xuyao5.dkl.common.standard.StandardFileLine;
+import io.github.xuyao5.dkl.common.util.MyFileUtils;
+import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsCollectorXml;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

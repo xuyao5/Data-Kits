@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.common.helper;
+package io.github.xuyao5.dkl.common.helper;
 
 import lombok.extern.slf4j.Slf4j;
 

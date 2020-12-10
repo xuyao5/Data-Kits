@@ -1,4 +1,4 @@
-package io.github.xuyao5.dal.eskits.configuration.xml;
+package io.github.xuyao5.dkl.eskits.configuration.xml;
 
 import lombok.Data;
 
