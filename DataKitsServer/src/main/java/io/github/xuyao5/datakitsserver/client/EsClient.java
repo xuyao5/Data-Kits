@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.client;
 
-import io.github.xuyao5.datakitsserver.configuration.ElasticsearchKitsConfigBean;
+import io.github.xuyao5.datakitsserver.configuration.DataKitsConfigBean;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +36,7 @@ import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
 public final class EsClient {
 
     @Autowired
-    private ElasticsearchKitsConfigBean configBean;
+    private DataKitsConfigBean configBean;
 
     private HttpHost[] hosts;
     private Optional<String> username;

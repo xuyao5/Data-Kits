@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.abstr;
 
-import io.github.xuyao5.datakitsserver.configuration.ElasticsearchKitsConfigBean;
+import io.github.xuyao5.datakitsserver.configuration.DataKitsConfigBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,5 +14,5 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractSupporter {
 
     @Autowired
-    protected ElasticsearchKitsConfigBean configBean;
+    protected DataKitsConfigBean configBean;
 }

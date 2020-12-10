@@ -4,10 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ElasticsearchKitsConfiguration {
+public class DataKitsConfiguration {
 
     @Bean
-    public ElasticsearchKitsConfigBean elasticsearchKitsConfigBean() {
-        return ElasticsearchKitsConfigBean.of();
+    public DataKitsConfigBean DataKitsConfigBean() {
+        return DataKitsConfigBean.of();
     }
 }
