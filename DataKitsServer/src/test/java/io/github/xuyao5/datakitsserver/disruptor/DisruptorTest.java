@@ -42,5 +42,8 @@ public class DisruptorTest {
             ringBuffer.publishEvent((event, sequence, buffer) -> event.setValue(buffer.getLong(0)), bb);
 //            Thread.sleep(1000);
         }
+
+        //增加
+        disruptor.shutdown();
     }
 }
