@@ -1,12 +1,17 @@
 package io.github.xuyao5.dkl.eskits.service;
 
-import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsTasks;
+import io.github.xuyao5.dkl.common.util.MyFileUtils;
+import io.github.xuyao5.dkl.common.util.MyFilenameUtils;
+import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsTask;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.JAXB;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -19,13 +24,12 @@ import javax.xml.bind.JAXB;
 public final class File2EsExecutor {
 
     @SneakyThrows
-    public void execute(@NotNull String fileId) {
-        File2EsTasks file2EsTasks = JAXB.unmarshal(getClass().getClassLoader().getResource("File2EsCollector.xml"), File2EsTasks.class);
-//        file2EsTasks.getTask().seek(fileId).ifPresent(file2EsCollectorXmlFile -> {
-//            Disruptor<StandardFileLine> standardFileLineDisruptor = new DisruptorBolts().startStandardFileLineDisruptor();
-//            //TODO:需要增加文件正则搜索
-//            FileLineBolts fileLineBolts = new FileLineBolts(MyFileUtils.getFile(file2EsCollectorXmlFile.getPath()), Charset.forName(file2EsCollectorXmlFile.getEncoding()));
-//            fileLineBolts.publishRecord(standardFileLineDisruptor.getRingBuffer());
-//        });
+    public void execute(@NotNull File2EsTask task) {
+        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilePath());
+        decisionFiles.stream()
+                .filter(file -> Files.exists(Paths.get(MyFilenameUtils.getConfirmFilename(file.getPath(), task.getFileNameSeparator(), task.getFileConfirmPrefix(), task.getFileConfirmSuffix()))))
+                .forEach(file -> {
+                    System.out.println(file);
+                });
     }
 }

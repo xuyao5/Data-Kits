@@ -23,28 +23,4 @@ public final class File2EsTasks {
                 .filter(file2EsTask -> file2EsTask.isEnable())
                 .findAny();
     }
-
-    @Data(staticConstructor = "of")
-    static class File2EsTask {
-
-        private String id;
-        private String name;
-        private boolean enable;
-        private String filePath;
-        private String fileEncoding;
-        private String filePattern;
-        private String fileNameSeparator;
-        private String fileRecordSeparator;
-        private String fileConfirmPrefix;
-        private String fileConfirmSuffix;
-        private boolean fileMetadataLine;
-        private boolean fileSummaryLine;
-        private int filePkColumn;
-        private int fileUkColumn;
-        private int fileBatchSize;
-        private String fileComments;
-        private String esClientHosts;
-        private String esUsername;
-        private String esPassword;
-    }
 }
