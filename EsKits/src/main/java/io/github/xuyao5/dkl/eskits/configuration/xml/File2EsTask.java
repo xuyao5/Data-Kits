@@ -16,7 +16,7 @@ public final class File2EsTask {
     private boolean enable;
     private String filePath;
     private String fileEncoding;
-    private String filePattern;
+    private String fileGlob;
     private String fileNameSeparator;
     private String fileRecordSeparator;
     private String fileConfirmPrefix;
