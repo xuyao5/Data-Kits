@@ -25,7 +25,7 @@ public final class File2EsExecutor {
 
     @SneakyThrows
     public void execute(@NotNull File2EsTask task) {
-        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilePath());
+        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilePattern());
         decisionFiles.stream()
                 .filter(file -> Files.exists(Paths.get(MyFilenameUtils.getConfirmFilename(file.getPath(), task.getFileNameSeparator(), task.getFileConfirmPrefix(), task.getFileConfirmSuffix()))))
                 .forEach(file -> {
