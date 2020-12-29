@@ -2,7 +2,6 @@ package io.github.xuyao5.dkl.common.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -11,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
  * @apiNote MyStringUtils
  * @implNote MyStringUtils
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyStringUtils extends StringUtils {
 

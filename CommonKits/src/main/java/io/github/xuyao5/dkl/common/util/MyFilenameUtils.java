@@ -4,7 +4,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.validation.constraints.NotNull;
@@ -15,7 +14,6 @@ import javax.validation.constraints.NotNull;
  * @apiNote MyFilenameUtils
  * @implNote MyFilenameUtils
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyFilenameUtils extends FilenameUtils {
 
