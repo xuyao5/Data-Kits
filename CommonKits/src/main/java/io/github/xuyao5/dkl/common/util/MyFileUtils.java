@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -24,8 +25,13 @@ import java.util.List;
 public final class MyFileUtils extends FileUtils {
 
     @SneakyThrows
-    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String glob) {
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(basePath), glob)) {
+    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String filenameRegex) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(basePath), path -> {
+            if (Pattern.matches(filenameRegex, path.getFileName().toString())) {
+
+            }
+            return false;
+        })) {
             List<File> fileList = Lists.newCopyOnWriteArrayList();
             directoryStream.forEach(path -> fileList.add(path.toFile()));
             return fileList;

@@ -1,7 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import io.github.xuyao5.dkl.common.util.MyFileUtils;
-import io.github.xuyao5.dkl.common.util.MyFilenameUtils;
 import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsTask;
 import lombok.Builder;
 import lombok.SneakyThrows;
@@ -9,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -25,11 +22,11 @@ public final class File2EsExecutor {
 
     @SneakyThrows
     public void execute(@NotNull File2EsTask task) {
-        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFileGlob());
-        decisionFiles.stream()
-                .filter(file -> Files.exists(Paths.get(MyFilenameUtils.getConfirmFilename(file.getPath(), task.getFileNameSeparator(), task.getFileConfirmPrefix(), task.getFileConfirmSuffix()))))
-                .forEach(file -> {
-                    System.out.println(file);
-                });
+        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex());
+//        decisionFiles.stream()
+//                .filter(file -> Files.exists(Paths.get(MyFilenameUtils.getConfirmFilename(file.getPath(), task.getFilenameSeparator(), task.getFileConfirmPrefix(), task.getFileConfirmSuffix()))))
+//                .forEach(file -> {
+//                    System.out.println(file);
+//                });
     }
 }

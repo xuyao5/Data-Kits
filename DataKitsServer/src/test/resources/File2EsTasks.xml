@@ -7,8 +7,8 @@
         <enable>true</enable><!-- 开关 -->
         <filePath>/Users/xuyao/Downloads/</filePath><!-- 源路径 -->
         <fileEncoding>UTF-8</fileEncoding><!-- 编码格式 -->
-        <fileGlob>^.*INT_PAB_CC_TEST-NAME-LIST_\\d{8}_T_\\d{2}\\.txt$</fileGlob><!-- 文件名正则 -->
-        <fileNameSeparator>_</fileNameSeparator><!-- 文件名分隔符 -->
+        <filenameRegex>^INT_PAB_CC_TEST-NAME-LIST_\d{8}_T_\d{2}\.txt$</filenameRegex><!-- 文件名正则 -->
+        <filenameSeparator>_</filenameSeparator><!-- 文件名分隔符 -->
         <fileRecordSeparator>0x1E</fileRecordSeparator><!-- 数据分隔符 -->
         <fileConfirmPrefix>P</fileConfirmPrefix><!-- 确认文件前缀 -->
         <fileConfirmSuffix>log</fileConfirmSuffix><!-- 确认文件后缀 -->
