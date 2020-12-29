@@ -1,9 +1,9 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
-import io.github.xuyao5.datakitsserver.client.EsClient;
 import io.github.xuyao5.datakitsserver.consts.ScriptConst;
 import io.github.xuyao5.datakitsserver.search.param.SearchTemplateParams;
+import io.github.xuyao5.dkl.eskits.client.EsClient;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
