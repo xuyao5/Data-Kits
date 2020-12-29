@@ -24,8 +24,8 @@ import java.util.List;
 public final class MyFileUtils extends FileUtils {
 
     @SneakyThrows
-    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String fileRegex) {
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(basePath), fileRegex)) {
+    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String glob) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(basePath), glob)) {
             List<File> fileList = Lists.newCopyOnWriteArrayList();
             directoryStream.forEach(path -> fileList.add(path.toFile()));
             return fileList;
