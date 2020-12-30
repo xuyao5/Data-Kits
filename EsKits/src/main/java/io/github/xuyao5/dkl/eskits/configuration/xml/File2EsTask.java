@@ -17,10 +17,8 @@ public final class File2EsTask {
     private String filePath;
     private String fileEncoding;
     private String filenameRegex;
-    private String filenameSeparator;
+    private String fileConfirmRegex;
     private String fileRecordSeparator;
-    private String fileConfirmPrefix;
-    private String fileConfirmSuffix;
     private boolean fileMetadataLine;
     private boolean fileSummaryLine;
     private int filePkColumn;

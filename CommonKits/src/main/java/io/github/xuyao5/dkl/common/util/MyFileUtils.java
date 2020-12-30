@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public final class MyFileUtils extends FileUtils {
 
     @SneakyThrows
-    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String filenameRegex) {
+    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String filenameRegex, @NotNull String fileConfirmRegex) {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(basePath), path -> {
             if (Pattern.matches(filenameRegex, path.getFileName().toString())) {
 
