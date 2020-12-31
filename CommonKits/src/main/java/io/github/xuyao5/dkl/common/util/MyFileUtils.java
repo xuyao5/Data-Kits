@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.common.util;
 
-import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -13,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -32,7 +32,7 @@ public final class MyFileUtils extends FileUtils {
             }
             return false;
         })) {
-            List<File> fileList = Lists.newCopyOnWriteArrayList();
+            List<File> fileList = new CopyOnWriteArrayList<>();
             directoryStream.forEach(path -> fileList.add(path.toFile()));
             return fileList;
         }

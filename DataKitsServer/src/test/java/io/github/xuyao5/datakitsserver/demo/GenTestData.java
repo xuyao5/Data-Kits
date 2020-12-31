@@ -1,6 +1,5 @@
 package io.github.xuyao5.datakitsserver.demo;
 
-import com.google.common.base.Joiner;
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.dkl.common.util.MyFileUtils;
 import lombok.SneakyThrows;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.UUID;
 
 final class GenTestData extends AbstractTest {
 
@@ -26,7 +24,7 @@ final class GenTestData extends AbstractTest {
         for (int y = 0; y < 1000; y++) {
             String[] fileMetadata = new String[10000];
             for (int i = 0; i < fileMetadata.length; i++) {
-                fileMetadata[i] = Joiner.on(split).skipNulls().join(UUID.randomUUID().toString(), i * y, "中文测试", random.nextInt());
+//                fileMetadata[i] = Joiner.on(split).skipNulls().join(UUID.randomUUID().toString(), i * y, "中文测试", random.nextInt());
             }
             MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(fileMetadata), true);
         }
