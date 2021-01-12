@@ -13,7 +13,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.Function;
 
 import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
@@ -31,27 +30,25 @@ public final class EsClient {
     private static final int CONN_MULTI = 50;
 
     private final HttpHost[] hosts;
-    private final Optional<String> username;
-    private final Optional<String> password;
+    private final String username;
+    private final String password;
 
     public EsClient(@NotNull String[] clientUrls, String clientUsername, String clientPassword) {
         hosts = url2HttpHost(clientUrls);
-        username = Optional.ofNullable(clientUsername);
-        password = Optional.ofNullable(clientPassword);
+        username = clientUsername;
+        password = clientPassword;
     }
 
     @SneakyThrows
     public <T> T execute(@NotNull Function<RestHighLevelClient, T> function) {
         try (RestHighLevelClient client = getRestHighLevelClient()) {
             return function.apply(client);
-        } finally {
-            log.info("execute");
         }
     }
 
     private RestHighLevelClient getRestHighLevelClient() {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username.get(), password.get()));
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
         return new RestHighLevelClient(RestClient.builder(hosts)
                 .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
                         .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * CONN_MULTI)
