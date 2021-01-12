@@ -34,8 +34,8 @@ public final class EsClient {
     private final Optional<String> username;
     private final Optional<String> password;
 
-    public EsClient(@NotNull String[] clientHosts, String clientUsername, String clientPassword) {
-        hosts = url2HttpHost(clientHosts);
+    public EsClient(@NotNull String[] clientUrls, String clientUsername, String clientPassword) {
+        hosts = url2HttpHost(clientUrls);
         username = Optional.ofNullable(clientUsername);
         password = Optional.ofNullable(clientPassword);
     }
