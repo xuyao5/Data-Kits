@@ -1,9 +1,8 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
-import io.github.xuyao5.datakitsserver.consts.ScriptConst;
-import io.github.xuyao5.datakitsserver.search.param.SearchTemplateParams;
 import io.github.xuyao5.dkl.eskits.client.EsClient;
+import io.github.xuyao5.dkl.eskits.support.param.SearchTemplateParams;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
@@ -22,7 +21,7 @@ class ElasticsearchTest extends AbstractTest {
     void testElasticsearch() {
         final String[] INDEX = {"recipes"};//必须要小写
 
-        String script = scriptSupporter.getScript(ScriptConst.MATCH_ALL);
+        String script = null;
 
         SearchTemplateParams params = SearchTemplateParams.of(INDEX);
         params.setScript(script);
