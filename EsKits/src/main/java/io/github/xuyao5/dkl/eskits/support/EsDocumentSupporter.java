@@ -48,11 +48,15 @@ import java.util.List;
 @Slf4j
 public final class EsDocumentSupporter extends AbstractSupporter {
 
+    public EsDocumentSupporter(@NotNull RestHighLevelClient client) {
+        super(client);
+    }
+
     /**
      * Index API
      */
     @SneakyThrows
-    public IndexResponse index(@NotNull RestHighLevelClient client, @NotNull IndexParams params) {
+    public IndexResponse index(@NotNull IndexParams params) {
         IndexRequest request = new IndexRequest("posts");
         request.id("1");
         String jsonString = "{" +
@@ -61,70 +65,70 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                 "\"message\":\"trying out Elasticsearch\"" +
                 "}";
         request.source(jsonString, XContentType.JSON);
-        return client.index(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.index(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Get API
      */
     @SneakyThrows
-    public GetResponse get(@NotNull RestHighLevelClient client, @NotNull GetParams params) {
+    public GetResponse get(@NotNull GetParams params) {
         GetRequest getRequest = new GetRequest(
                 "posts",
                 "1");
-        return client.get(getRequest, RequestOptions.DEFAULT);
+        return restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
     }
 
     /**
      * Exists API
      */
     @SneakyThrows
-    public boolean exists(@NotNull RestHighLevelClient client, @NotNull GetParams params) {
+    public boolean exists(@NotNull GetParams params) {
         GetRequest getRequest = new GetRequest(
                 "posts",
                 "1");
         getRequest.fetchSourceContext(new FetchSourceContext(false));
         getRequest.storedFields("_none_");
-        return client.exists(getRequest, RequestOptions.DEFAULT);
+        return restHighLevelClient.exists(getRequest, RequestOptions.DEFAULT);
     }
 
     /**
      * Delete API
      */
     @SneakyThrows
-    public DeleteResponse delete(@NotNull RestHighLevelClient client, @NotNull DeleteParams params) {
+    public DeleteResponse delete(@NotNull DeleteParams params) {
         DeleteRequest request = new DeleteRequest(
                 "posts",
                 "1");
-        return client.delete(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.delete(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Update API
      */
     @SneakyThrows
-    public UpdateResponse update(@NotNull RestHighLevelClient client, @NotNull UpdateParams params) {
+    public UpdateResponse update(@NotNull UpdateParams params) {
         UpdateRequest request = new UpdateRequest(
                 "posts",
                 "1");
-        return client.update(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.update(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Term Vectors API
      */
     @SneakyThrows
-    public TermVectorsResponse termvectors(@NotNull RestHighLevelClient client, @NotNull TermVectorsParams params) {
+    public TermVectorsResponse termvectors(@NotNull TermVectorsParams params) {
         TermVectorsRequest request = new TermVectorsRequest("authors", "1");
         request.setFields("user");
-        return client.termvectors(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.termvectors(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Bulk API
      */
     @SneakyThrows
-    public BulkResponse bulk(@NotNull RestHighLevelClient client, @NotNull BulkParams params) {
+    public BulkResponse bulk(@NotNull BulkParams params) {
         BulkRequest request = new BulkRequest();
         request.add(new IndexRequest("posts").id("1")
                 .source(XContentType.JSON, "field", "foo"));
@@ -132,67 +136,67 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                 .source(XContentType.JSON, "field", "bar"));
         request.add(new IndexRequest("posts").id("3")
                 .source(XContentType.JSON, "field", "baz"));
-        return client.bulk(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.bulk(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Multi-Get API
      */
     @SneakyThrows
-    public MultiGetResponse mget(@NotNull RestHighLevelClient client, @NotNull MultiGetParams params) {
+    public MultiGetResponse mget(@NotNull MultiGetParams params) {
         MultiGetRequest request = new MultiGetRequest();
         request.add(new MultiGetRequest.Item(
                 "index",
                 "example_id"));
         request.add(new MultiGetRequest.Item("index", "another_id"));
-        return client.mget(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.mget(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull ReindexParams params) {
+    public BulkByScrollResponse reindex(@NotNull ReindexParams params) {
         ReindexRequest request = new ReindexRequest();
         request.setSourceIndices("source1", "source2");
         request.setDestIndex("dest");
-        return client.reindex(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.reindex(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Update By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse updateByQuery(@NotNull RestHighLevelClient client, @NotNull UpdateByQueryParams params) {
+    public BulkByScrollResponse updateByQuery(@NotNull UpdateByQueryParams params) {
         UpdateByQueryRequest request = new UpdateByQueryRequest("source1", "source2");
-        return client.updateByQuery(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.updateByQuery(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Delete By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse deleteByQuery(@NotNull RestHighLevelClient client, @NotNull DeleteByQueryParams params) {
+    public BulkByScrollResponse deleteByQuery(@NotNull DeleteByQueryParams params) {
         DeleteByQueryRequest request = new DeleteByQueryRequest("source1", "source2");
-        return client.deleteByQuery(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.deleteByQuery(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Rethrottle API
      */
     @SneakyThrows
-    public void reindexRethrottle(@NotNull RestHighLevelClient client, @NotNull RethrottleParams params) {
+    public void reindexRethrottle(@NotNull RethrottleParams params) {
         RethrottleRequest request = new RethrottleRequest(TaskId.EMPTY_TASK_ID);
-        client.reindexRethrottle(request, RequestOptions.DEFAULT);
-        client.updateByQueryRethrottle(request, RequestOptions.DEFAULT);
-        client.deleteByQueryRethrottle(request, RequestOptions.DEFAULT);
+        restHighLevelClient.reindexRethrottle(request, RequestOptions.DEFAULT);
+        restHighLevelClient.updateByQueryRethrottle(request, RequestOptions.DEFAULT);
+        restHighLevelClient.deleteByQueryRethrottle(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Multi Term Vectors API
      */
     @SneakyThrows
-    public MultiTermVectorsResponse mtermvectors(@NotNull RestHighLevelClient client, @NotNull MultiTermVectorsParams params) {
+    public MultiTermVectorsResponse mtermvectors(@NotNull MultiTermVectorsParams params) {
         MultiTermVectorsRequest request = new MultiTermVectorsRequest();
         TermVectorsRequest tvrequest1 =
                 new TermVectorsRequest("authors", "1");
@@ -204,14 +208,14 @@ public final class EsDocumentSupporter extends AbstractSupporter {
         TermVectorsRequest tvrequest2 =
                 new TermVectorsRequest("authors", docBuilder);
         request.add(tvrequest2);
-        return client.mtermvectors(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.mtermvectors(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Bulk Processor
      */
-    public void bulk(@NotNull RestHighLevelClient client, @NotNull List<IndexRequest> indexRequestList) {
-        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
+    public void bulk(@NotNull List<IndexRequest> indexRequestList) {
+        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> restHighLevelClient.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
                     public void beforeBulk(long executionId, BulkRequest request) {

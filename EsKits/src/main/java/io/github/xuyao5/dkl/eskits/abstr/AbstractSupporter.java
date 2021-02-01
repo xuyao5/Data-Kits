@@ -1,6 +1,9 @@
 package io.github.xuyao5.dkl.eskits.abstr;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.RestHighLevelClient;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -9,5 +12,8 @@ import lombok.extern.slf4j.Slf4j;
  * @implNote AbstractSupporter
  */
 @Slf4j
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractSupporter {
+
+    protected final RestHighLevelClient restHighLevelClient;
 }

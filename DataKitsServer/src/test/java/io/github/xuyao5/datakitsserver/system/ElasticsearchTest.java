@@ -2,6 +2,7 @@ package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.dkl.eskits.client.EsClient;
+import io.github.xuyao5.dkl.eskits.support.EsSearchSupporter;
 import io.github.xuyao5.dkl.eskits.support.param.SearchTemplateParams;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,8 @@ class ElasticsearchTest extends AbstractTest {
         params.setScript(script);
 
         String execute = client.execute((client) -> {
-            SearchTemplateResponse response = searchSupporter.searchTemplate(client, params);
+            EsSearchSupporter searchSupporter = new EsSearchSupporter(client);
+            SearchTemplateResponse response = searchSupporter.searchTemplate(params);
             response.getResponse().getHits().forEach(documentFields -> {
                 System.out.println(documentFields);
             });

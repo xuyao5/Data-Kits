@@ -25,11 +25,15 @@ import java.util.concurrent.TimeUnit;
  */
 public final class EsIndexLifecycleSupporter extends AbstractSupporter {
 
+    public EsIndexLifecycleSupporter(@NotNull RestHighLevelClient client) {
+        super(client);
+    }
+
     /**
      * Put Lifecycle Policy API
      */
     @SneakyThrows
-    public AcknowledgedResponse putLifecyclePolicy(@NotNull RestHighLevelClient client, @NotNull PutLifecyclePolicyParams params) {
+    public AcknowledgedResponse putLifecyclePolicy(@NotNull PutLifecyclePolicyParams params) {
         Map<String, Phase> phases = new HashMap<>();
         Map<String, LifecycleAction> hotActions = new HashMap<>();
         hotActions.put(RolloverAction.NAME, new RolloverAction(new ByteSizeValue(50, ByteSizeUnit.GB), null, null));
@@ -41,6 +45,6 @@ public final class EsIndexLifecycleSupporter extends AbstractSupporter {
         LifecyclePolicy policy = new LifecyclePolicy("my_policy", phases);
         PutLifecyclePolicyRequest request = new PutLifecyclePolicyRequest(policy);
 
-        return client.indexLifecycle().putLifecyclePolicy(request, RequestOptions.DEFAULT);
+        return restHighLevelClient.indexLifecycle().putLifecyclePolicy(request, RequestOptions.DEFAULT);
     }
 }
