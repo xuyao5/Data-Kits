@@ -3,6 +3,7 @@ package io.github.xuyao5.dkl.eskits.support;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import io.github.xuyao5.dkl.eskits.support.param.*;
 import lombok.SneakyThrows;
+import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest;
@@ -30,9 +31,11 @@ import org.elasticsearch.client.core.ShardsAcknowledgedResponse;
 import org.elasticsearch.client.indices.*;
 import org.elasticsearch.client.indices.rollover.RolloverRequest;
 import org.elasticsearch.client.indices.rollover.RolloverResponse;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentType;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -54,9 +57,14 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull CreateIndexParams params) {
-        CreateIndexRequest request = new CreateIndexRequest(params.getIndex());
-        return restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
+    public CreateIndexResponse create(@NotNull String index, int shards, int replicas, String mapping, String alias, boolean isWriteIndex) {
+        return restHighLevelClient.indices().create(new CreateIndexRequest(index.toLowerCase())
+                .settings(Settings.builder()
+                        .put(INDEX_NUMBER_OF_SHARDS, shards)
+                        .put(INDEX_NUMBER_OF_REPLICAS, replicas)
+                )
+                .mapping(mapping, XContentType.JSON)
+                .alias(new Alias(alias.toUpperCase()).writeIndex(isWriteIndex)), RequestOptions.DEFAULT);
     }
 
     /**
