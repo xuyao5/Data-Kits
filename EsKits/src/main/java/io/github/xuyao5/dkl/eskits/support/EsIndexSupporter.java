@@ -51,16 +51,6 @@ public final class EsIndexSupporter extends AbstractSupporter {
     }
 
     /**
-     * Analyze API
-     */
-    @SneakyThrows
-    public AnalyzeResponse analyze(@NotNull AnalyzeParams params) {
-        AnalyzeRequest request = AnalyzeRequest.withGlobalAnalyzer("english",
-                "Some text to analyze", "Some more text to analyze");
-        return restHighLevelClient.indices().analyze(request, RequestOptions.DEFAULT);
-    }
-
-    /**
      * Create Index API
      */
     @SneakyThrows
