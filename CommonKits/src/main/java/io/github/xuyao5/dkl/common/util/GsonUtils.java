@@ -42,12 +42,12 @@ public final class GsonUtils {
         }
     }
 
-    public static <T> Optional<String> obj2Json(@NotNull T obj) {
-        return Optional.ofNullable(GSON.toJson(obj));
+    public static <T> String obj2Json(@NotNull T obj) {
+        return GSON.toJson(obj);
     }
 
-    public static <T> Optional<String> obj2Json(@NotNull T obj, @NotNull Type type) {
-        return Optional.ofNullable(GSON.toJson(obj, type));
+    public static <T> String obj2Json(@NotNull T obj, @NotNull Type type) {
+        return GSON.toJson(obj, type);
     }
 
     public static <T> Optional<T> json2Obj(@NotNull String json, @NotNull Type type) {

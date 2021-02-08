@@ -1,9 +1,14 @@
 package io.github.xuyao5.dkl.eskits.support;
 
+import io.github.xuyao5.dkl.common.util.GsonUtils;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
-import io.github.xuyao5.dkl.eskits.support.param.*;
+import io.github.xuyao5.dkl.eskits.support.param.DeleteByQueryParams;
+import io.github.xuyao5.dkl.eskits.support.param.MultiGetParams;
+import io.github.xuyao5.dkl.eskits.support.param.ReindexParams;
+import io.github.xuyao5.dkl.eskits.support.param.UpdateByQueryParams;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -15,26 +20,20 @@ import org.elasticsearch.action.get.MultiGetRequest;
 import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.RethrottleRequest;
-import org.elasticsearch.client.core.MultiTermVectorsRequest;
-import org.elasticsearch.client.core.MultiTermVectorsResponse;
-import org.elasticsearch.client.core.TermVectorsRequest;
-import org.elasticsearch.client.core.TermVectorsResponse;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.ReindexRequest;
 import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
-import org.elasticsearch.tasks.TaskId;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -56,87 +55,45 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Index API
      */
     @SneakyThrows
-    public IndexResponse index(@NotNull IndexParams params) {
-        IndexRequest request = new IndexRequest("posts");
-        request.id("1");
-        String jsonString = "{" +
-                "\"user\":\"kimchy\"," +
-                "\"postDate\":\"2013-01-30\"," +
-                "\"message\":\"trying out Elasticsearch\"" +
-                "}";
-        request.source(jsonString, XContentType.JSON);
-        return restHighLevelClient.index(request, RequestOptions.DEFAULT);
+    public <T> IndexResponse index(@NotNull String index, @NotNull String id, @NotNull T obj) {
+        return restHighLevelClient.index(new IndexRequest(index)
+                .id(id)
+                .source(GsonUtils.obj2Json(obj), XContentType.JSON)
+                .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL)
+                .versionType(VersionType.EXTERNAL)
+                .opType(DocWriteRequest.OpType.CREATE), RequestOptions.DEFAULT);
     }
 
     /**
      * Get API
      */
     @SneakyThrows
-    public GetResponse get(@NotNull GetParams params) {
-        GetRequest getRequest = new GetRequest(
-                "posts",
-                "1");
-        return restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+    public GetResponse get(@NotNull String index, @NotNull String id) {
+        return restHighLevelClient.get(new GetRequest(index, id), RequestOptions.DEFAULT);
     }
 
     /**
      * Exists API
      */
     @SneakyThrows
-    public boolean exists(@NotNull GetParams params) {
-        GetRequest getRequest = new GetRequest(
-                "posts",
-                "1");
-        getRequest.fetchSourceContext(new FetchSourceContext(false));
-        getRequest.storedFields("_none_");
-        return restHighLevelClient.exists(getRequest, RequestOptions.DEFAULT);
+    public boolean exists(@NotNull String index, @NotNull String id) {
+        return restHighLevelClient.exists(new GetRequest(index, id).fetchSourceContext(new FetchSourceContext(false)).storedFields("_none_"), RequestOptions.DEFAULT);
     }
 
     /**
      * Delete API
      */
     @SneakyThrows
-    public DeleteResponse delete(@NotNull DeleteParams params) {
-        DeleteRequest request = new DeleteRequest(
-                "posts",
-                "1");
-        return restHighLevelClient.delete(request, RequestOptions.DEFAULT);
+    public DeleteResponse delete(@NotNull String index, @NotNull String id) {
+        return restHighLevelClient.delete(new DeleteRequest(index, id), RequestOptions.DEFAULT);
     }
 
     /**
      * Update API
      */
     @SneakyThrows
-    public UpdateResponse update(@NotNull UpdateParams params) {
-        UpdateRequest request = new UpdateRequest(
-                "posts",
-                "1");
-        return restHighLevelClient.update(request, RequestOptions.DEFAULT);
-    }
-
-    /**
-     * Term Vectors API
-     */
-    @SneakyThrows
-    public TermVectorsResponse termvectors(@NotNull TermVectorsParams params) {
-        TermVectorsRequest request = new TermVectorsRequest("authors", "1");
-        request.setFields("user");
-        return restHighLevelClient.termvectors(request, RequestOptions.DEFAULT);
-    }
-
-    /**
-     * Bulk API
-     */
-    @SneakyThrows
-    public BulkResponse bulk(@NotNull BulkParams params) {
-        BulkRequest request = new BulkRequest();
-        request.add(new IndexRequest("posts").id("1")
-                .source(XContentType.JSON, "field", "foo"));
-        request.add(new IndexRequest("posts").id("2")
-                .source(XContentType.JSON, "field", "bar"));
-        request.add(new IndexRequest("posts").id("3")
-                .source(XContentType.JSON, "field", "baz"));
-        return restHighLevelClient.bulk(request, RequestOptions.DEFAULT);
+    public UpdateResponse update(@NotNull String index, @NotNull String id) {
+        return restHighLevelClient.update(new UpdateRequest(index, id), RequestOptions.DEFAULT);
     }
 
     /**
@@ -179,36 +136,6 @@ public final class EsDocumentSupporter extends AbstractSupporter {
     public BulkByScrollResponse deleteByQuery(@NotNull DeleteByQueryParams params) {
         DeleteByQueryRequest request = new DeleteByQueryRequest("source1", "source2");
         return restHighLevelClient.deleteByQuery(request, RequestOptions.DEFAULT);
-    }
-
-    /**
-     * Rethrottle API
-     */
-    @SneakyThrows
-    public void reindexRethrottle(@NotNull RethrottleParams params) {
-        RethrottleRequest request = new RethrottleRequest(TaskId.EMPTY_TASK_ID);
-        restHighLevelClient.reindexRethrottle(request, RequestOptions.DEFAULT);
-        restHighLevelClient.updateByQueryRethrottle(request, RequestOptions.DEFAULT);
-        restHighLevelClient.deleteByQueryRethrottle(request, RequestOptions.DEFAULT);
-    }
-
-    /**
-     * Multi Term Vectors API
-     */
-    @SneakyThrows
-    public MultiTermVectorsResponse mtermvectors(@NotNull MultiTermVectorsParams params) {
-        MultiTermVectorsRequest request = new MultiTermVectorsRequest();
-        TermVectorsRequest tvrequest1 =
-                new TermVectorsRequest("authors", "1");
-        tvrequest1.setFields("user");
-        request.add(tvrequest1);
-
-        XContentBuilder docBuilder = XContentFactory.jsonBuilder();
-        docBuilder.startObject().field("user", "guest-user").endObject();
-        TermVectorsRequest tvrequest2 =
-                new TermVectorsRequest("authors", docBuilder);
-        request.add(tvrequest2);
-        return restHighLevelClient.mtermvectors(request, RequestOptions.DEFAULT);
     }
 
     /**
