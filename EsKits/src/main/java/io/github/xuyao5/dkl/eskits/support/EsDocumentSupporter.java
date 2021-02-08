@@ -167,7 +167,6 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                 .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))//default:5
                 .build()) {
             indexRequestList.parallelStream().forEachOrdered(bulkProcessor::add);
-            bulkProcessor.flush();
         }
     }
 }
