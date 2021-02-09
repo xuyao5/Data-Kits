@@ -2,10 +2,6 @@ package io.github.xuyao5.dkl.eskits.support;
 
 import io.github.xuyao5.dkl.common.util.GsonUtils;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
-import io.github.xuyao5.dkl.eskits.support.param.DeleteByQueryParams;
-import io.github.xuyao5.dkl.eskits.support.param.MultiGetParams;
-import io.github.xuyao5.dkl.eskits.support.param.ReindexParams;
-import io.github.xuyao5.dkl.eskits.support.param.UpdateByQueryParams;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;
@@ -100,7 +96,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Multi-Get API
      */
     @SneakyThrows
-    public MultiGetResponse mget(@NotNull MultiGetParams params) {
+    public MultiGetResponse mget() {
         MultiGetRequest request = new MultiGetRequest();
         request.add(new MultiGetRequest.Item(
                 "index",
@@ -113,7 +109,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull ReindexParams params) {
+    public BulkByScrollResponse reindex() {
         ReindexRequest request = new ReindexRequest();
         request.setSourceIndices("source1", "source2");
         request.setDestIndex("dest");
@@ -124,7 +120,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Update By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse updateByQuery(@NotNull UpdateByQueryParams params) {
+    public BulkByScrollResponse updateByQuery() {
         UpdateByQueryRequest request = new UpdateByQueryRequest("source1", "source2");
         return restHighLevelClient.updateByQuery(request, RequestOptions.DEFAULT);
     }
@@ -133,7 +129,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Delete By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse deleteByQuery(@NotNull DeleteByQueryParams params) {
+    public BulkByScrollResponse deleteByQuery() {
         DeleteByQueryRequest request = new DeleteByQueryRequest("source1", "source2");
         return restHighLevelClient.deleteByQuery(request, RequestOptions.DEFAULT);
     }
