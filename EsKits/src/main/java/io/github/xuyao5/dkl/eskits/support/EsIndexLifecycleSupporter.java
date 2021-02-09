@@ -45,6 +45,6 @@ public final class EsIndexLifecycleSupporter extends AbstractSupporter {
         LifecyclePolicy policy = new LifecyclePolicy("my_policy", phases);
         PutLifecyclePolicyRequest request = new PutLifecyclePolicyRequest(policy);
 
-        return restHighLevelClient.indexLifecycle().putLifecyclePolicy(request, RequestOptions.DEFAULT);
+        return client.indexLifecycle().putLifecyclePolicy(request, RequestOptions.DEFAULT);
     }
 }

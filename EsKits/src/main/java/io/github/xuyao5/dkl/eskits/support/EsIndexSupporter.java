@@ -58,10 +58,10 @@ public final class EsIndexSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public CreateIndexResponse create(@NotNull String index, int shards, int replicas, String mapping, String alias, boolean isWriteIndex) {
-        return restHighLevelClient.indices().create(new CreateIndexRequest(index.toLowerCase())
+        return client.indices().create(new CreateIndexRequest(index.toLowerCase())
                 .settings(Settings.builder()
-                        .put(INDEX_NUMBER_OF_SHARDS, shards)
-                        .put(INDEX_NUMBER_OF_REPLICAS, replicas)
+                        .put("index.number_of_shards", shards)
+                        .put("index.number_of_replicas", replicas)
                 )
                 .mapping(mapping, XContentType.JSON)
                 .alias(new Alias(alias.toUpperCase()).writeIndex(isWriteIndex)), RequestOptions.DEFAULT);
@@ -73,7 +73,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public AcknowledgedResponse delete(@NotNull DeleteIndexParams params) {
         DeleteIndexRequest request = new DeleteIndexRequest(params.getIndices());
-        return restHighLevelClient.indices().delete(request, RequestOptions.DEFAULT);
+        return client.indices().delete(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -82,7 +82,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public boolean exists(@NotNull GetIndexParams params) {
         GetIndexRequest request = new GetIndexRequest("twitter");
-        return restHighLevelClient.indices().exists(request, RequestOptions.DEFAULT);
+        return client.indices().exists(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -91,7 +91,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public OpenIndexResponse open(@NotNull OpenIndexParams params) {
         OpenIndexRequest request = new OpenIndexRequest("index");
-        return restHighLevelClient.indices().open(request, RequestOptions.DEFAULT);
+        return client.indices().open(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -100,7 +100,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public AcknowledgedResponse close(@NotNull CloseIndexParams params) {
         CloseIndexRequest request = new CloseIndexRequest("index");
-        return restHighLevelClient.indices().close(request, RequestOptions.DEFAULT);
+        return client.indices().close(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -109,7 +109,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ResizeResponse shrink(@NotNull ResizeParams params) {
         ResizeRequest request = new ResizeRequest("target_index", "source_index");
-        return restHighLevelClient.indices().shrink(request, RequestOptions.DEFAULT);
+        return client.indices().shrink(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -118,7 +118,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ResizeResponse split(@NotNull ResizeRequest params) {
         ResizeRequest request = new ResizeRequest("target_index", "source_index");
-        return restHighLevelClient.indices().split(request, RequestOptions.DEFAULT);
+        return client.indices().split(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -127,7 +127,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ResizeResponse clone(@NotNull ResizeRequest params) {
         ResizeRequest request = new ResizeRequest("target_index", "source_index");
-        return restHighLevelClient.indices().clone(request, RequestOptions.DEFAULT);
+        return client.indices().clone(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -136,7 +136,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public RefreshResponse refresh(@NotNull RefreshParams params) {
         RefreshRequest request = new RefreshRequest("index1", "index2");
-        return restHighLevelClient.indices().refresh(request, RequestOptions.DEFAULT);
+        return client.indices().refresh(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -145,7 +145,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public FlushResponse flush(@NotNull FlushParams params) {
         FlushRequest request = new FlushRequest("index1", "index2");
-        return restHighLevelClient.indices().flush(request, RequestOptions.DEFAULT);
+        return client.indices().flush(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -154,7 +154,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ClearIndicesCacheResponse clearCache(@NotNull ClearIndicesCacheParams params) {
         ClearIndicesCacheRequest request = new ClearIndicesCacheRequest("index1", "index2");
-        return restHighLevelClient.indices().clearCache(request, RequestOptions.DEFAULT);
+        return client.indices().clearCache(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -163,7 +163,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ForceMergeResponse forcemerge(@NotNull ForceMergeParams params) {
         ForceMergeRequest request = new ForceMergeRequest("index1", "index2");
-        return restHighLevelClient.indices().forcemerge(request, RequestOptions.DEFAULT);
+        return client.indices().forcemerge(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -175,7 +175,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
         request.addMaxIndexAgeCondition(new TimeValue(7, TimeUnit.DAYS));
         request.addMaxIndexDocsCondition(1000);
         request.addMaxIndexSizeCondition(new ByteSizeValue(5, ByteSizeUnit.GB));
-        return restHighLevelClient.indices().rollover(request, RequestOptions.DEFAULT);
+        return client.indices().rollover(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -184,7 +184,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public AcknowledgedResponse putMapping(@NotNull PutMappingParams params) {
         PutMappingRequest request = new PutMappingRequest("twitter");
-        return restHighLevelClient.indices().putMapping(request, RequestOptions.DEFAULT);
+        return client.indices().putMapping(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -194,7 +194,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     public GetMappingsResponse getMapping(@NotNull GetMappingsParams params) {
         GetMappingsRequest request = new GetMappingsRequest();
         request.indices("twitter");
-        return restHighLevelClient.indices().getMapping(request, RequestOptions.DEFAULT);
+        return client.indices().getMapping(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -205,7 +205,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
         GetFieldMappingsRequest request = new GetFieldMappingsRequest();
         request.indices("twitter");
         request.fields("message", "timestamp");
-        return restHighLevelClient.indices().getFieldMapping(request, RequestOptions.DEFAULT);
+        return client.indices().getFieldMapping(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -219,7 +219,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
                         .index("index1")
                         .alias("alias1");
         request.addAliasAction(aliasAction);
-        return restHighLevelClient.indices().updateAliases(request, RequestOptions.DEFAULT);
+        return client.indices().updateAliases(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -228,7 +228,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias(@NotNull DeleteAliasParams params) {
         DeleteAliasRequest request = new DeleteAliasRequest("index1", "alias1");
-        return restHighLevelClient.indices().deleteAlias(request, RequestOptions.DEFAULT);
+        return client.indices().deleteAlias(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -237,7 +237,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public boolean existsAlias(@NotNull GetAliasesParams params) {
         GetAliasesRequest request = new GetAliasesRequest("alias1", "alias2");
-        return restHighLevelClient.indices().existsAlias(request, RequestOptions.DEFAULT);
+        return client.indices().existsAlias(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -246,7 +246,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public GetAliasesResponse getAlias(@NotNull GetAliasesParams params) {
         GetAliasesRequest request = new GetAliasesRequest("alias1", "alias2");
-        return restHighLevelClient.indices().getAlias(request, RequestOptions.DEFAULT);
+        return client.indices().getAlias(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -255,7 +255,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public AcknowledgedResponse putSettings(@NotNull UpdateSettingsParams params) {
         UpdateSettingsRequest request = new UpdateSettingsRequest("index1", "index2");
-        return restHighLevelClient.indices().putSettings(request, RequestOptions.DEFAULT);
+        return client.indices().putSettings(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -264,7 +264,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public GetSettingsResponse getSettings(@NotNull GetSettingsParams params) {
         GetSettingsRequest request = new GetSettingsRequest().indices("index");
-        return restHighLevelClient.indices().getSettings(request, RequestOptions.DEFAULT);
+        return client.indices().getSettings(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -274,7 +274,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     public AcknowledgedResponse putTemplate(@NotNull PutIndexTemplateParams params) {
         PutIndexTemplateRequest request = new PutIndexTemplateRequest("my-template");
         request.patterns(Arrays.asList("pattern-1", "log-*"));
-        return restHighLevelClient.indices().putTemplate(request, RequestOptions.DEFAULT);
+        return client.indices().putTemplate(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -283,7 +283,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ValidateQueryResponse validateQuery(@NotNull ValidateQueryParams params) {
         ValidateQueryRequest request = new ValidateQueryRequest("index");
-        return restHighLevelClient.indices().validateQuery(request, RequestOptions.DEFAULT);
+        return client.indices().validateQuery(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -292,7 +292,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public GetIndexTemplatesResponse getIndexTemplate(@NotNull GetIndexTemplatesParams params) {
         GetIndexTemplatesRequest request = new GetIndexTemplatesRequest("my-template");
-        return restHighLevelClient.indices().getIndexTemplate(request, RequestOptions.DEFAULT);
+        return client.indices().getIndexTemplate(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -301,7 +301,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public boolean existsTemplate(@NotNull IndexTemplatesExistParams params) {
         IndexTemplatesExistRequest request = new IndexTemplatesExistRequest("template-1", "template-2");
-        return restHighLevelClient.indices().existsTemplate(request, RequestOptions.DEFAULT);
+        return client.indices().existsTemplate(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -310,7 +310,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public GetIndexResponse get(@NotNull GetIndexParams params) {
         GetIndexRequest request = new GetIndexRequest("index");
-        return restHighLevelClient.indices().get(request, RequestOptions.DEFAULT);
+        return client.indices().get(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -319,7 +319,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ShardsAcknowledgedResponse freeze(@NotNull FreezeIndexParams params) {
         FreezeIndexRequest request = new FreezeIndexRequest("index");
-        return restHighLevelClient.indices().freeze(request, RequestOptions.DEFAULT);
+        return client.indices().freeze(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -328,7 +328,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ShardsAcknowledgedResponse unfreeze(@NotNull UnfreezeIndexParams params) {
         UnfreezeIndexRequest request = new UnfreezeIndexRequest("index");
-        return restHighLevelClient.indices().unfreeze(request, RequestOptions.DEFAULT);
+        return client.indices().unfreeze(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -338,7 +338,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
     public AcknowledgedResponse deleteTemplate(@NotNull DeleteIndexTemplateParams params) {
         DeleteIndexTemplateRequest request = new DeleteIndexTemplateRequest();
         request.name("my-template");
-        return restHighLevelClient.indices().deleteTemplate(request, RequestOptions.DEFAULT);
+        return client.indices().deleteTemplate(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -347,6 +347,6 @@ public final class EsIndexSupporter extends AbstractSupporter {
     @SneakyThrows
     public ReloadAnalyzersResponse reloadAnalyzers(@NotNull ReloadAnalyzersParams params) {
         ReloadAnalyzersRequest request = new ReloadAnalyzersRequest("index");
-        return restHighLevelClient.indices().reloadAnalyzers(request, RequestOptions.DEFAULT);
+        return client.indices().reloadAnalyzers(request, RequestOptions.DEFAULT);
     }
 }

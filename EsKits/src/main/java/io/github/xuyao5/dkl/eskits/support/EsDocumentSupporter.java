@@ -5,6 +5,7 @@ import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;
+import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -23,6 +24,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
@@ -32,7 +34,8 @@ import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.ToLongFunction;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -52,7 +55,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public <T> IndexResponse index(@NotNull String index, @NotNull String id, @NotNull T obj) {
-        return restHighLevelClient.index(new IndexRequest(index)
+        return client.index(new IndexRequest(index)
                 .id(id)
                 .source(GsonUtils.obj2Json(obj), XContentType.JSON)
                 .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL)
@@ -65,7 +68,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public GetResponse get(@NotNull String index, @NotNull String id) {
-        return restHighLevelClient.get(new GetRequest(index, id), RequestOptions.DEFAULT);
+        return client.get(new GetRequest(index, id), RequestOptions.DEFAULT);
     }
 
     /**
@@ -73,7 +76,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public boolean exists(@NotNull String index, @NotNull String id) {
-        return restHighLevelClient.exists(new GetRequest(index, id).fetchSourceContext(new FetchSourceContext(false)).storedFields("_none_"), RequestOptions.DEFAULT);
+        return client.exists(new GetRequest(index, id).fetchSourceContext(new FetchSourceContext(false)).storedFields("_none_"), RequestOptions.DEFAULT);
     }
 
     /**
@@ -81,7 +84,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public DeleteResponse delete(@NotNull String index, @NotNull String id) {
-        return restHighLevelClient.delete(new DeleteRequest(index, id), RequestOptions.DEFAULT);
+        return client.delete(new DeleteRequest(index, id), RequestOptions.DEFAULT);
     }
 
     /**
@@ -89,7 +92,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public UpdateResponse update(@NotNull String index, @NotNull String id) {
-        return restHighLevelClient.update(new UpdateRequest(index, id), RequestOptions.DEFAULT);
+        return client.update(new UpdateRequest(index, id), RequestOptions.DEFAULT);
     }
 
     /**
@@ -102,7 +105,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                 "index",
                 "example_id"));
         request.add(new MultiGetRequest.Item("index", "another_id"));
-        return restHighLevelClient.mget(request, RequestOptions.DEFAULT);
+        return client.mget(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -113,7 +116,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
         ReindexRequest request = new ReindexRequest();
         request.setSourceIndices("source1", "source2");
         request.setDestIndex("dest");
-        return restHighLevelClient.reindex(request, RequestOptions.DEFAULT);
+        return client.reindex(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -122,7 +125,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
     @SneakyThrows
     public BulkByScrollResponse updateByQuery() {
         UpdateByQueryRequest request = new UpdateByQueryRequest("source1", "source2");
-        return restHighLevelClient.updateByQuery(request, RequestOptions.DEFAULT);
+        return client.updateByQuery(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -131,14 +134,15 @@ public final class EsDocumentSupporter extends AbstractSupporter {
     @SneakyThrows
     public BulkByScrollResponse deleteByQuery() {
         DeleteByQueryRequest request = new DeleteByQueryRequest("source1", "source2");
-        return restHighLevelClient.deleteByQuery(request, RequestOptions.DEFAULT);
+        return client.deleteByQuery(request, RequestOptions.DEFAULT);
     }
 
     /**
      * Bulk Processor
      */
-    public void bulk(@NotNull List<IndexRequest> indexRequestList) {
-        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> restHighLevelClient.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
+    @SneakyThrows
+    public boolean bulk(int actions, long size, ToLongFunction<BulkProcessor> function) {
+        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
                     public void beforeBulk(long executionId, BulkRequest request) {
@@ -159,10 +163,12 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                     public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
                         log.error("Failed to execute bulk", failure);
                     }
-                }).setBulkActions(5000)//default:1000
-                .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))//default:5
+                }).setBulkActions(actions)//default:1000
+                .setBulkSize(new ByteSizeValue(size, ByteSizeUnit.MB))//default:5
+                .setConcurrentRequests(0)
+                .setBackoffPolicy(BackoffPolicy.constantBackoff(TimeValue.timeValueSeconds(1L), 3))
                 .build()) {
-            indexRequestList.parallelStream().forEachOrdered(bulkProcessor::add);
+            return bulkProcessor.awaitClose(function.applyAsLong(bulkProcessor), TimeUnit.SECONDS);
         }
     }
 }

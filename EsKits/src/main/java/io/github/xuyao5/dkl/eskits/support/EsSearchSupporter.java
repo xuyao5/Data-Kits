@@ -42,7 +42,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public SearchResponse search(@NotNull SearchParams params) {
-        return restHighLevelClient.search(new SearchRequest(params.getIndex()).source(new SearchSourceBuilder().query(params.getQueryBuilder())
+        return client.search(new SearchRequest(params.getIndex()).source(new SearchSourceBuilder().query(params.getQueryBuilder())
                         .from(0)
                         .size(10)
                         .timeout(TimeValue.timeValueSeconds(60))
@@ -57,7 +57,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
     public SearchResponse scroll(@NotNull SearchScrollParams params) {
         SearchScrollRequest request = new SearchScrollRequest();
         request.scroll(TimeValue.timeValueSeconds(30));
-        return restHighLevelClient.scroll(request, RequestOptions.DEFAULT);
+        return client.scroll(request, RequestOptions.DEFAULT);
     }
 
 
@@ -68,7 +68,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
     public ClearScrollResponse clearScroll(@NotNull ClearScrollParams params) {
         ClearScrollRequest request = new ClearScrollRequest();
         request.addScrollId("scrollId");
-        return restHighLevelClient.clearScroll(request, RequestOptions.DEFAULT);
+        return client.clearScroll(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -87,7 +87,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
         searchSourceBuilder.query(QueryBuilders.matchQuery("user", "luca"));
         secondSearchRequest.source(searchSourceBuilder);
         request.add(secondSearchRequest);
-        return restHighLevelClient.msearch(request, RequestOptions.DEFAULT);
+        return client.msearch(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -100,7 +100,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
         request.setScriptType(ScriptType.INLINE);
         request.setScript(params.getScript());
         request.setScriptParams(params.getScriptParams());
-        return restHighLevelClient.searchTemplate(request, RequestOptions.DEFAULT);
+        return client.searchTemplate(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -130,7 +130,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
 
             multiRequest.add(request);
         }
-        return restHighLevelClient.msearchTemplate(multiRequest, RequestOptions.DEFAULT);
+        return client.msearchTemplate(multiRequest, RequestOptions.DEFAULT);
     }
 
     /**
@@ -141,7 +141,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
         FieldCapabilitiesRequest request = new FieldCapabilitiesRequest()
                 .fields("user")
                 .indices("posts", "authors", "contributors");
-        return restHighLevelClient.fieldCaps(request, RequestOptions.DEFAULT);
+        return client.fieldCaps(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -161,7 +161,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
                 new RankEvalSpec(ratedRequests, metric);
         RankEvalRequest request =
                 new RankEvalRequest(specification, new String[]{"posts"});
-        return restHighLevelClient.rankEval(request, RequestOptions.DEFAULT);
+        return client.rankEval(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -171,7 +171,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
     public ExplainResponse explain(@NotNull ExplainParams params) {
         ExplainRequest request = new ExplainRequest("contributors", "1");
         request.query(QueryBuilders.termQuery("user", "tanguy"));
-        return restHighLevelClient.explain(request, RequestOptions.DEFAULT);
+        return client.explain(request, RequestOptions.DEFAULT);
     }
 
     /**
@@ -182,6 +182,6 @@ public final class EsSearchSupporter extends AbstractSupporter {
         CountRequest countRequest = new CountRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-        return restHighLevelClient.count(countRequest, RequestOptions.DEFAULT);
+        return client.count(countRequest, RequestOptions.DEFAULT);
     }
 }
