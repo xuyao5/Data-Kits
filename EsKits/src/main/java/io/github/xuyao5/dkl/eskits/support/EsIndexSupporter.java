@@ -1,7 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
-import io.github.xuyao5.dkl.eskits.support.param.*;
 import lombok.SneakyThrows;
 import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
@@ -71,8 +70,8 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Delete Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse delete(@NotNull DeleteIndexParams params) {
-        DeleteIndexRequest request = new DeleteIndexRequest(params.getIndices());
+    public AcknowledgedResponse delete() {
+        DeleteIndexRequest request = new DeleteIndexRequest("");
         return client.indices().delete(request, RequestOptions.DEFAULT);
     }
 
@@ -80,7 +79,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Index Exists API
      */
     @SneakyThrows
-    public boolean exists(@NotNull GetIndexParams params) {
+    public boolean exists() {
         GetIndexRequest request = new GetIndexRequest("twitter");
         return client.indices().exists(request, RequestOptions.DEFAULT);
     }
@@ -89,7 +88,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Open Index API
      */
     @SneakyThrows
-    public OpenIndexResponse open(@NotNull OpenIndexParams params) {
+    public OpenIndexResponse open() {
         OpenIndexRequest request = new OpenIndexRequest("index");
         return client.indices().open(request, RequestOptions.DEFAULT);
     }
@@ -98,7 +97,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Close Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse close(@NotNull CloseIndexParams params) {
+    public AcknowledgedResponse close() {
         CloseIndexRequest request = new CloseIndexRequest("index");
         return client.indices().close(request, RequestOptions.DEFAULT);
     }
@@ -107,7 +106,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Shrink Index API
      */
     @SneakyThrows
-    public ResizeResponse shrink(@NotNull ResizeParams params) {
+    public ResizeResponse shrink() {
         ResizeRequest request = new ResizeRequest("target_index", "source_index");
         return client.indices().shrink(request, RequestOptions.DEFAULT);
     }
@@ -134,7 +133,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Refresh API
      */
     @SneakyThrows
-    public RefreshResponse refresh(@NotNull RefreshParams params) {
+    public RefreshResponse refresh() {
         RefreshRequest request = new RefreshRequest("index1", "index2");
         return client.indices().refresh(request, RequestOptions.DEFAULT);
     }
@@ -143,7 +142,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Flush API
      */
     @SneakyThrows
-    public FlushResponse flush(@NotNull FlushParams params) {
+    public FlushResponse flush() {
         FlushRequest request = new FlushRequest("index1", "index2");
         return client.indices().flush(request, RequestOptions.DEFAULT);
     }
@@ -152,7 +151,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Clear Cache API
      */
     @SneakyThrows
-    public ClearIndicesCacheResponse clearCache(@NotNull ClearIndicesCacheParams params) {
+    public ClearIndicesCacheResponse clearCache() {
         ClearIndicesCacheRequest request = new ClearIndicesCacheRequest("index1", "index2");
         return client.indices().clearCache(request, RequestOptions.DEFAULT);
     }
@@ -161,7 +160,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Force Merge API
      */
     @SneakyThrows
-    public ForceMergeResponse forcemerge(@NotNull ForceMergeParams params) {
+    public ForceMergeResponse forcemerge() {
         ForceMergeRequest request = new ForceMergeRequest("index1", "index2");
         return client.indices().forcemerge(request, RequestOptions.DEFAULT);
     }
@@ -170,7 +169,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Rollover Index API
      */
     @SneakyThrows
-    public RolloverResponse rollover(@NotNull RolloverParams params) {
+    public RolloverResponse rollover() {
         RolloverRequest request = new RolloverRequest("alias", "index-2");
         request.addMaxIndexAgeCondition(new TimeValue(7, TimeUnit.DAYS));
         request.addMaxIndexDocsCondition(1000);
@@ -182,7 +181,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Put Mapping API
      */
     @SneakyThrows
-    public AcknowledgedResponse putMapping(@NotNull PutMappingParams params) {
+    public AcknowledgedResponse putMapping() {
         PutMappingRequest request = new PutMappingRequest("twitter");
         return client.indices().putMapping(request, RequestOptions.DEFAULT);
     }
@@ -191,7 +190,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Get Mappings API
      */
     @SneakyThrows
-    public GetMappingsResponse getMapping(@NotNull GetMappingsParams params) {
+    public GetMappingsResponse getMapping() {
         GetMappingsRequest request = new GetMappingsRequest();
         request.indices("twitter");
         return client.indices().getMapping(request, RequestOptions.DEFAULT);
@@ -201,7 +200,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Get Field Mappings API
      */
     @SneakyThrows
-    public GetFieldMappingsResponse getFieldMapping(@NotNull GetFieldMappingsParams params) {
+    public GetFieldMappingsResponse getFieldMapping() {
         GetFieldMappingsRequest request = new GetFieldMappingsRequest();
         request.indices("twitter");
         request.fields("message", "timestamp");
@@ -212,7 +211,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Index Aliases API
      */
     @SneakyThrows
-    public AcknowledgedResponse updateAliases(@NotNull IndicesAliasesParams params) {
+    public AcknowledgedResponse updateAliases() {
         IndicesAliasesRequest request = new IndicesAliasesRequest();
         IndicesAliasesRequest.AliasActions aliasAction =
                 new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
@@ -226,7 +225,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Delete Alias API
      */
     @SneakyThrows
-    public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias(@NotNull DeleteAliasParams params) {
+    public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias() {
         DeleteAliasRequest request = new DeleteAliasRequest("index1", "alias1");
         return client.indices().deleteAlias(request, RequestOptions.DEFAULT);
     }
@@ -235,7 +234,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Exists Alias API
      */
     @SneakyThrows
-    public boolean existsAlias(@NotNull GetAliasesParams params) {
+    public boolean existsAlias() {
         GetAliasesRequest request = new GetAliasesRequest("alias1", "alias2");
         return client.indices().existsAlias(request, RequestOptions.DEFAULT);
     }
@@ -244,7 +243,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Get Alias API
      */
     @SneakyThrows
-    public GetAliasesResponse getAlias(@NotNull GetAliasesParams params) {
+    public GetAliasesResponse getAlias() {
         GetAliasesRequest request = new GetAliasesRequest("alias1", "alias2");
         return client.indices().getAlias(request, RequestOptions.DEFAULT);
     }
@@ -253,7 +252,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Update Indices Settings API
      */
     @SneakyThrows
-    public AcknowledgedResponse putSettings(@NotNull UpdateSettingsParams params) {
+    public AcknowledgedResponse putSettings() {
         UpdateSettingsRequest request = new UpdateSettingsRequest("index1", "index2");
         return client.indices().putSettings(request, RequestOptions.DEFAULT);
     }
@@ -262,7 +261,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Get Settings API
      */
     @SneakyThrows
-    public GetSettingsResponse getSettings(@NotNull GetSettingsParams params) {
+    public GetSettingsResponse getSettings() {
         GetSettingsRequest request = new GetSettingsRequest().indices("index");
         return client.indices().getSettings(request, RequestOptions.DEFAULT);
     }
@@ -271,7 +270,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Put Template API
      */
     @SneakyThrows
-    public AcknowledgedResponse putTemplate(@NotNull PutIndexTemplateParams params) {
+    public AcknowledgedResponse putTemplate() {
         PutIndexTemplateRequest request = new PutIndexTemplateRequest("my-template");
         request.patterns(Arrays.asList("pattern-1", "log-*"));
         return client.indices().putTemplate(request, RequestOptions.DEFAULT);
@@ -281,7 +280,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Validate Query API
      */
     @SneakyThrows
-    public ValidateQueryResponse validateQuery(@NotNull ValidateQueryParams params) {
+    public ValidateQueryResponse validateQuery() {
         ValidateQueryRequest request = new ValidateQueryRequest("index");
         return client.indices().validateQuery(request, RequestOptions.DEFAULT);
     }
@@ -290,7 +289,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Get Templates API
      */
     @SneakyThrows
-    public GetIndexTemplatesResponse getIndexTemplate(@NotNull GetIndexTemplatesParams params) {
+    public GetIndexTemplatesResponse getIndexTemplate() {
         GetIndexTemplatesRequest request = new GetIndexTemplatesRequest("my-template");
         return client.indices().getIndexTemplate(request, RequestOptions.DEFAULT);
     }
@@ -299,7 +298,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Templates Exist API
      */
     @SneakyThrows
-    public boolean existsTemplate(@NotNull IndexTemplatesExistParams params) {
+    public boolean existsTemplate() {
         IndexTemplatesExistRequest request = new IndexTemplatesExistRequest("template-1", "template-2");
         return client.indices().existsTemplate(request, RequestOptions.DEFAULT);
     }
@@ -308,7 +307,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Get Index API
      */
     @SneakyThrows
-    public GetIndexResponse get(@NotNull GetIndexParams params) {
+    public GetIndexResponse get() {
         GetIndexRequest request = new GetIndexRequest("index");
         return client.indices().get(request, RequestOptions.DEFAULT);
     }
@@ -317,7 +316,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Freeze Index API
      */
     @SneakyThrows
-    public ShardsAcknowledgedResponse freeze(@NotNull FreezeIndexParams params) {
+    public ShardsAcknowledgedResponse freeze() {
         FreezeIndexRequest request = new FreezeIndexRequest("index");
         return client.indices().freeze(request, RequestOptions.DEFAULT);
     }
@@ -326,7 +325,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Unfreeze Index API
      */
     @SneakyThrows
-    public ShardsAcknowledgedResponse unfreeze(@NotNull UnfreezeIndexParams params) {
+    public ShardsAcknowledgedResponse unfreeze() {
         UnfreezeIndexRequest request = new UnfreezeIndexRequest("index");
         return client.indices().unfreeze(request, RequestOptions.DEFAULT);
     }
@@ -335,7 +334,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Delete Template API
      */
     @SneakyThrows
-    public AcknowledgedResponse deleteTemplate(@NotNull DeleteIndexTemplateParams params) {
+    public AcknowledgedResponse deleteTemplate() {
         DeleteIndexTemplateRequest request = new DeleteIndexTemplateRequest();
         request.name("my-template");
         return client.indices().deleteTemplate(request, RequestOptions.DEFAULT);
@@ -345,7 +344,7 @@ public final class EsIndexSupporter extends AbstractSupporter {
      * Reload Search Analyzers API
      */
     @SneakyThrows
-    public ReloadAnalyzersResponse reloadAnalyzers(@NotNull ReloadAnalyzersParams params) {
+    public ReloadAnalyzersResponse reloadAnalyzers() {
         ReloadAnalyzersRequest request = new ReloadAnalyzersRequest("index");
         return client.indices().reloadAnalyzers(request, RequestOptions.DEFAULT);
     }

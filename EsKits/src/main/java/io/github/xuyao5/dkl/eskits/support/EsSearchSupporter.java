@@ -1,7 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
-import io.github.xuyao5.dkl.eskits.support.param.*;
 import lombok.SneakyThrows;
 import org.elasticsearch.action.explain.ExplainRequest;
 import org.elasticsearch.action.explain.ExplainResponse;
@@ -41,8 +40,8 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Search API
      */
     @SneakyThrows
-    public SearchResponse search(@NotNull SearchParams params) {
-        return client.search(new SearchRequest(params.getIndex()).source(new SearchSourceBuilder().query(params.getQueryBuilder())
+    public SearchResponse search() {
+        return client.search(new SearchRequest("").source(new SearchSourceBuilder().query(null)
                         .from(0)
                         .size(10)
                         .timeout(TimeValue.timeValueSeconds(60))
@@ -54,7 +53,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Search Scroll API
      */
     @SneakyThrows
-    public SearchResponse scroll(@NotNull SearchScrollParams params) {
+    public SearchResponse scroll() {
         SearchScrollRequest request = new SearchScrollRequest();
         request.scroll(TimeValue.timeValueSeconds(30));
         return client.scroll(request, RequestOptions.DEFAULT);
@@ -65,7 +64,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Clear Scroll API
      */
     @SneakyThrows
-    public ClearScrollResponse clearScroll(@NotNull ClearScrollParams params) {
+    public ClearScrollResponse clearScroll() {
         ClearScrollRequest request = new ClearScrollRequest();
         request.addScrollId("scrollId");
         return client.clearScroll(request, RequestOptions.DEFAULT);
@@ -75,7 +74,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Multi-Search API
      */
     @SneakyThrows
-    public MultiSearchResponse msearch(@NotNull MultiSearchParams params) {
+    public MultiSearchResponse msearch() {
         MultiSearchRequest request = new MultiSearchRequest();
         SearchRequest firstSearchRequest = new SearchRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -94,12 +93,12 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Search Template API
      */
     @SneakyThrows
-    public SearchTemplateResponse searchTemplate(@NotNull SearchTemplateParams params) {
+    public SearchTemplateResponse searchTemplate() {
         SearchTemplateRequest request = new SearchTemplateRequest();
-        request.setRequest(new SearchRequest(params.getIndices()));
+        request.setRequest(new SearchRequest(""));
         request.setScriptType(ScriptType.INLINE);
-        request.setScript(params.getScript());
-        request.setScriptParams(params.getScriptParams());
+        request.setScript("");
+        request.setScriptParams(null);
         return client.searchTemplate(request, RequestOptions.DEFAULT);
     }
 
@@ -107,7 +106,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Multi-Search-Template API
      */
     @SneakyThrows
-    public MultiSearchTemplateResponse msearchTemplate(@NotNull MultiSearchTemplateParams params) {
+    public MultiSearchTemplateResponse msearchTemplate() {
         String[] searchTerms = {"elasticsearch", "logstash", "kibana"};
 
         MultiSearchTemplateRequest multiRequest = new MultiSearchTemplateRequest();
@@ -137,7 +136,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Field Capabilities API
      */
     @SneakyThrows
-    public FieldCapabilitiesResponse fieldCaps(@NotNull FieldCapabilitiesParams params) {
+    public FieldCapabilitiesResponse fieldCaps() {
         FieldCapabilitiesRequest request = new FieldCapabilitiesRequest()
                 .fields("user")
                 .indices("posts", "authors", "contributors");
@@ -148,7 +147,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Ranking Evaluation API
      */
     @SneakyThrows
-    public RankEvalResponse rankEval(@NotNull RankEvalParams params) {
+    public RankEvalResponse rankEval() {
         EvaluationMetric metric = new PrecisionAtK();
         List<RatedDocument> ratedDocs = new ArrayList<>();
         ratedDocs.add(new RatedDocument("posts", "1", 1));
@@ -168,7 +167,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Explain API
      */
     @SneakyThrows
-    public ExplainResponse explain(@NotNull ExplainParams params) {
+    public ExplainResponse explain() {
         ExplainRequest request = new ExplainRequest("contributors", "1");
         request.query(QueryBuilders.termQuery("user", "tanguy"));
         return client.explain(request, RequestOptions.DEFAULT);
@@ -178,7 +177,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Count API
      */
     @SneakyThrows
-    public CountResponse count(@NotNull CountParams params) {
+    public CountResponse count() {
         CountRequest countRequest = new CountRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());

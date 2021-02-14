@@ -1,7 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
-import io.github.xuyao5.dkl.eskits.support.param.PutLifecyclePolicyParams;
 import lombok.SneakyThrows;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -33,7 +32,7 @@ public final class EsIndexLifecycleSupporter extends AbstractSupporter {
      * Put Lifecycle Policy API
      */
     @SneakyThrows
-    public AcknowledgedResponse putLifecyclePolicy(@NotNull PutLifecyclePolicyParams params) {
+    public AcknowledgedResponse putLifecyclePolicy() {
         Map<String, Phase> phases = new HashMap<>();
         Map<String, LifecycleAction> hotActions = new HashMap<>();
         hotActions.put(RolloverAction.NAME, new RolloverAction(new ByteSizeValue(50, ByteSizeUnit.GB), null, null));
