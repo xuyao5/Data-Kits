@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.support;
+package io.github.xuyao5.dkl.eskits.support.bulk;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
@@ -23,9 +23,9 @@ import java.util.function.ToLongFunction;
  * @implNote TODO 这里输入实现说明
  */
 @Slf4j
-public final class BulkProcessorSupporter extends AbstractSupporter {
+public final class BulkSupporter extends AbstractSupporter {
 
-    protected BulkProcessorSupporter(RestHighLevelClient client) {
+    protected BulkSupporter(RestHighLevelClient client) {
         super(client);
     }
 
