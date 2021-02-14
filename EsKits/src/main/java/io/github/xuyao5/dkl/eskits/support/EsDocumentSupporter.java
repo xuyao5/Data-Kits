@@ -5,10 +5,6 @@ import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;
-import org.elasticsearch.action.bulk.BackoffPolicy;
-import org.elasticsearch.action.bulk.BulkProcessor;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -22,9 +18,6 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.ByteSizeUnit;
-import org.elasticsearch.common.unit.ByteSizeValue;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
@@ -34,8 +27,6 @@ import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 
 import javax.validation.constraints.NotNull;
-import java.util.concurrent.TimeUnit;
-import java.util.function.ToLongFunction;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -135,40 +126,5 @@ public final class EsDocumentSupporter extends AbstractSupporter {
     public BulkByScrollResponse deleteByQuery() {
         DeleteByQueryRequest request = new DeleteByQueryRequest("source1", "source2");
         return client.deleteByQuery(request, RequestOptions.DEFAULT);
-    }
-
-    /**
-     * Bulk Processor
-     */
-    @SneakyThrows
-    public boolean bulk(int actions, long size, ToLongFunction<BulkProcessor> function) {
-        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
-                new BulkProcessor.Listener() {
-                    @Override
-                    public void beforeBulk(long executionId, BulkRequest request) {
-                        int numberOfActions = request.numberOfActions();
-                        log.debug("Executing bulk [{}] with {} requests", executionId, numberOfActions);
-                    }
-
-                    @Override
-                    public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-                        if (response.hasFailures()) {
-                            log.warn("Bulk [{}] executed with failures", executionId);
-                        } else {
-                            log.debug("Bulk [{}] completed in {} milliseconds", executionId, response.getTook().getMillis());
-                        }
-                    }
-
-                    @Override
-                    public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
-                        log.error("Failed to execute bulk", failure);
-                    }
-                }).setBulkActions(actions)//default:1000
-                .setBulkSize(new ByteSizeValue(size, ByteSizeUnit.MB))//default:5
-                .setConcurrentRequests(0)
-                .setBackoffPolicy(BackoffPolicy.constantBackoff(TimeValue.timeValueSeconds(1L), 3))
-                .build()) {
-            return bulkProcessor.awaitClose(function.applyAsLong(bulkProcessor), TimeUnit.SECONDS);
-        }
     }
 }
