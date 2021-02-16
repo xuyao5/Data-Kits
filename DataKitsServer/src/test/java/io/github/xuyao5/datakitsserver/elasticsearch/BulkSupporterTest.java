@@ -7,14 +7,12 @@ import org.junit.jupiter.api.Test;
 public class BulkSupporterTest extends AbstractTest {
 
     @Test
-    void test() {
-        getEsClient().execute(restHighLevelClient -> {
-            BulkSupporter bulkSupporter = new BulkSupporter(restHighLevelClient, 0, 0);
-            bulkSupporter.bulk(val -> {
-                val.apply(null);
-                return 0;
-            });
-            return null;
-        });
+    void testBulk() {
+        getEsClient().execute(client -> new BulkSupporter(client).bulk(function -> {
+            for (int i = 0; i < 1000000; i++) {
+                function.apply(BulkSupporter.genIndexRequest("test_index_5", String.valueOf(i), Pojo.of("xu")));
+            }
+            return 30;
+        }));
     }
 }

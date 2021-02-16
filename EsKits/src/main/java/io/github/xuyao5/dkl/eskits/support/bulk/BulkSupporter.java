@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support.bulk;
 
+import io.github.xuyao5.dkl.common.util.GsonUtils;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -8,12 +9,15 @@ import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentType;
 
+import javax.validation.constraints.NotNull;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
@@ -34,6 +38,19 @@ public final class BulkSupporter extends AbstractSupporter {
         super(client);
         BULK_ACTIONS = bulkActions;
         BULK_SIZE = bulkSize;
+    }
+
+    public BulkSupporter(RestHighLevelClient client) {
+        this(client, 2000, 10);
+    }
+
+    public static final <T> IndexRequest genIndexRequest(@NotNull String index, @NotNull String id, @NotNull T obj) {
+        return new IndexRequest(index)
+                .id(id)
+                .source(GsonUtils.obj2Json(obj), XContentType.JSON)
+//                .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL)
+//                .versionType(VersionType.EXTERNAL)
+                .opType(DocWriteRequest.OpType.CREATE);
     }
 
     /**

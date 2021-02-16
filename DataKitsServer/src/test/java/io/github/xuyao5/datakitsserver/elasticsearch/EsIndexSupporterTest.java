@@ -15,6 +15,6 @@ public class EsIndexSupporterTest extends AbstractTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        getEsClient().execute(client -> new EsIndexSupporter(client).create("TEST_INDEX_1", 1, 1, mapping, "abc", true));
+        getEsClient().execute(client -> new EsIndexSupporter(client).create("test_index_5", 1, 0, mapping, "DEMO-5", true));
     }
 }
