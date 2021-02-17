@@ -33,15 +33,17 @@ public final class BulkSupporter extends AbstractSupporter {
 
     private final int BULK_ACTIONS;
     private final int BULK_SIZE;
+    private final int CONCURRENT_REQUESTS;
 
-    public BulkSupporter(RestHighLevelClient client, int bulkActions, int bulkSize) {
+    public BulkSupporter(RestHighLevelClient client, int bulkActions, int bulkSize, int concurrentRequests) {
         super(client);
         BULK_ACTIONS = bulkActions;
         BULK_SIZE = bulkSize;
+        CONCURRENT_REQUESTS = concurrentRequests;
     }
 
     public BulkSupporter(RestHighLevelClient client) {
-        this(client, 2000, 10);
+        this(client, 1000, 5, 1);
     }
 
     public static final <T> IndexRequest genIndexRequest(@NotNull String index, @NotNull String id, @NotNull T obj) {
@@ -81,7 +83,7 @@ public final class BulkSupporter extends AbstractSupporter {
                     }
                 }).setBulkActions(BULK_ACTIONS)
                 .setBulkSize(new ByteSizeValue(BULK_SIZE, ByteSizeUnit.MB))
-                .setConcurrentRequests(0)
+                .setConcurrentRequests(CONCURRENT_REQUESTS)
                 .setBackoffPolicy(BackoffPolicy.constantBackoff(TimeValue.timeValueSeconds(1L), 3))
                 .build()) {
             return bulkProcessor.awaitClose(function.applyAsLong(bulkProcessor::add), TimeUnit.SECONDS);
