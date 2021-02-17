@@ -84,4 +84,25 @@ public class EsDocumentSupporterTest extends AbstractTest {
             return null;
         });
     }
+
+    void testReindex() {
+        getEsClient().execute(client -> {
+            new EsDocumentSupporter(client).reindex("", 1);
+            return null;
+        });
+    }
+
+    void testUpdateByQuery() {
+        getEsClient().execute(client -> {
+            new EsDocumentSupporter(client).updateByQuery(null, 1);
+            return null;
+        });
+    }
+
+    void testDeleteByQuery() {
+        getEsClient().execute(client -> {
+            new EsDocumentSupporter(client).deleteByQuery(null, 1);
+            return null;
+        });
+    }
 }

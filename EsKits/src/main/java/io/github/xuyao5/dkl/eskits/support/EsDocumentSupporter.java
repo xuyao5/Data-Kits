@@ -21,6 +21,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.GetSourceRequest;
 import org.elasticsearch.client.core.GetSourceResponse;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.ReindexRequest;
@@ -114,19 +115,22 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex() {
-        ReindexRequest request = new ReindexRequest();
-        request.setSourceIndices("source1", "source2");
-        request.setDestIndex("dest");
-        return client.reindex(request, DEFAULT);
+    public BulkByScrollResponse reindex(@NotNull String destinationIndex, int sourceBatchSize, @NotNull String... sourceIndices) {
+        return client.reindex(new ReindexRequest()
+                .setSourceIndices(sourceIndices)
+                .setDestIndex(destinationIndex)
+                .setSourceBatchSize(sourceBatchSize), DEFAULT);
     }
 
     /**
      * Update By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse updateByQuery() {
-        UpdateByQueryRequest request = new UpdateByQueryRequest("source1", "source2");
+    public BulkByScrollResponse updateByQuery(@NotNull QueryBuilder query, int batchSize, @NotNull String... indices) {
+        UpdateByQueryRequest request = new UpdateByQueryRequest(indices);
+        request.setConflicts("proceed");
+        request.setQuery(query);
+        request.setBatchSize(batchSize);
         return client.updateByQuery(request, DEFAULT);
     }
 
@@ -134,8 +138,11 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Delete By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse deleteByQuery() {
+    public BulkByScrollResponse deleteByQuery(@NotNull QueryBuilder query, int batchSize, @NotNull String... indices) {
         DeleteByQueryRequest request = new DeleteByQueryRequest("source1", "source2");
+        request.setConflicts("proceed");
+        request.setQuery(query);
+        request.setBatchSize(batchSize);
         return client.deleteByQuery(request, DEFAULT);
     }
 }
