@@ -18,7 +18,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import javax.validation.constraints.NotNull;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.ToLongFunction;
+import java.util.function.ToIntFunction;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -57,7 +57,7 @@ public final class BulkSupporter extends AbstractSupporter {
      * Bulk Processor
      */
     @SneakyThrows
-    public boolean bulk(ToLongFunction<Function<DocWriteRequest<?>, BulkProcessor>> function) {
+    public boolean bulk(ToIntFunction<Function<DocWriteRequest<?>, BulkProcessor>> function) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
@@ -83,7 +83,7 @@ public final class BulkSupporter extends AbstractSupporter {
                 .setBulkSize(new ByteSizeValue(BULK_SIZE, ByteSizeUnit.MB))
                 .setConcurrentRequests(CONCURRENT_REQUESTS)
                 .build()) {
-            return bulkProcessor.awaitClose(function.applyAsLong(bulkProcessor::add), TimeUnit.SECONDS);
+            return bulkProcessor.awaitClose(function.applyAsInt(bulkProcessor::add), TimeUnit.SECONDS);
         }
     }
 }
