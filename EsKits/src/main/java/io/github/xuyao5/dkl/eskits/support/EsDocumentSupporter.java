@@ -50,8 +50,8 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Index API
      */
     @SneakyThrows
-    public IndexResponse index(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
-        return client.index(new IndexRequest(index).id(id).source(GsonUtils.obj2Json(obj), XContentType.JSON), DEFAULT);
+    public IndexResponse index(@NotNull String index, @NotNull String id, @NotNull Serializable json) {
+        return client.index(new IndexRequest(index).id(id).source(GsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 
     /**
@@ -90,8 +90,8 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Update API
      */
     @SneakyThrows
-    public UpdateResponse update(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
-        return client.update(new UpdateRequest(index, id).doc(GsonUtils.obj2Json(obj), XContentType.JSON), DEFAULT);
+    public UpdateResponse update(@NotNull String index, @NotNull String id, @NotNull Serializable json) {
+        return client.update(new UpdateRequest(index, id).doc(GsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 
     /**
