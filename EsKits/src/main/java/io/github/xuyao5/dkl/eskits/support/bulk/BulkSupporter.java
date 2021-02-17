@@ -5,7 +5,6 @@ import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;
-import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -14,7 +13,6 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import javax.validation.constraints.NotNull;
@@ -84,7 +82,6 @@ public final class BulkSupporter extends AbstractSupporter {
                 }).setBulkActions(BULK_ACTIONS)
                 .setBulkSize(new ByteSizeValue(BULK_SIZE, ByteSizeUnit.MB))
                 .setConcurrentRequests(CONCURRENT_REQUESTS)
-                .setBackoffPolicy(BackoffPolicy.constantBackoff(TimeValue.timeValueSeconds(1L), 3))
                 .build()) {
             return bulkProcessor.awaitClose(function.applyAsLong(bulkProcessor::add), TimeUnit.SECONDS);
         }
