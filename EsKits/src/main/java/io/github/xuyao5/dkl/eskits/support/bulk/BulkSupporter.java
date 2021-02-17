@@ -54,7 +54,7 @@ public final class BulkSupporter extends AbstractSupporter {
         this(client, 1000 * 3, 5 * 3, 1 * 3);
     }
 
-    public static final <T> IndexRequest genIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
+    public static final IndexRequest genIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
         return new IndexRequest(index).id(id).source(GsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
