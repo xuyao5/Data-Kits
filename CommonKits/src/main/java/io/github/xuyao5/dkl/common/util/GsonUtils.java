@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT;
+
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 10/10/20 11:00
@@ -27,7 +29,7 @@ public final class GsonUtils {
         GSON = new GsonBuilder()
                 .enableComplexMapKeySerialization()
                 .serializeSpecialFloatingPointValues()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setDateFormat(ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.getPattern())
                 .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
                 .setPrettyPrinting()
                 .setVersion(1.0)
