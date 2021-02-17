@@ -12,7 +12,6 @@ import org.elasticsearch.action.get.MultiGetRequest;
 import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -45,7 +44,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public IndexResponse index(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
-        return client.index(new IndexRequest(index).id(id).source(GsonUtils.obj2Json(obj), XContentType.JSON).setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL), RequestOptions.DEFAULT);
+        return client.index(new IndexRequest(index).id(id).source(GsonUtils.obj2Json(obj), XContentType.JSON), RequestOptions.DEFAULT);
     }
 
     /**
