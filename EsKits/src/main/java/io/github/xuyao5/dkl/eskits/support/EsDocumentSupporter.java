@@ -4,6 +4,9 @@ import io.github.xuyao5.dkl.common.util.GsonUtils;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.DocWriteRequest;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -25,6 +28,7 @@ import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_FETCH_SOURCE;
@@ -88,6 +92,14 @@ public final class EsDocumentSupporter extends AbstractSupporter {
     @SneakyThrows
     public UpdateResponse update(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
         return client.update(new UpdateRequest(index, id).doc(GsonUtils.obj2Json(obj), XContentType.JSON), DEFAULT);
+    }
+
+    /**
+     * Bulk API
+     */
+    @SneakyThrows
+    public BulkResponse bulk(@NotNull List<DocWriteRequest<?>> requests) {
+        return client.bulk(new BulkRequest().add(requests), DEFAULT);
     }
 
     /**

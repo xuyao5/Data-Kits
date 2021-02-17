@@ -2,7 +2,12 @@ package io.github.xuyao5.datakitsserver.elasticsearch;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.dkl.eskits.support.EsDocumentSupporter;
+import io.github.xuyao5.dkl.eskits.support.bulk.BulkSupporter;
+import org.elasticsearch.action.DocWriteRequest;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EsDocumentSupporterTest extends AbstractTest {
 
@@ -50,6 +55,17 @@ public class EsDocumentSupporterTest extends AbstractTest {
     void testUpdate() {
         getEsClient().execute(client -> {
             System.out.println(new EsDocumentSupporter(client).update("test_index_5", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
+            return null;
+        });
+    }
+
+    @Test
+    void testBulk() {
+        getEsClient().execute(client -> {
+            List<DocWriteRequest<?>> requestList = new ArrayList<>();
+            requestList.add(BulkSupporter.genIndexRequest("test_index_5", "100", Pojo.of("测试更新：" + System.currentTimeMillis())));
+            requestList.add(BulkSupporter.genIndexRequest("test_index_5", "101", Pojo.of("测试更新：" + System.currentTimeMillis())));
+            System.out.println(new EsDocumentSupporter(client).bulk(requestList));
             return null;
         });
     }
