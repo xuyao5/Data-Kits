@@ -30,18 +30,26 @@ import java.util.function.ToIntFunction;
 public final class BulkSupporter extends AbstractSupporter {
 
     private final int BULK_ACTIONS;
-    private final int BULK_SIZE;
+    private final long BULK_SIZE;
     private final int CONCURRENT_REQUESTS;
 
-    public BulkSupporter(RestHighLevelClient client, int bulkActions, int bulkSize, int concurrentRequests) {
+    public BulkSupporter(RestHighLevelClient client, int bulkActions, long bulkSize, int concurrentRequests) {
         super(client);
         BULK_ACTIONS = bulkActions;
         BULK_SIZE = bulkSize;
         CONCURRENT_REQUESTS = concurrentRequests;
     }
 
+    public BulkSupporter(RestHighLevelClient client, int bulkActions, int concurrentRequests) {
+        this(client, bulkActions, -1, concurrentRequests);
+    }
+
+    public BulkSupporter(RestHighLevelClient client, long bulkSize, int concurrentRequests) {
+        this(client, -1, bulkSize, concurrentRequests);
+    }
+
     public BulkSupporter(RestHighLevelClient client) {
-        this(client, 1000, 5, 1);
+        this(client, 1000 * 3, 5 * 3, 1 * 3);
     }
 
     public static final <T> IndexRequest genIndexRequest(@NotNull String index, @NotNull String id, @NotNull T obj) {
