@@ -4,7 +4,6 @@ import io.github.xuyao5.dkl.common.util.GsonUtils;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -19,7 +18,6 @@ import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.ReindexRequest;
@@ -47,12 +45,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public IndexResponse index(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
-        return client.index(new IndexRequest(index)
-                .id(id)
-                .source(GsonUtils.obj2Json(obj), XContentType.JSON)
-                .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL)
-                .versionType(VersionType.EXTERNAL)
-                .opType(DocWriteRequest.OpType.CREATE), RequestOptions.DEFAULT);
+        return client.index(new IndexRequest(index).id(id).source(GsonUtils.obj2Json(obj), XContentType.JSON).setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL), RequestOptions.DEFAULT);
     }
 
     /**
