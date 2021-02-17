@@ -86,8 +86,8 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Update API
      */
     @SneakyThrows
-    public UpdateResponse update(@NotNull String index, @NotNull String id) {
-        return client.update(new UpdateRequest(index, id), DEFAULT);
+    public UpdateResponse update(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
+        return client.update(new UpdateRequest(index, id).doc(GsonUtils.obj2Json(obj), XContentType.JSON), DEFAULT);
     }
 
     /**

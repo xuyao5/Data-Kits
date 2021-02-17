@@ -45,4 +45,12 @@ public class EsDocumentSupporterTest extends AbstractTest {
             return null;
         });
     }
+
+    @Test
+    void testUpdate() {
+        getEsClient().execute(client -> {
+            System.out.println(new EsDocumentSupporter(client).update("test_index_5", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
+            return null;
+        });
+    }
 }
