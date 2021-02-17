@@ -16,6 +16,7 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -52,7 +53,7 @@ public final class BulkSupporter extends AbstractSupporter {
         this(client, 1000 * 3, 5 * 3, 1 * 3);
     }
 
-    public static final <T> IndexRequest genIndexRequest(@NotNull String index, @NotNull String id, @NotNull T obj) {
+    public static final <T> IndexRequest genIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
         return new IndexRequest(index)
                 .id(id)
                 .source(GsonUtils.obj2Json(obj), XContentType.JSON)

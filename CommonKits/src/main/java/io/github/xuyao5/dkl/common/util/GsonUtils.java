@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
@@ -42,11 +43,11 @@ public final class GsonUtils {
         }
     }
 
-    public static <T> String obj2Json(@NotNull T obj) {
+    public static String obj2Json(@NotNull Serializable obj) {
         return GSON.toJson(obj);
     }
 
-    public static <T> String obj2Json(@NotNull T obj, @NotNull Type type) {
+    public static String obj2Json(@NotNull Serializable obj, @NotNull Type type) {
         return GSON.toJson(obj, type);
     }
 

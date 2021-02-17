@@ -27,6 +27,7 @@ import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -45,7 +46,7 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Index API
      */
     @SneakyThrows
-    public <T> IndexResponse index(@NotNull String index, @NotNull String id, @NotNull T obj) {
+    public IndexResponse index(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
         return client.index(new IndexRequest(index)
                 .id(id)
                 .source(GsonUtils.obj2Json(obj), XContentType.JSON)
