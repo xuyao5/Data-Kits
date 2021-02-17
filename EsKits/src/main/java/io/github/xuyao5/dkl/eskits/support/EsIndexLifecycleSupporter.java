@@ -2,7 +2,6 @@ package io.github.xuyao5.dkl.eskits.support;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.AcknowledgedResponse;
 import org.elasticsearch.client.indexlifecycle.*;
@@ -15,6 +14,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -44,6 +45,6 @@ public final class EsIndexLifecycleSupporter extends AbstractSupporter {
         LifecyclePolicy policy = new LifecyclePolicy("my_policy", phases);
         PutLifecyclePolicyRequest request = new PutLifecyclePolicyRequest(policy);
 
-        return client.indexLifecycle().putLifecyclePolicy(request, RequestOptions.DEFAULT);
+        return client.indexLifecycle().putLifecyclePolicy(request, DEFAULT);
     }
 }

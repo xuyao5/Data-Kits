@@ -7,7 +7,6 @@ import org.elasticsearch.action.explain.ExplainResponse;
 import org.elasticsearch.action.fieldcaps.FieldCapabilitiesRequest;
 import org.elasticsearch.action.fieldcaps.FieldCapabilitiesResponse;
 import org.elasticsearch.action.search.*;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
@@ -23,6 +22,8 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
+
+import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -46,7 +47,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
                         .size(10)
                         .timeout(TimeValue.timeValueSeconds(60))
                         .fetchSource(false)),
-                RequestOptions.DEFAULT);
+                DEFAULT);
     }
 
     /**
@@ -56,7 +57,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
     public SearchResponse scroll() {
         SearchScrollRequest request = new SearchScrollRequest();
         request.scroll(TimeValue.timeValueSeconds(30));
-        return client.scroll(request, RequestOptions.DEFAULT);
+        return client.scroll(request, DEFAULT);
     }
 
 
@@ -67,7 +68,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
     public ClearScrollResponse clearScroll() {
         ClearScrollRequest request = new ClearScrollRequest();
         request.addScrollId("scrollId");
-        return client.clearScroll(request, RequestOptions.DEFAULT);
+        return client.clearScroll(request, DEFAULT);
     }
 
     /**
@@ -86,7 +87,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
         searchSourceBuilder.query(QueryBuilders.matchQuery("user", "luca"));
         secondSearchRequest.source(searchSourceBuilder);
         request.add(secondSearchRequest);
-        return client.msearch(request, RequestOptions.DEFAULT);
+        return client.msearch(request, DEFAULT);
     }
 
     /**
@@ -99,7 +100,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
         request.setScriptType(ScriptType.INLINE);
         request.setScript("");
         request.setScriptParams(null);
-        return client.searchTemplate(request, RequestOptions.DEFAULT);
+        return client.searchTemplate(request, DEFAULT);
     }
 
     /**
@@ -129,7 +130,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
 
             multiRequest.add(request);
         }
-        return client.msearchTemplate(multiRequest, RequestOptions.DEFAULT);
+        return client.msearchTemplate(multiRequest, DEFAULT);
     }
 
     /**
@@ -140,7 +141,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
         FieldCapabilitiesRequest request = new FieldCapabilitiesRequest()
                 .fields("user")
                 .indices("posts", "authors", "contributors");
-        return client.fieldCaps(request, RequestOptions.DEFAULT);
+        return client.fieldCaps(request, DEFAULT);
     }
 
     /**
@@ -160,7 +161,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
                 new RankEvalSpec(ratedRequests, metric);
         RankEvalRequest request =
                 new RankEvalRequest(specification, new String[]{"posts"});
-        return client.rankEval(request, RequestOptions.DEFAULT);
+        return client.rankEval(request, DEFAULT);
     }
 
     /**
@@ -170,7 +171,7 @@ public final class EsSearchSupporter extends AbstractSupporter {
     public ExplainResponse explain() {
         ExplainRequest request = new ExplainRequest("contributors", "1");
         request.query(QueryBuilders.termQuery("user", "tanguy"));
-        return client.explain(request, RequestOptions.DEFAULT);
+        return client.explain(request, DEFAULT);
     }
 
     /**
@@ -181,6 +182,6 @@ public final class EsSearchSupporter extends AbstractSupporter {
         CountRequest countRequest = new CountRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-        return client.count(countRequest, RequestOptions.DEFAULT);
+        return client.count(countRequest, DEFAULT);
     }
 }
