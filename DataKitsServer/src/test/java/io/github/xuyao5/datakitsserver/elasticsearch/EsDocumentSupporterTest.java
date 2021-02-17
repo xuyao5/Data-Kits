@@ -13,4 +13,36 @@ public class EsDocumentSupporterTest extends AbstractTest {
             return null;
         });
     }
+
+    @Test
+    void testGet() {
+        getEsClient().execute(client -> {
+            System.out.println(new EsDocumentSupporter(client).get("test_index_5", "2"));
+            return null;
+        });
+    }
+
+    @Test
+    void testGetSource() {
+        getEsClient().execute(client -> {
+            System.out.println(new EsDocumentSupporter(client).getSource("test_index_5", "2"));
+            return null;
+        });
+    }
+
+    @Test
+    void testExists() {
+        getEsClient().execute(client -> {
+            System.out.println(new EsDocumentSupporter(client).exists("test_index_5", "2"));
+            return null;
+        });
+    }
+
+    @Test
+    void testDelete() {
+        getEsClient().execute(client -> {
+            System.out.println(new EsDocumentSupporter(client).delete("test_index_5", "2"));
+            return null;
+        });
+    }
 }
