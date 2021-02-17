@@ -106,13 +106,8 @@ public final class EsDocumentSupporter extends AbstractSupporter {
      * Multi-Get API
      */
     @SneakyThrows
-    public MultiGetResponse mget() {
-        MultiGetRequest request = new MultiGetRequest();
-        request.add(new MultiGetRequest.Item(
-                "index",
-                "example_id"));
-        request.add(new MultiGetRequest.Item("index", "another_id"));
-        return client.mget(request, DEFAULT);
+    public MultiGetResponse multiGet(@NotNull List<MultiGetRequest.Item> items) {
+        return client.mget(items.stream().reduce(new MultiGetRequest(), MultiGetRequest::add, (items1, items2) -> null), DEFAULT);
     }
 
     /**

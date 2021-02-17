@@ -4,6 +4,7 @@ import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.dkl.eskits.support.EsDocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.bulk.BulkSupporter;
 import org.elasticsearch.action.DocWriteRequest;
+import org.elasticsearch.action.get.MultiGetRequest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -66,6 +67,20 @@ public class EsDocumentSupporterTest extends AbstractTest {
             requestList.add(BulkSupporter.genIndexRequest("test_index_5", "100", Pojo.of("测试更新：" + System.currentTimeMillis())));
             requestList.add(BulkSupporter.genIndexRequest("test_index_5", "101", Pojo.of("测试更新：" + System.currentTimeMillis())));
             System.out.println(new EsDocumentSupporter(client).bulk(requestList));
+            return null;
+        });
+    }
+
+    @Test
+    void testMultiGet() {
+        getEsClient().execute(client -> {
+            List<MultiGetRequest.Item> list = new ArrayList<>();
+            list.add(new MultiGetRequest.Item("test_index_5", "3"));
+            list.add(new MultiGetRequest.Item("test_index_5", "100"));
+            list.add(new MultiGetRequest.Item("test_index_5", "101"));
+            new EsDocumentSupporter(client).multiGet(list).iterator().forEachRemaining(multiGetItemResponse -> {
+                System.out.println(multiGetItemResponse.getResponse());
+            });
             return null;
         });
     }
