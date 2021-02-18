@@ -13,6 +13,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
@@ -26,6 +27,8 @@ import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
  */
 @Slf4j
 public final class EsClient {
+
+    private static final ThreadLocal<RestHighLevelClient> CLIENT_THREAD_LOCAL = new ThreadLocal<>();
 
     private final HttpHost[] HOSTS;
     private final String USERNAME;
@@ -51,13 +54,16 @@ public final class EsClient {
     }
 
     private RestHighLevelClient getRestHighLevelClient() {
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME, PASSWORD));
-        return new RestHighLevelClient(RestClient.builder(HOSTS)
-                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
-                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * CONN_MULTI)
-                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * CONN_MULTI)
-                        .setDefaultCredentialsProvider(credentialsProvider)));
+        if (Objects.isNull(CLIENT_THREAD_LOCAL.get())) {
+            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME, PASSWORD));
+            CLIENT_THREAD_LOCAL.set(new RestHighLevelClient(RestClient.builder(HOSTS)
+                    .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                            .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * CONN_MULTI)
+                            .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * CONN_MULTI)
+                            .setDefaultCredentialsProvider(credentialsProvider))));
+        }
+        return CLIENT_THREAD_LOCAL.get();
     }
 
     private HttpHost[] url2HttpHost(@NotNull String[] url) {
