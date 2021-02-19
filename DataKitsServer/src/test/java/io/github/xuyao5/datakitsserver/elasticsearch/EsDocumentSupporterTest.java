@@ -2,7 +2,7 @@ package io.github.xuyao5.datakitsserver.elasticsearch;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.dkl.eskits.support.EsDocumentSupporter;
-import io.github.xuyao5.dkl.eskits.support.bulk.BulkSupporter;
+import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.get.MultiGetRequest;
 import org.junit.jupiter.api.Test;

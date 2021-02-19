@@ -2,7 +2,10 @@ package io.github.xuyao5.dkl.eskits.support;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
-import org.elasticsearch.action.search.*;
+import org.elasticsearch.action.search.MultiSearchRequest;
+import org.elasticsearch.action.search.MultiSearchResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
@@ -44,27 +47,6 @@ public final class EsSearchSupporter extends AbstractSupporter {
                         .timeout(TimeValue.timeValueSeconds(60))
                         .fetchSource(false)),
                 DEFAULT);
-    }
-
-    /**
-     * Search Scroll API
-     */
-    @SneakyThrows
-    public SearchResponse scroll() {
-        SearchScrollRequest request = new SearchScrollRequest();
-        request.scroll(TimeValue.timeValueSeconds(30));
-        return client.scroll(request, DEFAULT);
-    }
-
-
-    /**
-     * Clear Scroll API
-     */
-    @SneakyThrows
-    public ClearScrollResponse clearScroll() {
-        ClearScrollRequest request = new ClearScrollRequest();
-        request.addScrollId("scrollId");
-        return client.clearScroll(request, DEFAULT);
     }
 
     /**

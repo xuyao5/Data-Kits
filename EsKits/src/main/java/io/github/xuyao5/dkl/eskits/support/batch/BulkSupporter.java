@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.support.bulk;
+package io.github.xuyao5.dkl.eskits.support.batch;
 
 import io.github.xuyao5.dkl.common.util.GsonUtils;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
