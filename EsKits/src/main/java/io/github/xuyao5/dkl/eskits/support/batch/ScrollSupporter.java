@@ -20,21 +20,21 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 19/02/21 18:46
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote ScrollSupporter
+ * @implNote ScrollSupporter
  */
 @Slf4j
 public final class ScrollSupporter extends AbstractSupporter {
 
-    private final int KEEP_ALIVE;
+    private final Scroll SCROLL;
 
     public ScrollSupporter(RestHighLevelClient client, int keepAlive) {
         super(client);
-        KEEP_ALIVE = keepAlive;
+        SCROLL = new Scroll(TimeValue.timeValueMinutes(keepAlive));
     }
 
     public ScrollSupporter(RestHighLevelClient client) {
-        this(client, 1);
+        this(client, 10);
     }
 
     /**
@@ -42,15 +42,14 @@ public final class ScrollSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public ClearScrollResponse scroll(Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, int size, @NotNull String... indices) {
-        final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(KEEP_ALIVE));
-
-        SearchResponse searchResponse = client.search(new SearchRequest(indices).source(new SearchSourceBuilder().query(queryBuilder).size(size)).scroll(scroll), DEFAULT);
+        SearchResponse searchResponse = client.search(new SearchRequest(indices).source(new SearchSourceBuilder().query(queryBuilder).size(size)).scroll(SCROLL), DEFAULT);
         String scrollId = searchResponse.getScrollId();
         SearchHit[] searchHits = searchResponse.getHits().getHits();
 
         while (Objects.nonNull(searchHits) && searchHits.length > 0) {
             consumer.accept(searchHits);
-            searchResponse = client.scroll(new SearchScrollRequest(scrollId).scroll(scroll), DEFAULT);
+
+            searchResponse = client.scroll(new SearchScrollRequest(scrollId).scroll(SCROLL), DEFAULT);
             scrollId = searchResponse.getScrollId();
             searchHits = searchResponse.getHits().getHits();
         }
