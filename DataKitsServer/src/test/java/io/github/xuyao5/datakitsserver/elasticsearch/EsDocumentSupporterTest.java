@@ -3,6 +3,8 @@ package io.github.xuyao5.datakitsserver.elasticsearch;
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.dkl.eskits.support.EsDocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
+import io.github.xuyao5.dkl.eskits.support.batch.MultiFamilySupporter;
+import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.get.MultiGetRequest;
 import org.junit.jupiter.api.Test;
@@ -66,7 +68,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
             List<DocWriteRequest<?>> requestList = new ArrayList<>();
             requestList.add(BulkSupporter.genIndexRequest("test_index_5", "100", Pojo.of("测试更新：" + System.currentTimeMillis())));
             requestList.add(BulkSupporter.genIndexRequest("test_index_5", "101", Pojo.of("测试更新：" + System.currentTimeMillis())));
-            System.out.println(new EsDocumentSupporter(client).bulk(requestList));
+            System.out.println(new BulkSupporter(client).bulk(requestList));
             return null;
         });
     }
@@ -78,7 +80,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
             list.add(new MultiGetRequest.Item("test_index_5", "3"));
             list.add(new MultiGetRequest.Item("test_index_5", "100"));
             list.add(new MultiGetRequest.Item("test_index_5", "101"));
-            new EsDocumentSupporter(client).multiGet(list).iterator().forEachRemaining(multiGetItemResponse -> {
+            new MultiFamilySupporter(client).multiGet(list).iterator().forEachRemaining(multiGetItemResponse -> {
                 System.out.println(multiGetItemResponse.getResponse());
             });
             return null;
@@ -87,7 +89,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     void testReindex() {
         esClient.execute(client -> {
-            new EsDocumentSupporter(client).reindex("", 1);
+            new ReindexSupporter(client).reindex("", 1);
             return null;
         });
     }

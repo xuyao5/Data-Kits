@@ -4,15 +4,10 @@ import io.github.xuyao5.dkl.common.util.GsonUtils;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.DocWriteRequest;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.get.MultiGetRequest;
-import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -21,12 +16,9 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.GetSourceRequest;
 import org.elasticsearch.client.core.GetSourceResponse;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.reindex.BulkByScrollResponse;
-import org.elasticsearch.index.reindex.ReindexRequest;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_FETCH_SOURCE;
@@ -90,32 +82,5 @@ public final class EsDocumentSupporter extends AbstractSupporter {
     @SneakyThrows
     public UpdateResponse update(@NotNull String index, @NotNull String id, @NotNull Serializable json) {
         return client.update(new UpdateRequest(index, id).doc(GsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
-    }
-
-    /**
-     * Bulk API
-     */
-    @SneakyThrows
-    public BulkResponse bulk(@NotNull List<DocWriteRequest<?>> requests) {
-        return client.bulk(new BulkRequest().add(requests), DEFAULT);
-    }
-
-    /**
-     * Multi-Get API
-     */
-    @SneakyThrows
-    public MultiGetResponse multiGet(@NotNull List<MultiGetRequest.Item> items) {
-        return client.mget(items.stream().reduce(new MultiGetRequest(), MultiGetRequest::add, (items1, items2) -> null), DEFAULT);
-    }
-
-    /**
-     * Reindex API
-     */
-    @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull String destinationIndex, int sourceBatchSize, @NotNull String... sourceIndices) {
-        return client.reindex(new ReindexRequest()
-                .setSourceIndices(sourceIndices)
-                .setDestIndex(destinationIndex)
-                .setSourceBatchSize(sourceBatchSize), DEFAULT);
     }
 }

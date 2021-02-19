@@ -16,6 +16,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -90,5 +91,13 @@ public final class BulkSupporter extends AbstractSupporter {
                 .build()) {
             return bulkProcessor.awaitClose(function.applyAsInt(bulkProcessor::add), TimeUnit.SECONDS);
         }
+    }
+
+    /**
+     * Bulk API
+     */
+    @SneakyThrows
+    public BulkResponse bulk(@NotNull List<DocWriteRequest<?>> requests) {
+        return client.bulk(new BulkRequest().add(requests), DEFAULT);
     }
 }

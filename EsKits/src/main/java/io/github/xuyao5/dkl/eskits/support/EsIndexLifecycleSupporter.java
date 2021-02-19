@@ -2,6 +2,7 @@ package io.github.xuyao5.dkl.eskits.support;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.AcknowledgedResponse;
 import org.elasticsearch.client.indexlifecycle.*;
@@ -23,6 +24,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @apiNote EsIndexLifecycleSupporter
  * @implNote EsIndexLifecycleSupporter
  */
+@Slf4j
 public final class EsIndexLifecycleSupporter extends AbstractSupporter {
 
     public EsIndexLifecycleSupporter(@NotNull RestHighLevelClient client) {
