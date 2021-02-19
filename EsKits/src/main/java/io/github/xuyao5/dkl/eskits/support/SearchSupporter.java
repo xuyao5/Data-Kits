@@ -58,9 +58,6 @@ public final class SearchSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public CountResponse count(@NotNull QueryBuilder query, @NotNull String... indices) {
-        CountRequest countRequest = new CountRequest(indices);
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(query);
-        return client.count(countRequest, DEFAULT);
+        return client.count(new CountRequest(indices).query(query), DEFAULT);
     }
 }
