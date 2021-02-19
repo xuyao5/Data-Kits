@@ -26,8 +26,8 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 14/02/21 08:13
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote BulkSupporter
+ * @implNote BulkSupporter
  */
 @Slf4j
 public final class BulkSupporter extends AbstractSupporter {
