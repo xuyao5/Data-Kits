@@ -14,7 +14,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     @Test
     void testIndex() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             System.out.println(new EsDocumentSupporter(client).index("test_index_1", "1", Pojo.of("测试")));
             return null;
         });
@@ -22,7 +22,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     @Test
     void testGet() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             System.out.println(new EsDocumentSupporter(client).get("test_index_5", "2"));
             return null;
         });
@@ -30,7 +30,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     @Test
     void testGetSource() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             System.out.println(new EsDocumentSupporter(client).getSource("test_index_5", "2"));
             return null;
         });
@@ -38,7 +38,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     @Test
     void testExists() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             System.out.println(new EsDocumentSupporter(client).exists("test_index_5", "2"));
             return null;
         });
@@ -46,7 +46,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     @Test
     void testDelete() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             System.out.println(new EsDocumentSupporter(client).delete("test_index_5", "2"));
             return null;
         });
@@ -54,7 +54,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     @Test
     void testUpdate() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             System.out.println(new EsDocumentSupporter(client).update("test_index_5", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
             return null;
         });
@@ -62,7 +62,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     @Test
     void testBulk() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             List<DocWriteRequest<?>> requestList = new ArrayList<>();
             requestList.add(BulkSupporter.genIndexRequest("test_index_5", "100", Pojo.of("测试更新：" + System.currentTimeMillis())));
             requestList.add(BulkSupporter.genIndexRequest("test_index_5", "101", Pojo.of("测试更新：" + System.currentTimeMillis())));
@@ -73,7 +73,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
 
     @Test
     void testMultiGet() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             List<MultiGetRequest.Item> list = new ArrayList<>();
             list.add(new MultiGetRequest.Item("test_index_5", "3"));
             list.add(new MultiGetRequest.Item("test_index_5", "100"));
@@ -86,21 +86,21 @@ public class EsDocumentSupporterTest extends AbstractTest {
     }
 
     void testReindex() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             new EsDocumentSupporter(client).reindex("", 1);
             return null;
         });
     }
 
     void testUpdateByQuery() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             new EsDocumentSupporter(client).updateByQuery(null, 1);
             return null;
         });
     }
 
     void testDeleteByQuery() {
-        getEsClient().execute(client -> {
+        esClient.execute(client -> {
             new EsDocumentSupporter(client).deleteByQuery(null, 1);
             return null;
         });
