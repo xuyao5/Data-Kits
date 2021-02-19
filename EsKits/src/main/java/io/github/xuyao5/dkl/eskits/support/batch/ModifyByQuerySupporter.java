@@ -25,16 +25,16 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_S
  * @implNote ModifyByQuery
  */
 @Slf4j
-public final class ModifyByQuery extends AbstractSupporter {
+public final class ModifyByQuerySupporter extends AbstractSupporter {
 
     private final int KEEP_ALIVE;
 
-    public ModifyByQuery(RestHighLevelClient client, int keepAlive) {
+    public ModifyByQuerySupporter(RestHighLevelClient client, int keepAlive) {
         super(client);
         KEEP_ALIVE = keepAlive;
     }
 
-    public ModifyByQuery(RestHighLevelClient client) {
+    public ModifyByQuerySupporter(RestHighLevelClient client) {
         this(client, 10);
     }
 

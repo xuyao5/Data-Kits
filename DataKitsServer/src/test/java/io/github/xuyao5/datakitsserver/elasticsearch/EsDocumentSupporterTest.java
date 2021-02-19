@@ -3,7 +3,7 @@ package io.github.xuyao5.datakitsserver.elasticsearch;
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.dkl.eskits.support.EsDocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
-import io.github.xuyao5.dkl.eskits.support.batch.MultiFamilySupporter;
+import io.github.xuyao5.dkl.eskits.support.batch.MultiFetchSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.get.MultiGetRequest;
@@ -80,7 +80,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
             list.add(new MultiGetRequest.Item("test_index_5", "3"));
             list.add(new MultiGetRequest.Item("test_index_5", "100"));
             list.add(new MultiGetRequest.Item("test_index_5", "101"));
-            new MultiFamilySupporter(client).multiGet(list).iterator().forEachRemaining(multiGetItemResponse -> {
+            new MultiFetchSupporter(client).multiGet(list).iterator().forEachRemaining(multiGetItemResponse -> {
                 System.out.println(multiGetItemResponse.getResponse());
             });
             return null;

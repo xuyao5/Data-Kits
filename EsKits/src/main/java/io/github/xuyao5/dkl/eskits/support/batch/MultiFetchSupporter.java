@@ -30,9 +30,9 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote MultiFamilySupporter
  */
 @Slf4j
-public final class MultiFamilySupporter extends AbstractSupporter {
+public final class MultiFetchSupporter extends AbstractSupporter {
 
-    public MultiFamilySupporter(RestHighLevelClient client) {
+    public MultiFetchSupporter(RestHighLevelClient client) {
         super(client);
     }
 
