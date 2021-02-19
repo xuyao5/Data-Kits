@@ -9,12 +9,10 @@ import org.elasticsearch.action.search.MultiSearchRequest;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.script.mustache.MultiSearchTemplateRequest;
 import org.elasticsearch.script.mustache.MultiSearchTemplateResponse;
 import org.elasticsearch.script.mustache.SearchTemplateRequest;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -48,19 +46,8 @@ public final class MultiFetchSupporter extends AbstractSupporter {
      * Multi-Search API
      */
     @SneakyThrows
-    public MultiSearchResponse multiSearch() {
-        MultiSearchRequest request = new MultiSearchRequest();
-        SearchRequest firstSearchRequest = new SearchRequest();
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchQuery("user", "kimchy"));
-        firstSearchRequest.source(searchSourceBuilder);
-        request.add(firstSearchRequest);
-        SearchRequest secondSearchRequest = new SearchRequest();
-        searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchQuery("user", "luca"));
-        secondSearchRequest.source(searchSourceBuilder);
-        request.add(secondSearchRequest);
-        return client.msearch(request, DEFAULT);
+    public MultiSearchResponse multiSearch(@NotNull List<SearchRequest> searchRequests) {
+        return client.msearch(searchRequests.stream().reduce(new MultiSearchRequest(), MultiSearchRequest::add, (multiSearchRequest, multiSearchRequest2) -> null), DEFAULT);
     }
 
     /**
