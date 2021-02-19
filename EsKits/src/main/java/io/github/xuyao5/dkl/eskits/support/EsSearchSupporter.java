@@ -8,14 +8,14 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
-import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.script.mustache.SearchTemplateRequest;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
@@ -36,25 +36,20 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Search API
      */
     @SneakyThrows
-    public SearchResponse search() {
-        return client.search(new SearchRequest("").source(new SearchSourceBuilder().query(null)
-                        .from(0)
-                        .size(10)
-                        .timeout(TimeValue.timeValueSeconds(60))
-                        .fetchSource(false)),
-                DEFAULT);
+    public SearchResponse search(@NotNull QueryBuilder query, int from, int size, @NotNull String... indices) {
+        return client.search(new SearchRequest(indices).source(new SearchSourceBuilder().query(query).from(from).size(size)), DEFAULT);
     }
 
     /**
      * Search Template API
      */
     @SneakyThrows
-    public SearchTemplateResponse searchTemplate() {
+    public SearchTemplateResponse searchTemplate(@NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
         SearchTemplateRequest request = new SearchTemplateRequest();
-        request.setRequest(new SearchRequest(""));
+        request.setRequest(new SearchRequest(indices));
         request.setScriptType(ScriptType.INLINE);
-        request.setScript("");
-        request.setScriptParams(null);
+        request.setScript(code);
+        request.setScriptParams(params);
         return client.searchTemplate(request, DEFAULT);
     }
 
@@ -62,10 +57,10 @@ public final class EsSearchSupporter extends AbstractSupporter {
      * Count API
      */
     @SneakyThrows
-    public CountResponse count() {
-        CountRequest countRequest = new CountRequest();
+    public CountResponse count(@NotNull QueryBuilder query, @NotNull String... indices) {
+        CountRequest countRequest = new CountRequest(indices);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+        searchSourceBuilder.query(query);
         return client.count(countRequest, DEFAULT);
     }
 }
