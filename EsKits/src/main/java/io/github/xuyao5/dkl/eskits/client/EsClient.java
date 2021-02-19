@@ -28,7 +28,7 @@ import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
 @Slf4j
 public final class EsClient {
 
-    private final ThreadLocal<RestHighLevelClient> CLIENT_THREAD_LOCAL = new ThreadLocal<>();
+    private final InheritableThreadLocal<RestHighLevelClient> CLIENT_THREAD_LOCAL = new InheritableThreadLocal<>();
 
     public EsClient(@NotNull String[] clientUrls, String clientUsername, String clientPassword, int connMulti) {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
