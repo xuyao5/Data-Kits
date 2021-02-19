@@ -91,18 +91,4 @@ public class EsDocumentSupporterTest extends AbstractTest {
             return null;
         });
     }
-
-    void testUpdateByQuery() {
-        esClient.execute(client -> {
-            new EsDocumentSupporter(client).updateByQuery(null, 1);
-            return null;
-        });
-    }
-
-    void testDeleteByQuery() {
-        esClient.execute(client -> {
-            new EsDocumentSupporter(client).deleteByQuery(null, 1);
-            return null;
-        });
-    }
 }

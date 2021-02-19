@@ -21,11 +21,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.GetSourceRequest;
 import org.elasticsearch.client.core.GetSourceResponse;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
-import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.ReindexRequest;
-import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -120,29 +117,5 @@ public final class EsDocumentSupporter extends AbstractSupporter {
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
                 .setSourceBatchSize(sourceBatchSize), DEFAULT);
-    }
-
-    /**
-     * Update By Query API
-     */
-    @SneakyThrows
-    public BulkByScrollResponse updateByQuery(@NotNull QueryBuilder query, int batchSize, @NotNull String... indices) {
-        UpdateByQueryRequest request = new UpdateByQueryRequest(indices);
-        request.setConflicts("proceed");
-        request.setQuery(query);
-        request.setBatchSize(batchSize);
-        return client.updateByQuery(request, DEFAULT);
-    }
-
-    /**
-     * Delete By Query API
-     */
-    @SneakyThrows
-    public BulkByScrollResponse deleteByQuery(@NotNull QueryBuilder query, int batchSize, @NotNull String... indices) {
-        DeleteByQueryRequest request = new DeleteByQueryRequest("source1", "source2");
-        request.setConflicts("proceed");
-        request.setQuery(query);
-        request.setBatchSize(batchSize);
-        return client.deleteByQuery(request, DEFAULT);
     }
 }
