@@ -30,9 +30,9 @@ import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_
  * @implNote EsDocumentSupporter
  */
 @Slf4j
-public final class EsDocumentSupporter extends AbstractSupporter {
+public final class DocumentSupporter extends AbstractSupporter {
 
-    public EsDocumentSupporter(@NotNull RestHighLevelClient client) {
+    public DocumentSupporter(@NotNull RestHighLevelClient client) {
         super(client);
     }
 

@@ -25,9 +25,9 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote EsIndexLifecycleSupporter
  */
 @Slf4j
-public final class EsIndexLifecycleSupporter extends AbstractSupporter {
+public final class IndexLifecycleSupporter extends AbstractSupporter {
 
-    public EsIndexLifecycleSupporter(@NotNull RestHighLevelClient client) {
+    public IndexLifecycleSupporter(@NotNull RestHighLevelClient client) {
         super(client);
     }
 

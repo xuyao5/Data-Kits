@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.elasticsearch;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
-import io.github.xuyao5.dkl.eskits.support.EsDocumentSupporter;
+import io.github.xuyao5.dkl.eskits.support.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.MultiFetchSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EsDocumentSupporterTest extends AbstractTest {
+public class DocumentSupporterTest extends AbstractTest {
 
     @Test
     void testIndex() {
         esClient.execute(client -> {
-            System.out.println(new EsDocumentSupporter(client).index("test_index_1", "1", Pojo.of("测试")));
+            System.out.println(new DocumentSupporter(client).index("test_index_1", "1", Pojo.of("测试")));
             return null;
         });
     }
@@ -25,7 +25,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
     @Test
     void testGet() {
         esClient.execute(client -> {
-            System.out.println(new EsDocumentSupporter(client).get("test_index_5", "2"));
+            System.out.println(new DocumentSupporter(client).get("test_index_5", "2"));
             return null;
         });
     }
@@ -33,7 +33,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
     @Test
     void testGetSource() {
         esClient.execute(client -> {
-            System.out.println(new EsDocumentSupporter(client).getSource("test_index_5", "2"));
+            System.out.println(new DocumentSupporter(client).getSource("test_index_5", "2"));
             return null;
         });
     }
@@ -41,7 +41,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
     @Test
     void testExists() {
         esClient.execute(client -> {
-            System.out.println(new EsDocumentSupporter(client).exists("test_index_5", "2"));
+            System.out.println(new DocumentSupporter(client).exists("test_index_5", "2"));
             return null;
         });
     }
@@ -49,7 +49,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
     @Test
     void testDelete() {
         esClient.execute(client -> {
-            System.out.println(new EsDocumentSupporter(client).delete("test_index_5", "2"));
+            System.out.println(new DocumentSupporter(client).delete("test_index_5", "2"));
             return null;
         });
     }
@@ -57,7 +57,7 @@ public class EsDocumentSupporterTest extends AbstractTest {
     @Test
     void testUpdate() {
         esClient.execute(client -> {
-            System.out.println(new EsDocumentSupporter(client).update("test_index_5", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
+            System.out.println(new DocumentSupporter(client).update("test_index_5", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
             return null;
         });
     }

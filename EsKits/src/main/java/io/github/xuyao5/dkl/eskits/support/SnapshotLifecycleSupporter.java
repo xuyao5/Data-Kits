@@ -11,9 +11,9 @@ import org.elasticsearch.client.RestHighLevelClient;
  * @implNote EsSnapshotLifecycleSupporter
  */
 @Slf4j
-public final class EsSnapshotLifecycleSupporter extends AbstractSupporter {
+public final class SnapshotLifecycleSupporter extends AbstractSupporter {
 
-    public EsSnapshotLifecycleSupporter(RestHighLevelClient client) {
+    public SnapshotLifecycleSupporter(RestHighLevelClient client) {
         super(client);
     }
 }

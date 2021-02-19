@@ -1,10 +1,10 @@
 package io.github.xuyao5.datakitsserver.elasticsearch;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
-import io.github.xuyao5.dkl.eskits.support.EsIndexSupporter;
+import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import org.junit.jupiter.api.Test;
 
-public class EsIndexSupporterTest extends AbstractTest {
+public class IndexSupporterTest extends AbstractTest {
 
     @Test
     void testCreate() {
@@ -15,6 +15,6 @@ public class EsIndexSupporterTest extends AbstractTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        esClient.execute(client -> new EsIndexSupporter(client).create("test_index_5", 1, 0, mapping, "DEMO-5", true));
+        esClient.execute(client -> new IndexSupporter(client).create("test_index_5", 1, 0, mapping, "DEMO-5", true));
     }
 }

@@ -26,9 +26,9 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote EsIndexSupporter
  */
 @Slf4j
-public final class EsSearchSupporter extends AbstractSupporter {
+public final class SearchSupporter extends AbstractSupporter {
 
-    public EsSearchSupporter(@NotNull RestHighLevelClient client) {
+    public SearchSupporter(@NotNull RestHighLevelClient client) {
         super(client);
     }
 
