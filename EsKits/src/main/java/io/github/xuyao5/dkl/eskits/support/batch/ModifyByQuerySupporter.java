@@ -1,6 +1,8 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
+import io.github.xuyao5.dkl.eskits.consts.ConflictsConst;
+import io.github.xuyao5.dkl.eskits.consts.ScriptConst;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -44,12 +46,12 @@ public final class ModifyByQuerySupporter extends AbstractSupporter {
     @SneakyThrows
     public BulkByScrollResponse updateByQuery(@NotNull QueryBuilder query, int batchSize, @NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
         UpdateByQueryRequest request = new UpdateByQueryRequest(indices);
-        request.setConflicts("proceed");
+        request.setConflicts(ConflictsConst.PROCEED.getType());
         request.setQuery(query);
         request.setBatchSize(batchSize);
         request.setSlices(AUTO_SLICES);
         request.setScroll(TimeValue.timeValueMinutes(KEEP_ALIVE));
-        request.setScript(new Script(ScriptType.INLINE, "painless", code, params));
+        request.setScript(new Script(ScriptType.INLINE, ScriptConst.PAINLESS.getType(), code, params));
         return client.updateByQuery(request, DEFAULT);
     }
 
@@ -59,7 +61,7 @@ public final class ModifyByQuerySupporter extends AbstractSupporter {
     @SneakyThrows
     public BulkByScrollResponse deleteByQuery(@NotNull QueryBuilder query, int batchSize, @NotNull String... indices) {
         DeleteByQueryRequest request = new DeleteByQueryRequest(indices);
-        request.setConflicts("proceed");
+        request.setConflicts(ConflictsConst.PROCEED.getType());
         request.setQuery(query);
         request.setBatchSize(batchSize);
         request.setSlices(AUTO_SLICES);
