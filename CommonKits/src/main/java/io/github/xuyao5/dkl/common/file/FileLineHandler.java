@@ -15,21 +15,21 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 11/10/20 08:54
- * @apiNote FileLineBolts
- * @implNote TODO 这里输入实现说明
+ * @apiNote FileLineHandler
+ * @implNote FileLineHandler
  */
 @Slf4j
-public final class FileLineBolts {
+public final class FileLineHandler {
 
     private final File file;
     private final Charset charset;
 
-    public FileLineBolts(@NotNull File file, @NotNull Charset charset) {
+    public FileLineHandler(@NotNull File file, @NotNull Charset charset) {
         this.file = file;
         this.charset = charset;
     }
 
-    public FileLineBolts(@NotNull File file) {
+    public FileLineHandler(@NotNull File file) {
         this(file, StandardCharsets.UTF_8);
     }
 

@@ -10,15 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 1/12/20 09:47
- * @apiNote DisruptorBolts
- * @implNote TODO 这里输入实现说明
+ * @apiNote DisruptorHandler
+ * @implNote DisruptorHandler
  */
 @Slf4j
-public final class DisruptorBolts {
+public final class DisruptorHandler {
 
     private final int bufferSize;
 
-    public DisruptorBolts() {
+    public DisruptorHandler() {
         bufferSize = 1 << 10;
     }
 

@@ -22,6 +22,12 @@ public final class File2EsExecutor {
 
     @SneakyThrows
     public void execute(@NotNull File2EsTask task) {
+        //1.获取待处理文件
+        //2.读取
+        //3.发送
+        //4.ES
+
+
         List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
 
 //        decisionFiles.stream()
