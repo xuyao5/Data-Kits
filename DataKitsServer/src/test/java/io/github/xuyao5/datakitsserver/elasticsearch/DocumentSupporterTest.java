@@ -66,8 +66,8 @@ public class DocumentSupporterTest extends AbstractTest {
     void testBulk() {
         esClient.execute(client -> {
             List<DocWriteRequest<?>> requestList = new ArrayList<>();
-            requestList.add(BulkSupporter.genIndexRequest("test_index_5", "100", Pojo.of("测试更新：" + System.currentTimeMillis())));
-            requestList.add(BulkSupporter.genIndexRequest("test_index_5", "101", Pojo.of("测试更新：" + System.currentTimeMillis())));
+            requestList.add(BulkSupporter.buildIndexRequest("test_index_5", "100", Pojo.of("测试更新：" + System.currentTimeMillis())));
+            requestList.add(BulkSupporter.buildIndexRequest("test_index_5", "101", Pojo.of("测试更新：" + System.currentTimeMillis())));
             System.out.println(new BulkSupporter(client).bulk(requestList));
             return null;
         });

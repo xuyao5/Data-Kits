@@ -8,7 +8,9 @@ import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
@@ -55,8 +57,16 @@ public final class BulkSupporter extends AbstractSupporter {
         this(client, 1000 * 3, 5 * 3, 1 * 3);
     }
 
-    public static final IndexRequest genIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
+    public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
         return new IndexRequest(index).id(id).source(GsonUtils.obj2Json(obj), XContentType.JSON);
+    }
+
+    public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, boolean isFetchSource, @NotNull Serializable obj) {
+        return new UpdateRequest(index, id).doc(obj).fetchSource(isFetchSource);
+    }
+
+    public static DeleteRequest buildDeleteRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
+        return new DeleteRequest(index, id);
     }
 
     /**
