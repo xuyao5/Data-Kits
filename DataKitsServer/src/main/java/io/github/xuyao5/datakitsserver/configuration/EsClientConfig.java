@@ -1,8 +1,8 @@
 package io.github.xuyao5.datakitsserver.configuration;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
  * @implNote DataKitsConfigBean
  */
 @Getter
-@RequiredArgsConstructor(staticName = "of")
-public final class DataKitsConfigBean {
+@ConfigurationProperties("es.client")
+public final class EsClientConfig {
 
+    //实验性例子
     @Value("${es.client.hosts}")
-    private String esClientHosts;
+    private String hosts;
 }

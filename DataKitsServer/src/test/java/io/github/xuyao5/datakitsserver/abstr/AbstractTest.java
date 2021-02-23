@@ -9,6 +9,6 @@ import javax.annotation.Resource;
 @SpringBootTest(classes = {DataKitsApplication.class})
 public abstract class AbstractTest {
 
-    @Resource(name = "esClient1")
+    @Resource(name = "myEsClient")
     protected EsClient esClient;
 }

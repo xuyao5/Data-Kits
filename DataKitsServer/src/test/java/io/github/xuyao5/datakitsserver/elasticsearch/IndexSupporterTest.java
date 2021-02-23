@@ -15,6 +15,6 @@ public class IndexSupporterTest extends AbstractTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        esClient.execute(client -> new IndexSupporter(client).create("test_index_5", 1, 0, mapping, "DEMO-5", true));
+        esClient.execute(client -> new IndexSupporter(client).create("test_index_1", 1, 0, mapping, "TEST-INDEX", true));
     }
 }
