@@ -5,14 +5,10 @@ import io.github.xuyao5.dkl.eskits.client.EsClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-@SpringBootApplication
-@Configuration
+@SpringBootApplication()
 @Import({})
-@ComponentScan(basePackages = {"io.github.xuyao5.datakitsserver"})
 public class DataKitsApplication {
 
     public static void main(String[] args) {
