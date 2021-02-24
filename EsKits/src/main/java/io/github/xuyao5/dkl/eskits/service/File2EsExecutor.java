@@ -35,9 +35,9 @@ public final class File2EsExecutor {
         //3.发送
         //4.ES
         int bufferSize = 1 << 10;
-        Disruptor<StandardFileLine> disruptor = new Disruptor<>(() -> StandardFileLine.of(), bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-            System.out.println(standardFileLine + "|" + sequence + "|" + endOfBatch);
+//            System.out.println(standardFileLine + "|" + sequence + "|" + endOfBatch);
         });
         RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
@@ -50,9 +50,7 @@ public final class File2EsExecutor {
                 longAdder.increment();
             }
         }
-
-        disruptor.shutdown();
-
+        System.out.println("完成");
 
 //        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
 
