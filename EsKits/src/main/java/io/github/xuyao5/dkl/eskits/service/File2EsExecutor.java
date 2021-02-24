@@ -6,12 +6,17 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.common.schema.StandardFileLine;
+import io.github.xuyao5.dkl.common.util.MyFileUtils;
 import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsTask;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.LineIterator;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -24,7 +29,7 @@ import javax.validation.constraints.NotNull;
 public final class File2EsExecutor {
 
     @SneakyThrows
-    public void execute(@NotNull File2EsTask task) {
+    public void execute(@NotNull File2EsTask task, @NotNull File file, @NotNull Charset charset) {
         //1.获取待处理文件
         //2.读取
         //3.发送
@@ -34,14 +39,17 @@ public final class File2EsExecutor {
         disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
             System.out.println(standardFileLine + "|" + sequence + "|" + endOfBatch);
         });
-        final RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-        for (int i = 0; i < 1000000; i++) {
-            ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
-                standardFileLine.setLineNo(lineNo);
-                standardFileLine.setLineRecord(lineRecord);
-            }, i, String.valueOf(Math.random()));
+        RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
+        try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
+            LongAdder longAdder = new LongAdder();
+            while (lineIterator.hasNext()) {
+                ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
+                    standardFileLine.setLineNo(lineNo);
+                    standardFileLine.setLineRecord(lineRecord);
+                }, longAdder.intValue(), lineIterator.nextLine());
+                longAdder.increment();
+            }
         }
-
 
         disruptor.shutdown();
 
