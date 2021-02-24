@@ -48,7 +48,7 @@ public final class EsClient {
     }
 
     @SneakyThrows
-    public void destroy() {
+    private void destroy() {
         if (Objects.nonNull(CLIENT_THREAD_LOCAL.get())) {
             CLIENT_THREAD_LOCAL.get().close();
             CLIENT_THREAD_LOCAL.remove();

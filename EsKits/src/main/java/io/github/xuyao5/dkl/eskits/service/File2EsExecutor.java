@@ -5,6 +5,7 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
+import io.github.xuyao5.dkl.eskits.client.EsClient;
 import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsTask;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.LongAdder;
 public final class File2EsExecutor {
 
     @SneakyThrows
-    public void execute(@NotNull File2EsTask task, @NotNull File file, @NotNull Charset charset) {
+    public void execute(@NotNull File2EsTask task, @NotNull File file, @NotNull Charset charset, @NotNull EsClient esClient) {
         //1.获取待处理文件
         //2.读取
         //3.发送
@@ -37,6 +38,9 @@ public final class File2EsExecutor {
         Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, 1 << 10, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
 //            System.out.println(standardFileLine + "|" + sequence + "|" + endOfBatch);
+            esClient.execute(restHighLevelClient -> {
+                return 0;
+            });
         });
         RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
