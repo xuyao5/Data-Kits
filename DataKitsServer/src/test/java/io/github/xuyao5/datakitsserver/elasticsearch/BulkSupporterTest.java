@@ -1,23 +1,18 @@
 package io.github.xuyao5.datakitsserver.elasticsearch;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
+import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.Executors;
 
 public class BulkSupporterTest extends AbstractTest {
 
     @Test
     void testBulk() {
-        Executors.newSingleThreadExecutor().execute(() -> esClient.execute(client -> {
-            System.out.println(client);
-            return null;
-        }));
-
-
-        Executors.newSingleThreadExecutor().execute(() -> esClient.execute(client -> {
-            System.out.println(client);
-            return null;
+        esClient.execute(client -> new BulkSupporter(client).bulk(function -> {
+            for (int i = 0; i < 1000000; i++) {
+                function.apply(BulkSupporter.buildIndexRequest("test_index_5", String.valueOf(i), Pojo.of("xu")));
+            }
+            return 30;
         }));
     }
 }

@@ -1,14 +1,17 @@
 package io.github.xuyao5.dkl.eskits.service;
 
-import io.github.xuyao5.dkl.common.util.MyFileUtils;
+import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
+import com.lmax.disruptor.util.DaemonThreadFactory;
+import io.github.xuyao5.dkl.common.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsTask;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.util.List;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -26,9 +29,24 @@ public final class File2EsExecutor {
         //2.读取
         //3.发送
         //4.ES
+        int bufferSize = 1 << 10;
+        Disruptor<StandardFileLine> disruptor = new Disruptor<>(() -> StandardFileLine.of(), bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
+            System.out.println(standardFileLine + "|" + sequence + "|" + endOfBatch);
+        });
+        final RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
+        for (int i = 0; i < 1000000; i++) {
+            ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
+                standardFileLine.setLineNo(lineNo);
+                standardFileLine.setLineRecord(lineRecord);
+            }, i, String.valueOf(Math.random()));
+        }
 
 
-        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
+        disruptor.shutdown();
+
+
+//        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
 
 //        decisionFiles.stream()
 //                .filter(file -> Files.exists(Paths.get(MyFilenameUtils.getConfirmFilename(file.getPath(), task.getFilenameSeparator(), task.getFileConfirmPrefix(), task.getFileConfirmSuffix()))))
