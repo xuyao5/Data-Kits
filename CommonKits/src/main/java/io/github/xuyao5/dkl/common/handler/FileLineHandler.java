@@ -1,7 +1,7 @@
-package io.github.xuyao5.dkl.common.file;
+package io.github.xuyao5.dkl.common.handler;
 
 import com.lmax.disruptor.RingBuffer;
-import io.github.xuyao5.dkl.common.standard.StandardFileLine;
+import io.github.xuyao5.dkl.common.context.StandardFileLineDisruptor;
 import io.github.xuyao5.dkl.common.util.MyFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
@@ -33,7 +33,7 @@ public final class FileLineHandler {
         this(file, StandardCharsets.UTF_8);
     }
 
-    public void publishRecord(@NotNull RingBuffer<StandardFileLine> ringBuffer) {
+    public void publishRecord(@NotNull RingBuffer<StandardFileLineDisruptor.StandardFileLine> ringBuffer) {
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
             //最简化循环操作
             for (int i = 0; lineIterator.hasNext(); i++) {
