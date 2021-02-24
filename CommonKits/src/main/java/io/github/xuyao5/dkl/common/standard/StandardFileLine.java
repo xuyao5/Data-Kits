@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Data(staticConstructor = "of")
 public final class StandardFileLine implements Serializable {
 
-    private long lineNo;//行号
+    private int lineNo;//行号
     private String lineRecord;//行记录
 }
