@@ -34,8 +34,7 @@ public final class File2EsExecutor {
         //2.读取
         //3.发送
         //4.ES
-        int bufferSize = 1 << 10;
-        Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, 1 << 10, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
 //            System.out.println(standardFileLine + "|" + sequence + "|" + endOfBatch);
         });
@@ -43,11 +42,11 @@ public final class File2EsExecutor {
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
             LongAdder longAdder = new LongAdder();
             while (lineIterator.hasNext()) {
+                longAdder.increment();
                 ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
                     standardFileLine.setLineNo(lineNo);
                     standardFileLine.setLineRecord(lineRecord);
                 }, longAdder.intValue(), lineIterator.nextLine());
-                longAdder.increment();
             }
         }
         System.out.println("完成");
