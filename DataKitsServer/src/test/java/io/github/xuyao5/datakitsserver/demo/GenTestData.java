@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.demo;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
-import io.github.xuyao5.dkl.common.util.MyFileUtils;
+import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import lombok.SneakyThrows;
 import org.assertj.core.util.Files;
 import org.assertj.core.util.Lists;

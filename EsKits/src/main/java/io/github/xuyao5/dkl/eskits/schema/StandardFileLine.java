@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.common.schema;
+package io.github.xuyao5.dkl.eskits.schema;
 
 import lombok.Data;
 

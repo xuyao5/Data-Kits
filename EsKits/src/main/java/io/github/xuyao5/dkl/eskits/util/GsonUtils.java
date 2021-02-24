@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.common.util;
+package io.github.xuyao5.dkl.eskits.util;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;

@@ -1,7 +1,6 @@
 package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.dkl.eskits.configuration.xml.File2EsTasks;
-import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -26,6 +25,6 @@ public final class File2EsJob {
     public void doJob(@NotNull String taskId) {
         //获取配置文件并执行
         File2EsTasks file2EsTasks = JAXB.unmarshal(ResourceUtils.getFile(CLASSPATH_URL_PREFIX + FILE2ES_CONFIG_XML), File2EsTasks.class);
-        file2EsTasks.seek(taskId).ifPresent(File2EsExecutor.builder().build()::execute);
+//        file2EsTasks.seek(taskId).ifPresent(File2EsExecutor.builder().build()::execute);
     }
 }

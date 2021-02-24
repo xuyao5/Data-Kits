@@ -1,7 +1,7 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
-import io.github.xuyao5.dkl.common.util.GsonUtils;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
+import io.github.xuyao5.dkl.eskits.util.GsonUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;

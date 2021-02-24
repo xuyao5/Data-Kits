@@ -16,7 +16,6 @@
     <description>Data Kits Library Project without Spring Boot</description>
 
     <modules>
-        <module>CommonKits</module>
         <module>EsKits</module>
         <module>DataKitsServer</module>
     </modules>
