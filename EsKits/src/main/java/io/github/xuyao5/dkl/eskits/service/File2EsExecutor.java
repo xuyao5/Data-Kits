@@ -11,12 +11,12 @@ import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.LongAdder;
@@ -35,7 +35,6 @@ public final class File2EsExecutor extends AbstractExecutor {
         super(esClient);
     }
 
-    @SneakyThrows
     public void execute(Function<StandardFileLine, ? extends Serializable> mapper, @NotNull File file, @NotNull Charset charset, @NotNull String index) {
         //检查文件和索引是否存在
         if (!file.exists() || !esClient.execute(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(index))) {
@@ -44,26 +43,30 @@ public final class File2EsExecutor extends AbstractExecutor {
 
         Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, 1 << 10, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-        esClient.execute(restHighLevelClient -> new BulkSupporter(restHighLevelClient).bulk(function -> {
-            LongAdder in = new LongAdder();
-            disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-                in.increment();
-                function.apply(BulkSupporter.buildIndexRequest(index, in.toString(), mapper.apply(standardFileLine)));
-            });
-            return 30;
-        }));
+        esClient.execute(client -> {
+            new BulkSupporter(client).bulk(function -> {
+                LongAdder in = new LongAdder();
+                disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
+                    in.increment();
+                    function.apply(BulkSupporter.buildIndexRequest(index, in.toString(), mapper.apply(standardFileLine)));
+                });
 
-        RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-        try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
-            LongAdder longAdder = new LongAdder();
-            while (lineIterator.hasNext()) {
-                longAdder.increment();
-                ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
-                    standardFileLine.setLineNo(lineNo);
-                    standardFileLine.setLineRecord(lineRecord);
-                }, longAdder.intValue(), lineIterator.nextLine());
-            }
-        }
+                RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
+                try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
+                    LongAdder longAdder = new LongAdder();
+                    while (lineIterator.hasNext()) {
+                        longAdder.increment();
+                        ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
+                            standardFileLine.setLineNo(lineNo);
+                            standardFileLine.setLineRecord(lineRecord);
+                        }, longAdder.intValue(), lineIterator.nextLine());
+                    }
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
+            });
+            return null;
+        });
 
 //        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
 

@@ -17,7 +17,7 @@ public class DocumentSupporterTest extends AbstractTest {
     @Test
     void testIndex() {
         esClient.execute(client -> {
-            System.out.println(new DocumentSupporter(client).index("TEST-INDEX", "1", Pojo.of("测试")));
+            System.out.println(new DocumentSupporter(client).index("file2es_disruptor_1", "1", Pojo.of("测试")));
             return null;
         });
     }
