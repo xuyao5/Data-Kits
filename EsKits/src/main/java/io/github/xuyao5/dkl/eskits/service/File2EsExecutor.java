@@ -35,7 +35,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         super(esClient);
     }
 
-    public void execute(Function<StandardFileLine, ? extends StandardDocument> mapper, @NotNull File2EsConfig config) {
+    public void execute(Function<String[], ? extends StandardDocument> mapper, @NotNull File2EsConfig config) {
         //检查文件和索引是否存在
         if (!config.getFile().exists() || !esClient.execute(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
             return;
@@ -47,18 +47,16 @@ public final class File2EsExecutor extends AbstractExecutor {
             new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
                 disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                     String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
-                    StandardDocument standardDocument = mapper.apply(standardFileLine);
-                    if (standardFileLine.getLineNo() == 1) {
+                    if (standardFileLine.getLineNo() == 1 && config.isMetadataLine()) {
 
                     } else {
-
-                    }
-
-                    //提交
-                    if (config.getIdColumn() != 0) {
-                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], standardDocument));
-                    } else {
-                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
+                        StandardDocument standardDocument = mapper.apply(recordArray);
+                        //提交
+                        if (config.getIdColumn() != 0) {
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], standardDocument));
+                        } else {
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
+                        }
                     }
                 });
 

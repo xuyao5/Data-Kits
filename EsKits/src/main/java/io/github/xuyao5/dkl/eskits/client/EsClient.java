@@ -53,7 +53,11 @@ public final class EsClient {
                 .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
                         .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * CONN_MULTI)
                         .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * CONN_MULTI)
-                        .setDefaultCredentialsProvider(credentialsProvider)));
+                        .setDefaultCredentialsProvider(credentialsProvider))
+                .setRequestConfigCallback(builder -> builder
+                        .setConnectTimeout(5000 * 1000)
+                        .setSocketTimeout(6000 * 1000)
+                        .setConnectionRequestTimeout(5000 * 1000)));
     }
 
     private HttpHost[] url2HttpHost(@NotNull String[] url) {
