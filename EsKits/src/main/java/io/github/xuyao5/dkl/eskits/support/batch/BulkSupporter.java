@@ -33,27 +33,11 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class BulkSupporter extends AbstractSupporter {
 
-    private final int BULK_ACTIONS;
-    private final long BULK_SIZE;
     private final int CONCURRENT_REQUESTS;
 
-    public BulkSupporter(RestHighLevelClient client, int bulkActions, long bulkSize, int concurrentRequests) {
+    public BulkSupporter(RestHighLevelClient client, int concurrentRequests) {
         super(client);
-        BULK_ACTIONS = bulkActions;
-        BULK_SIZE = bulkSize;
         CONCURRENT_REQUESTS = concurrentRequests;
-    }
-
-    public BulkSupporter(RestHighLevelClient client, int bulkActions, int concurrentRequests) {
-        this(client, bulkActions, -1, concurrentRequests);
-    }
-
-    public BulkSupporter(RestHighLevelClient client, long bulkSize, int concurrentRequests) {
-        this(client, -1, bulkSize, concurrentRequests);
-    }
-
-    public BulkSupporter(RestHighLevelClient client) {
-        this(client, 1000 * 3, 5 * 3, 1 * 3);
     }
 
     public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
@@ -93,9 +77,9 @@ public final class BulkSupporter extends AbstractSupporter {
                     public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
                         log.error("Failed to execute bulk", failure);
                     }
-                }).setBulkActions(BULK_ACTIONS)
-                .setBulkSize(new ByteSizeValue(BULK_SIZE, ByteSizeUnit.MB))
-                .setConcurrentRequests(CONCURRENT_REQUESTS)
+                }).setBulkActions(-1)
+                .setBulkSize(new ByteSizeValue(15, ByteSizeUnit.MB))
+                .setConcurrentRequests(1)
                 .build()) {
             consumer.accept(bulkProcessor::add);
         }

@@ -18,7 +18,7 @@ public class DataKitsApplication {
         SpringApplication.run(DataKitsApplication.class, args);
     }
 
-    @Bean(name = "myEsClient", destroyMethod = "destroy")
+    @Bean(name = "myEsClient")
     public EsClient esClient(@Value("${es.client.hosts}") String hosts, @Value("${es.client.username}") String username, @Value("${es.client.password}") String password, @Value("${es.client.multiple}") int multiple) {
         return new EsClient(new String[]{hosts}, username, password, multiple);
     }

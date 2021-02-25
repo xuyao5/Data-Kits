@@ -73,8 +73,8 @@ public final class IndexSupporter extends AbstractSupporter {
      * Delete Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse delete() {
-        DeleteIndexRequest request = new DeleteIndexRequest("");
+    public AcknowledgedResponse delete(@NotNull String index) {
+        DeleteIndexRequest request = new DeleteIndexRequest(index);
         return client.indices().delete(request, DEFAULT);
     }
 

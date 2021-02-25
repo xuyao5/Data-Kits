@@ -44,7 +44,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, 1 << 10, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
         esClient.execute(client -> {
-            new BulkSupporter(client).bulk(function -> {
+            new BulkSupporter(client, 1).bulk(function -> {
                 LongAdder in = new LongAdder();
                 disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                     in.increment();
