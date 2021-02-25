@@ -40,8 +40,8 @@ public final class File2EsExecutor extends AbstractExecutor {
         if (!config.getFile().exists() || !esClient.execute(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
             return;
         }
-        
-        Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+
+        Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
         esClient.execute(client -> {
             new BulkSupporter(client, config.getBulkSize()).bulk(function -> {

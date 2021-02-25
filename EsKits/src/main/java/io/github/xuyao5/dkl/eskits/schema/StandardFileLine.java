@@ -8,7 +8,7 @@ import lombok.Data;
  * @apiNote StandardFileLine
  * @implNote StandardFileLine
  */
-@Data
+@Data(staticConstructor = "of")
 public final class StandardFileLine {
 
     private int lineNo;//行号
