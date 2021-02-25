@@ -89,7 +89,7 @@ public final class BulkSupporter extends AbstractSupporter {
         try {
             consumer.accept(bulkProcessor::add);
         } finally {
-            boolean terminated = bulkProcessor.awaitClose(30L, TimeUnit.SECONDS);
+            boolean terminated = bulkProcessor.awaitClose(30L, TimeUnit.MINUTES);
             log.info("Bulk关闭状态：{}", terminated);
         }
     }
