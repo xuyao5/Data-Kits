@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 public class File2EsExecutorTest extends AbstractTest {
 
     @Test
-    void test() {
+    void testFile2EsExecutor() {
         new File2EsExecutor(esClient).execute(standardFileLine -> Pojo.of(standardFileLine.toString()), new File("/Users/xuyao/Downloads/INT_PAB_CC_TEST-NAME-LIST_20201010_T_00.txt"), StandardCharsets.UTF_8, "file2es_disruptor_1");
     }
 

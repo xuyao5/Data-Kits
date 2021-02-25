@@ -33,11 +33,11 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class BulkSupporter extends AbstractSupporter {
 
-    private final int CONCURRENT_REQUESTS;
+    private final int BULK_SIZE;
 
-    public BulkSupporter(RestHighLevelClient client, int concurrentRequests) {
+    public BulkSupporter(RestHighLevelClient client, int bulkSize) {
         super(client);
-        CONCURRENT_REQUESTS = concurrentRequests;
+        BULK_SIZE = bulkSize;
     }
 
     public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
@@ -78,8 +78,7 @@ public final class BulkSupporter extends AbstractSupporter {
                         log.error("Failed to execute bulk", failure);
                     }
                 }).setBulkActions(-1)
-                .setBulkSize(new ByteSizeValue(15, ByteSizeUnit.MB))
-                .setConcurrentRequests(1)
+                .setBulkSize(new ByteSizeValue(BULK_SIZE, ByteSizeUnit.MB))
                 .build()) {
             consumer.accept(bulkProcessor::add);
         }

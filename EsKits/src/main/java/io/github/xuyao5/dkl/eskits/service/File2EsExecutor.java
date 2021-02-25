@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 
@@ -44,11 +45,17 @@ public final class File2EsExecutor extends AbstractExecutor {
         Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, 1 << 10, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
         esClient.execute(client -> {
-            new BulkSupporter(client, 1).bulk(function -> {
+            new BulkSupporter(client, 50).bulk(function -> {
                 LongAdder in = new LongAdder();
                 disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                     in.increment();
                     function.apply(BulkSupporter.buildIndexRequest(index, in.toString(), mapper.apply(standardFileLine)));
+                    if (in.intValue() == 1) {
+                        System.out.println(new Date());
+                    }
+                    if (in.intValue() == 1000000) {
+                        System.out.println(new Date());
+                    }
                 });
 
                 RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
