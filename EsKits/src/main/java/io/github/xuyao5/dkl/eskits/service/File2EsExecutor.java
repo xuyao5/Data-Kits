@@ -8,16 +8,17 @@ import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.client.EsClient;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
+import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
+import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 
@@ -34,20 +35,31 @@ public final class File2EsExecutor extends AbstractExecutor {
         super(esClient);
     }
 
-    public void execute(Function<StandardFileLine, ? extends Serializable> mapper, @NotNull File2EsConfig config) {
+    public void execute(Function<StandardFileLine, ? extends StandardDocument> mapper, @NotNull File2EsConfig config) {
         //检查文件和索引是否存在
         if (!config.getFile().exists() || !esClient.execute(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
             return;
         }
-
-        Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, 1 << 10, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        
+        Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
         esClient.execute(client -> {
-            new BulkSupporter(client, 50).bulk(function -> {
-                LongAdder in = new LongAdder();
+            new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
                 disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-                    in.increment();
-                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), in.toString(), mapper.apply(standardFileLine)));
+                    String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
+                    StandardDocument standardDocument = mapper.apply(standardFileLine);
+                    if (standardFileLine.getLineNo() == 1) {
+
+                    } else {
+
+                    }
+
+                    //提交
+                    if (config.getIdColumn() != 0) {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], standardDocument));
+                    } else {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
+                    }
                 });
 
                 RingBuffer<StandardFileLine> ringBuffer = disruptor.start();

@@ -44,6 +44,10 @@ public final class BulkSupporter extends AbstractSupporter {
         return new IndexRequest(index).id(id).source(GsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
+    public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull Serializable obj) {
+        return new IndexRequest(index).source(GsonUtils.obj2Json(obj), XContentType.JSON);
+    }
+
     public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, boolean isFetchSource, @NotNull Serializable obj) {
         return new UpdateRequest(index, id).doc(obj).fetchSource(isFetchSource);
     }

@@ -9,19 +9,22 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 25/02/21 16:36
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote File2EsConfig
+ * @implNote File2EsConfig
  */
 @Data(staticConstructor = "of")
 public final class File2EsConfig {
 
     private final File file;
     private final String index;
-    private final int pkColumn;
 
-    private int ukColumn = 0;
+    private int idColumn = 1;
+    private int collapseColumn = 0;
     private Charset charset = StandardCharsets.UTF_8;
     private char recordSeparator = 0x1E;
     private boolean metadataLine = true;
+    private int bulkSize = 32;
     private char fileComments = '#';
+
+    private int ringBufferSize = 1 << 10;
 }
