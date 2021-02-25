@@ -43,14 +43,14 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::new, 1 << 10, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-            //事件处理
-//            System.out.println(standardFileLine + "|" + sequence + "|" + endOfBatch);
-            esClient.execute(restHighLevelClient -> new BulkSupporter(restHighLevelClient).bulk(function -> {
+
+        esClient.execute(restHighLevelClient -> new BulkSupporter(restHighLevelClient).bulk(function -> {
+            disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                 function.apply(BulkSupporter.buildIndexRequest(index, "", mapper.apply(standardFileLine)));
-                return 30;
-            }));
-        });
+            });
+            return 30;
+        }));
+
         RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
             LongAdder longAdder = new LongAdder();
