@@ -13,7 +13,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
@@ -28,31 +27,33 @@ import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
 @Slf4j
 public final class EsClient {
 
-    private final InheritableThreadLocal<RestHighLevelClient> CLIENT_THREAD_LOCAL = new InheritableThreadLocal<>();
+    private final HttpHost[] HOSTS;
+    private final String USERNAME;
+    private final String PASSWORD;
+    private final int CONN_MULTI;
 
-    public EsClient(@NotNull String[] clientUrls, String clientUsername, String clientPassword, int connMulti) {
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(clientUsername, clientPassword));
-        CLIENT_THREAD_LOCAL.set(new RestHighLevelClient(RestClient.builder(url2HttpHost(clientUrls))
-                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
-                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * connMulti)
-                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * connMulti)
-                        .setDefaultCredentialsProvider(credentialsProvider))));
+    public EsClient(@NotNull String[] clientUrls, String clientUsername, String clientPassword, int multiple) {
+        HOSTS = url2HttpHost(clientUrls);
+        USERNAME = clientUsername;
+        PASSWORD = clientPassword;
+        CONN_MULTI = multiple;
     }
 
     @SneakyThrows
     public <T> T execute(Function<RestHighLevelClient, T> function) {
-        try (RestHighLevelClient client = CLIENT_THREAD_LOCAL.get()) {
+        try (RestHighLevelClient client = getRestHighLevelClient()) {
             return function.apply(client);
         }
     }
 
-    @SneakyThrows
-    private void destroy() {
-        if (Objects.nonNull(CLIENT_THREAD_LOCAL.get())) {
-            CLIENT_THREAD_LOCAL.get().close();
-            CLIENT_THREAD_LOCAL.remove();
-        }
+    private RestHighLevelClient getRestHighLevelClient() {
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME, PASSWORD));
+        return new RestHighLevelClient(RestClient.builder(HOSTS)
+                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * CONN_MULTI)
+                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * CONN_MULTI)
+                        .setDefaultCredentialsProvider(credentialsProvider)));
     }
 
     private HttpHost[] url2HttpHost(@NotNull String[] url) {
