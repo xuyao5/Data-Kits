@@ -82,9 +82,8 @@ public final class IndexSupporter extends AbstractSupporter {
      * Index Exists API
      */
     @SneakyThrows
-    public boolean exists() {
-        GetIndexRequest request = new GetIndexRequest("twitter");
-        return client.indices().exists(request, DEFAULT);
+    public boolean exists(@NotNull String... indices) {
+        return client.indices().exists(new GetIndexRequest(indices), DEFAULT);
     }
 
     /**
