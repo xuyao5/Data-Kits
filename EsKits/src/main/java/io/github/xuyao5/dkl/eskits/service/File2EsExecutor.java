@@ -37,13 +37,13 @@ public final class File2EsExecutor extends AbstractExecutor {
 
     public void execute(Function<String[], ? extends StandardDocument> mapper, @NotNull File2EsConfig config) {
         //检查文件和索引是否存在
-        if (!config.getFile().exists() || !esClient.execute(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
+        if (!config.getFile().exists() || !esClient.run(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
             return;
         }
 
         Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-        esClient.execute(client -> {
+        esClient.run(client -> {
             new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
                 disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                     String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());

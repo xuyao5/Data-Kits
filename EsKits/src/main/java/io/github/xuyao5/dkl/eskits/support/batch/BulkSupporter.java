@@ -19,6 +19,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -59,7 +60,8 @@ public final class BulkSupporter extends AbstractSupporter {
     /**
      * Bulk Processor
      */
-    public void bulk(Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    @SneakyThrows
+    public boolean bulk(Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
@@ -85,6 +87,7 @@ public final class BulkSupporter extends AbstractSupporter {
                 .setBulkSize(new ByteSizeValue(BULK_SIZE, ByteSizeUnit.MB))
                 .build()) {
             consumer.accept(bulkProcessor::add);
+            return bulkProcessor.awaitClose(30L, TimeUnit.MINUTES);
         }
     }
 

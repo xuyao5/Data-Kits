@@ -40,7 +40,7 @@ public final class EsClient {
     }
 
     @SneakyThrows
-    public <T> T execute(Function<RestHighLevelClient, T> function) {
+    public <T> T run(Function<RestHighLevelClient, T> function) {
         try (RestHighLevelClient client = getRestHighLevelClient()) {
             return function.apply(client);
         }

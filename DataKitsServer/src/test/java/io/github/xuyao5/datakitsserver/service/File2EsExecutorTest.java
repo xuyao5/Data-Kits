@@ -15,7 +15,7 @@ public class File2EsExecutorTest extends AbstractTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        esClient.execute(client -> {
+        esClient.run(client -> {
             IndexSupporter indexSupporter = new IndexSupporter(client);
             if (indexSupporter.exists("file2es_disruptor_1")) {
                 indexSupporter.delete("file2es_disruptor_1");
