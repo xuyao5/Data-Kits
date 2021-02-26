@@ -41,10 +41,10 @@ public final class File2EsExecutor extends AbstractExecutor {
             return;
         }
 
-        Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-
         esClient.run(client -> {
             new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
+                Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+
                 disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                     String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
                     if (standardFileLine.getLineNo() == 1 && config.isMetadataLine()) {
@@ -53,7 +53,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                         StandardDocument standardDocument = mapper.apply(recordArray);
                         //提交
                         if (config.getIdColumn() != 0) {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], standardDocument));
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
                         } else {
                             function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
                         }
@@ -61,6 +61,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                 });
 
                 RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
+
                 try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
                     LongAdder longAdder = new LongAdder();
                     while (lineIterator.hasNext()) {

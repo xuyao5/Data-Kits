@@ -33,7 +33,7 @@ final class Horae extends AbstractTest {
         char split = 0x1E;
         File file = Files.newFile(fileName);
 
-        for (int y = 0; y < 100; y++) {
+        for (int y = 0; y < 10; y++) {
             String[] fileMetadata = new String[10000];
             for (int i = 0; i < fileMetadata.length; i++) {
                 fileMetadata[i] = Strings.concat(UUID.randomUUID(), split, i * y, split, "中文测试", split, System.currentTimeMillis());

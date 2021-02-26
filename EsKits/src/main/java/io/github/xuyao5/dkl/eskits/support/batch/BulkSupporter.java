@@ -19,6 +19,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -59,13 +60,14 @@ public final class BulkSupporter extends AbstractSupporter {
     /**
      * Bulk Processor
      */
+    @SneakyThrows
     public void bulk(Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
                     public void beforeBulk(long executionId, BulkRequest request) {
                         int numberOfActions = request.numberOfActions();
-                        log.debug("Executing bulk [{}] with {} requests", executionId, numberOfActions);
+                        log.info("Executing bulk [{}] with {} requests", executionId, numberOfActions);
                     }
 
                     @Override
@@ -73,7 +75,7 @@ public final class BulkSupporter extends AbstractSupporter {
                         if (response.hasFailures()) {
                             log.warn("Bulk [{}] executed with failures", executionId);
                         } else {
-                            log.debug("Bulk [{}] completed in {} milliseconds", executionId, response.getTook().getMillis());
+                            log.info("Bulk [{}] completed in {} milliseconds", executionId, response.getTook().getMillis());
                         }
                     }
 
@@ -85,6 +87,7 @@ public final class BulkSupporter extends AbstractSupporter {
                 .setBulkSize(new ByteSizeValue(BULK_SIZE, ByteSizeUnit.MB))
                 .build()) {
             consumer.accept(bulkProcessor::add);
+            log.info("bulkProcessor.awaitClose return:{}", bulkProcessor.awaitClose(30L, TimeUnit.MINUTES));//最大30分钟等待
         }
     }
 
