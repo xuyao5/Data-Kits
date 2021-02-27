@@ -18,10 +18,6 @@
           }
         }
       },
-      "message": {
-        "type": "keyword",
-        "ignore_above": 256
-      },
       "date": {
         "type": "date"
       },
