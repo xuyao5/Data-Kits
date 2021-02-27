@@ -3,7 +3,6 @@ package io.github.xuyao5.dkl.eskits.support;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest;
@@ -35,9 +34,10 @@ import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilder;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
@@ -59,23 +59,16 @@ public final class IndexSupporter extends AbstractSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull String index, int shards, int replicas, String mapping, String alias, boolean isWriteIndex) {
-        return client.indices().create(new CreateIndexRequest(index.toLowerCase())
-                .settings(Settings.builder()
-                        .put("index.number_of_shards", shards)
-                        .put("index.number_of_replicas", replicas)
-                )
-                .mapping(mapping, XContentType.JSON)
-                .alias(new Alias(alias.toUpperCase()).writeIndex(isWriteIndex)), DEFAULT);
+    public CreateIndexResponse create(@NotNull String index, @NotNull String source) {
+        return client.indices().create(new CreateIndexRequest(index.toLowerCase()).source(source, XContentType.JSON), DEFAULT);
     }
 
     /**
      * Delete Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse delete(@NotNull String index) {
-        DeleteIndexRequest request = new DeleteIndexRequest(index);
-        return client.indices().delete(request, DEFAULT);
+    public AcknowledgedResponse delete(@NotNull String... index) {
+        return client.indices().delete(new DeleteIndexRequest(index), DEFAULT);
     }
 
     /**
@@ -90,264 +83,178 @@ public final class IndexSupporter extends AbstractSupporter {
      * Open Index API
      */
     @SneakyThrows
-    public OpenIndexResponse open() {
-        OpenIndexRequest request = new OpenIndexRequest("index");
-        return client.indices().open(request, DEFAULT);
+    public OpenIndexResponse open(@NotNull String... indices) {
+        return client.indices().open(new OpenIndexRequest(indices), DEFAULT);
     }
 
     /**
      * Close Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse close() {
-        CloseIndexRequest request = new CloseIndexRequest("index");
-        return client.indices().close(request, DEFAULT);
-    }
-
-    /**
-     * Shrink Index API
-     */
-    @SneakyThrows
-    public ResizeResponse shrink() {
-        ResizeRequest request = new ResizeRequest("target_index", "source_index");
-        return client.indices().shrink(request, DEFAULT);
-    }
-
-    /**
-     * Split Index API
-     */
-    @SneakyThrows
-    public ResizeResponse split(@NotNull ResizeRequest params) {
-        ResizeRequest request = new ResizeRequest("target_index", "source_index");
-        return client.indices().split(request, DEFAULT);
-    }
-
-    /**
-     * Clone Index API
-     */
-    @SneakyThrows
-    public ResizeResponse clone(@NotNull ResizeRequest params) {
-        ResizeRequest request = new ResizeRequest("target_index", "source_index");
-        return client.indices().clone(request, DEFAULT);
+    public AcknowledgedResponse close(@NotNull String... indices) {
+        return client.indices().close(new CloseIndexRequest(indices), DEFAULT);
     }
 
     /**
      * Refresh API
      */
     @SneakyThrows
-    public RefreshResponse refresh() {
-        RefreshRequest request = new RefreshRequest("index1", "index2");
-        return client.indices().refresh(request, DEFAULT);
+    public RefreshResponse refresh(@NotNull String... indices) {
+        return client.indices().refresh(new RefreshRequest(indices), DEFAULT);
     }
 
     /**
      * Flush API
      */
     @SneakyThrows
-    public FlushResponse flush() {
-        FlushRequest request = new FlushRequest("index1", "index2");
-        return client.indices().flush(request, DEFAULT);
+    public FlushResponse flush(@NotNull String... indices) {
+        return client.indices().flush(new FlushRequest(indices), DEFAULT);
     }
 
     /**
      * Clear Cache API
      */
     @SneakyThrows
-    public ClearIndicesCacheResponse clearCache() {
-        ClearIndicesCacheRequest request = new ClearIndicesCacheRequest("index1", "index2");
-        return client.indices().clearCache(request, DEFAULT);
+    public ClearIndicesCacheResponse clearCache(@NotNull String... indices) {
+        return client.indices().clearCache(new ClearIndicesCacheRequest(indices), DEFAULT);
     }
 
     /**
      * Force Merge API
      */
     @SneakyThrows
-    public ForceMergeResponse forcemerge() {
-        ForceMergeRequest request = new ForceMergeRequest("index1", "index2");
-        return client.indices().forcemerge(request, DEFAULT);
+    public ForceMergeResponse forcemerge(@NotNull String... indices) {
+        return client.indices().forcemerge(new ForceMergeRequest(indices), DEFAULT);
     }
 
     /**
      * Rollover Index API
      */
     @SneakyThrows
-    public RolloverResponse rollover() {
-        RolloverRequest request = new RolloverRequest("alias", "index-2");
-        request.addMaxIndexAgeCondition(new TimeValue(7, TimeUnit.DAYS));
-        request.addMaxIndexDocsCondition(1000);
-        request.addMaxIndexSizeCondition(new ByteSizeValue(5, ByteSizeUnit.GB));
-        return client.indices().rollover(request, DEFAULT);
-    }
-
-    /**
-     * Put Mapping API
-     */
-    @SneakyThrows
-    public AcknowledgedResponse putMapping() {
-        PutMappingRequest request = new PutMappingRequest("twitter");
-        return client.indices().putMapping(request, DEFAULT);
-    }
-
-    /**
-     * Get Mappings API
-     */
-    @SneakyThrows
-    public GetMappingsResponse getMapping() {
-        GetMappingsRequest request = new GetMappingsRequest();
-        request.indices("twitter");
-        return client.indices().getMapping(request, DEFAULT);
-    }
-
-    /**
-     * Get Field Mappings API
-     */
-    @SneakyThrows
-    public GetFieldMappingsResponse getFieldMapping() {
-        GetFieldMappingsRequest request = new GetFieldMappingsRequest();
-        request.indices("twitter");
-        request.fields("message", "timestamp");
-        return client.indices().getFieldMapping(request, DEFAULT);
+    public RolloverResponse rollover(@NotNull String alias, @NotNull String newIndexName, @NotNull int duration, @NotNull long docsCondition, @NotNull long sizeCondition) {
+        return client.indices().rollover(new RolloverRequest(alias, newIndexName)
+                .addMaxIndexAgeCondition(new TimeValue(duration, TimeUnit.DAYS))
+                .addMaxIndexDocsCondition(docsCondition)
+                .addMaxIndexSizeCondition(new ByteSizeValue(sizeCondition, ByteSizeUnit.GB)), DEFAULT);
     }
 
     /**
      * Index Aliases API
      */
     @SneakyThrows
-    public AcknowledgedResponse updateAliases() {
-        IndicesAliasesRequest request = new IndicesAliasesRequest();
-        IndicesAliasesRequest.AliasActions aliasAction =
-                new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
-                        .index("index1")
-                        .alias("alias1");
-        request.addAliasAction(aliasAction);
-        return client.indices().updateAliases(request, DEFAULT);
+    public AcknowledgedResponse updateAliases(@NotNull List<IndicesAliasesRequest.AliasActions> aliasActionsList) {
+        return client.indices().updateAliases(aliasActionsList.stream().reduce(new IndicesAliasesRequest(), IndicesAliasesRequest::addAliasAction, (item1, item2) -> null), DEFAULT);
     }
 
     /**
      * Delete Alias API
      */
     @SneakyThrows
-    public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias() {
-        DeleteAliasRequest request = new DeleteAliasRequest("index1", "alias1");
-        return client.indices().deleteAlias(request, DEFAULT);
+    public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias(@NotNull String index, @NotNull String alias) {
+        return client.indices().deleteAlias(new DeleteAliasRequest(index, alias), DEFAULT);
     }
 
     /**
      * Exists Alias API
      */
     @SneakyThrows
-    public boolean existsAlias() {
-        GetAliasesRequest request = new GetAliasesRequest("alias1", "alias2");
-        return client.indices().existsAlias(request, DEFAULT);
+    public boolean existsAlias(@NotNull String... aliases) {
+        return client.indices().existsAlias(new GetAliasesRequest(aliases), DEFAULT);
     }
 
     /**
      * Get Alias API
      */
     @SneakyThrows
-    public GetAliasesResponse getAlias() {
-        GetAliasesRequest request = new GetAliasesRequest("alias1", "alias2");
-        return client.indices().getAlias(request, DEFAULT);
+    public GetAliasesResponse getAlias(@NotNull String... aliases) {
+        return client.indices().getAlias(new GetAliasesRequest(aliases), DEFAULT);
     }
 
     /**
      * Update Indices Settings API
      */
     @SneakyThrows
-    public AcknowledgedResponse putSettings() {
-        UpdateSettingsRequest request = new UpdateSettingsRequest("index1", "index2");
-        return client.indices().putSettings(request, DEFAULT);
+    public AcknowledgedResponse putSettings(@NotNull Settings settings, @NotNull String... indices) {
+        return client.indices().putSettings(new UpdateSettingsRequest(settings, indices), DEFAULT);
     }
 
     /**
      * Get Settings API
      */
     @SneakyThrows
-    public GetSettingsResponse getSettings() {
-        GetSettingsRequest request = new GetSettingsRequest().indices("index");
-        return client.indices().getSettings(request, DEFAULT);
+    public GetSettingsResponse getSettings(@NotNull String... indices) {
+        return client.indices().getSettings(new GetSettingsRequest().indices(indices), DEFAULT);
     }
 
     /**
      * Put Template API
      */
     @SneakyThrows
-    public AcknowledgedResponse putTemplate() {
-        PutIndexTemplateRequest request = new PutIndexTemplateRequest("my-template");
-        request.patterns(Arrays.asList("pattern-1", "log-*"));
-        return client.indices().putTemplate(request, DEFAULT);
+    public AcknowledgedResponse putTemplate(@NotNull String templateName, @NotNull List<String> indexPatterns) {
+        return client.indices().putTemplate(new PutIndexTemplateRequest(templateName).patterns(indexPatterns), DEFAULT);
     }
 
     /**
      * Validate Query API
      */
     @SneakyThrows
-    public ValidateQueryResponse validateQuery() {
-        ValidateQueryRequest request = new ValidateQueryRequest("index");
-        return client.indices().validateQuery(request, DEFAULT);
+    public ValidateQueryResponse validateQuery(@NotNull QueryBuilder builder, @NotNull String... indices) {
+        return client.indices().validateQuery(new ValidateQueryRequest(indices).query(builder), DEFAULT);
     }
 
     /**
      * Get Templates API
      */
     @SneakyThrows
-    public GetIndexTemplatesResponse getIndexTemplate() {
-        GetIndexTemplatesRequest request = new GetIndexTemplatesRequest("my-template");
-        return client.indices().getIndexTemplate(request, DEFAULT);
+    public GetIndexTemplatesResponse getIndexTemplate(@NotNull String... templateNames) {
+        return client.indices().getIndexTemplate(new GetIndexTemplatesRequest(templateNames), DEFAULT);
     }
 
     /**
      * Templates Exist API
      */
     @SneakyThrows
-    public boolean existsTemplate() {
-        IndexTemplatesExistRequest request = new IndexTemplatesExistRequest("template-1", "template-2");
-        return client.indices().existsTemplate(request, DEFAULT);
+    public boolean existsTemplate(@NotNull String... templateNames) {
+        return client.indices().existsTemplate(new IndexTemplatesExistRequest(templateNames), DEFAULT);
     }
 
     /**
      * Get Index API
      */
     @SneakyThrows
-    public GetIndexResponse get() {
-        GetIndexRequest request = new GetIndexRequest("index");
-        return client.indices().get(request, DEFAULT);
+    public GetIndexResponse get(@NotNull String... indices) {
+        return client.indices().get(new GetIndexRequest(indices), DEFAULT);
     }
 
     /**
      * Freeze Index API
      */
     @SneakyThrows
-    public ShardsAcknowledgedResponse freeze() {
-        FreezeIndexRequest request = new FreezeIndexRequest("index");
-        return client.indices().freeze(request, DEFAULT);
+    public ShardsAcknowledgedResponse freeze(@NotNull String... indices) {
+        return client.indices().freeze(new FreezeIndexRequest(indices), DEFAULT);
     }
 
     /**
      * Unfreeze Index API
      */
     @SneakyThrows
-    public ShardsAcknowledgedResponse unfreeze() {
-        UnfreezeIndexRequest request = new UnfreezeIndexRequest("index");
-        return client.indices().unfreeze(request, DEFAULT);
+    public ShardsAcknowledgedResponse unfreeze(@NotNull String... indices) {
+        return client.indices().unfreeze(new UnfreezeIndexRequest(indices), DEFAULT);
     }
 
     /**
      * Delete Template API
      */
     @SneakyThrows
-    public AcknowledgedResponse deleteTemplate() {
-        DeleteIndexTemplateRequest request = new DeleteIndexTemplateRequest();
-        request.name("my-template");
-        return client.indices().deleteTemplate(request, DEFAULT);
+    public AcknowledgedResponse deleteTemplate(@NotNull String templateName) {
+        return client.indices().deleteTemplate(new DeleteIndexTemplateRequest(templateName), DEFAULT);
     }
 
     /**
      * Reload Search Analyzers API
      */
     @SneakyThrows
-    public ReloadAnalyzersResponse reloadAnalyzers() {
-        ReloadAnalyzersRequest request = new ReloadAnalyzersRequest("index");
-        return client.indices().reloadAnalyzers(request, DEFAULT);
+    public ReloadAnalyzersResponse reloadAnalyzers(@NotNull String... indices) {
+        return client.indices().reloadAnalyzers(new ReloadAnalyzersRequest(indices), DEFAULT);
     }
 }

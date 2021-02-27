@@ -39,7 +39,7 @@ public final class MultiFetchSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public MultiGetResponse multiGet(@NotNull List<MultiGetRequest.Item> items) {
-        return client.mget(items.stream().reduce(new MultiGetRequest(), MultiGetRequest::add, (items1, items2) -> null), DEFAULT);
+        return client.mget(items.stream().reduce(new MultiGetRequest(), MultiGetRequest::add, (item1, item2) -> null), DEFAULT);
     }
 
     /**
@@ -47,7 +47,7 @@ public final class MultiFetchSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public MultiSearchResponse multiSearch(@NotNull List<SearchRequest> searchRequests) {
-        return client.msearch(searchRequests.stream().reduce(new MultiSearchRequest(), MultiSearchRequest::add, (multiSearchRequest, multiSearchRequest2) -> null), DEFAULT);
+        return client.msearch(searchRequests.stream().reduce(new MultiSearchRequest(), MultiSearchRequest::add, (item1, item2) -> null), DEFAULT);
     }
 
     /**
