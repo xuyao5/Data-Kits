@@ -25,6 +25,4 @@ public final class File2EsConfig {
     private boolean metadataLine = false;
     private int bulkSize = 15;
     private char fileComments = '#';
-
-    private int ringBufferSize = 1 << 10;
 }

@@ -31,6 +31,8 @@ import java.util.function.Function;
 @Slf4j
 public final class File2EsExecutor extends AbstractExecutor {
 
+    private static final int RING_BUFFER_SIZE = 1 << 10;
+
     public File2EsExecutor(EsClient esClient) {
         super(esClient);
     }
@@ -42,7 +44,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         esClient.run(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
-            Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+            Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                 String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
