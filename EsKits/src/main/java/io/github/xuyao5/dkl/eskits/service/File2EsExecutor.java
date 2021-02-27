@@ -74,6 +74,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                 }
+
                 disruptor.shutdown();
             });
             return null;
