@@ -61,7 +61,7 @@ public final class BulkSupporter extends AbstractSupporter {
      * Bulk Processor
      */
     @SneakyThrows
-    public void bulk(Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    public boolean bulk(Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
@@ -87,7 +87,7 @@ public final class BulkSupporter extends AbstractSupporter {
                 .setBulkSize(new ByteSizeValue(BULK_SIZE, ByteSizeUnit.MB))
                 .build()) {
             consumer.accept(bulkProcessor::add);
-            log.info("bulkProcessor.awaitClose return:{}", bulkProcessor.awaitClose(30L, TimeUnit.MINUTES));//最大30分钟等待
+            return bulkProcessor.awaitClose(30L, TimeUnit.MINUTES);//最大30分钟等待
         }
     }
 

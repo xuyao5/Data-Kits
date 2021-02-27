@@ -42,7 +42,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         esClient.run(client -> {
-            new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
+            return new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
                 Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
                 disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
@@ -72,12 +72,11 @@ public final class File2EsExecutor extends AbstractExecutor {
                         }, longAdder.intValue(), lineIterator.nextLine());
                     }
                 } catch (IOException e) {
-                    log.error(e.getMessage(), e);
+                    log.error("Read File ERROR", e);
+                } finally {
+                    disruptor.shutdown();
                 }
-
-                disruptor.shutdown();
             });
-            return null;
         });
 
 //        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
