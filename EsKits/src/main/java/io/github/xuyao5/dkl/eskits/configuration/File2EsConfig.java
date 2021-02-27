@@ -24,5 +24,5 @@ public final class File2EsConfig {
     private char recordSeparator = 0x1E;
     private boolean metadataLine = false;
     private int bulkSize = 15;
-    private char fileComments = '#';
+    private String fileComments = "#";
 }

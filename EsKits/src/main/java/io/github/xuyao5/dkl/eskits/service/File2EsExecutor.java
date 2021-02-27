@@ -19,6 +19,7 @@ import org.apache.commons.io.LineIterator;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 
@@ -47,12 +48,23 @@ public final class File2EsExecutor extends AbstractExecutor {
             Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-                String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
-                if (standardFileLine.getLineNo() == 1 && config.isMetadataLine()) {
+                if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
+                    return;
+                }
 
+                String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
+
+                if (standardFileLine.getLineNo() == 1 && config.isMetadataLine()) {
+                    log.info("获得元数据行:{}", standardFileLine);
                 } else {
                     StandardDocument standardDocument = mapper.apply(recordArray);
-                    //提交
+                    standardDocument.setIndex(config.getIndex());
+                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
+                    standardDocument.setSerialNo("setSerialNo");
+                    standardDocument.setCollapse("");
+                    standardDocument.setAllFieldMd5("");
+                    standardDocument.setCreateDate(new Date());
+                    standardDocument.setModifyDate(new Date());
                     if (config.getIdColumn() != 0) {
                         function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
                     } else {
