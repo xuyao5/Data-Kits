@@ -41,43 +41,41 @@ public final class File2EsExecutor extends AbstractExecutor {
             return;
         }
 
-        esClient.run(client -> {
-            return new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
-                Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        esClient.run(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
+            Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, config.getRingBufferSize(), DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-                disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-                    String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
-                    if (standardFileLine.getLineNo() == 1 && config.isMetadataLine()) {
+            disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
+                String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
+                if (standardFileLine.getLineNo() == 1 && config.isMetadataLine()) {
 
+                } else {
+                    StandardDocument standardDocument = mapper.apply(recordArray);
+                    //提交
+                    if (config.getIdColumn() != 0) {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
                     } else {
-                        StandardDocument standardDocument = mapper.apply(recordArray);
-                        //提交
-                        if (config.getIdColumn() != 0) {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
-                        } else {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
-                        }
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
                     }
-                });
-
-                RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-
-                try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
-                    LongAdder longAdder = new LongAdder();
-                    while (lineIterator.hasNext()) {
-                        longAdder.increment();
-                        ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
-                            standardFileLine.setLineNo(lineNo);
-                            standardFileLine.setLineRecord(lineRecord);
-                        }, longAdder.intValue(), lineIterator.nextLine());
-                    }
-                } catch (IOException e) {
-                    log.error("Read File ERROR", e);
-                } finally {
-                    disruptor.shutdown();
                 }
             });
-        });
+
+            RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
+
+            try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
+                LongAdder longAdder = new LongAdder();
+                while (lineIterator.hasNext()) {
+                    longAdder.increment();
+                    ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
+                        standardFileLine.setLineNo(lineNo);
+                        standardFileLine.setLineRecord(lineRecord);
+                    }, longAdder.intValue(), lineIterator.nextLine());
+                }
+            } catch (IOException e) {
+                log.error("Read File ERROR", e);
+            } finally {
+                disruptor.shutdown();
+            }
+        }));
 
 //        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
 
