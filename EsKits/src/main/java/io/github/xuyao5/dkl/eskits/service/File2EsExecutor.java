@@ -60,9 +60,8 @@ public final class File2EsExecutor extends AbstractExecutor {
             });
 
             RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-
+            LongAdder longAdder = new LongAdder();
             try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
-                LongAdder longAdder = new LongAdder();
                 while (lineIterator.hasNext()) {
                     longAdder.increment();
                     ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
@@ -70,8 +69,8 @@ public final class File2EsExecutor extends AbstractExecutor {
                         standardFileLine.setLineRecord(lineRecord);
                     }, longAdder.intValue(), lineIterator.nextLine());
                 }
-            } catch (IOException e) {
-                log.error("Read File ERROR", e);
+            } catch (IOException ex) {
+                log.error("Read File ERROR", ex);
             } finally {
                 disruptor.shutdown();
             }
