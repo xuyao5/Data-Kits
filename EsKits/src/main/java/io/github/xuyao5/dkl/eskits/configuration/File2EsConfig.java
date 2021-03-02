@@ -22,7 +22,6 @@ public final class File2EsConfig {
     private int collapseColumn = 0;
     private Charset charset = StandardCharsets.UTF_8;
     private char recordSeparator = 0x1E;
-    private boolean metadataLine = false;
     private int bulkSize = 15;
     private String fileComments = "#";
 }

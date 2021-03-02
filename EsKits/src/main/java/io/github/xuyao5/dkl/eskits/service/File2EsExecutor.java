@@ -54,7 +54,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                 String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
-                if (standardFileLine.getLineNo() == 1 && config.isMetadataLine()) {
+                if (standardFileLine.getLineNo() == 1) {
                     log.info("获得元数据行:{}", standardFileLine);
                 } else {
                     StandardDocument standardDocument = mapper.apply(recordArray);
@@ -81,6 +81,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
                         standardFileLine.setLineNo(lineNo);
                         standardFileLine.setLineRecord(lineRecord);
+                        standardFileLine.setEndRecord(!lineIterator.hasNext());
                     }, longAdder.intValue(), lineIterator.nextLine());
                 }
             } catch (IOException ex) {
