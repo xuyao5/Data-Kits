@@ -8,7 +8,6 @@ import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.client.EsClient;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
-import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
@@ -16,12 +15,12 @@ import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.text.CaseUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.function.Function;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -38,7 +37,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         super(esClient);
     }
 
-    public void execute(Function<String[], ? extends StandardDocument> mapper, @NotNull File2EsConfig config) {
+    public void execute(@NotNull File2EsConfig config) {
         //检查文件和索引是否存在
         if (!config.getFile().exists() || !esClient.run(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
             return;
@@ -47,6 +46,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         esClient.run(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
             Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
+            String[][] metadataArray = new String[1][];
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                 if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                     return;
@@ -55,21 +55,23 @@ public final class File2EsExecutor extends AbstractExecutor {
                 String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
                 if (standardFileLine.getLineNo() == 1) {
-                    log.info("获得元数据行:{}", standardFileLine);
+                    metadataArray[0] = new String[recordArray.length];
+                    Arrays.setAll(metadataArray[0], i -> CaseUtils.toCamelCase(recordArray[i], true, '_'));
+                    System.out.println(metadataArray[0][1]);
+
                 } else {
-                    StandardDocument standardDocument = mapper.apply(recordArray);
-                    standardDocument.setIndex(config.getIndex());
-                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
-                    standardDocument.setSerialNo("setSerialNo");
-                    standardDocument.setCollapse("");
-                    standardDocument.setAllFieldMd5("");
-                    standardDocument.setCreateDate(new Date());
-                    standardDocument.setModifyDate(new Date());
-                    if (config.getIdColumn() != 0) {
-                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
-                    } else {
-                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
-                    }
+//                    standardDocument.setIndex(config.getIndex());
+//                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
+//                    standardDocument.setSerialNo("setSerialNo");
+//                    standardDocument.setCollapse("");
+//                    standardDocument.setAllFieldMd5("");
+//                    standardDocument.setCreateDate(new Date());
+//                    standardDocument.setModifyDate(new Date());
+//                    if (config.getIdColumn() != 0) {
+//                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
+//                    } else {
+//                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
+//                    }
                 }
             });
 

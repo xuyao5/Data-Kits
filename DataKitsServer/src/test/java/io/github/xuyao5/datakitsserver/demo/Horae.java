@@ -33,12 +33,13 @@ final class Horae extends AbstractTest {
         char split = 0x1E;
         File file = Files.newFile(fileName);
 
+        MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(Strings.concat("UUID", split, "CASH_AMOUNT", split, "DESC", split, "DATE_TIME")), true);
         for (int y = 0; y < 10; y++) {
-            String[] fileMetadata = new String[10000];
-            for (int i = 0; i < fileMetadata.length; i++) {
-                fileMetadata[i] = Strings.concat(UUID.randomUUID(), split, i * y, split, "中文测试", split, System.currentTimeMillis());
+            String[] content = new String[10000];
+            for (int i = 0; i < content.length; i++) {
+                content[i] = Strings.concat(UUID.randomUUID(), split, i * y, split, "中文测试", split, System.currentTimeMillis());
             }
-            MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(fileMetadata), true);
+            MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }
     }
 }
