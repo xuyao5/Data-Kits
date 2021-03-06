@@ -1,6 +1,7 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -8,6 +9,7 @@ import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.client.EsClient;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
+import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
@@ -37,7 +39,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         super(esClient);
     }
 
-    public void execute(@NotNull File2EsConfig config) {
+    public void execute(EventFactory<? extends StandardDocument> document, @NotNull File2EsConfig config) {
         //检查文件和索引是否存在
         if (!config.getFile().exists() || !esClient.run(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
             return;
@@ -60,6 +62,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     System.out.println(metadataArray[0][1]);
 
                 } else {
+                    StandardDocument standardDocument = document.newInstance();
 //                    standardDocument.setIndex(config.getIndex());
 //                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
 //                    standardDocument.setSerialNo("setSerialNo");
