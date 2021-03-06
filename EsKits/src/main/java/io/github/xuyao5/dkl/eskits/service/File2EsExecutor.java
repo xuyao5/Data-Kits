@@ -13,11 +13,11 @@ import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
+import io.github.xuyao5.dkl.eskits.util.MyCaseUtils;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.text.CaseUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -58,7 +58,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                 if (standardFileLine.getLineNo() == 1) {
                     metadataArray[0] = new String[recordArray.length];
-                    Arrays.setAll(metadataArray[0], i -> CaseUtils.toCamelCase(recordArray[i], true, '_'));
+                    Arrays.setAll(metadataArray[0], i -> MyCaseUtils.toCamelCase(recordArray[i], true, '_'));
                     System.out.println(metadataArray[0][1]);
 
                 } else {
