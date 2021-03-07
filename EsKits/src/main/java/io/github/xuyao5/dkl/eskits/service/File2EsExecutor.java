@@ -63,7 +63,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                 if (standardFileLine.getLineNo() == 1) {
                     //用户自定义格式
-                    Map<String, Field> fieldMap = MyFieldUtils.getAllFieldsList(document.newInstance().getClass()).stream().collect(Collectors.toMap(Field::getName, Function.identity()));
+                    Map<String, Field> fieldMap = MyFieldUtils.getAllFieldsList(document.newInstance().getClass()).stream().collect(Collectors.toConcurrentMap(Field::getName, Function.identity()));
 
                     //文件中读出来的格式
                     Set<String> metadataSet = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).collect(Collectors.toSet());
