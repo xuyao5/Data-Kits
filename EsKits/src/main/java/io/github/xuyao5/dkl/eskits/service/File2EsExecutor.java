@@ -14,6 +14,7 @@ import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyCaseUtils;
+import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,12 @@ import org.apache.commons.io.LineIterator;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -46,9 +51,12 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         esClient.run(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
-            Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+            Map<String, Field> fieldMap = MyFieldUtils.getAllFieldsList(document.newInstance().getClass()).stream().collect(Collectors.toMap(Field::getName, Function.identity()));
 
             String[][] metadataArray = new String[1][];
+
+            Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                 if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                     return;
@@ -59,8 +67,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                 if (standardFileLine.getLineNo() == 1) {
                     metadataArray[0] = new String[recordArray.length];
                     Arrays.setAll(metadataArray[0], i -> MyCaseUtils.toCamelCase(recordArray[i], true, '_'));
-                    System.out.println(metadataArray[0][1]);
-
+//                    System.out.println(metadataArray[0][1]);
                 } else {
                     StandardDocument standardDocument = document.newInstance();
 //                    standardDocument.setIndex(config.getIndex());
