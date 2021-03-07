@@ -52,8 +52,6 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         esClient.run(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
-            String[][] metadataArray = new String[1][];
-
             Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
@@ -67,8 +65,6 @@ public final class File2EsExecutor extends AbstractExecutor {
                     //用户自定义格式
                     Map<String, Field> fieldMap = MyFieldUtils.getAllFieldsList(document.newInstance().getClass()).stream().collect(Collectors.toMap(Field::getName, Function.identity()));
 
-                    metadataArray[0] = new String[recordArray.length];
-                    Arrays.setAll(metadataArray[0], i -> MyCaseUtils.toCamelCaseDefault(recordArray[i]));
                     //文件中读出来的格式
                     Set<String> metadataSet = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).collect(Collectors.toSet());
 
