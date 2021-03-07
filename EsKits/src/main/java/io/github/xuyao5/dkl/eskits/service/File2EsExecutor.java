@@ -66,7 +66,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                 if (standardFileLine.getLineNo() == 1) {
                     metadataArray[0] = new String[recordArray.length];
-                    Arrays.setAll(metadataArray[0], i -> MyCaseUtils.toCamelCase(recordArray[i], true, '_'));
+                    Arrays.setAll(metadataArray[0], i -> MyCaseUtils.toCamelCaseDefault(recordArray[i]));
 //                    System.out.println(metadataArray[0][1]);
                 } else {
                     StandardDocument standardDocument = document.newInstance();

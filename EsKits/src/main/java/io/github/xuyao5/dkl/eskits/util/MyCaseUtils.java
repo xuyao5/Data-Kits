@@ -4,12 +4,18 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.text.CaseUtils;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 6/03/21 16:31
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote MyCaseUtils
+ * @implNote MyCaseUtils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyCaseUtils extends CaseUtils {
+
+    public static String toCamelCaseDefault(@NotNull String str) {
+        return toCamelCase(str, false, '_');
+    }
 }
