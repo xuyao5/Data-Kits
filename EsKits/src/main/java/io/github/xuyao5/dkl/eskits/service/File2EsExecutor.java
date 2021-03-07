@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,8 +52,6 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         esClient.run(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
-            Map<String, Field> fieldMap = MyFieldUtils.getAllFieldsList(document.newInstance().getClass()).stream().collect(Collectors.toMap(Field::getName, Function.identity()));
-
             String[][] metadataArray = new String[1][];
 
             Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
@@ -65,8 +64,14 @@ public final class File2EsExecutor extends AbstractExecutor {
                 String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
                 if (standardFileLine.getLineNo() == 1) {
+                    //用户自定义格式
+                    Map<String, Field> fieldMap = MyFieldUtils.getAllFieldsList(document.newInstance().getClass()).stream().collect(Collectors.toMap(Field::getName, Function.identity()));
+
                     metadataArray[0] = new String[recordArray.length];
                     Arrays.setAll(metadataArray[0], i -> MyCaseUtils.toCamelCaseDefault(recordArray[i]));
+                    //文件中读出来的格式
+                    Set<String> metadataSet = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).collect(Collectors.toSet());
+
 //                    System.out.println(metadataArray[0][1]);
                 } else {
                     StandardDocument standardDocument = document.newInstance();
