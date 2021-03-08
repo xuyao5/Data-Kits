@@ -10,6 +10,7 @@ import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.ReindexRequest;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.Map;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
@@ -28,7 +29,7 @@ public final class ReindexSupporter extends AbstractSupporter {
     }
 
     @SneakyThrows
-    public static XContentBuilder buildMapping(@NotNull Map<String, Class<?>> allClassMap) {
+    public static XContentBuilder buildMapping(@NotNull Map<String, Class<?>> declaredFieldsMap) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {
@@ -36,21 +37,64 @@ public final class ReindexSupporter extends AbstractSupporter {
 
             builder.startObject("properties");
             {
-                builder.startObject("message");
+                builder.startObject("recordId");
                 {
                     builder.field("type", "keyword");
-                    builder.field("ignore_above", 256);
+                    builder.field("ignore_above", 100);
                 }
                 builder.endObject();
 
-                for (Map.Entry<String, Class<?>> entry : allClassMap.entrySet()) {
+                builder.startObject("dateTag");
+                {
+                    builder.field("type", "keyword");
+                    builder.field("ignore_above", 8);
+                }
+                builder.endObject();
+
+                builder.startObject("serialNo");
+                {
+                    builder.field("type", "long");
+                }
+                builder.endObject();
+
+                builder.startObject("collapse");
+                {
+                    builder.field("type", "keyword");
+                    builder.field("ignore_above", 200);
+                }
+                builder.endObject();
+
+                builder.startObject("allFieldMd5");
+                {
+                    builder.field("type", "keyword");
+                    builder.field("ignore_above", 32);
+                }
+                builder.endObject();
+
+                builder.startObject("createDate");
+                {
+                    builder.field("type", "date");
+                }
+                builder.endObject();
+
+                builder.startObject("modifyDate");
+                {
+                    builder.field("type", "date");
+                }
+                builder.endObject();
+
+                for (Map.Entry<String, Class<?>> entry : declaredFieldsMap.entrySet()) {
                     builder.startObject(entry.getKey());
                     {
-                        if (String.class.equals(entry.getValue())) {
+                        Class<?> clz = entry.getValue();
+                        if (String.class.equals(clz)) {
                             builder.field("type", "keyword");
                             builder.field("ignore_above", 256);
-                        }
-                        if (Number.class.equals(entry.getValue())) {
+                        } else if (Double.class.equals(clz)) {
+                            builder.field("type", "keyword");
+                        } else if (Date.class.equals(clz)) {
+                            builder.field("type", "date");
+                        } else {
                             builder.field("type", "keyword");
                         }
                     }

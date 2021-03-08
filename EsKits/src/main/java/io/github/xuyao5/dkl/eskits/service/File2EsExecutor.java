@@ -13,12 +13,14 @@ import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
+import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyCaseUtils;
 import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -44,13 +46,23 @@ public final class File2EsExecutor extends AbstractExecutor {
     }
 
     public void execute(EventFactory<? extends StandardDocument> document, @NotNull File2EsConfig config) {
-        //用户自定义格式
-        Map<String, Class<?>> allClassMap = MyFieldUtils.getAllClassMap(document.newInstance().getClass());
-
         //检查文件和索引是否存在
-        if (!config.getFile().exists() || !esClient.run(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
+        if (!config.getFile().exists()) {
             return;
         }
+
+        //创建索引
+        esClient.run(restHighLevelClient -> {
+            //用户自定义格式
+            Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
+            XContentBuilder xContentBuilder = ReindexSupporter.buildMapping(declaredFieldsMap);
+
+            IndexSupporter indexSupporter = new IndexSupporter(restHighLevelClient);
+            if (!indexSupporter.exists(config.getIndex())) {
+                return indexSupporter.create(config.getIndex(), 1, 0, xContentBuilder, config.getAlias());
+            }
+            return null;
+        });
 
         esClient.run(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
             Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
@@ -68,7 +80,6 @@ public final class File2EsExecutor extends AbstractExecutor {
 
 //                    System.out.println(metadataArray[0][1]);
                 } else {
-                    StandardDocument standardDocument = document.newInstance();
 //                    standardDocument.setIndex(config.getIndex());
 //                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
 //                    standardDocument.setSerialNo("setSerialNo");
