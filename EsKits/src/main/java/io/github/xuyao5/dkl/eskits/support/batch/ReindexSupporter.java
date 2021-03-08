@@ -10,6 +10,7 @@ import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.ReindexRequest;
 
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
@@ -27,7 +28,7 @@ public final class ReindexSupporter extends AbstractSupporter {
     }
 
     @SneakyThrows
-    public static XContentBuilder buildMappingContent() {
+    public static XContentBuilder buildMappingContent(@NotNull Map<String, Class<?>> allClassMap) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {

@@ -22,12 +22,10 @@ import org.apache.commons.io.LineIterator;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +44,9 @@ public final class File2EsExecutor extends AbstractExecutor {
     }
 
     public void execute(EventFactory<? extends StandardDocument> document, @NotNull File2EsConfig config) {
+        //用户自定义格式
+        Map<String, Class<?>> allClassMap = MyFieldUtils.getAllClassMap(document.newInstance().getClass());
+
         //检查文件和索引是否存在
         if (!config.getFile().exists() || !esClient.run(restHighLevelClient -> new IndexSupporter(restHighLevelClient).exists(config.getIndex()))) {
             return;
@@ -62,9 +63,6 @@ public final class File2EsExecutor extends AbstractExecutor {
                 String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
                 if (standardFileLine.getLineNo() == 1) {
-                    //用户自定义格式
-                    Map<String, Field> fieldMap = MyFieldUtils.getAllFieldsList(document.newInstance().getClass()).stream().collect(Collectors.toConcurrentMap(Field::getName, Function.identity()));
-
                     //文件中读出来的格式
                     Set<String> metadataSet = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).collect(Collectors.toSet());
 
