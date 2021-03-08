@@ -28,7 +28,7 @@ public final class ReindexSupporter extends AbstractSupporter {
     }
 
     @SneakyThrows
-    public static XContentBuilder buildMappingContent(@NotNull Map<String, Class<?>> allClassMap) {
+    public static XContentBuilder buildMapping(@NotNull Map<String, Class<?>> allClassMap) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {
@@ -42,6 +42,20 @@ public final class ReindexSupporter extends AbstractSupporter {
                     builder.field("ignore_above", 256);
                 }
                 builder.endObject();
+
+                for (Map.Entry<String, Class<?>> entry : allClassMap.entrySet()) {
+                    builder.startObject(entry.getKey());
+                    {
+                        if (String.class.equals(entry.getValue())) {
+                            builder.field("type", "keyword");
+                            builder.field("ignore_above", 256);
+                        }
+                        if (Number.class.equals(entry.getValue())) {
+                            builder.field("type", "keyword");
+                        }
+                    }
+                    builder.endObject();
+                }
             }
             builder.endObject();
         }
