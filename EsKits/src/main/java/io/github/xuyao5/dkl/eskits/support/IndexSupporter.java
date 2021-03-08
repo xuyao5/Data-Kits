@@ -70,10 +70,10 @@ public final class IndexSupporter extends AbstractSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull String index, int shards, int replicas, @NotNull XContentBuilder builder, @NotNull String alias) {
+    public CreateIndexResponse create(@NotNull String index, int shards, @NotNull XContentBuilder builder, @NotNull String alias) {
         return client.indices().create(new CreateIndexRequest(index.toLowerCase()).settings(Settings.builder()
                 .put("index.number_of_shards", shards)
-                .put("index.number_of_replicas", replicas)
+                .put("index.number_of_replicas", shards > 1 ? 1 : 0)
         ).mapping(builder).alias(new Alias(alias.toUpperCase(Locale.ROOT))), DEFAULT);
     }
 
