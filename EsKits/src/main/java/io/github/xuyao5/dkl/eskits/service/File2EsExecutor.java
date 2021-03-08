@@ -52,12 +52,12 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         //创建索引
-        esClient.run(restHighLevelClient -> {
+        esClient.run(client -> {
             //用户自定义格式
             Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
             XContentBuilder xContentBuilder = ReindexSupporter.buildMapping(declaredFieldsMap);
 
-            IndexSupporter indexSupporter = new IndexSupporter(restHighLevelClient);
+            IndexSupporter indexSupporter = new IndexSupporter(client);
             if (!indexSupporter.exists(config.getIndex())) {
                 return indexSupporter.create(config.getIndex(), 1, 0, xContentBuilder, config.getAlias());
             }

@@ -10,6 +10,7 @@ import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.ReindexRequest;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
@@ -90,12 +91,35 @@ public final class ReindexSupporter extends AbstractSupporter {
                         if (String.class.equals(clz)) {
                             builder.field("type", "keyword");
                             builder.field("ignore_above", 256);
-                        } else if (Double.class.equals(clz)) {
+                        } else if (char.class.equals(clz) || Character.class.equals(clz)) {
                             builder.field("type", "keyword");
+                            builder.field("ignore_above", 1);
+                        } else if (long.class.equals(clz) || Long.class.equals(clz)) {
+                            builder.field("type", "integer");
+                        } else if (int.class.equals(clz) || Integer.class.equals(clz)) {
+                            builder.field("type", "integer");
+                        } else if (short.class.equals(clz) || Short.class.equals(clz)) {
+                            builder.field("type", "short");
+                        } else if (byte.class.equals(clz) || Byte.class.equals(clz)) {
+                            builder.field("type", "byte");
+                        } else if (double.class.equals(clz) || Double.class.equals(clz)) {
+                            builder.field("type", "double");
+                        } else if (float.class.equals(clz) || Float.class.equals(clz)) {
+                            builder.field("type", "float");
+                        } else if (boolean.class.equals(clz) || Boolean.class.equals(clz)) {
+                            builder.field("type", "boolean");
                         } else if (Date.class.equals(clz)) {
                             builder.field("type", "date");
+                        } else if (BigDecimal.class.equals(clz)) {
+                            builder.field("type", "date");
                         } else {
+                            builder.field("type", "text");
+                            builder.startObject("fields");
+                            builder.startObject("keyword");
                             builder.field("type", "keyword");
+                            builder.field("ignore_above", 256);
+                            builder.endObject();
+                            builder.endObject();
                         }
                     }
                     builder.endObject();
