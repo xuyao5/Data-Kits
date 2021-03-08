@@ -59,7 +59,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
             IndexSupporter indexSupporter = new IndexSupporter(client);
             if (!indexSupporter.exists(config.getIndex())) {
-                return indexSupporter.create(config.getIndex(), 1, xContentBuilder, config.getAlias());
+                return indexSupporter.create(config.getIndex(), 1, xContentBuilder);
             }
             return null;
         });

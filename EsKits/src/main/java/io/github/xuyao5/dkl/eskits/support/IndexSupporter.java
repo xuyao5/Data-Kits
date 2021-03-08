@@ -3,7 +3,6 @@ package io.github.xuyao5.dkl.eskits.support;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest;
@@ -70,11 +69,11 @@ public final class IndexSupporter extends AbstractSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull String index, int shards, @NotNull XContentBuilder builder, @NotNull String alias) {
+    public CreateIndexResponse create(@NotNull String index, int shards, @NotNull XContentBuilder builder) {
         return client.indices().create(new CreateIndexRequest(index.toLowerCase()).settings(Settings.builder()
                 .put("index.number_of_shards", shards)
                 .put("index.number_of_replicas", shards > 1 ? 1 : 0)
-        ).mapping(builder).alias(new Alias(alias.toUpperCase(Locale.ROOT))), DEFAULT);
+        ).mapping(builder), DEFAULT);
     }
 
     /**

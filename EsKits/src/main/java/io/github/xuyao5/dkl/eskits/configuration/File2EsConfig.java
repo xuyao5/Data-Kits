@@ -17,7 +17,6 @@ public final class File2EsConfig {
 
     private final File file;
     private final String index;
-    private final String alias;
 
     private int idColumn = 1;
     private int collapseColumn = 0;
