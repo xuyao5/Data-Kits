@@ -11,6 +11,7 @@ import io.github.xuyao5.dkl.eskits.client.EsClient;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
+import io.github.xuyao5.dkl.eskits.support.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
@@ -53,62 +54,63 @@ public final class File2EsExecutor extends AbstractExecutor {
         //用户自定义格式
         Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
 
-        //创建索引
         esClient.invokeConsumer(client -> {
+            int numberOfDataNodes = new ClusterSupporter(client).health().getNumberOfDataNodes();
+
             IndexSupporter indexSupporter = new IndexSupporter(client);
             if (!indexSupporter.exists(config.getIndex())) {
-                indexSupporter.create(config.getIndex(), esClient.hostsCount(), ReindexSupporter.buildMapping(declaredFieldsMap));
+                indexSupporter.create(config.getIndex(), numberOfDataNodes, ReindexSupporter.buildMapping(declaredFieldsMap));
             }
-        });
 
-        esClient.invokeConsumer(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
-            Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+            new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
+                Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-            disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-                if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
-                    return;
-                }
+                disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
+                    if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
+                        return;
+                    }
 
-                String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
+                    String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
-                if (standardFileLine.getLineNo() == 1) {
-                    //文件中读出来的格式
-                    Set<String> metadataSet = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).collect(Collectors.toSet());
+                    if (standardFileLine.getLineNo() == 1) {
+                        //文件中读出来的格式
+                        Set<String> metadataSet = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).collect(Collectors.toSet());
 
-//                    System.out.println(metadataArray[0][1]);
-                } else {
-//                    standardDocument.setIndex(config.getIndex());
-//                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
-//                    standardDocument.setSerialNo("setSerialNo");
-//                    standardDocument.setCollapse("");
-//                    standardDocument.setAllFieldMd5("");
-//                    standardDocument.setCreateDate(new Date());
-//                    standardDocument.setModifyDate(new Date());
-//                    if (config.getIdColumn() != 0) {
-//                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
-//                    } else {
-//                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
-//                    }
+                        //                    System.out.println(metadataArray[0][1]);
+                    } else {
+                        //                    standardDocument.setIndex(config.getIndex());
+                        //                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
+                        //                    standardDocument.setSerialNo("setSerialNo");
+                        //                    standardDocument.setCollapse("");
+                        //                    standardDocument.setAllFieldMd5("");
+                        //                    standardDocument.setCreateDate(new Date());
+                        //                    standardDocument.setModifyDate(new Date());
+                        //                    if (config.getIdColumn() != 0) {
+                        //                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
+                        //                    } else {
+                        //                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
+                        //                    }
+                    }
+                });
+
+                RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
+                LongAdder longAdder = new LongAdder();
+                try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
+                    while (lineIterator.hasNext()) {
+                        longAdder.increment();
+                        ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
+                            standardFileLine.setLineNo(lineNo);
+                            standardFileLine.setLineRecord(lineRecord);
+                            standardFileLine.setEndRecord(!lineIterator.hasNext());
+                        }, longAdder.intValue(), lineIterator.nextLine());
+                    }
+                } catch (IOException ex) {
+                    log.error("Read File ERROR", ex);
+                } finally {
+                    disruptor.shutdown();
                 }
             });
-
-            RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-            LongAdder longAdder = new LongAdder();
-            try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
-                while (lineIterator.hasNext()) {
-                    longAdder.increment();
-                    ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
-                        standardFileLine.setLineNo(lineNo);
-                        standardFileLine.setLineRecord(lineRecord);
-                        standardFileLine.setEndRecord(!lineIterator.hasNext());
-                    }, longAdder.intValue(), lineIterator.nextLine());
-                }
-            } catch (IOException ex) {
-                log.error("Read File ERROR", ex);
-            } finally {
-                disruptor.shutdown();
-            }
-        }));
+        });
 
 //        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
 
