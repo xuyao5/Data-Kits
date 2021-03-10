@@ -83,6 +83,18 @@ public final class File2EsExecutor extends AbstractExecutor {
                         standardDocument.setAllFieldMd5(DigestUtils.md5Hex(standardFileLine.getLineRecord()).toUpperCase(Locale.ROOT));
                         standardDocument.setCreateDate(MyDateUtils.now());
                         standardDocument.setModifyDate(MyDateUtils.now());
+
+                        for (int i = 0; i < recordArray.length; i++) {
+                            String fieldName = metadataArray[0][i];
+                            GsonUtils.json2Obj(recordArray[i], declaredFieldsMap.get(fieldName)).ifPresent(obj -> {
+                                try {
+                                    MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
+                                } catch (IllegalAccessException ex) {
+                                    log.error("类型解析错误", ex);
+                                }
+                            });
+                        }
+
                         if (config.getIdColumn() != 0) {
                             function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
                         } else {

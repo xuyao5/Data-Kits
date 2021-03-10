@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT;
@@ -33,6 +34,7 @@ public final class GsonUtils {
                 .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
                 .setPrettyPrinting()
                 .setVersion(1.0)
+                .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))
                 .create();
     }
 
