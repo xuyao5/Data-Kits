@@ -57,7 +57,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         esClient.invokeConsumer(client -> {
             IndexSupporter indexSupporter = new IndexSupporter(client);
             if (!indexSupporter.exists(config.getIndex())) {
-                indexSupporter.create(config.getIndex(), esClient.hostsCount(), ReindexSupporter.buildMapping(declaredFieldsMap)).isAcknowledged();
+                indexSupporter.create(config.getIndex(), esClient.hostsCount(), ReindexSupporter.buildMapping(declaredFieldsMap));
             }
         });
 
