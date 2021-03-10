@@ -2,6 +2,7 @@ package io.github.xuyao5.datakitsserver;
 
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.dkl.eskits.client.EsClient;
+import io.github.xuyao5.dkl.eskits.client.impl.EsClientImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,6 @@ public class DataKitsApplication {
 
     @Bean(name = "myEsClient")
     public EsClient esClient(@Value("${es.client.hosts}") String hosts, @Value("${es.client.username}") String username, @Value("${es.client.password}") String password, @Value("${es.client.multiple}") int multiple) {
-        return new EsClient(new String[]{hosts}, username, password, multiple);
+        return new EsClientImpl(new String[]{hosts}, username, password, multiple);
     }
 }
