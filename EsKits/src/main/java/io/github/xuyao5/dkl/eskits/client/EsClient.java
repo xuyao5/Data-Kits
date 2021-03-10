@@ -54,6 +54,10 @@ public final class EsClient {
         }
     }
 
+    public int hostsCount() {
+        return HOSTS.length;
+    }
+
     private RestHighLevelClient getRestHighLevelClient() {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME, PASSWORD));
