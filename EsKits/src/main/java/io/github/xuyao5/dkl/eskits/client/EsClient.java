@@ -13,6 +13,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
@@ -40,9 +41,16 @@ public final class EsClient {
     }
 
     @SneakyThrows
-    public <T> T run(Function<RestHighLevelClient, T> function) {
+    public <T> T invokeFunction(Function<RestHighLevelClient, T> function) {
         try (RestHighLevelClient client = getRestHighLevelClient()) {
             return function.apply(client);
+        }
+    }
+
+    @SneakyThrows
+    public void invokeConsumer(Consumer<RestHighLevelClient> consumer) {
+        try (RestHighLevelClient client = getRestHighLevelClient()) {
+            consumer.accept(client);
         }
     }
 

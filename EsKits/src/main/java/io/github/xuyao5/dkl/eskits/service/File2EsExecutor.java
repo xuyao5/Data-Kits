@@ -20,7 +20,6 @@ import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -51,20 +50,18 @@ public final class File2EsExecutor extends AbstractExecutor {
             return;
         }
 
-        //创建索引
-        esClient.run(client -> {
-            //用户自定义格式
-            Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
-            XContentBuilder xContentBuilder = ReindexSupporter.buildMapping(declaredFieldsMap);
+        //用户自定义格式
+        Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
 
+        //创建索引
+        esClient.invokeConsumer(client -> {
             IndexSupporter indexSupporter = new IndexSupporter(client);
             if (!indexSupporter.exists(config.getIndex())) {
-                return indexSupporter.create(config.getIndex(), 1, xContentBuilder);
+                indexSupporter.create(config.getIndex(), 1, ReindexSupporter.buildMapping(declaredFieldsMap)).isAcknowledged();
             }
-            return null;
         });
 
-        esClient.run(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
+        esClient.invokeConsumer(client -> new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
             Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {

@@ -18,6 +18,6 @@ public class IndexSupporterTest extends AbstractTest {
     @Test
     void testCreate() {
         String source = MyFileUtils.readFileToString(ResourceUtils.getFile(Strings.concat(CLASSPATH_URL_PREFIX, "elasticsearch/index/TEST_INDEX.json")), StandardCharsets.UTF_8);
-        esClient.run(client -> new IndexSupporter(client).create("file2es_disruptor_1", source));
+        esClient.invokeConsumer(client -> new IndexSupporter(client).create("file2es_disruptor_1", source));
     }
 }

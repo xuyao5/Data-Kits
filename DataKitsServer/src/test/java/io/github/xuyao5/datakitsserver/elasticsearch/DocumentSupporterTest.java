@@ -16,66 +16,59 @@ public class DocumentSupporterTest extends AbstractTest {
 
     @Test
     void testIndex() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             System.out.println(new DocumentSupporter(client).index("file2es_disruptor_1", "1", Pojo.of("测试")));
-            return null;
         });
     }
 
     @Test
     void testGet() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             System.out.println(new DocumentSupporter(client).get("TEST-INDEX", "2"));
-            return null;
         });
     }
 
     @Test
     void testGetSource() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             System.out.println(new DocumentSupporter(client).getSource("TEST-INDEX", "2"));
-            return null;
         });
     }
 
     @Test
     void testExists() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             System.out.println(new DocumentSupporter(client).exists("TEST-INDEX", "2"));
-            return null;
         });
     }
 
     @Test
     void testDelete() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             System.out.println(new DocumentSupporter(client).delete("TEST-INDEX", "2"));
-            return null;
         });
     }
 
     @Test
     void testUpdate() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             System.out.println(new DocumentSupporter(client).update("TEST-INDEX", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
-            return null;
         });
     }
 
     @Test
     void testBulk() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             List<DocWriteRequest<?>> requestList = new ArrayList<>();
             requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", "100", Pojo.of("测试更新：" + System.currentTimeMillis())));
             requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", "101", Pojo.of("测试更新：" + System.currentTimeMillis())));
             System.out.println(new BulkSupporter(client, 50).bulk(requestList));
-            return null;
         });
     }
 
     @Test
     void testMultiGet() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             List<MultiGetRequest.Item> list = new ArrayList<>();
             list.add(new MultiGetRequest.Item("TEST-INDEX", "3"));
             list.add(new MultiGetRequest.Item("TEST-INDEX", "100"));
@@ -83,14 +76,12 @@ public class DocumentSupporterTest extends AbstractTest {
             new MultiFetchSupporter(client).multiGet(list).iterator().forEachRemaining(multiGetItemResponse -> {
                 System.out.println(multiGetItemResponse.getResponse());
             });
-            return null;
         });
     }
 
     void testReindex() {
-        esClient.run(client -> {
+        esClient.invokeConsumer(client -> {
             new ReindexSupporter(client).reindex("", 1);
-            return null;
         });
     }
 }
