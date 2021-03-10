@@ -27,14 +27,14 @@ import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
  * @implNote EsClientImpl
  */
 @Slf4j
-public final class EsClientImpl implements EsClient {
+public final class DefaultEsClient implements EsClient {
 
     private final HttpHost[] HOSTS;
     private final String USERNAME;
     private final String PASSWORD;
     private final int CONN_MULTI;
 
-    public EsClientImpl(@NotNull String[] clientUrls, String clientUsername, String clientPassword, int multiple) {
+    public DefaultEsClient(@NotNull String[] clientUrls, String clientUsername, String clientPassword, int multiple) {
         HOSTS = url2HttpHost(clientUrls);
         USERNAME = clientUsername;
         PASSWORD = clientPassword;
