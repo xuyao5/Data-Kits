@@ -15,16 +15,15 @@ import io.github.xuyao5.dkl.eskits.support.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
-import io.github.xuyao5.dkl.eskits.util.MyCaseUtils;
-import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
-import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
-import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
+import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.LineIterator;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -75,18 +74,20 @@ public final class File2EsExecutor extends AbstractExecutor {
                     if (standardFileLine.getLineNo() == 1) {
                         metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
                     } else {
-                        //                    standardDocument.setIndex(config.getIndex());
-                        //                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
-                        //                    standardDocument.setSerialNo("setSerialNo");
-                        //                    standardDocument.setCollapse("");
-                        //                    standardDocument.setAllFieldMd5("");
-                        //                    standardDocument.setCreateDate(new Date());
-                        //                    standardDocument.setModifyDate(new Date());
-                        //                    if (config.getIdColumn() != 0) {
-                        //                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
-                        //                    } else {
-                        //                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
-                        //                    }
+                        StandardDocument standardDocument = document.newInstance();
+                        standardDocument.setIndex(config.getIndex());
+                        standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
+                        standardDocument.setDateTag("20210310");
+                        standardDocument.setSerialNo("3");
+                        standardDocument.setCollapse("4");
+                        standardDocument.setAllFieldMd5(DigestUtils.md5Hex(standardFileLine.getLineRecord()).toUpperCase(Locale.ROOT));
+                        standardDocument.setCreateDate(MyDateUtils.now());
+                        standardDocument.setModifyDate(MyDateUtils.now());
+                        if (config.getIdColumn() != 0) {
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
+                        } else {
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
+                        }
                     }
                 });
 

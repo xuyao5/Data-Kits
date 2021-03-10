@@ -31,4 +31,8 @@ public final class MyDateUtils extends DateFormatUtils {
     public static Date convertDate2Date(@NotNull Date date) {
         return null;
     }
+
+    public static Date now() {
+        return new Date();
+    }
 }
