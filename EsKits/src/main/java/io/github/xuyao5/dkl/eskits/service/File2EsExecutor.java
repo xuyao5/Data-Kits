@@ -26,9 +26,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.stream.Collectors;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -65,6 +63,8 @@ public final class File2EsExecutor extends AbstractExecutor {
             new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
                 Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
+                String[][] metadataArray = new String[1][];
+
                 disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                     if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                         return;
@@ -73,10 +73,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
                     if (standardFileLine.getLineNo() == 1) {
-                        //文件中读出来的格式
-                        Set<String> metadataSet = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).collect(Collectors.toSet());
-
-                        //                    System.out.println(metadataArray[0][1]);
+                        metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
                     } else {
                         //                    standardDocument.setIndex(config.getIndex());
                         //                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
