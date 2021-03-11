@@ -121,13 +121,5 @@ public final class File2EsExecutor extends AbstractExecutor {
                 }
             });
         });
-
-//        List<File> decisionFiles = MyFileUtils.getDecisionFiles(task.getFilePath(), task.getFilenameRegex(), task.getFileConfirmRegex());
-
-//        decisionFiles.stream()
-//                .filter(file -> Files.exists(Paths.get(MyFilenameUtils.getConfirmFilename(file.getPath(), task.getFilenameSeparator(), task.getFileConfirmPrefix(), task.getFileConfirmSuffix()))))
-//                .forEach(file -> {
-//                    System.out.println(file);
-//                });
     }
 }
