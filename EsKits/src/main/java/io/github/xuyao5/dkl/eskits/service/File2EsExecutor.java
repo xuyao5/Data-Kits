@@ -77,10 +77,10 @@ public final class File2EsExecutor extends AbstractExecutor {
                         StandardDocument standardDocument = document.newInstance();
                         standardDocument.setIndex(config.getIndex());
                         standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
-                        standardDocument.setDateTag("20210310");
-                        standardDocument.setSerialNo("3");
-                        standardDocument.setCollapse("4");
+                        standardDocument.setDateTag(MyDateUtils.getCurrentDateTag());
+                        standardDocument.setSerialNo(snowflake.nextId());
                         standardDocument.setAllFieldMd5(DigestUtils.md5Hex(standardFileLine.getLineRecord()).toUpperCase(Locale.ROOT));
+                        standardDocument.setRandomNum(MyRandomUtils.getLong());
                         standardDocument.setCreateDate(MyDateUtils.now());
                         standardDocument.setModifyDate(MyDateUtils.now());
 

@@ -18,9 +18,9 @@ public abstract class StandardDocument implements Serializable {
 
     private String recordId;
     private String dateTag;
-    private String serialNo;
-    private String collapse;
+    private long serialNo;
     private String allFieldMd5;
+    private long randomNum;
     private Date createDate;
     private Date modifyDate;
 }

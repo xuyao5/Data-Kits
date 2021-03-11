@@ -58,17 +58,16 @@ public final class ReindexSupporter extends AbstractSupporter {
                 }
                 builder.endObject();
 
-                builder.startObject("collapse");
-                {
-                    builder.field("type", "keyword");
-                    builder.field("ignore_above", 200);
-                }
-                builder.endObject();
-
                 builder.startObject("allFieldMd5");
                 {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 32);
+                }
+                builder.endObject();
+
+                builder.startObject("randomNum");
+                {
+                    builder.field("type", "long");
                 }
                 builder.endObject();
 

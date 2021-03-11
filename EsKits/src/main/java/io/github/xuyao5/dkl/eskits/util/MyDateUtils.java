@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -16,23 +16,18 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyDateUtils extends DateFormatUtils {
 
-    public static String convertDate2String(@NotNull String date) {
-        return null;
-    }
-
-    public static String convertDate2String(@NotNull Date date) {
-        return null;
-    }
-
-    public static Date convertDate2Date(@NotNull String date) {
-        return null;
-    }
-
-    public static Date convertDate2Date(@NotNull Date date) {
-        return null;
-    }
+    public static final String STD_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String STD_TAG_DATE_FORMAT = "yyyyMMdd";
 
     public static Date now() {
         return new Date();
+    }
+
+    public static String getCurrentDateTag() {
+        return format(now(), STD_TAG_DATE_FORMAT, Locale.ROOT);
+    }
+
+    public static String getCurrentDatetime() {
+        return format(now(), STD_DATETIME_FORMAT, Locale.ROOT);
     }
 }
