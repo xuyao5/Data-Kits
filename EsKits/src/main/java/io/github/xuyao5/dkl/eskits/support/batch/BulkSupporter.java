@@ -1,7 +1,7 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
-import io.github.xuyao5.dkl.eskits.util.GsonUtils;
+import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;
@@ -42,11 +42,11 @@ public final class BulkSupporter extends AbstractSupporter {
     }
 
     public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
-        return new IndexRequest(index).id(id).source(GsonUtils.obj2Json(obj), XContentType.JSON);
+        return new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
     public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull Serializable obj) {
-        return new IndexRequest(index).source(GsonUtils.obj2Json(obj), XContentType.JSON);
+        return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
     public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, boolean isFetchSource, @NotNull Serializable obj) {

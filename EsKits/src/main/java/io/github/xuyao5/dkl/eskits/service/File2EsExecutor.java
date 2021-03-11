@@ -86,7 +86,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                         for (int i = 0; i < recordArray.length; i++) {
                             String fieldName = metadataArray[0][i];
-                            GsonUtils.json2Obj(recordArray[i], declaredFieldsMap.get(fieldName)).ifPresent(obj -> {
+                            MyGsonUtils.json2Obj(recordArray[i], declaredFieldsMap.get(fieldName)).ifPresent(obj -> {
                                 try {
                                     MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
                                 } catch (IllegalAccessException ex) {

@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DA
  * @implNote MyGsonUtils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class GsonUtils {
+public final class MyGsonUtils {
 
     @Getter
     private static final Gson GSON;

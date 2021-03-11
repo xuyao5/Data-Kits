@@ -1,7 +1,7 @@
 package io.github.xuyao5.dkl.eskits.support;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
-import io.github.xuyao5.dkl.eskits.util.GsonUtils;
+import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -41,7 +41,7 @@ public final class DocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public IndexResponse index(@NotNull String index, @NotNull String id, @NotNull Serializable json) {
-        return client.index(new IndexRequest(index).id(id).source(GsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
+        return client.index(new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 
     /**
@@ -81,6 +81,6 @@ public final class DocumentSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public UpdateResponse update(@NotNull String index, @NotNull String id, @NotNull Serializable json) {
-        return client.update(new UpdateRequest(index, id).doc(GsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
+        return client.update(new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 }
