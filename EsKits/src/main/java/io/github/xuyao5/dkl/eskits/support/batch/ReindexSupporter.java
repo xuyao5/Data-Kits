@@ -94,7 +94,7 @@ public final class ReindexSupporter extends AbstractSupporter {
                             builder.field("type", "keyword");
                             builder.field("ignore_above", 1);
                         } else if (long.class.equals(clz) || Long.class.equals(clz)) {
-                            builder.field("type", "integer");
+                            builder.field("type", "long");
                         } else if (int.class.equals(clz) || Integer.class.equals(clz)) {
                             builder.field("type", "integer");
                         } else if (short.class.equals(clz) || Short.class.equals(clz)) {
