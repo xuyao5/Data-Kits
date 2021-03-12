@@ -75,7 +75,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     if (standardFileLine.getLineNo() == 1) {
                         metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
                     } else {
-                        StandardDocument standardDocument = document.newInstance();
+                        T standardDocument = document.newInstance();
                         standardDocument.setIndex(config.getIndex());
                         standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
                         standardDocument.setDateTag(MyDateUtils.getCurrentDateTag());
@@ -97,9 +97,9 @@ public final class File2EsExecutor extends AbstractExecutor {
                         }
 
                         if (config.getIdColumn() != 0) {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], operator.apply((T) standardDocument)));
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], operator.apply(standardDocument)));
                         } else {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply((T) standardDocument)));
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
                         }
                     }
                 });
