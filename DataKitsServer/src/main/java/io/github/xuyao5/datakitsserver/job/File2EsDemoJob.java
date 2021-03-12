@@ -21,6 +21,6 @@ public final class File2EsDemoJob implements Runnable {
 //        File2EsTasks file2EsTasks = JAXB.unmarshal(ResourceUtils.getFile(CLASSPATH_URL_PREFIX + FILE2ES_CONFIG_XML), File2EsTasks.class);
 //        file2EsTasks.seek(taskId).ifPresent(File2EsExecutor.builder().build()::execute);
         File2EsConfig config = File2EsConfig.of(new File("/Users/xuyao/Downloads/DISRUPTOR_100W_T_00.txt"), "file2es_disruptor_1");
-        new File2EsExecutor(esClient).execute(MyDocument::of, config);
+        new File2EsExecutor(esClient).execute(MyDocument::of, config, myDocument -> myDocument);
     }
 }

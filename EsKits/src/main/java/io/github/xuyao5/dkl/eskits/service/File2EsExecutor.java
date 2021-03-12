@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.UnaryOperator;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -42,7 +43,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         super(esClient);
     }
 
-    public void execute(EventFactory<? extends StandardDocument> document, @NotNull File2EsConfig config) {
+    public <T extends StandardDocument> void execute(EventFactory<T> document, @NotNull File2EsConfig config, UnaryOperator<T> operator) {
         //检查文件和索引是否存在
         if (!config.getFile().exists()) {
             return;
@@ -96,9 +97,9 @@ public final class File2EsExecutor extends AbstractExecutor {
                         }
 
                         if (config.getIdColumn() != 0) {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], standardDocument));
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], operator.apply((T) standardDocument)));
                         } else {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), standardDocument));
+                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply((T) standardDocument)));
                         }
                     }
                 });
