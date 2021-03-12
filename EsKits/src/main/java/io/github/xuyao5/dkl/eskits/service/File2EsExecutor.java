@@ -43,7 +43,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         super(esClient);
     }
 
-    public <T extends StandardDocument> void execute(EventFactory<T> document, @NotNull File2EsConfig config, UnaryOperator<T> operator) {
+    public <T extends StandardDocument> void execute(@NotNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         //检查文件和索引是否存在
         if (!config.getFile().exists()) {
             return;
