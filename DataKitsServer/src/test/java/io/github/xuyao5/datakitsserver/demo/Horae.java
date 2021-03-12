@@ -3,7 +3,9 @@ package io.github.xuyao5.datakitsserver.demo;
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.datakitsserver.job.File2EsDemoJob;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
+import io.github.xuyao5.dkl.eskits.util.MyRandomUtils;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.util.Files;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Strings;
@@ -12,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import javax.annotation.Resource;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
-import java.util.UUID;
 
 final class Horae extends AbstractTest {
 
@@ -29,7 +29,7 @@ final class Horae extends AbstractTest {
     @Test
     void genTestData() {
         String fileName = "/Users/xuyao/Downloads/DISRUPTOR_100W_T_00.txt";
-        Random random = new Random();
+
         char split = 0x1E;
         File file = Files.newFile(fileName);
 
@@ -37,7 +37,7 @@ final class Horae extends AbstractTest {
         for (int y = 0; y < 10; y++) {
             String[] content = new String[10000];
             for (int i = 0; i < content.length; i++) {
-                content[i] = Strings.concat(UUID.randomUUID(), split, i * y, split, "中文测试", split, System.currentTimeMillis());
+                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getLong(), split, RandomStringUtils.random(2000), split, System.currentTimeMillis());
             }
             MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }

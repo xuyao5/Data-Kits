@@ -13,7 +13,7 @@ import java.util.Date;
 public class MyDocument extends StandardDocument {
 
     private String uuid;
-    private double cashAmount;
+    private long cashAmount;
     private String desc;
     private Date dateTime;
 }
