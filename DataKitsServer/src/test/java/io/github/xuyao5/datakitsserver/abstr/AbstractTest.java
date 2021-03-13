@@ -14,6 +14,6 @@ public abstract class AbstractTest {
     @Resource(name = "myEsClient")
     protected EsClient esClient;
 
-    protected final SnowflakeHelper snowflake = new SnowflakeHelper(MyIpAddressUtils.getIpAddressSum() % 32, MyIpAddressUtils.getIpAddressInt() % 32);
+    protected final SnowflakeHelper snowflake = new SnowflakeHelper(MyIpAddressUtils.getIpAddressSum() % 32, MyIpAddressUtils.getIpAddressSum() % 32);
 
 }
