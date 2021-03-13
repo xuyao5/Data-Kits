@@ -39,7 +39,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
@@ -62,7 +61,7 @@ public final class IndexSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public CreateIndexResponse create(@NotNull String index, @NotNull String source) {
-        return client.indices().create(new CreateIndexRequest(index.toLowerCase(Locale.ROOT)).source(source, XContentType.JSON), DEFAULT);
+        return client.indices().create(new CreateIndexRequest(index).source(source, XContentType.JSON), DEFAULT);
     }
 
     /**
@@ -70,7 +69,7 @@ public final class IndexSupporter extends AbstractSupporter {
      */
     @SneakyThrows
     public CreateIndexResponse create(@NotNull String index, int shards, @NotNull XContentBuilder builder) {
-        return client.indices().create(new CreateIndexRequest(index.toLowerCase()).settings(Settings.builder()
+        return client.indices().create(new CreateIndexRequest(index).settings(Settings.builder()
                 .put("index.number_of_shards", shards)
                 .put("index.number_of_replicas", shards > 1 ? 1 : 0)
         ).mapping(builder), DEFAULT);
