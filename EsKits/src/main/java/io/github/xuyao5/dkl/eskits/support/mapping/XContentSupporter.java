@@ -9,6 +9,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.Map;
 
@@ -106,7 +107,10 @@ public final class XContentSupporter extends AbstractSupporter {
                         } else if (Date.class.equals(clz)) {
                             builder.field("type", "date");
                         } else if (BigDecimal.class.equals(clz)) {
-                            builder.field("type", "date");
+                            builder.field("type", "scaled_float");
+                            builder.field("scaling_factor", 100);
+                        } else if (InetAddress.class.equals(clz)) {
+                            builder.field("type", "ip");
                         } else {
                             builder.field("type", "text");
                             builder.startObject("fields");

@@ -12,7 +12,7 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
 
-public class QueryBuilderTest extends AbstractTest {
+public class SystemTest extends AbstractTest {
 
     @SneakyThrows
     @Test
@@ -29,5 +29,10 @@ public class QueryBuilderTest extends AbstractTest {
         NestedQueryBuilder myPath = QueryBuilders
                 .nestedQuery("myPath", boolQueryBuilder, ScoreMode.None);
         System.out.println(myPath);
+    }
+
+    @Test
+    void test() {
+
     }
 }
