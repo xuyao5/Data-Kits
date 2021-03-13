@@ -10,7 +10,7 @@ import java.util.Date;
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class MyDocument extends StandardDocument {
+public final class MyDocument extends StandardDocument {
 
     private String uuid;
     private long cashAmount;
