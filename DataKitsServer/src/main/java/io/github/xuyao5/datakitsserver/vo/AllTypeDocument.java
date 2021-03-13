@@ -1,6 +1,7 @@
 package io.github.xuyao5.datakitsserver.vo;
 
 import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
+import io.github.xuyao5.dkl.eskits.schema.range.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -30,5 +31,11 @@ public final class AllTypeDocument extends StandardDocument {
     private BigInteger l;
     private LongAdder m;
     private InetAddress n;
+    private IntegerRange o;
+    private LongRange p;
+    private FloatRange q;
+    private DoubleRange r;
+    private DateRange s;
+    private IpRange t;
     private Object z;
 }

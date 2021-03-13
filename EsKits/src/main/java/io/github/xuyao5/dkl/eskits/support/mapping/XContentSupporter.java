@@ -1,6 +1,7 @@
 package io.github.xuyao5.dkl.eskits.support.mapping;
 
 import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
+import io.github.xuyao5.dkl.eskits.schema.range.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -119,6 +120,18 @@ public final class XContentSupporter extends AbstractSupporter {
                             builder.field("scaling_factor", 100);
                         } else if (InetAddress.class.equals(clz)) {
                             builder.field("type", "ip");
+                        } else if (IntegerRange.class.equals(clz)) {
+                            builder.field("type", "integer_range");
+                        } else if (LongRange.class.equals(clz)) {
+                            builder.field("type", "long_range");
+                        } else if (FloatRange.class.equals(clz)) {
+                            builder.field("type", "float_range");
+                        } else if (DoubleRange.class.equals(clz)) {
+                            builder.field("type", "double_range");
+                        } else if (DateRange.class.equals(clz)) {
+                            builder.field("type", "date_range");
+                        } else if (IpRange.class.equals(clz)) {
+                            builder.field("type", "ip_range");
                         } else {
                             builder.field("type", "text");
                             builder.startObject("fields");
