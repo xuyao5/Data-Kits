@@ -14,7 +14,7 @@ import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
-import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
+import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -57,7 +57,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
             IndexSupporter indexSupporter = new IndexSupporter(client);
             if (!indexSupporter.exists(config.getIndex())) {
-                indexSupporter.create(config.getIndex(), numberOfDataNodes, ReindexSupporter.buildMapping(declaredFieldsMap));
+                indexSupporter.create(config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
             }
 
             new BulkSupporter(client).bulk(function -> {
