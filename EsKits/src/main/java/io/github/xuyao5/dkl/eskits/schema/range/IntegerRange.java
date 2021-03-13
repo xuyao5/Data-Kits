@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Data(staticConstructor = "of")
 public final class IntegerRange implements Serializable {
 
-    private int from;
-    private int to;
+    private final int min;
+    private final int max;
 }

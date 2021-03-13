@@ -14,6 +14,6 @@ import java.util.Date;
 @Data(staticConstructor = "of")
 public final class DateRange implements Serializable {
 
-    private Date from;
-    private Date to;
+    private final Date min;
+    private final Date max;
 }

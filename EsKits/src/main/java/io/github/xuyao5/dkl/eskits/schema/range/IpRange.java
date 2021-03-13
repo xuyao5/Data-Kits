@@ -14,6 +14,6 @@ import java.net.InetAddress;
 @Data(staticConstructor = "of")
 public final class IpRange implements Serializable {
 
-    private InetAddress from;
-    private InetAddress to;
+    private final InetAddress min;
+    private final InetAddress max;
 }

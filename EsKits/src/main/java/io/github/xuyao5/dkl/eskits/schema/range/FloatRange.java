@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Data(staticConstructor = "of")
 public final class FloatRange implements Serializable {
 
-    private float from;
-    private float to;
+    private final float min;
+    private final float max;
 }

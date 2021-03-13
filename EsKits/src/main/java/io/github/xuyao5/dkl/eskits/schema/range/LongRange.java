@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Data(staticConstructor = "of")
 public final class LongRange implements Serializable {
 
-    private long from;
-    private long to;
+    private final long min;
+    private final long max;
 }

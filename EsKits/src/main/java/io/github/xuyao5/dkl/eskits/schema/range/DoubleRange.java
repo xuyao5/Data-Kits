@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Data(staticConstructor = "of")
 public final class DoubleRange implements Serializable {
 
-    private double from;
-    private double to;
+    private final double min;
+    private final double max;
 }
