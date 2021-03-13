@@ -60,7 +60,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                 indexSupporter.create(config.getIndex(), numberOfDataNodes, ReindexSupporter.buildMapping(declaredFieldsMap));
             }
 
-            new BulkSupporter(client, config.getBulkSize()).bulk(function -> {
+            new BulkSupporter(client).bulk(function -> {
                 Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
                 String[][] metadataArray = new String[1][];

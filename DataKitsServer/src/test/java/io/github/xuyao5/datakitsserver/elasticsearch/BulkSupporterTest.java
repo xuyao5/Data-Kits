@@ -9,7 +9,7 @@ public class BulkSupporterTest extends AbstractTest {
     @Test
     void testBulk() {
         esClient.invokeConsumer(client -> {
-            new BulkSupporter(client, 50).bulk(function -> {
+            new BulkSupporter(client).bulk(function -> {
                 for (int i = 0; i < 1000000; i++) {
                     function.apply(BulkSupporter.buildIndexRequest("test_index_5", String.valueOf(i), Pojo.of("xu")));
                 }
