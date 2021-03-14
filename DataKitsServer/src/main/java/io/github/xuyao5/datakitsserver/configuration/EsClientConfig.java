@@ -14,7 +14,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("es.client")
 public final class EsClientConfig {
 
-    //实验性例子
-    @Value("${es.client.hosts}")
-    private String hosts;
+    @Value("${es.bulk.concurrent}")
+    private int esBulkConcurrent;
 }
