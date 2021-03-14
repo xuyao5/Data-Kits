@@ -28,16 +28,16 @@ final class Horae extends AbstractTest {
     @SneakyThrows
     @Test
     void genTestData() {
-        String fileName = "/Users/xuyao/Downloads/DISRUPTOR_100W_T_00.txt";
+        String fileName = "/Users/xuyao/Downloads/DISRUPTOR_1000W_T_00.txt";
 
         char split = 0x1E;
         File file = Files.newFile(fileName);
 
         MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(Strings.concat("UUID", split, "CASH_AMOUNT", split, "DESC", split, "DATE_TIME")), true);
-        for (int y = 0; y < 100; y++) {
+        for (int y = 0; y < 1000; y++) {
             String[] content = new String[10000];
             for (int i = 0; i < content.length; i++) {
-                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getLong(), split, RandomStringUtils.randomAlphabetic(100), split, System.currentTimeMillis());
+                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getLong(), split, RandomStringUtils.randomAlphabetic(46), split, System.currentTimeMillis());
             }
             MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }
