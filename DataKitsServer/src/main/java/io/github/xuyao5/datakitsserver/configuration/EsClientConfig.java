@@ -14,6 +14,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("es.client")
 public final class EsClientConfig {
 
-    @Value("${es.bulk.concurrent}")
-    private int esBulkConcurrent;
+    @Value("${es.bulk.threads}")
+    private int esBulkThreads;
 }

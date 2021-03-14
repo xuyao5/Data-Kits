@@ -85,7 +85,7 @@ public final class BulkSupporter extends AbstractSupporter {
                     }
                 }).setBulkActions(-1)
                 .setBulkSize(new ByteSizeValue(12L, ByteSizeUnit.MB))
-                .setConcurrentRequests(CONCURRENT_REQUESTS)
+                .setConcurrentRequests(CONCURRENT_REQUESTS - 1)
                 .build()) {
             consumer.accept(bulkProcessor::add);
             return bulkProcessor.awaitClose(30L, TimeUnit.MINUTES);//最大30分钟等待

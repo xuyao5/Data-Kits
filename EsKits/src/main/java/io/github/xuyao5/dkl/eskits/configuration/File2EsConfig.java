@@ -17,7 +17,7 @@ public final class File2EsConfig {
 
     private final File file;
     private final String index;
-    private final int concurrent;
+    private final int bulkThreads;
 
     private int idColumn = 1;
     private int collapseColumn = 0;
