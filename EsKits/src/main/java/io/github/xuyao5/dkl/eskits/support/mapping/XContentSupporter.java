@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.LongAdder;
 @Slf4j
 public final class XContentSupporter extends AbstractSupporter {
 
-    public XContentSupporter(RestHighLevelClient client) {
+    public XContentSupporter(@NotNull RestHighLevelClient client) {
         super(client);
     }
 

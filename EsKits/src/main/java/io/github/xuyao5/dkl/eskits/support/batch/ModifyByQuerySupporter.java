@@ -31,7 +31,7 @@ public final class ModifyByQuerySupporter extends AbstractSupporter {
 
     private final int KEEP_ALIVE;
 
-    public ModifyByQuerySupporter(RestHighLevelClient client, int keepAlive) {
+    public ModifyByQuerySupporter(@NotNull RestHighLevelClient client, int keepAlive) {
         super(client);
         KEEP_ALIVE = keepAlive;
     }

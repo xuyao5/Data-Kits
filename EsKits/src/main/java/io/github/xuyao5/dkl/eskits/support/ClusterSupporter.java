@@ -24,7 +24,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class ClusterSupporter extends AbstractSupporter {
 
-    public ClusterSupporter(RestHighLevelClient client) {
+    public ClusterSupporter(@NotNull RestHighLevelClient client) {
         super(client);
     }
 

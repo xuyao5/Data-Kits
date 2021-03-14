@@ -20,7 +20,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class ReindexSupporter extends AbstractSupporter {
 
-    public ReindexSupporter(RestHighLevelClient client) {
+    public ReindexSupporter(@NotNull RestHighLevelClient client) {
         super(client);
     }
 

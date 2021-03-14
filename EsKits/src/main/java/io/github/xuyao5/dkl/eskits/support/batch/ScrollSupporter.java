@@ -28,12 +28,12 @@ public final class ScrollSupporter extends AbstractSupporter {
 
     private final Scroll SCROLL;
 
-    public ScrollSupporter(RestHighLevelClient client, int keepAlive) {
+    public ScrollSupporter(@NotNull RestHighLevelClient client, int keepAlive) {
         super(client);
         SCROLL = new Scroll(TimeValue.timeValueMinutes(keepAlive));
     }
 
-    public ScrollSupporter(RestHighLevelClient client) {
+    public ScrollSupporter(@NotNull RestHighLevelClient client) {
         this(client, 10);
     }
 

@@ -30,7 +30,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class MultiFetchSupporter extends AbstractSupporter {
 
-    public MultiFetchSupporter(RestHighLevelClient client) {
+    public MultiFetchSupporter(@NotNull RestHighLevelClient client) {
         super(client);
     }
 

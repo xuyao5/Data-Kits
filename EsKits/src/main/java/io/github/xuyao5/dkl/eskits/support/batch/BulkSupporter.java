@@ -34,8 +34,11 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class BulkSupporter extends AbstractSupporter {
 
-    public BulkSupporter(RestHighLevelClient client) {
+    private final int CONCURRENT_REQUESTS;
+
+    public BulkSupporter(@NotNull RestHighLevelClient client, int concurrentRequests) {
         super(client);
+        CONCURRENT_REQUESTS = concurrentRequests;
     }
 
     public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
@@ -82,6 +85,7 @@ public final class BulkSupporter extends AbstractSupporter {
                     }
                 }).setBulkActions(-1)
                 .setBulkSize(new ByteSizeValue(12L, ByteSizeUnit.MB))
+                .setConcurrentRequests(CONCURRENT_REQUESTS)
                 .build()) {
             consumer.accept(bulkProcessor::add);
             return bulkProcessor.awaitClose(30L, TimeUnit.MINUTES);//最大30分钟等待
