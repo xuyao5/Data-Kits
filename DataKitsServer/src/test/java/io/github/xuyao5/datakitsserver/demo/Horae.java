@@ -34,10 +34,10 @@ final class Horae extends AbstractTest {
         File file = Files.newFile(fileName);
 
         MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(Strings.concat("UUID", split, "CASH_AMOUNT", split, "DESC", split, "DATE_TIME")), true);
-        for (int y = 0; y < 10; y++) {
+        for (int y = 0; y < 100; y++) {
             String[] content = new String[10000];
             for (int i = 0; i < content.length; i++) {
-                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getLong(), split, RandomStringUtils.randomAlphabetic(2000), split, System.currentTimeMillis());
+                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getLong(), split, RandomStringUtils.randomAlphabetic(100), split, System.currentTimeMillis());
             }
             MyFileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }
