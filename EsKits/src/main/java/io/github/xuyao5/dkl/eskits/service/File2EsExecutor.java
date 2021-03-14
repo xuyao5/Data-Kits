@@ -96,11 +96,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                             });
                         }
 
-                        if (config.getIdColumn() != 0) {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn() - 1], operator.apply(standardDocument)));
-                        } else {
-                            function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
-                        }
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
                     }
                 });
 
