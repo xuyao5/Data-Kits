@@ -20,7 +20,7 @@ public class DataKitsApplication {
     }
 
     @Bean(name = "myEsClient")
-    public EsClient esClient(@Value("${es.client.hosts}") String hosts, @Value("${es.client.username}") String username, @Value("${es.client.password}") String password, @Value("${es.client.multiple}") int multiple) {
-        return new DefaultEsClient(new String[]{hosts}, username, password, multiple);
+    public EsClient esClient(@Value("${es.client.hosts}") String hosts, @Value("${es.client.username}") String username, @Value("${es.client.password}") String password) {
+        return new DefaultEsClient(new String[]{hosts}, username, password);
     }
 }

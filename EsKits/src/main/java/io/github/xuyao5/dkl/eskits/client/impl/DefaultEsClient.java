@@ -17,8 +17,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
-import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
+import static org.elasticsearch.client.RestClientBuilder.*;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -29,16 +28,16 @@ import static org.elasticsearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
 @Slf4j
 public final class DefaultEsClient implements EsClient {
 
+    private static final short MULTI = 30;
+
     private final HttpHost[] HOSTS;
     private final String USERNAME;
     private final String PASSWORD;
-    private final int CONN_MULTI;
 
-    public DefaultEsClient(@NotNull String[] clientUrls, String clientUsername, String clientPassword, int multiple) {
+    public DefaultEsClient(@NotNull String[] clientUrls, String clientUsername, String clientPassword) {
         HOSTS = url2HttpHost(clientUrls);
         USERNAME = clientUsername;
         PASSWORD = clientPassword;
-        CONN_MULTI = multiple;
     }
 
     @SneakyThrows
@@ -67,12 +66,12 @@ public final class DefaultEsClient implements EsClient {
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME, PASSWORD));
         return new RestHighLevelClient(RestClient.builder(HOSTS)
                 .setHttpClientConfigCallback(builder -> builder
-                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * CONN_MULTI)
-                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * CONN_MULTI)
+                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * MULTI)//10*30
+                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * MULTI)//30*30
                         .setDefaultCredentialsProvider(credentialsProvider))
                 .setRequestConfigCallback(builder -> builder
-                        .setConnectTimeout(5000)
-                        .setSocketTimeout(60000)));
+                        .setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS * MULTI)//1s*30
+                        .setSocketTimeout(DEFAULT_SOCKET_TIMEOUT_MILLIS * MULTI)));//30s*30
     }
 
     private HttpHost[] url2HttpHost(@NotNull String[] url) {
