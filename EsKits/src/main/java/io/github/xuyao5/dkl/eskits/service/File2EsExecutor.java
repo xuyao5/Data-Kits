@@ -39,8 +39,11 @@ public final class File2EsExecutor extends AbstractExecutor {
 
     private static final int RING_BUFFER_SIZE = 1 << 10;
 
-    public File2EsExecutor(RestHighLevelClient esClient) {
+    private final int bulkThreads;
+
+    public File2EsExecutor(RestHighLevelClient esClient, int threads) {
         super(esClient);
+        bulkThreads = threads;
     }
 
     public <T extends StandardDocument> void execute(@NotNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
@@ -59,7 +62,7 @@ public final class File2EsExecutor extends AbstractExecutor {
             indexSupporter.create(config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
         }
 
-        new BulkSupporter(client, config.getBulkThreads()).bulk(function -> {
+        new BulkSupporter(client, bulkThreads).bulk(function -> {
             Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             String[][] metadataArray = new String[1][];
