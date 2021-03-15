@@ -94,7 +94,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                             try {
                                 MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
                             } catch (IllegalAccessException ex) {
-                                log.error("类型解析错误", ex);
+                                log.error("数据行[" + standardFileLine.getLineNo() + "]类型解析错误", ex);
                             }
                         });
                     }
