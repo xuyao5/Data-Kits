@@ -63,17 +63,16 @@ public final class DefaultEsClient implements EsClient {
     }
 
     private RestHighLevelClient getRestHighLevelClient() {
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME, PASSWORD));
         return new RestHighLevelClient(RestClient.builder(HOSTS)
-                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                .setHttpClientConfigCallback(builder -> builder
                         .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * CONN_MULTI)
                         .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * CONN_MULTI)
                         .setDefaultCredentialsProvider(credentialsProvider))
                 .setRequestConfigCallback(builder -> builder
-                        .setConnectTimeout(5000 * 1000)
-                        .setSocketTimeout(6000 * 1000)
-                        .setConnectionRequestTimeout(5000 * 1000)));
+                        .setConnectTimeout(5000)
+                        .setSocketTimeout(60000)));
     }
 
     private HttpHost[] url2HttpHost(@NotNull String[] url) {
