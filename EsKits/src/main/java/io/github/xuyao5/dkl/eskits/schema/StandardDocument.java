@@ -14,7 +14,8 @@ import java.util.Date;
 @Data
 public abstract class StandardDocument implements Serializable {
 
-    private transient String index;
+    private transient String _index;
+    private transient String _id;
 
     private String recordId;
     private String dateTag;
