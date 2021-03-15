@@ -8,13 +8,12 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.File;
 
 @Component("file2EsDemoJob")
 public final class File2EsDemoJob implements Runnable {
 
-    @Resource(name = "myEsClient")
+    @Autowired
     protected RestHighLevelClient esClient;
 
     @Autowired

@@ -8,14 +8,12 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
-
 @SpringBootTest(classes = {DataKitsApplication.class})
 public abstract class AbstractTest {
 
     protected final SnowflakeHelper snowflake = new SnowflakeHelper(MyIpAddressUtils.getIpAddressSum() % 32, MyIpAddressUtils.getIpAddressSum() % 32);
 
-    @Resource(name = "myEsClient")
+    @Autowired
     protected RestHighLevelClient esClient;
 
     @Autowired
