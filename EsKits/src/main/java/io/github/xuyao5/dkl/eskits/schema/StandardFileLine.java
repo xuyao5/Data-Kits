@@ -15,5 +15,4 @@ public final class StandardFileLine implements Serializable {
 
     private int lineNo;//行号
     private String lineRecord;//行记录
-    private boolean endRecord;//true：最后一行；false：不是最后一行
 }

@@ -110,7 +110,6 @@ public final class File2EsExecutor extends AbstractExecutor {
                     ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
                         standardFileLine.setLineNo(lineNo);
                         standardFileLine.setLineRecord(lineRecord);
-                        standardFileLine.setEndRecord(!lineIterator.hasNext());
                     }, longAdder.intValue(), lineIterator.nextLine());
                 }
             } catch (IOException ex) {
