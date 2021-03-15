@@ -15,13 +15,15 @@ import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import io.github.xuyao5.dkl.eskits.util.*;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.LineIterator;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
@@ -62,10 +64,9 @@ public final class File2EsExecutor extends AbstractExecutor {
             indexSupporter.create(config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
         }
 
+        String[][] metadataArray = new String[1][];//元数据
         new BulkSupporter(client, bulkThreads).bulk(function -> {
-            Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-
-            String[][] metadataArray = new String[1][];
+            final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                 if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
@@ -102,21 +103,24 @@ public final class File2EsExecutor extends AbstractExecutor {
                 }
             });
 
-            RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-            LongAdder longAdder = new LongAdder();
-            try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
-                while (lineIterator.hasNext()) {
-                    longAdder.increment();
-                    ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
-                        standardFileLine.setLineNo(lineNo);
-                        standardFileLine.setLineRecord(lineRecord);
-                    }, longAdder.intValue(), lineIterator.nextLine());
-                }
-            } catch (IOException ex) {
-                log.error("Read File ERROR", ex);
-            } finally {
-                disruptor.shutdown();
-            }
+            publishEvent(disruptor, config.getFile(), config.getCharset());
         });
+    }
+
+    @SneakyThrows
+    private void publishEvent(@NotNull Disruptor<StandardFileLine> disruptor, @NotNull File file, @NotNull Charset charset) {
+        LongAdder longAdder = new LongAdder();
+        RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
+        try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
+            while (lineIterator.hasNext()) {
+                longAdder.increment();
+                ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
+                    standardFileLine.setLineNo(lineNo);
+                    standardFileLine.setLineRecord(lineRecord);
+                }, longAdder.intValue(), lineIterator.nextLine());
+            }
+        } finally {
+            disruptor.shutdown();
+        }
     }
 }
