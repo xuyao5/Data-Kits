@@ -79,7 +79,6 @@ public final class File2EsExecutor extends AbstractExecutor {
                     metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
                 } else {
                     T standardDocument = document.newInstance();
-                    standardDocument.setIndex(config.getIndex());
                     standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
                     standardDocument.setDateTag(MyDateUtils.getCurrentDateTag());
                     standardDocument.setSerialNo(snowflake.nextId());
@@ -103,12 +102,12 @@ public final class File2EsExecutor extends AbstractExecutor {
                 }
             });
 
-            publishEvent(disruptor, config.getFile(), config.getCharset());
+            publish(disruptor, config.getFile(), config.getCharset());
         });
     }
 
     @SneakyThrows
-    private void publishEvent(@NotNull Disruptor<StandardFileLine> disruptor, @NotNull File file, @NotNull Charset charset) {
+    private void publish(@NotNull Disruptor<StandardFileLine> disruptor, @NotNull File file, @NotNull Charset charset) {
         LongAdder longAdder = new LongAdder();
         RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
