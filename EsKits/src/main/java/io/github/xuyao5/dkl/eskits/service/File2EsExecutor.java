@@ -52,14 +52,14 @@ public final class File2EsExecutor extends AbstractExecutor {
         //用户自定义格式
         Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
 
-        int numberOfDataNodes = new ClusterSupporter(esClient).health().getNumberOfDataNodes();
+        int numberOfDataNodes = new ClusterSupporter(client).health().getNumberOfDataNodes();
 
-        IndexSupporter indexSupporter = new IndexSupporter(esClient);
+        IndexSupporter indexSupporter = new IndexSupporter(client);
         if (!indexSupporter.exists(config.getIndex())) {
             indexSupporter.create(config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
         }
 
-        new BulkSupporter(esClient, config.getBulkThreads()).bulk(function -> {
+        new BulkSupporter(client, config.getBulkThreads()).bulk(function -> {
             Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             String[][] metadataArray = new String[1][];
