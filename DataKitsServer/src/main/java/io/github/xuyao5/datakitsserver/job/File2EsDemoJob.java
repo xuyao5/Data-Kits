@@ -2,9 +2,9 @@ package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.datakitsserver.vo.MyDocument;
-import io.github.xuyao5.dkl.eskits.client.EsClient;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import java.io.File;
 public final class File2EsDemoJob implements Runnable {
 
     @Resource(name = "myEsClient")
-    protected EsClient esClient;
+    protected RestHighLevelClient esClient;
 
     @Autowired
     protected EsClientConfig esClientConfig;

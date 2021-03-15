@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.client;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -13,8 +12,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static org.elasticsearch.client.RestClientBuilder.*;
 
@@ -39,25 +36,11 @@ public final class EsClient {
         PASSWORD = clientPassword;
     }
 
-    @SneakyThrows
-    public <T> T invokeFunction(Function<RestHighLevelClient, T> function) {
-        try (RestHighLevelClient client = getRestHighLevelClient()) {
-            return function.apply(client);
-        }
-    }
-
-    @SneakyThrows
-    public void invokeConsumer(Consumer<RestHighLevelClient> consumer) {
-        try (RestHighLevelClient client = getRestHighLevelClient()) {
-            consumer.accept(client);
-        }
-    }
-
     public int hostsCount() {
         return HOSTS.length;
     }
 
-    private RestHighLevelClient getRestHighLevelClient() {
+    public RestHighLevelClient getRestHighLevelClient() {
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME, PASSWORD));
         return new RestHighLevelClient(RestClient.builder(HOSTS)

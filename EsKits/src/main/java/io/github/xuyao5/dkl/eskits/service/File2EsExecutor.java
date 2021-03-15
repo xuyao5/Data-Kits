@@ -7,7 +7,6 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.client.EsClient;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
@@ -19,6 +18,7 @@ import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.LineIterator;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
     private static final int RING_BUFFER_SIZE = 1 << 10;
 
-    public File2EsExecutor(EsClient esClient) {
+    public File2EsExecutor(RestHighLevelClient esClient) {
         super(esClient);
     }
 
@@ -52,71 +52,69 @@ public final class File2EsExecutor extends AbstractExecutor {
         //用户自定义格式
         Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
 
-        esClient.invokeConsumer(client -> {
-            int numberOfDataNodes = new ClusterSupporter(client).health().getNumberOfDataNodes();
+        int numberOfDataNodes = new ClusterSupporter(esClient).health().getNumberOfDataNodes();
 
-            IndexSupporter indexSupporter = new IndexSupporter(client);
-            if (!indexSupporter.exists(config.getIndex())) {
-                indexSupporter.create(config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
-            }
+        IndexSupporter indexSupporter = new IndexSupporter(esClient);
+        if (!indexSupporter.exists(config.getIndex())) {
+            indexSupporter.create(config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
+        }
 
-            new BulkSupporter(client, config.getBulkThreads()).bulk(function -> {
-                Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        new BulkSupporter(esClient, config.getBulkThreads()).bulk(function -> {
+            Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-                String[][] metadataArray = new String[1][];
+            String[][] metadataArray = new String[1][];
 
-                disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-                    if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
-                        return;
+            disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
+                if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
+                    return;
+                }
+
+                String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
+
+                if (standardFileLine.getLineNo() == 1) {
+                    metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
+                } else {
+                    T standardDocument = document.newInstance();
+                    standardDocument.setIndex(config.getIndex());
+                    standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
+                    standardDocument.setDateTag(MyDateUtils.getCurrentDateTag());
+                    standardDocument.setSerialNo(snowflake.nextId());
+                    standardDocument.setAllFieldMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
+                    standardDocument.setRandomNum(MyRandomUtils.getLong());
+                    standardDocument.setCreateDate(MyDateUtils.now());
+                    standardDocument.setModifyDate(MyDateUtils.now());
+
+                    for (int i = 0; i < recordArray.length; i++) {
+                        String fieldName = metadataArray[0][i];
+                        MyGsonUtils.json2Obj(recordArray[i], declaredFieldsMap.get(fieldName)).ifPresent(obj -> {
+                            try {
+                                MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
+                            } catch (IllegalAccessException ex) {
+                                log.error("类型解析错误", ex);
+                            }
+                        });
                     }
 
-                    String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
-
-                    if (standardFileLine.getLineNo() == 1) {
-                        metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
-                    } else {
-                        T standardDocument = document.newInstance();
-                        standardDocument.setIndex(config.getIndex());
-                        standardDocument.setRecordId(recordArray[config.getIdColumn() - 1]);
-                        standardDocument.setDateTag(MyDateUtils.getCurrentDateTag());
-                        standardDocument.setSerialNo(snowflake.nextId());
-                        standardDocument.setAllFieldMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
-                        standardDocument.setRandomNum(MyRandomUtils.getLong());
-                        standardDocument.setCreateDate(MyDateUtils.now());
-                        standardDocument.setModifyDate(MyDateUtils.now());
-
-                        for (int i = 0; i < recordArray.length; i++) {
-                            String fieldName = metadataArray[0][i];
-                            MyGsonUtils.json2Obj(recordArray[i], declaredFieldsMap.get(fieldName)).ifPresent(obj -> {
-                                try {
-                                    MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
-                                } catch (IllegalAccessException ex) {
-                                    log.error("类型解析错误", ex);
-                                }
-                            });
-                        }
-
-                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
-                    }
-                });
-
-                RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-                LongAdder longAdder = new LongAdder();
-                try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
-                    while (lineIterator.hasNext()) {
-                        longAdder.increment();
-                        ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
-                            standardFileLine.setLineNo(lineNo);
-                            standardFileLine.setLineRecord(lineRecord);
-                            standardFileLine.setEndRecord(!lineIterator.hasNext());
-                        }, longAdder.intValue(), lineIterator.nextLine());
-                    }
-                } catch (IOException ex) {
-                    log.error("Read File ERROR", ex);
-                } finally {
-                    disruptor.shutdown();
+                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
                 }
             });
+
+            RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
+            LongAdder longAdder = new LongAdder();
+            try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
+                while (lineIterator.hasNext()) {
+                    longAdder.increment();
+                    ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
+                        standardFileLine.setLineNo(lineNo);
+                        standardFileLine.setLineRecord(lineRecord);
+                        standardFileLine.setEndRecord(!lineIterator.hasNext());
+                    }, longAdder.intValue(), lineIterator.nextLine());
+                }
+            } catch (IOException ex) {
+                log.error("Read File ERROR", ex);
+            } finally {
+                disruptor.shutdown();
+            }
         });
     }
 }

@@ -18,12 +18,10 @@ public class File2EsExecutorTest extends AbstractTest {
     @Test
     void recreateIndex() {
         String source = MyFileUtils.readFileToString(ResourceUtils.getFile(Strings.concat(CLASSPATH_URL_PREFIX, "elasticsearch/index/TEST_INDEX.json")), StandardCharsets.UTF_8);
-        esClient.invokeConsumer(client -> {
-            IndexSupporter indexSupporter = new IndexSupporter(client);
-            if (indexSupporter.exists("file2es_disruptor_1")) {
-                indexSupporter.delete("file2es_disruptor_1");
-            }
-            indexSupporter.create("file2es_disruptor_1", source);
-        });
+        IndexSupporter indexSupporter = new IndexSupporter(esClient);
+        if (indexSupporter.exists("file2es_disruptor_1")) {
+            indexSupporter.delete("file2es_disruptor_1");
+        }
+        indexSupporter.create("file2es_disruptor_1", source);
     }
 }

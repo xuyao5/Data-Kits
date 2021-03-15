@@ -15,13 +15,11 @@ public class XContentSupporterTest extends AbstractTest {
     void testBuildMapping() {
         Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(AllTypeDocument.of());
         XContentSupporter.buildMapping(declaredFieldsMap);
-        esClient.invokeConsumer(client -> {
-            String index = "all_type_document";
-            IndexSupporter indexSupporter = new IndexSupporter(client);
-            if (indexSupporter.exists(index)) {
-                indexSupporter.delete(index);
-            }
-            indexSupporter.create(index, 1, XContentSupporter.buildMapping(declaredFieldsMap));
-        });
+        String index = "all_type_document";
+        IndexSupporter indexSupporter = new IndexSupporter(esClient);
+        if (indexSupporter.exists(index)) {
+            indexSupporter.delete(index);
+        }
+        indexSupporter.create(index, 1, XContentSupporter.buildMapping(declaredFieldsMap));
     }
 }
