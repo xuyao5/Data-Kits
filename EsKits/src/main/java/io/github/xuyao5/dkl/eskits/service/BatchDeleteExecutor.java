@@ -17,7 +17,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.function.UnaryOperator;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -32,13 +31,11 @@ public final class BatchDeleteExecutor extends AbstractExecutor {
         super(esClient, threads);
     }
 
-    public <T extends StandardDocument> void execute(@NotNull BatchUpdateConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends StandardDocument> void execute(@NotNull BatchUpdateConfig config, EventFactory<T> document) {
         new BulkSupporter(client, bulkThreads).bulk(function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> {
-                function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)));
-            });
+            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id())));
 
             publish(disruptor, config.getQueryBuilder(), config.getBatchSize(), config.getIndex());
         });
