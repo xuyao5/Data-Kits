@@ -85,11 +85,11 @@ public final class BulkSupporter extends AbstractSupporter {
                         log.error("Failed to execute bulk", failure);
                     }
                 }).setBulkActions(-1)
-                .setBulkSize(new ByteSizeValue(12L, ByteSizeUnit.MB))
+                .setBulkSize(new ByteSizeValue(12, ByteSizeUnit.MB))
                 .setConcurrentRequests(CONCURRENT_REQUESTS - 1)
                 .build()) {
             consumer.accept(bulkProcessor::add);
-            return bulkProcessor.awaitClose(30L, TimeUnit.MINUTES);//最大30分钟等待
+            return bulkProcessor.awaitClose(6, TimeUnit.MINUTES);
         }
     }
 
