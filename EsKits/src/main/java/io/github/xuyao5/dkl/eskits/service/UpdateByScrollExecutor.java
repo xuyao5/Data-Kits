@@ -17,7 +17,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.function.UnaryOperator;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -32,7 +33,7 @@ public final class UpdateByScrollExecutor extends AbstractExecutor {
         super(esClient, threads);
     }
 
-    public <T extends StandardDocument> void execute(@NotNull UpdateByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends StandardDocument> void execute(@NotNull UpdateByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
         new BulkSupporter(client, bulkThreads).bulk(function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 

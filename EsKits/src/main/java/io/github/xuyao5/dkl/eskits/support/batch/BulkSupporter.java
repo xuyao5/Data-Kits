@@ -19,6 +19,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,7 +46,11 @@ public final class BulkSupporter extends AbstractSupporter {
         return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
-    public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Serializable... obj) {
+    public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Map<String, Object> obj) {
+        return new UpdateRequest(index, id).doc(obj);
+    }
+
+    public static UpdateRequest buildUpsertRequest(@NotNull String index, @NotNull String id, @NotNull Map<String, Object> obj) {
         return new UpdateRequest(index, id).upsert(obj);
     }
 
