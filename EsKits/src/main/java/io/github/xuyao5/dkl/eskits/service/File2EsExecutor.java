@@ -39,13 +39,8 @@ import java.util.function.UnaryOperator;
 @Slf4j
 public final class File2EsExecutor extends AbstractExecutor {
 
-    private static final int RING_BUFFER_SIZE = 1 << 10;
-
-    private final int bulkThreads;
-
     public File2EsExecutor(RestHighLevelClient esClient, int threads) {
-        super(esClient);
-        bulkThreads = threads;
+        super(esClient, threads);
     }
 
     public <T extends StandardDocument> void execute(@NotNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {

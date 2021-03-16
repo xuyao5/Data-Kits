@@ -22,13 +22,13 @@ import java.util.function.UnaryOperator;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 15/03/21 20:57
- * @apiNote BatchUpdateExecutor
- * @implNote BatchUpdateExecutor
+ * @apiNote BatchDeleteExecutor
+ * @implNote BatchDeleteExecutor
  */
 @Slf4j
-public final class BatchUpdateExecutor extends AbstractExecutor {
+public final class BatchDeleteExecutor extends AbstractExecutor {
 
-    public BatchUpdateExecutor(RestHighLevelClient esClient, int threads) {
+    public BatchDeleteExecutor(RestHighLevelClient esClient, int threads) {
         super(esClient, threads);
     }
 
@@ -37,7 +37,7 @@ public final class BatchUpdateExecutor extends AbstractExecutor {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> {
-                function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), false, operator.apply(standardDocument)));
+                function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)));
             });
 
             publish(disruptor, config.getQueryBuilder(), config.getBatchSize(), config.getIndex());
