@@ -7,7 +7,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.configuration.BatchUpdateConfig;
+import io.github.xuyao5.dkl.eskits.configuration.DeleteByScrollConfig;
 import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ScrollSupporter;
@@ -25,13 +25,13 @@ import java.util.Arrays;
  * @implNote BatchDeleteExecutor
  */
 @Slf4j
-public final class BatchDeleteExecutor extends AbstractExecutor {
+public final class DeleteByScrollExecutor extends AbstractExecutor {
 
-    public BatchDeleteExecutor(RestHighLevelClient esClient, int threads) {
+    public DeleteByScrollExecutor(RestHighLevelClient esClient, int threads) {
         super(esClient, threads);
     }
 
-    public <T extends StandardDocument> void execute(@NotNull BatchUpdateConfig config, EventFactory<T> document) {
+    public <T extends StandardDocument> void execute(@NotNull DeleteByScrollConfig config, EventFactory<T> document) {
         new BulkSupporter(client, bulkThreads).bulk(function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 

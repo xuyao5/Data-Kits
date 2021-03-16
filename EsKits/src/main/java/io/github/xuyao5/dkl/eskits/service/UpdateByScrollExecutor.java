@@ -7,7 +7,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.abstr.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.configuration.BatchUpdateConfig;
+import io.github.xuyao5.dkl.eskits.configuration.UpdateByScrollConfig;
 import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ScrollSupporter;
@@ -26,13 +26,13 @@ import java.util.function.UnaryOperator;
  * @implNote BatchUpdateExecutor
  */
 @Slf4j
-public final class BatchUpdateExecutor extends AbstractExecutor {
+public final class UpdateByScrollExecutor extends AbstractExecutor {
 
-    public BatchUpdateExecutor(RestHighLevelClient esClient, int threads) {
+    public UpdateByScrollExecutor(RestHighLevelClient esClient, int threads) {
         super(esClient, threads);
     }
 
-    public <T extends StandardDocument> void execute(@NotNull BatchUpdateConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends StandardDocument> void execute(@NotNull UpdateByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         new BulkSupporter(client, bulkThreads).bulk(function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
