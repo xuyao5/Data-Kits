@@ -15,5 +15,4 @@ public final class UpdateByScrollConfig {
     private final String index;
 
     private QueryBuilder queryBuilder;
-    private int batchSize;
 }

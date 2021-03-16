@@ -15,5 +15,4 @@ public final class DeleteByScrollConfig {
     private final String index;
 
     private QueryBuilder queryBuilder;
-    private int batchSize;
 }

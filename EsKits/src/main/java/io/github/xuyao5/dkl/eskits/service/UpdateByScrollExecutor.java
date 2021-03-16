@@ -39,18 +39,18 @@ public final class UpdateByScrollExecutor extends AbstractExecutor {
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
 
-            publish(disruptor, config.getQueryBuilder(), config.getBatchSize(), config.getIndex());
+            publish(disruptor, config.getQueryBuilder(), config.getIndex());
         });
     }
 
-    private void publish(@NotNull Disruptor<? extends StandardDocument> disruptor, @NotNull QueryBuilder queryBuilder, int size, @NotNull String... indices) {
+    private void publish(@NotNull Disruptor<? extends StandardDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
         RingBuffer<? extends StandardDocument> ringBuffer = disruptor.start();
         try {
             new ScrollSupporter(client).scroll(searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
                 searchHitList.forEach(documentFields -> {
                     standardDocument.set_index(documentFields.getIndex());//demo
                 });
-            }, Arrays.asList(searchHits)), queryBuilder, size, indices);
+            }, Arrays.asList(searchHits)), queryBuilder, indices);
         } finally {
             disruptor.shutdown();
         }

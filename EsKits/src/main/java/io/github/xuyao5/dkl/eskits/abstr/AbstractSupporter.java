@@ -15,5 +15,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractSupporter {
 
+    protected static final int RING_BUFFER_SIZE = 1 << 10;
+
     protected final RestHighLevelClient client;
 }
