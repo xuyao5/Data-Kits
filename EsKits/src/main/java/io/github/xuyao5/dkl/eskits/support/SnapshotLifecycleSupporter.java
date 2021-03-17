@@ -1,10 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.RestHighLevelClient;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -13,9 +9,6 @@ import javax.validation.constraints.NotNull;
  * @implNote EsSnapshotLifecycleSupporter
  */
 @Slf4j
-public final class SnapshotLifecycleSupporter extends AbstractSupporter {
+public final class SnapshotLifecycleSupporter {
 
-    public SnapshotLifecycleSupporter(@NotNull RestHighLevelClient client) {
-        super(client);
-    }
 }

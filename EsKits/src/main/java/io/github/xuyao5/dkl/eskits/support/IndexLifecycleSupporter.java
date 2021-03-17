@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.support;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -25,17 +24,13 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote EsIndexLifecycleSupporter
  */
 @Slf4j
-public final class IndexLifecycleSupporter extends AbstractSupporter {
-
-    public IndexLifecycleSupporter(@NotNull RestHighLevelClient client) {
-        super(client);
-    }
+public final class IndexLifecycleSupporter {
 
     /**
      * Put Lifecycle Policy API
      */
     @SneakyThrows
-    public AcknowledgedResponse putLifecyclePolicy() {
+    public AcknowledgedResponse putLifecyclePolicy(@NotNull RestHighLevelClient client) {
         Map<String, Phase> phases = new HashMap<>();
         Map<String, LifecycleAction> hotActions = new HashMap<>();
         hotActions.put(RolloverAction.NAME, new RolloverAction(new ByteSizeValue(50, ByteSizeUnit.GB), null, null));

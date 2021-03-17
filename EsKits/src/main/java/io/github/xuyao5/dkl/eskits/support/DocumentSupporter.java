@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.support;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -30,17 +29,13 @@ import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_
  * @implNote EsDocumentSupporter
  */
 @Slf4j
-public final class DocumentSupporter extends AbstractSupporter {
-
-    public DocumentSupporter(@NotNull RestHighLevelClient client) {
-        super(client);
-    }
+public final class DocumentSupporter {
 
     /**
      * Index API
      */
     @SneakyThrows
-    public IndexResponse index(@NotNull String index, @NotNull String id, @NotNull Serializable json) {
+    public IndexResponse index(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id, @NotNull Serializable json) {
         return client.index(new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 
@@ -48,7 +43,7 @@ public final class DocumentSupporter extends AbstractSupporter {
      * Get API
      */
     @SneakyThrows
-    public GetResponse get(@NotNull String index, @NotNull String id) {
+    public GetResponse get(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
         return client.get(new GetRequest(index, id), DEFAULT);
     }
 
@@ -56,7 +51,7 @@ public final class DocumentSupporter extends AbstractSupporter {
      * Get Source API
      */
     @SneakyThrows
-    public GetSourceResponse getSource(@NotNull String index, @NotNull String id) {
+    public GetSourceResponse getSource(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
         return client.getSource(new GetSourceRequest(index, id), DEFAULT);
     }
 
@@ -64,7 +59,7 @@ public final class DocumentSupporter extends AbstractSupporter {
      * Exists API
      */
     @SneakyThrows
-    public boolean exists(@NotNull String index, @NotNull String id) {
+    public boolean exists(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
         return client.exists(new GetRequest(index, id).fetchSourceContext(DO_NOT_FETCH_SOURCE).storedFields("_none_"), DEFAULT);
     }
 
@@ -72,7 +67,7 @@ public final class DocumentSupporter extends AbstractSupporter {
      * Delete API
      */
     @SneakyThrows
-    public DeleteResponse delete(@NotNull String index, @NotNull String id) {
+    public DeleteResponse delete(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
         return client.delete(new DeleteRequest(index, id), DEFAULT);
     }
 
@@ -80,7 +75,7 @@ public final class DocumentSupporter extends AbstractSupporter {
      * Update API
      */
     @SneakyThrows
-    public UpdateResponse update(@NotNull String index, @NotNull String id, @NotNull Serializable json) {
+    public UpdateResponse update(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id, @NotNull Serializable json) {
         return client.update(new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 }

@@ -52,15 +52,15 @@ public final class File2EsExecutor extends AbstractExecutor {
         //用户自定义格式
         Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
 
-        int numberOfDataNodes = new ClusterSupporter(client).health().getNumberOfDataNodes();
+        int numberOfDataNodes = new ClusterSupporter().health(client).getNumberOfDataNodes();
 
-        IndexSupporter indexSupporter = new IndexSupporter(client);
-        if (!indexSupporter.exists(config.getIndex())) {
-            indexSupporter.create(config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
+        IndexSupporter indexSupporter = new IndexSupporter();
+        if (!indexSupporter.exists(client, config.getIndex())) {
+            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
         }
 
         String[][] metadataArray = new String[1][];//元数据
-        new BulkSupporter(client, bulkThreads).bulk(function -> {
+        new BulkSupporter(bulkThreads).bulk(client, function -> {
             final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {

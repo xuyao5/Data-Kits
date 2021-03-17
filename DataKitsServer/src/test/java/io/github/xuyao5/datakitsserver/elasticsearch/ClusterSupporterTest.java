@@ -9,7 +9,7 @@ public class ClusterSupporterTest extends AbstractTest {
 
     @Test
     void testCreate() {
-        ClusterHealthResponse clusterHealthResponse = new ClusterSupporter(esClient).health();
+        ClusterHealthResponse clusterHealthResponse = new ClusterSupporter().health(esClient);
         System.out.println(clusterHealthResponse.getNumberOfNodes());
         System.out.println(clusterHealthResponse.getNumberOfDataNodes());
     }

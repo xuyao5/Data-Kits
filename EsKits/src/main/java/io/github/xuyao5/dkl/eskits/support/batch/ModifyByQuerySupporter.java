@@ -2,7 +2,6 @@ package io.github.xuyao5.dkl.eskits.support.batch;
 
 import io.github.xuyao5.dkl.eskits.consts.ConflictsConst;
 import io.github.xuyao5.dkl.eskits.consts.ScriptConst;
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -27,24 +26,19 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_S
  * @implNote ModifyByQuery
  */
 @Slf4j
-public final class ModifyByQuerySupporter extends AbstractSupporter {
+public final class ModifyByQuerySupporter {
 
     private final int KEEP_ALIVE;
 
-    public ModifyByQuerySupporter(@NotNull RestHighLevelClient client, int keepAlive) {
-        super(client);
+    public ModifyByQuerySupporter(int keepAlive) {
         KEEP_ALIVE = keepAlive;
-    }
-
-    public ModifyByQuerySupporter(RestHighLevelClient client) {
-        this(client, 10);
     }
 
     /**
      * Update By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse updateByQuery(@NotNull QueryBuilder query, int batchSize, @NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
+    public BulkByScrollResponse updateByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, int batchSize, @NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
         UpdateByQueryRequest request = new UpdateByQueryRequest(indices);
         request.setConflicts(ConflictsConst.PROCEED.getType());
         request.setQuery(query);
@@ -59,7 +53,7 @@ public final class ModifyByQuerySupporter extends AbstractSupporter {
      * Delete By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse deleteByQuery(@NotNull QueryBuilder query, int batchSize, @NotNull String... indices) {
+    public BulkByScrollResponse deleteByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, int batchSize, @NotNull String... indices) {
         DeleteByQueryRequest request = new DeleteByQueryRequest(indices);
         request.setConflicts(ConflictsConst.PROCEED.getType());
         request.setQuery(query);

@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -18,17 +17,17 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote MultiFamilySupporter
  */
 @Slf4j
-public final class ReindexSupporter extends AbstractSupporter {
+public final class ReindexSupporter {
 
-    public ReindexSupporter(@NotNull RestHighLevelClient client) {
-        super(client);
+    public ReindexSupporter() {
+
     }
 
     /**
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull String destinationIndex, int sourceBatchSize, @NotNull String... sourceIndices) {
+    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull String destinationIndex, int sourceBatchSize, @NotNull String... sourceIndices) {
         return client.reindex(new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)

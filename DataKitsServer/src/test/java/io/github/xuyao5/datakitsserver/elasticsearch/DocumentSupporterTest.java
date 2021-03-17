@@ -16,32 +16,32 @@ public class DocumentSupporterTest extends AbstractTest {
 
     @Test
     void testIndex() {
-        System.out.println(new DocumentSupporter(esClient).index("file2es_disruptor_1", "1", Pojo.of("测试")));
+        System.out.println(new DocumentSupporter().index(esClient, "file2es_disruptor_1", "1", Pojo.of("测试")));
     }
 
     @Test
     void testGet() {
-        System.out.println(new DocumentSupporter(esClient).get("TEST-INDEX", "2"));
+        System.out.println(new DocumentSupporter().get(esClient, "TEST-INDEX", "2"));
     }
 
     @Test
     void testGetSource() {
-        System.out.println(new DocumentSupporter(esClient).getSource("TEST-INDEX", "2"));
+        System.out.println(new DocumentSupporter().getSource(esClient, "TEST-INDEX", "2"));
     }
 
     @Test
     void testExists() {
-        System.out.println(new DocumentSupporter(esClient).exists("TEST-INDEX", "2"));
+        System.out.println(new DocumentSupporter().exists(esClient, "TEST-INDEX", "2"));
     }
 
     @Test
     void testDelete() {
-        System.out.println(new DocumentSupporter(esClient).delete("TEST-INDEX", "2"));
+        System.out.println(new DocumentSupporter().delete(esClient, "TEST-INDEX", "2"));
     }
 
     @Test
     void testUpdate() {
-        System.out.println(new DocumentSupporter(esClient).update("TEST-INDEX", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
+        System.out.println(new DocumentSupporter().update(esClient, "TEST-INDEX", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class DocumentSupporterTest extends AbstractTest {
         List<DocWriteRequest<?>> requestList = new ArrayList<>();
         requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", Pojo.of("测试更新：" + System.currentTimeMillis())));
         requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", Pojo.of("测试更新：" + System.currentTimeMillis())));
-        System.out.println(new BulkSupporter(esClient, esClientConfig.getEsBulkThreads()).bulk(requestList));
+        System.out.println(new BulkSupporter(esClientConfig.getEsBulkThreads()).bulk(esClient, requestList));
     }
 
     @Test
@@ -58,12 +58,12 @@ public class DocumentSupporterTest extends AbstractTest {
         list.add(new MultiGetRequest.Item("TEST-INDEX", "3"));
         list.add(new MultiGetRequest.Item("TEST-INDEX", "100"));
         list.add(new MultiGetRequest.Item("TEST-INDEX", "101"));
-        new MultiFetchSupporter(esClient).multiGet(list).iterator().forEachRemaining(multiGetItemResponse -> {
+        new MultiFetchSupporter().multiGet(esClient, list).iterator().forEachRemaining(multiGetItemResponse -> {
             System.out.println(multiGetItemResponse.getResponse());
         });
     }
 
     void testReindex() {
-        new ReindexSupporter(esClient).reindex("", 1);
+        new ReindexSupporter().reindex(esClient, "", 1);
     }
 }

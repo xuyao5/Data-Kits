@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.get.MultiGetRequest;
@@ -28,17 +27,17 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote MultiFamilySupporter
  */
 @Slf4j
-public final class MultiFetchSupporter extends AbstractSupporter {
+public final class MultiFetchSupporter {
 
-    public MultiFetchSupporter(@NotNull RestHighLevelClient client) {
-        super(client);
+    public MultiFetchSupporter() {
+
     }
 
     /**
      * Multi-Get API
      */
     @SneakyThrows
-    public MultiGetResponse multiGet(@NotNull List<MultiGetRequest.Item> items) {
+    public MultiGetResponse multiGet(@NotNull RestHighLevelClient client, @NotNull List<MultiGetRequest.Item> items) {
         return client.mget(items.stream().reduce(new MultiGetRequest(), MultiGetRequest::add, (item1, item2) -> null), DEFAULT);
     }
 
@@ -46,7 +45,7 @@ public final class MultiFetchSupporter extends AbstractSupporter {
      * Multi-Search API
      */
     @SneakyThrows
-    public MultiSearchResponse multiSearch(@NotNull List<SearchRequest> searchRequests) {
+    public MultiSearchResponse multiSearch(@NotNull RestHighLevelClient client, @NotNull List<SearchRequest> searchRequests) {
         return client.msearch(searchRequests.stream().reduce(new MultiSearchRequest(), MultiSearchRequest::add, (item1, item2) -> null), DEFAULT);
     }
 
@@ -54,7 +53,7 @@ public final class MultiFetchSupporter extends AbstractSupporter {
      * Multi Search Template API
      */
     @SneakyThrows
-    public MultiSearchTemplateResponse multiSearchTemplate() {
+    public MultiSearchTemplateResponse multiSearchTemplate(@NotNull RestHighLevelClient client) {
         String[] searchTerms = {"elasticsearch", "logstash", "kibana"};
 
         MultiSearchTemplateRequest multiRequest = new MultiSearchTemplateRequest();

@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.support;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
@@ -26,17 +25,13 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote EsIndexSupporter
  */
 @Slf4j
-public final class SearchSupporter extends AbstractSupporter {
-
-    public SearchSupporter(@NotNull RestHighLevelClient client) {
-        super(client);
-    }
+public final class SearchSupporter {
 
     /**
      * Search API
      */
     @SneakyThrows
-    public SearchResponse search(@NotNull QueryBuilder query, int from, int size, @NotNull String... indices) {
+    public SearchResponse search(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, int from, int size, @NotNull String... indices) {
         return client.search(new SearchRequest(indices).source(new SearchSourceBuilder().query(query).from(from).size(size)), DEFAULT);
     }
 
@@ -44,7 +39,7 @@ public final class SearchSupporter extends AbstractSupporter {
      * Search Template API
      */
     @SneakyThrows
-    public SearchTemplateResponse searchTemplate(@NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
+    public SearchTemplateResponse searchTemplate(@NotNull RestHighLevelClient client, @NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
         SearchTemplateRequest request = new SearchTemplateRequest();
         request.setRequest(new SearchRequest(indices));
         request.setScriptType(ScriptType.INLINE);
@@ -57,7 +52,7 @@ public final class SearchSupporter extends AbstractSupporter {
      * Count API
      */
     @SneakyThrows
-    public CountResponse count(@NotNull QueryBuilder query, @NotNull String... indices) {
+    public CountResponse count(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, @NotNull String... indices) {
         return client.count(new CountRequest(indices).query(query), DEFAULT);
     }
 }

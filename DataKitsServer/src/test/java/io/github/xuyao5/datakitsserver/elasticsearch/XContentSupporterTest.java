@@ -16,10 +16,10 @@ public class XContentSupporterTest extends AbstractTest {
         Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(AllTypeDocument.of());
         XContentSupporter.buildMapping(declaredFieldsMap);
         String index = "all_type_document";
-        IndexSupporter indexSupporter = new IndexSupporter(esClient);
-        if (indexSupporter.exists(index)) {
-            indexSupporter.delete(index);
+        IndexSupporter indexSupporter = new IndexSupporter();
+        if (indexSupporter.exists(esClient, index)) {
+            indexSupporter.delete(esClient, index);
         }
-        indexSupporter.create(index, 1, XContentSupporter.buildMapping(declaredFieldsMap));
+        indexSupporter.create(esClient, index, 1, XContentSupporter.buildMapping(declaredFieldsMap));
     }
 }

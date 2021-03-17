@@ -1,11 +1,9 @@
 package io.github.xuyao5.dkl.eskits.support.mapping;
 
 import com.google.gson.reflect.TypeToken;
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import io.github.xuyao5.dkl.eskits.schema.range.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -25,11 +23,7 @@ import java.util.concurrent.atomic.LongAdder;
  * @implNote XContentSupporter
  */
 @Slf4j
-public final class XContentSupporter extends AbstractSupporter {
-
-    public XContentSupporter(@NotNull RestHighLevelClient client) {
-        super(client);
-    }
+public final class XContentSupporter {
 
     @SneakyThrows
     public static XContentBuilder buildMapping(@NotNull Map<String, Class<?>> declaredFieldsMap) {

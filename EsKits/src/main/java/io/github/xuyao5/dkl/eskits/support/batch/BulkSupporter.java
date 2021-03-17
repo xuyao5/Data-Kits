@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +32,11 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote BulkSupporter
  */
 @Slf4j
-public final class BulkSupporter extends AbstractSupporter {
+public final class BulkSupporter {
 
     private final int CONCURRENT_REQUESTS;
 
-    public BulkSupporter(@NotNull RestHighLevelClient client, int concurrentRequests) {
-        super(client);
+    public BulkSupporter(int concurrentRequests) {
         CONCURRENT_REQUESTS = concurrentRequests;
     }
 
@@ -62,7 +60,7 @@ public final class BulkSupporter extends AbstractSupporter {
      * Bulk Processor
      */
     @SneakyThrows
-    public boolean bulk(Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    public boolean bulk(@NotNull RestHighLevelClient client, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
@@ -97,7 +95,7 @@ public final class BulkSupporter extends AbstractSupporter {
      * Bulk API
      */
     @SneakyThrows
-    public BulkResponse bulk(@NotNull List<DocWriteRequest<?>> requests) {
+    public BulkResponse bulk(@NotNull RestHighLevelClient client, @NotNull List<DocWriteRequest<?>> requests) {
         return client.bulk(new BulkRequest().add(requests), DEFAULT);
     }
 }

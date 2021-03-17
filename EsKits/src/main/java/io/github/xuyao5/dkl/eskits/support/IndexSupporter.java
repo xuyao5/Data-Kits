@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.support;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
@@ -50,17 +49,13 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote EsIndexSupporter
  */
 @Slf4j
-public final class IndexSupporter extends AbstractSupporter {
-
-    public IndexSupporter(@NotNull RestHighLevelClient client) {
-        super(client);
-    }
+public final class IndexSupporter {
 
     /**
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull String index, @NotNull String source) {
+    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String source) {
         return client.indices().create(new CreateIndexRequest(index).source(source, XContentType.JSON), DEFAULT);
     }
 
@@ -68,7 +63,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull String index, int shards, @NotNull XContentBuilder builder) {
+    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, @NotNull XContentBuilder builder) {
         return client.indices().create(new CreateIndexRequest(index).settings(Settings.builder()
                 .put("index.number_of_shards", shards)
                 .put("index.number_of_replicas", shards > 1 ? 1 : 0)
@@ -79,7 +74,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Delete Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse delete(@NotNull String... index) {
+    public AcknowledgedResponse delete(@NotNull RestHighLevelClient client, @NotNull String... index) {
         return client.indices().delete(new DeleteIndexRequest(index), DEFAULT);
     }
 
@@ -87,7 +82,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Index Exists API
      */
     @SneakyThrows
-    public boolean exists(@NotNull String... indices) {
+    public boolean exists(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().exists(new GetIndexRequest(indices), DEFAULT);
     }
 
@@ -95,7 +90,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Open Index API
      */
     @SneakyThrows
-    public OpenIndexResponse open(@NotNull String... indices) {
+    public OpenIndexResponse open(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().open(new OpenIndexRequest(indices), DEFAULT);
     }
 
@@ -103,7 +98,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Close Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse close(@NotNull String... indices) {
+    public AcknowledgedResponse close(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().close(new CloseIndexRequest(indices), DEFAULT);
     }
 
@@ -111,7 +106,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Refresh API
      */
     @SneakyThrows
-    public RefreshResponse refresh(@NotNull String... indices) {
+    public RefreshResponse refresh(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().refresh(new RefreshRequest(indices), DEFAULT);
     }
 
@@ -119,7 +114,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Flush API
      */
     @SneakyThrows
-    public FlushResponse flush(@NotNull String... indices) {
+    public FlushResponse flush(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().flush(new FlushRequest(indices), DEFAULT);
     }
 
@@ -127,7 +122,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Clear Cache API
      */
     @SneakyThrows
-    public ClearIndicesCacheResponse clearCache(@NotNull String... indices) {
+    public ClearIndicesCacheResponse clearCache(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().clearCache(new ClearIndicesCacheRequest(indices), DEFAULT);
     }
 
@@ -135,7 +130,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Force Merge API
      */
     @SneakyThrows
-    public ForceMergeResponse forcemerge(@NotNull String... indices) {
+    public ForceMergeResponse forcemerge(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().forcemerge(new ForceMergeRequest(indices), DEFAULT);
     }
 
@@ -143,7 +138,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Rollover Index API
      */
     @SneakyThrows
-    public RolloverResponse rollover(@NotNull String alias, @NotNull String newIndexName, @NotNull int duration, @NotNull long docsCondition, @NotNull long sizeCondition) {
+    public RolloverResponse rollover(@NotNull RestHighLevelClient client, @NotNull String alias, @NotNull String newIndexName, @NotNull int duration, @NotNull long docsCondition, @NotNull long sizeCondition) {
         return client.indices().rollover(new RolloverRequest(alias, newIndexName)
                 .addMaxIndexAgeCondition(new TimeValue(duration, TimeUnit.DAYS))
                 .addMaxIndexDocsCondition(docsCondition)
@@ -154,7 +149,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Index Aliases API
      */
     @SneakyThrows
-    public AcknowledgedResponse updateAliases(@NotNull List<IndicesAliasesRequest.AliasActions> aliasActionsList) {
+    public AcknowledgedResponse updateAliases(@NotNull RestHighLevelClient client, @NotNull List<IndicesAliasesRequest.AliasActions> aliasActionsList) {
         return client.indices().updateAliases(aliasActionsList.stream().reduce(new IndicesAliasesRequest(), IndicesAliasesRequest::addAliasAction, (item1, item2) -> null), DEFAULT);
     }
 
@@ -162,7 +157,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Delete Alias API
      */
     @SneakyThrows
-    public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias(@NotNull String index, @NotNull String alias) {
+    public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String alias) {
         return client.indices().deleteAlias(new DeleteAliasRequest(index, alias), DEFAULT);
     }
 
@@ -170,7 +165,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Exists Alias API
      */
     @SneakyThrows
-    public boolean existsAlias(@NotNull String... aliases) {
+    public boolean existsAlias(@NotNull RestHighLevelClient client, @NotNull String... aliases) {
         return client.indices().existsAlias(new GetAliasesRequest(aliases), DEFAULT);
     }
 
@@ -178,7 +173,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Get Alias API
      */
     @SneakyThrows
-    public GetAliasesResponse getAlias(@NotNull String... aliases) {
+    public GetAliasesResponse getAlias(@NotNull RestHighLevelClient client, @NotNull String... aliases) {
         return client.indices().getAlias(new GetAliasesRequest(aliases), DEFAULT);
     }
 
@@ -186,7 +181,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Update Indices Settings API
      */
     @SneakyThrows
-    public AcknowledgedResponse putSettings(@NotNull Settings settings, @NotNull String... indices) {
+    public AcknowledgedResponse putSettings(@NotNull RestHighLevelClient client, @NotNull Settings settings, @NotNull String... indices) {
         return client.indices().putSettings(new UpdateSettingsRequest(settings, indices), DEFAULT);
     }
 
@@ -194,7 +189,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Get Settings API
      */
     @SneakyThrows
-    public GetSettingsResponse getSettings(@NotNull String... indices) {
+    public GetSettingsResponse getSettings(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().getSettings(new GetSettingsRequest().indices(indices), DEFAULT);
     }
 
@@ -202,7 +197,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Put Template API
      */
     @SneakyThrows
-    public AcknowledgedResponse putTemplate(@NotNull String templateName, @NotNull List<String> indexPatterns) {
+    public AcknowledgedResponse putTemplate(@NotNull RestHighLevelClient client, @NotNull String templateName, @NotNull List<String> indexPatterns) {
         return client.indices().putTemplate(new PutIndexTemplateRequest(templateName).patterns(indexPatterns), DEFAULT);
     }
 
@@ -210,7 +205,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Validate Query API
      */
     @SneakyThrows
-    public ValidateQueryResponse validateQuery(@NotNull QueryBuilder builder, @NotNull String... indices) {
+    public ValidateQueryResponse validateQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder builder, @NotNull String... indices) {
         return client.indices().validateQuery(new ValidateQueryRequest(indices).query(builder), DEFAULT);
     }
 
@@ -218,7 +213,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Get Templates API
      */
     @SneakyThrows
-    public GetIndexTemplatesResponse getIndexTemplate(@NotNull String... templateNames) {
+    public GetIndexTemplatesResponse getIndexTemplate(@NotNull RestHighLevelClient client, @NotNull String... templateNames) {
         return client.indices().getIndexTemplate(new GetIndexTemplatesRequest(templateNames), DEFAULT);
     }
 
@@ -226,7 +221,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Templates Exist API
      */
     @SneakyThrows
-    public boolean existsTemplate(@NotNull String... templateNames) {
+    public boolean existsTemplate(@NotNull RestHighLevelClient client, @NotNull String... templateNames) {
         return client.indices().existsTemplate(new IndexTemplatesExistRequest(templateNames), DEFAULT);
     }
 
@@ -234,7 +229,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Get Index API
      */
     @SneakyThrows
-    public GetIndexResponse get(@NotNull String... indices) {
+    public GetIndexResponse get(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().get(new GetIndexRequest(indices), DEFAULT);
     }
 
@@ -242,7 +237,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Freeze Index API
      */
     @SneakyThrows
-    public ShardsAcknowledgedResponse freeze(@NotNull String... indices) {
+    public ShardsAcknowledgedResponse freeze(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().freeze(new FreezeIndexRequest(indices), DEFAULT);
     }
 
@@ -250,7 +245,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Unfreeze Index API
      */
     @SneakyThrows
-    public ShardsAcknowledgedResponse unfreeze(@NotNull String... indices) {
+    public ShardsAcknowledgedResponse unfreeze(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().unfreeze(new UnfreezeIndexRequest(indices), DEFAULT);
     }
 
@@ -258,7 +253,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Delete Template API
      */
     @SneakyThrows
-    public AcknowledgedResponse deleteTemplate(@NotNull String templateName) {
+    public AcknowledgedResponse deleteTemplate(@NotNull RestHighLevelClient client, @NotNull String templateName) {
         return client.indices().deleteTemplate(new DeleteIndexTemplateRequest(templateName), DEFAULT);
     }
 
@@ -266,7 +261,7 @@ public final class IndexSupporter extends AbstractSupporter {
      * Reload Search Analyzers API
      */
     @SneakyThrows
-    public ReloadAnalyzersResponse reloadAnalyzers(@NotNull String... indices) {
+    public ReloadAnalyzersResponse reloadAnalyzers(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().reloadAnalyzers(new ReloadAnalyzersRequest(indices), DEFAULT);
     }
 }

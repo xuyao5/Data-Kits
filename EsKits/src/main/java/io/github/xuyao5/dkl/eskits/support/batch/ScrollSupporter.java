@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
-import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.*;
@@ -24,17 +23,17 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote ScrollSupporter
  */
 @Slf4j
-public final class ScrollSupporter extends AbstractSupporter {
+public final class ScrollSupporter {
 
-    public ScrollSupporter(RestHighLevelClient client) {
-        super(client);
+    public ScrollSupporter() {
+
     }
 
     /**
      * Search Scroll API
      */
     @SneakyThrows
-    public ClearScrollResponse scroll(Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
+    public ClearScrollResponse scroll(@NotNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
         final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(6));
         SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(new SearchSourceBuilder().query(queryBuilder).size(1024)), DEFAULT);
         String scrollId = searchResponse.getScrollId();
