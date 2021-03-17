@@ -1,8 +1,8 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
-import io.github.xuyao5.dkl.eskits.abstr.AbstractSupporter;
 import io.github.xuyao5.dkl.eskits.consts.ConflictsConst;
 import io.github.xuyao5.dkl.eskits.consts.ScriptConst;
+import io.github.xuyao5.dkl.eskits.context.AbstractSupporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
