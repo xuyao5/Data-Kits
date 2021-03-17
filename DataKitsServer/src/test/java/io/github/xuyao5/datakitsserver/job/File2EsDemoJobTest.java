@@ -1,7 +1,6 @@
-package io.github.xuyao5.datakitsserver.demo;
+package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.datakitsserver.job.File2EsDemoJob;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import io.github.xuyao5.dkl.eskits.util.MyRandomUtils;
 import lombok.SneakyThrows;
@@ -15,7 +14,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
-final class Horae extends AbstractTest {
+final class File2EsDemoJobTest extends AbstractTest {
 
     @Resource(name = "file2EsDemoJob")
     private File2EsDemoJob file2EsDemoJob;
