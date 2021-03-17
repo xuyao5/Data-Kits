@@ -36,7 +36,7 @@ public final class ScrollSupporter extends AbstractSupporter {
     @SneakyThrows
     public ClearScrollResponse scroll(Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
         final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(6));
-        SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(new SearchSourceBuilder().query(queryBuilder).size(RING_BUFFER_SIZE)), DEFAULT);
+        SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(new SearchSourceBuilder().query(queryBuilder).size(1024)), DEFAULT);
         String scrollId = searchResponse.getScrollId();
         SearchHit[] searchHits = searchResponse.getHits().getHits();
 
