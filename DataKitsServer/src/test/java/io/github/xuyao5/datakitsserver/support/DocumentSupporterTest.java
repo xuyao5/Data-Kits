@@ -1,10 +1,12 @@
-package io.github.xuyao5.datakitsserver.elasticsearch;
+package io.github.xuyao5.datakitsserver.support;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
+import io.github.xuyao5.datakitsserver.vo.MyDocument;
 import io.github.xuyao5.dkl.eskits.support.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.MultiFetchSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
+import io.github.xuyao5.dkl.eskits.util.MyDateUtils;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.get.MultiGetRequest;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,12 @@ public class DocumentSupporterTest extends AbstractTest {
 
     @Test
     void testIndex() {
-        System.out.println(new DocumentSupporter().index(esClient, "file2es_disruptor_1", "1", Pojo.of("测试")));
+        MyDocument myDocument = MyDocument.of();
+        myDocument.setUuid(String.valueOf(snowflake.nextId()));
+        myDocument.setCashAmount(Long.MAX_VALUE);
+        myDocument.setDesc("好");
+        myDocument.setDateTime(MyDateUtils.now());
+        System.out.println(new DocumentSupporter().index(esClient, "file2es_disruptor_1", "1", myDocument));
     }
 
     @Test
@@ -41,14 +48,24 @@ public class DocumentSupporterTest extends AbstractTest {
 
     @Test
     void testUpdate() {
-        System.out.println(new DocumentSupporter().update(esClient, "TEST-INDEX", "1", Pojo.of("测试更新：" + System.currentTimeMillis())));
+        MyDocument myDocument = MyDocument.of();
+        myDocument.setUuid(String.valueOf(snowflake.nextId()));
+        myDocument.setCashAmount(Long.MAX_VALUE);
+        myDocument.setDesc("好");
+        myDocument.setDateTime(MyDateUtils.now());
+        System.out.println(new DocumentSupporter().update(esClient, "TEST-INDEX", "1", myDocument));
     }
 
     @Test
     void testBulk() {
+        MyDocument myDocument = MyDocument.of();
+        myDocument.setUuid(String.valueOf(snowflake.nextId()));
+        myDocument.setCashAmount(Long.MAX_VALUE);
+        myDocument.setDesc("好");
+        myDocument.setDateTime(MyDateUtils.now());
         List<DocWriteRequest<?>> requestList = new ArrayList<>();
-        requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", Pojo.of("测试更新：" + System.currentTimeMillis())));
-        requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", Pojo.of("测试更新：" + System.currentTimeMillis())));
+        requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", myDocument));
+        requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", myDocument));
         System.out.println(new BulkSupporter().bulk(esClient, requestList));
     }
 

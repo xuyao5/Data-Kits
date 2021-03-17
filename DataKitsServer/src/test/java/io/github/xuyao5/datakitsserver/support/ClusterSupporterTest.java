@@ -1,4 +1,4 @@
-package io.github.xuyao5.datakitsserver.elasticsearch;
+package io.github.xuyao5.datakitsserver.support;
 
 import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
 import io.github.xuyao5.dkl.eskits.support.ClusterSupporter;
