@@ -25,8 +25,10 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class ScrollSupporter {
 
-    public ScrollSupporter() {
+    private final int KEEP_ALIVE;
 
+    public ScrollSupporter(int keepAlive) {
+        KEEP_ALIVE = keepAlive;
     }
 
     /**
@@ -34,7 +36,7 @@ public final class ScrollSupporter {
      */
     @SneakyThrows
     public ClearScrollResponse scroll(@NotNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
-        final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(6));
+        final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(KEEP_ALIVE));
         SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(new SearchSourceBuilder().query(queryBuilder).size(1024)), DEFAULT);
         String scrollId = searchResponse.getScrollId();
         SearchHit[] searchHits = searchResponse.getHits().getHits();

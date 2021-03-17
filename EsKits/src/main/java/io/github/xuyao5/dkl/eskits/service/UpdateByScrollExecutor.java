@@ -46,7 +46,7 @@ public final class UpdateByScrollExecutor extends AbstractExecutor {
     private void publish(@NotNull Disruptor<? extends StandardDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
         RingBuffer<? extends StandardDocument> ringBuffer = disruptor.start();
         try {
-            new ScrollSupporter().scroll(client, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
+            new ScrollSupporter(6).scroll(client, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
                 searchHitList.forEach(documentFields -> {
                     standardDocument.set_index(documentFields.getIndex());//demo
                 });
