@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.demo;
 
-import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
+import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.job.File2EsDemoJob;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import io.github.xuyao5.dkl.eskits.util.MyRandomUtils;

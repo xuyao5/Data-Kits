@@ -1,4 +1,4 @@
-package io.github.xuyao5.datakitsserver.abstr;
+package io.github.xuyao5.datakitsserver.context;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,5 +9,5 @@ import lombok.extern.slf4j.Slf4j;
  * @implNote TODO 这里输入实现说明
  */
 @Slf4j
-public abstract class AbstractService {
+public abstract class AbstractController {
 }

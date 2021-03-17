@@ -1,4 +1,4 @@
-package io.github.xuyao5.datakitsserver.abstr;
+package io.github.xuyao5.datakitsserver.context;
 
 import io.github.xuyao5.datakitsserver.DataKitsApplication;
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;

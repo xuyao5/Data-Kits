@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.system;
 
-import io.github.xuyao5.datakitsserver.abstr.AbstractTest;
+import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import lombok.SneakyThrows;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
