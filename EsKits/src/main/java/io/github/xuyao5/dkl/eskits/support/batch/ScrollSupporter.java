@@ -25,19 +25,13 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class ScrollSupporter {
 
-    private final int KEEP_ALIVE;
-
-    public ScrollSupporter(int keepAlive) {
-        KEEP_ALIVE = keepAlive;
-    }
-
     /**
      * Search Scroll API
      */
     @SneakyThrows
-    public ClearScrollResponse scroll(@NotNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
-        final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(KEEP_ALIVE));
-        SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(new SearchSourceBuilder().query(queryBuilder).size(1024)), DEFAULT);
+    public ClearScrollResponse scroll(@NotNull RestHighLevelClient client, int size, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
+        final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(6));
+        SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(new SearchSourceBuilder().query(queryBuilder).size(size)), DEFAULT);
         String scrollId = searchResponse.getScrollId();
         SearchHit[] searchHits = searchResponse.getHits().getHits();
 

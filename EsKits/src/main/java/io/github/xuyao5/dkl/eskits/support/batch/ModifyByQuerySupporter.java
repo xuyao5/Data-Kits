@@ -28,12 +28,6 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_S
 @Slf4j
 public final class ModifyByQuerySupporter {
 
-    private final int KEEP_ALIVE;
-
-    public ModifyByQuerySupporter(int keepAlive) {
-        KEEP_ALIVE = keepAlive;
-    }
-
     /**
      * Update By Query API
      */
@@ -44,7 +38,7 @@ public final class ModifyByQuerySupporter {
         request.setQuery(query);
         request.setBatchSize(batchSize);
         request.setSlices(AUTO_SLICES);
-        request.setScroll(TimeValue.timeValueMinutes(KEEP_ALIVE));
+        request.setScroll(TimeValue.timeValueMinutes(6));
         request.setScript(new Script(ScriptType.INLINE, ScriptConst.PAINLESS.getType(), code, params));
         return client.updateByQuery(request, DEFAULT);
     }
@@ -59,7 +53,7 @@ public final class ModifyByQuerySupporter {
         request.setQuery(query);
         request.setBatchSize(batchSize);
         request.setSlices(AUTO_SLICES);
-        request.setScroll(TimeValue.timeValueMinutes(KEEP_ALIVE));
+        request.setScroll(TimeValue.timeValueMinutes(6));
         return client.deleteByQuery(request, DEFAULT);
     }
 }

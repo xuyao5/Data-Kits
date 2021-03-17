@@ -34,12 +34,6 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class BulkSupporter {
 
-    private final int CONCURRENT_REQUESTS;
-
-    public BulkSupporter(int concurrentRequests) {
-        CONCURRENT_REQUESTS = concurrentRequests;
-    }
-
     public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull Serializable obj) {
         return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
@@ -60,7 +54,7 @@ public final class BulkSupporter {
      * Bulk Processor
      */
     @SneakyThrows
-    public boolean bulk(@NotNull RestHighLevelClient client, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    public boolean bulk(@NotNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
@@ -84,7 +78,7 @@ public final class BulkSupporter {
                     }
                 }).setBulkActions(-1)
                 .setBulkSize(new ByteSizeValue(12, ByteSizeUnit.MB))
-                .setConcurrentRequests(CONCURRENT_REQUESTS - 1)
+                .setConcurrentRequests(threads - 1)
                 .build()) {
             consumer.accept(bulkProcessor::add);
             return bulkProcessor.awaitClose(6, TimeUnit.MINUTES);

@@ -29,10 +29,6 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class MultiFetchSupporter {
 
-    public MultiFetchSupporter() {
-
-    }
-
     /**
      * Multi-Get API
      */

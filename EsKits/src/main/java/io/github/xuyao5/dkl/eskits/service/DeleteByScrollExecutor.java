@@ -32,7 +32,7 @@ public final class DeleteByScrollExecutor extends AbstractExecutor {
     }
 
     public <T extends StandardDocument> void execute(@NotNull DeleteByScrollConfig config, EventFactory<T> document) {
-        new BulkSupporter(bulkThreads).bulk(client, function -> {
+        new BulkSupporter().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id())));
@@ -44,7 +44,7 @@ public final class DeleteByScrollExecutor extends AbstractExecutor {
     private void publish(@NotNull Disruptor<? extends StandardDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
         RingBuffer<? extends StandardDocument> ringBuffer = disruptor.start();
         try {
-            new ScrollSupporter(6).scroll(client, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
+            new ScrollSupporter().scroll(client, RING_BUFFER_SIZE, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
                 searchHitList.forEach(documentFields -> {
                     standardDocument.set_index(documentFields.getIndex());//demo
                 });

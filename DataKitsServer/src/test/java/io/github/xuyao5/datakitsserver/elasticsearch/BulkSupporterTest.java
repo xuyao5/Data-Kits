@@ -8,7 +8,7 @@ public class BulkSupporterTest extends AbstractTest {
 
     @Test
     void testBulk() {
-        new BulkSupporter(esClientConfig.getEsBulkThreads()).bulk(esClient, function -> {
+        new BulkSupporter().bulk(esClient, esClientConfig.getEsBulkThreads(), function -> {
             for (int i = 0; i < 1000000; i++) {
                 function.apply(BulkSupporter.buildIndexRequest("test_index_5", Pojo.of("xu")));
             }

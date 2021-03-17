@@ -60,7 +60,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         String[][] metadataArray = new String[1][];//元数据
-        new BulkSupporter(bulkThreads).bulk(client, function -> {
+        new BulkSupporter().bulk(client, bulkThreads, function -> {
             final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {

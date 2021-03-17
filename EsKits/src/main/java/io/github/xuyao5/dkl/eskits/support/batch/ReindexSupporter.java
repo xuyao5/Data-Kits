@@ -19,10 +19,6 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Slf4j
 public final class ReindexSupporter {
 
-    public ReindexSupporter() {
-
-    }
-
     /**
      * Reindex API
      */

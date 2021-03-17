@@ -49,7 +49,7 @@ public class DocumentSupporterTest extends AbstractTest {
         List<DocWriteRequest<?>> requestList = new ArrayList<>();
         requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", Pojo.of("测试更新：" + System.currentTimeMillis())));
         requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", Pojo.of("测试更新：" + System.currentTimeMillis())));
-        System.out.println(new BulkSupporter(esClientConfig.getEsBulkThreads()).bulk(esClient, requestList));
+        System.out.println(new BulkSupporter().bulk(esClient, requestList));
     }
 
     @Test
