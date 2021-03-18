@@ -29,13 +29,16 @@ import java.util.function.Function;
 @Slf4j
 public final class ModifyByScrollExecutor extends AbstractExecutor {
 
-    public ModifyByScrollExecutor(RestHighLevelClient esClient, int threads) {
-        super(esClient, threads);
+    private final int bulkThreads;
+
+    public ModifyByScrollExecutor(@NotNull RestHighLevelClient esClient, int threads) {
+        super(esClient);
+        bulkThreads = threads;
     }
 
     public <T extends StandardDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
-            final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+            final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
 
@@ -45,7 +48,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
 
     public <T extends StandardDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
-            final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+            final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id())));
 
@@ -56,7 +59,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
     private void publish(@NotNull Disruptor<? extends StandardDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
         RingBuffer<? extends StandardDocument> ringBuffer = disruptor.start();
         try {
-            ScrollSupporter.getInstance().scroll(client, RING_BUFFER_SIZE, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
+            ScrollSupporter.getInstance().scroll(client, RING_SIZE, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
                 searchHitList.forEach(documentFields -> {
                     standardDocument.set_index(documentFields.getIndex());//demo
                 });

@@ -39,8 +39,11 @@ import java.util.function.UnaryOperator;
 @Slf4j
 public final class File2EsExecutor extends AbstractExecutor {
 
-    public File2EsExecutor(RestHighLevelClient esClient, int threads) {
-        super(esClient, threads);
+    private final int bulkThreads;
+
+    public File2EsExecutor(@NotNull RestHighLevelClient esClient, int threads) {
+        super(esClient);
+        bulkThreads = threads;
     }
 
     public <T extends StandardDocument> void execute(@NotNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
@@ -60,7 +63,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
         String[][] metadataArray = new String[1][];//元数据
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
-            final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+            final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                 if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {

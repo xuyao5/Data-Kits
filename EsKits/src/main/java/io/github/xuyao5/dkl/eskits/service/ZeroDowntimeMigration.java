@@ -11,9 +11,14 @@ import org.elasticsearch.client.RestHighLevelClient;
  * @implNote MigrateByReindex
  */
 @Slf4j
-public final class MigrateByReindex extends AbstractExecutor {
+public final class ZeroDowntimeMigration extends AbstractExecutor {
 
-    public MigrateByReindex(RestHighLevelClient client, int bulkThreads) {
-        super(client, bulkThreads);
+    public ZeroDowntimeMigration(RestHighLevelClient client) {
+        super(client);
+    }
+
+    //用别名和reindex来0停机切换
+    public void execute() {
+
     }
 }
