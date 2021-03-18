@@ -1,5 +1,7 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -17,7 +19,16 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote MultiFamilySupporter
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ReindexSupporter {
+
+    public static final ReindexSupporter getInstance() {
+        return ReindexSupporter.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final ReindexSupporter INSTANCE = new ReindexSupporter();
+    }
 
     /**
      * Reindex API

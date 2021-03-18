@@ -2,8 +2,9 @@ package io.github.xuyao5.dkl.eskits.support.mapping;
 
 import com.google.gson.reflect.TypeToken;
 import io.github.xuyao5.dkl.eskits.schema.range.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -22,8 +23,16 @@ import java.util.concurrent.atomic.LongAdder;
  * @apiNote XContentSupporter
  * @implNote XContentSupporter
  */
-@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class XContentSupporter {
+
+    public static final XContentSupporter getInstance() {
+        return XContentSupporter.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final XContentSupporter INSTANCE = new XContentSupporter();
+    }
 
     @SneakyThrows
     public static XContentBuilder buildMapping(@NotNull Map<String, Class<?>> declaredFieldsMap) {

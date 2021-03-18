@@ -2,6 +2,8 @@ package io.github.xuyao5.dkl.eskits.support.batch;
 
 import io.github.xuyao5.dkl.eskits.consts.ConflictsConst;
 import io.github.xuyao5.dkl.eskits.consts.ScriptConst;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -26,7 +28,16 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_S
  * @implNote ModifyByQuery
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ModifyByQuerySupporter {
+
+    public static final ModifyByQuerySupporter getInstance() {
+        return ModifyByQuerySupporter.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final ModifyByQuerySupporter INSTANCE = new ModifyByQuerySupporter();
+    }
 
     /**
      * Update By Query API

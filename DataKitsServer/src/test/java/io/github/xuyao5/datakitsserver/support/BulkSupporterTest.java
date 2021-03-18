@@ -10,7 +10,7 @@ public class BulkSupporterTest extends AbstractTest {
 
     @Test
     void testBulk() {
-        new BulkSupporter().bulk(esClient, esClientConfig.getEsBulkThreads(), function -> {
+        BulkSupporter.getInstance().bulk(esClient, esClientConfig.getEsBulkThreads(), function -> {
             for (int i = 0; i < 1000000; i++) {
                 MyDocument myDocument = MyDocument.of();
                 myDocument.setUuid(String.valueOf(snowflake.nextId()));

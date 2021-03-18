@@ -1,7 +1,8 @@
 package io.github.xuyao5.dkl.eskits.support;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -24,8 +25,16 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @apiNote EsIndexSupporter
  * @implNote EsIndexSupporter
  */
-@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SearchSupporter {
+
+    public static final SearchSupporter getInstance() {
+        return SearchSupporter.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final SearchSupporter INSTANCE = new SearchSupporter();
+    }
 
     /**
      * Search API

@@ -1,6 +1,7 @@
 package io.github.xuyao5.dkl.eskits.support;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -8,7 +9,14 @@ import lombok.extern.slf4j.Slf4j;
  * @apiNote EsSnapshotLifecycleSupporter
  * @implNote EsSnapshotLifecycleSupporter
  */
-@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SnapshotLifecycleSupporter {
 
+    public static final SnapshotLifecycleSupporter getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final SnapshotLifecycleSupporter INSTANCE = new SnapshotLifecycleSupporter();
+    }
 }

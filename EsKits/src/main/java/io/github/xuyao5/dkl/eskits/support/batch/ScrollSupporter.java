@@ -1,5 +1,7 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.*;
@@ -23,7 +25,16 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote ScrollSupporter
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScrollSupporter {
+
+    public static final ScrollSupporter getInstance() {
+        return ScrollSupporter.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final ScrollSupporter INSTANCE = new ScrollSupporter();
+    }
 
     /**
      * Search Scroll API

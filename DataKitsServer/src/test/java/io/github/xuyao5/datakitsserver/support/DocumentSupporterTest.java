@@ -23,27 +23,27 @@ public class DocumentSupporterTest extends AbstractTest {
         myDocument.setCashAmount(Long.MAX_VALUE);
         myDocument.setDesc("好");
         myDocument.setDateTime(MyDateUtils.now());
-        System.out.println(new DocumentSupporter().index(esClient, "file2es_disruptor_1", "1", myDocument));
+        System.out.println(DocumentSupporter.getInstance().index(esClient, "file2es_disruptor_1", "1", myDocument));
     }
 
     @Test
     void testGet() {
-        System.out.println(new DocumentSupporter().get(esClient, "TEST-INDEX", "2"));
+        System.out.println(DocumentSupporter.getInstance().get(esClient, "TEST-INDEX", "2"));
     }
 
     @Test
     void testGetSource() {
-        System.out.println(new DocumentSupporter().getSource(esClient, "TEST-INDEX", "2"));
+        System.out.println(DocumentSupporter.getInstance().getSource(esClient, "TEST-INDEX", "2"));
     }
 
     @Test
     void testExists() {
-        System.out.println(new DocumentSupporter().exists(esClient, "TEST-INDEX", "2"));
+        System.out.println(DocumentSupporter.getInstance().exists(esClient, "TEST-INDEX", "2"));
     }
 
     @Test
     void testDelete() {
-        System.out.println(new DocumentSupporter().delete(esClient, "TEST-INDEX", "2"));
+        System.out.println(DocumentSupporter.getInstance().delete(esClient, "TEST-INDEX", "2"));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class DocumentSupporterTest extends AbstractTest {
         myDocument.setCashAmount(Long.MAX_VALUE);
         myDocument.setDesc("好");
         myDocument.setDateTime(MyDateUtils.now());
-        System.out.println(new DocumentSupporter().update(esClient, "TEST-INDEX", "1", myDocument));
+        System.out.println(DocumentSupporter.getInstance().update(esClient, "TEST-INDEX", "1", myDocument));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class DocumentSupporterTest extends AbstractTest {
         List<DocWriteRequest<?>> requestList = new ArrayList<>();
         requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", myDocument));
         requestList.add(BulkSupporter.buildIndexRequest("TEST-INDEX", myDocument));
-        System.out.println(new BulkSupporter().bulk(esClient, requestList));
+        System.out.println(BulkSupporter.getInstance().bulk(esClient, requestList));
     }
 
     @Test
@@ -75,12 +75,12 @@ public class DocumentSupporterTest extends AbstractTest {
         list.add(new MultiGetRequest.Item("TEST-INDEX", "3"));
         list.add(new MultiGetRequest.Item("TEST-INDEX", "100"));
         list.add(new MultiGetRequest.Item("TEST-INDEX", "101"));
-        new MultiFetchSupporter().multiGet(esClient, list).iterator().forEachRemaining(multiGetItemResponse -> {
+        MultiFetchSupporter.getInstance().multiGet(esClient, list).iterator().forEachRemaining(multiGetItemResponse -> {
             System.out.println(multiGetItemResponse.getResponse());
         });
     }
 
     void testReindex() {
-        new ReindexSupporter().reindex(esClient, "", 1);
+        ReindexSupporter.getInstance().reindex(esClient, "", 1);
     }
 }

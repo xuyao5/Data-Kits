@@ -1,6 +1,8 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
 import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;
@@ -32,7 +34,16 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @implNote BulkSupporter
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BulkSupporter {
+
+    public static final BulkSupporter getInstance() {
+        return BulkSupporter.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final BulkSupporter INSTANCE = new BulkSupporter();
+    }
 
     public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull Serializable obj) {
         return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
