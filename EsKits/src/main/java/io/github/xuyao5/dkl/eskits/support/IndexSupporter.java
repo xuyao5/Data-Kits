@@ -75,7 +75,6 @@ public final class IndexSupporter {
     public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, @NotNull XContentBuilder builder) {
         return client.indices().create(new CreateIndexRequest(index).settings(Settings.builder()
                 .put("index.number_of_shards", shards)
-                .put("index.number_of_replicas", shards > 1 ? 1 : 0)
         ).mapping(builder), DEFAULT);
     }
 
