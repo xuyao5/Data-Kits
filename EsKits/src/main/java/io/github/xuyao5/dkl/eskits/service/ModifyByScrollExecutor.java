@@ -23,8 +23,8 @@ import java.util.function.Function;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 15/03/21 20:57
- * @apiNote BatchUpdateExecutor
- * @implNote BatchUpdateExecutor
+ * @apiNote ModifyByScrollExecutor
+ * @implNote ModifyByScrollExecutor
  */
 @Slf4j
 public final class ModifyByScrollExecutor extends AbstractExecutor {
