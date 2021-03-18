@@ -6,7 +6,7 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import io.github.xuyao5.dkl.eskits.configuration.UpdateByScrollConfig;
+import io.github.xuyao5.dkl.eskits.configuration.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
@@ -27,17 +27,27 @@ import java.util.function.Function;
  * @implNote BatchUpdateExecutor
  */
 @Slf4j
-public final class UpdateByScrollExecutor extends AbstractExecutor {
+public final class ModifyByScrollExecutor extends AbstractExecutor {
 
-    public UpdateByScrollExecutor(RestHighLevelClient esClient, int threads) {
+    public ModifyByScrollExecutor(RestHighLevelClient esClient, int threads) {
         super(esClient, threads);
     }
 
-    public <T extends StandardDocument> void execute(@NotNull UpdateByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
+    public <T extends StandardDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
+
+            publish(disruptor, config.getQueryBuilder(), config.getIndex());
+        });
+    }
+
+    public <T extends StandardDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document) {
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
+            final Disruptor<T> disruptor = new Disruptor<>(document, RING_BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+
+            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id())));
 
             publish(disruptor, config.getQueryBuilder(), config.getIndex());
         });

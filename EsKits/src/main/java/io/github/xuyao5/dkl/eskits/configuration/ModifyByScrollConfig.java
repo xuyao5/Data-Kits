@@ -10,7 +10,7 @@ import org.elasticsearch.index.query.QueryBuilder;
  * @implNote BatchUpdateConfig
  */
 @Data(staticConstructor = "of")
-public final class DeleteByScrollConfig {
+public final class ModifyByScrollConfig {
 
     private final String index;
 
