@@ -8,6 +8,8 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.get.MultiGetRequest;
+import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -19,6 +21,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_FETCH_SOURCE;
@@ -54,6 +57,14 @@ public final class DocumentSupporter {
     @SneakyThrows
     public GetResponse get(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
         return client.get(new GetRequest(index, id), DEFAULT);
+    }
+
+    /**
+     * Multi-Get API
+     */
+    @SneakyThrows
+    public MultiGetResponse multiGet(@NotNull RestHighLevelClient client, @NotNull List<MultiGetRequest.Item> items) {
+        return client.mget(items.stream().reduce(new MultiGetRequest(), MultiGetRequest::add, (item1, item2) -> null), DEFAULT);
     }
 
     /**

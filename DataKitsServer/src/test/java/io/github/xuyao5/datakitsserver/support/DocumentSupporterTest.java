@@ -4,7 +4,6 @@ import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.vo.MyDocument;
 import io.github.xuyao5.dkl.eskits.support.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
-import io.github.xuyao5.dkl.eskits.support.batch.MultiFetchSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyDateUtils;
 import org.elasticsearch.action.DocWriteRequest;
@@ -75,7 +74,7 @@ public class DocumentSupporterTest extends AbstractTest {
         list.add(new MultiGetRequest.Item("TEST-INDEX", "3"));
         list.add(new MultiGetRequest.Item("TEST-INDEX", "100"));
         list.add(new MultiGetRequest.Item("TEST-INDEX", "101"));
-        MultiFetchSupporter.getInstance().multiGet(esClient, list).iterator().forEachRemaining(multiGetItemResponse -> {
+        DocumentSupporter.getInstance().multiGet(esClient, list).iterator().forEachRemaining(multiGetItemResponse -> {
             System.out.println(multiGetItemResponse.getResponse());
         });
     }
