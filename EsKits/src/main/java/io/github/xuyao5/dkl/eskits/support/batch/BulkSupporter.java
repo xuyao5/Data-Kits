@@ -41,10 +41,6 @@ public final class BulkSupporter {
         return BulkSupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final BulkSupporter INSTANCE = new BulkSupporter();
-    }
-
     public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull Serializable obj) {
         return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
@@ -102,5 +98,9 @@ public final class BulkSupporter {
     @SneakyThrows
     public BulkResponse bulk(@NotNull RestHighLevelClient client, @NotNull List<DocWriteRequest<?>> requests) {
         return client.bulk(new BulkRequest().add(requests), DEFAULT);
+    }
+
+    private static class SingletonHolder {
+        private static final BulkSupporter INSTANCE = new BulkSupporter();
     }
 }

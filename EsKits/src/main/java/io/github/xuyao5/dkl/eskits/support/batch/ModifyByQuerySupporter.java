@@ -35,10 +35,6 @@ public final class ModifyByQuerySupporter {
         return ModifyByQuerySupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final ModifyByQuerySupporter INSTANCE = new ModifyByQuerySupporter();
-    }
-
     /**
      * Update By Query API
      */
@@ -66,5 +62,9 @@ public final class ModifyByQuerySupporter {
         request.setSlices(AUTO_SLICES);
         request.setScroll(TimeValue.timeValueMinutes(6));
         return client.deleteByQuery(request, DEFAULT);
+    }
+
+    private static class SingletonHolder {
+        private static final ModifyByQuerySupporter INSTANCE = new ModifyByQuerySupporter();
     }
 }

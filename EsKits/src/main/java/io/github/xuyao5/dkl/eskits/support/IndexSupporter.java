@@ -56,10 +56,6 @@ public final class IndexSupporter {
         return IndexSupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final IndexSupporter INSTANCE = new IndexSupporter();
-    }
-
     /**
      * Create Index API
      */
@@ -271,5 +267,9 @@ public final class IndexSupporter {
     @SneakyThrows
     public ReloadAnalyzersResponse reloadAnalyzers(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.indices().reloadAnalyzers(new ReloadAnalyzersRequest(indices), DEFAULT);
+    }
+
+    private static class SingletonHolder {
+        private static final IndexSupporter INSTANCE = new IndexSupporter();
     }
 }

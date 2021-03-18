@@ -38,10 +38,6 @@ public final class SearchSupporter {
         return SearchSupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final SearchSupporter INSTANCE = new SearchSupporter();
-    }
-
     /**
      * Search API
      */
@@ -107,5 +103,9 @@ public final class SearchSupporter {
     @SneakyThrows
     public CountResponse count(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, @NotNull String... indices) {
         return client.count(new CountRequest(indices).query(query), DEFAULT);
+    }
+
+    private static class SingletonHolder {
+        private static final SearchSupporter INSTANCE = new SearchSupporter();
     }
 }

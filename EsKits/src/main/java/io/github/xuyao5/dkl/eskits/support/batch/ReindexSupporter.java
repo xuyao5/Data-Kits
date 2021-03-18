@@ -26,10 +26,6 @@ public final class ReindexSupporter {
         return ReindexSupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final ReindexSupporter INSTANCE = new ReindexSupporter();
-    }
-
     /**
      * Reindex API
      */
@@ -39,5 +35,9 @@ public final class ReindexSupporter {
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
                 .setSourceBatchSize(sourceBatchSize), DEFAULT);
+    }
+
+    private static class SingletonHolder {
+        private static final ReindexSupporter INSTANCE = new ReindexSupporter();
     }
 }

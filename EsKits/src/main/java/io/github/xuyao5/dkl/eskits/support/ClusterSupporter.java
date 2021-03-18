@@ -28,10 +28,6 @@ public final class ClusterSupporter {
         return ClusterSupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final ClusterSupporter INSTANCE = new ClusterSupporter();
-    }
-
     /**
      * Cluster Get Settings API
      */
@@ -54,5 +50,9 @@ public final class ClusterSupporter {
     @SneakyThrows
     public RemoteInfoResponse remoteInfo(@NotNull RestHighLevelClient client) {
         return client.cluster().remoteInfo(new RemoteInfoRequest(), DEFAULT);
+    }
+
+    private static class SingletonHolder {
+        private static final ClusterSupporter INSTANCE = new ClusterSupporter();
     }
 }

@@ -39,10 +39,6 @@ public final class DocumentSupporter {
         return DocumentSupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final DocumentSupporter INSTANCE = new DocumentSupporter();
-    }
-
     /**
      * Index API
      */
@@ -97,5 +93,9 @@ public final class DocumentSupporter {
     @SneakyThrows
     public UpdateResponse update(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id, @NotNull Serializable json) {
         return client.update(new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
+    }
+
+    private static class SingletonHolder {
+        private static final DocumentSupporter INSTANCE = new DocumentSupporter();
     }
 }

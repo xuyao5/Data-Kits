@@ -30,10 +30,6 @@ public final class XContentSupporter {
         return XContentSupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final XContentSupporter INSTANCE = new XContentSupporter();
-    }
-
     @SneakyThrows
     public static XContentBuilder buildMapping(@NotNull Map<String, Class<?>> declaredFieldsMap) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -174,5 +170,9 @@ public final class XContentSupporter {
         }
         builder.endObject();
         return builder;
+    }
+
+    private static class SingletonHolder {
+        private static final XContentSupporter INSTANCE = new XContentSupporter();
     }
 }

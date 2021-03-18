@@ -32,10 +32,6 @@ public final class ScrollSupporter {
         return ScrollSupporter.SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final ScrollSupporter INSTANCE = new ScrollSupporter();
-    }
-
     /**
      * Search Scroll API
      */
@@ -56,5 +52,9 @@ public final class ScrollSupporter {
         ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
         clearScrollRequest.addScrollId(scrollId);
         return client.clearScroll(clearScrollRequest, DEFAULT);
+    }
+
+    private static class SingletonHolder {
+        private static final ScrollSupporter INSTANCE = new ScrollSupporter();
     }
 }
