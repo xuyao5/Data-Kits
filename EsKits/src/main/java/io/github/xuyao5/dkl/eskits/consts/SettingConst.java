@@ -10,11 +10,11 @@ import java.util.Optional;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 19/03/21 21:54
- * @apiNote SettingsConst
- * @implNote SettingsConst
+ * @apiNote SettingConst
+ * @implNote SettingConst
  */
 @RequiredArgsConstructor
-public enum SettingsConst {
+public enum SettingConst {
 
     INDEX_NUMBER_OF_REPLICAS("index.number_of_replicas", ""),
     INDEX_REFRESH_INTERVAL("index.refresh_interval", ""),
@@ -29,7 +29,7 @@ public enum SettingsConst {
     @Getter
     private final String description;
 
-    public static Optional<SettingsConst> getSettingByName(@NotNull String name) {
-        return Arrays.stream(SettingsConst.values()).filter(settingsConst -> settingsConst.name.equalsIgnoreCase(name)).findAny();
+    public static Optional<SettingConst> getSettingByName(@NotNull String name) {
+        return Arrays.stream(SettingConst.values()).filter(settingConst -> settingConst.name.equalsIgnoreCase(name)).findAny();
     }
 }

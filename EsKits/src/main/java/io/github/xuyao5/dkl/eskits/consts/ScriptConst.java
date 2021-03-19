@@ -14,7 +14,7 @@ import java.util.Optional;
  * @implNote ScriptConst
  */
 @RequiredArgsConstructor
-public enum ScriptsConst {
+public enum ScriptConst {
 
     PAINLESS("painless", "painless");
 
@@ -24,7 +24,7 @@ public enum ScriptsConst {
     @Getter
     private final String description;
 
-    public static Optional<ScriptsConst> getScriptByType(@NotNull String type) {
-        return Arrays.stream(ScriptsConst.values()).filter(scriptsConst -> scriptsConst.type.equalsIgnoreCase(type)).findAny();
+    public static Optional<ScriptConst> getScriptByType(@NotNull String type) {
+        return Arrays.stream(ScriptConst.values()).filter(scriptConst -> scriptConst.type.equalsIgnoreCase(type)).findAny();
     }
 }

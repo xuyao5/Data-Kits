@@ -10,11 +10,11 @@ import java.util.Optional;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 20/02/21 12:10
- * @apiNote ConflictsConst
- * @implNote ConflictsConst
+ * @apiNote ConflictConst
+ * @implNote ConflictConst
  */
 @RequiredArgsConstructor
-public enum ConflictsConst {
+public enum ConflictConst {
 
     PROCEED("proceed", "proceed"),
     ABORT("abort", "abort");
@@ -25,7 +25,7 @@ public enum ConflictsConst {
     @Getter
     private final String description;
 
-    public static Optional<ConflictsConst> getConflictByType(@NotNull String type) {
-        return Arrays.stream(ConflictsConst.values()).filter(conflictsConst -> conflictsConst.type.equalsIgnoreCase(type)).findAny();
+    public static Optional<ConflictConst> getConflictByType(@NotNull String type) {
+        return Arrays.stream(ConflictConst.values()).filter(conflictConst -> conflictConst.type.equalsIgnoreCase(type)).findAny();
     }
 }
