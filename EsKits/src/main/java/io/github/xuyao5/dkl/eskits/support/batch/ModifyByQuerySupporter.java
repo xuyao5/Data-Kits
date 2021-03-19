@@ -1,7 +1,7 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
 import io.github.xuyao5.dkl.eskits.consts.ConflictsConst;
-import io.github.xuyao5.dkl.eskits.consts.ScriptConst;
+import io.github.xuyao5.dkl.eskits.consts.ScriptsConst;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -46,7 +46,7 @@ public final class ModifyByQuerySupporter {
         request.setBatchSize(batchSize);
         request.setSlices(AUTO_SLICES);
         request.setScroll(TimeValue.timeValueMinutes(6));
-        request.setScript(new Script(ScriptType.INLINE, ScriptConst.PAINLESS.getType(), code, params));
+        request.setScript(new Script(ScriptType.INLINE, ScriptsConst.PAINLESS.getType(), code, params));
         return client.updateByQuery(request, DEFAULT);
     }
 

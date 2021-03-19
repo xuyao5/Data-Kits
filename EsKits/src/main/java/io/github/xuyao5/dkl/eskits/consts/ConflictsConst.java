@@ -25,7 +25,7 @@ public enum ConflictsConst {
     @Getter
     private final String description;
 
-    public static Optional<ConflictsConst> getConflictsConstByType(@NotNull String type) {
+    public static Optional<ConflictsConst> getConflictByType(@NotNull String type) {
         return Arrays.stream(ConflictsConst.values()).filter(conflictsConst -> conflictsConst.type.equalsIgnoreCase(type)).findAny();
     }
 }
