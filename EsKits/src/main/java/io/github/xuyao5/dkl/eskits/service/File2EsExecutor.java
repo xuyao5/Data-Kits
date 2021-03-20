@@ -23,10 +23,12 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.UnaryOperator;
 
@@ -85,13 +87,10 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                     for (int i = 0; i < recordArray.length; i++) {
                         String fieldName = metadataArray[0][i];
-                        MyGsonUtils.json2Obj(recordArray[i], declaredFieldsMap.get(fieldName)).ifPresent(obj -> {
-                            try {
-                                MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
-                            } catch (IllegalAccessException ex) {
-                                log.error("数据行[" + standardFileLine.getLineNo() + "]类型解析错误", ex);
-                            }
-                        });
+                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i]);
+                        if (Objects.nonNull(obj)) {
+                            MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
+                        }
                     }
 
                     function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));

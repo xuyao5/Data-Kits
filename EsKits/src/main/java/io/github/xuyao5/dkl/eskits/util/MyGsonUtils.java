@@ -7,9 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.lang.reflect.Type;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.Optional;
 
 import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT;
 
@@ -46,23 +45,13 @@ public final class MyGsonUtils {
         }
     }
 
-    public static <T> String obj2Json(@NotNull T obj) {
-        return GSON.toJson(obj);
+    public static <T extends Serializable> String obj2Json(@NotNull T obj) {
+        return GSON.toJson(obj, new TypeToken<T>() {
+        }.getType());
     }
 
-    public static <T> String obj2Json(@NotNull T obj, @NotNull Type type) {
-        return GSON.toJson(obj, type);
-    }
-
-    public static <T> Optional<T> json2Obj(@NotNull String json, @NotNull Type type) {
-        return Optional.ofNullable(GSON.fromJson(json, type));
-    }
-
-    public static <T> Optional<T> json2Obj(@NotNull String json, @NotNull Class<T> clz) {
-        return Optional.ofNullable(GSON.fromJson(json, clz));
-    }
-
-    public static <T> Optional<T> json2Obj(@NotNull String json, @NotNull TypeToken<T> typeToken) {
-        return Optional.ofNullable(GSON.fromJson(json, typeToken.getType()));
+    public static <T extends Serializable> T json2Obj(@NotNull String json) {
+        return GSON.fromJson(json, new TypeToken<T>() {
+        }.getType());
     }
 }

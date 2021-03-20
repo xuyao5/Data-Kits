@@ -49,7 +49,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
             SearchHit[] hits1 = search.getHits().getHits();
             SearchHit documentFields = hits1[0];
             String sourceAsString = documentFields.getSourceAsString();
-            Optional<StandardSearchSourceDocument> standardSearchSourceDocument = MyGsonUtils.json2Obj(sourceAsString, StandardSearchSourceDocument.class);
+            Optional<StandardSearchSourceDocument> standardSearchSourceDocument = MyGsonUtils.json2Obj(sourceAsString);
             standardSearchSourceDocument.ifPresent(document -> {
                 SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, document.getQuery(), Collections.EMPTY_MAP, "file2es_disruptor_1");
                 if (searchResponse.getResponse().getHits().getTotalHits().value > 0) {
