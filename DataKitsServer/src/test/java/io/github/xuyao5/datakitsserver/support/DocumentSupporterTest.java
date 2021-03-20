@@ -22,7 +22,7 @@ public class DocumentSupporterTest extends AbstractTest {
         myDocument.setCashAmount(Long.MAX_VALUE);
         myDocument.setDesc("好");
         myDocument.setDateTime(MyDateUtils.now());
-        System.out.println(DocumentSupporter.getInstance().index(esClient, "file2es_disruptor_1", "1", myDocument));
+        System.out.println(DocumentSupporter.getInstance().index(esClient, "file2es_disruptor_1", myDocument));
     }
 
     @Test

@@ -17,7 +17,6 @@ public abstract class BaseDocument implements Serializable {
     private transient String _index;
     private transient String _id;
 
-    private String recordId;
     private String dateTag;
     private long serialNo;
     private String allFieldMd5;

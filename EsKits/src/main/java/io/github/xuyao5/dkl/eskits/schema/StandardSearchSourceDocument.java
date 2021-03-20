@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Data(staticConstructor = "of")
 public final class StandardSearchSourceDocument implements Serializable {
 
-    private final String searchId;
+    private final String searchName;
     private final String query;
 }

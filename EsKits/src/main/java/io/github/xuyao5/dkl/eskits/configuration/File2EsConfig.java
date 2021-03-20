@@ -18,8 +18,6 @@ public final class File2EsConfig {
     private final File file;
     private final String index;
 
-    private int idColumn = 1;
-    private int collapseColumn = 0;
     private Charset charset = StandardCharsets.UTF_8;
     private char recordSeparator = 0x1E;
     private String fileComments = "#";

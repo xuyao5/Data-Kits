@@ -8,9 +8,11 @@ import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.SearchSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
+import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.core.GetSourceResponse;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.SearchHit;
@@ -18,6 +20,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -37,17 +40,26 @@ public final class StoredSearchExecutor extends AbstractExecutor {
 
     //用存储在ES中的代码来搜索
     public void execute() {
-        String id = "1";
-        GetSourceResponse source = DocumentSupporter.getInstance().getSource(client, SEARCH_STORED_INDEX, id);
-        Map<String, Object> map = source.getSource();
-        if (id.equals(map.get("searchId"))) {
-            String code = map.get("query").toString();
-            SearchTemplateResponse searchResponse = SearchSupporter.getInstance().searchTemplate(client, code, Collections.EMPTY_MAP, "file2es_disruptor_1");
-            SearchHit[] hits = searchResponse.getResponse().getHits().getHits();
-            for (int i = 0; i < hits.length; i++) {
-                SearchHit hit = hits[i];
-                System.out.println(hit);
-            }
+        String searchName = "my-search-1";
+        QueryBuilder queryBuilder = QueryBuilders.boolQuery().filter(QueryBuilders.termQuery("searchName", searchName));
+        SearchSupporter searchSupporter = SearchSupporter.getInstance();
+        SearchResponse search = searchSupporter.search(client, queryBuilder, 0, 1, SEARCH_STORED_INDEX);
+
+        if (search.getHits().getTotalHits().value > 0) {
+            SearchHit[] hits1 = search.getHits().getHits();
+            SearchHit documentFields = hits1[0];
+            String sourceAsString = documentFields.getSourceAsString();
+            Optional<StandardSearchSourceDocument> standardSearchSourceDocument = MyGsonUtils.json2Obj(sourceAsString, StandardSearchSourceDocument.class);
+            standardSearchSourceDocument.ifPresent(document -> {
+                SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, document.getQuery(), Collections.EMPTY_MAP, "file2es_disruptor_1");
+                if (searchResponse.getResponse().getHits().getTotalHits().value > 0) {
+                    System.out.println(searchResponse.getResponse().getHits().getTotalHits().value);
+                    SearchHit[] hits = searchResponse.getResponse().getHits().getHits();
+                    for (int i = 0; i < hits.length; i++) {
+                        System.out.println(hits[i]);
+                    }
+                }
+            });
         }
     }
 
@@ -57,7 +69,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
                 .from(0)
                 .size(1000)
                 .toString();
-        StandardSearchSourceDocument searchDocument = StandardSearchSourceDocument.of("1", querySource);
+        StandardSearchSourceDocument searchDocument = StandardSearchSourceDocument.of("my-search-1", querySource);
 
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (!indexSupporter.exists(client, SEARCH_STORED_INDEX)) {
@@ -67,7 +79,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
             //设置别名
         }
 
-        DocumentSupporter.getInstance().index(client, SEARCH_STORED_INDEX, searchDocument.getSearchId(), searchDocument);
+        DocumentSupporter.getInstance().index(client, SEARCH_STORED_INDEX, searchDocument);
 
         //设置别名
     }
