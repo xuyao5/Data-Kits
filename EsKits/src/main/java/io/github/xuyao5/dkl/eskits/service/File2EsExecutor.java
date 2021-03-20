@@ -19,6 +19,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.LineIterator;
+import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
@@ -58,7 +59,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
 
         if (!IndexSupporter.getInstance().exists(client, config.getIndex())) {
-            IndexSupporter.getInstance().create(client, config.getIndex(), numberOfDataNodes, XContentSupporter.buildMapping(declaredFieldsMap));
+            IndexSupporter.getInstance().create(client, config.getIndex(), numberOfDataNodes, 1, XContentSupporter.buildMapping(declaredFieldsMap), new Alias(config.getIndex()));
         }
 
         String[][] metadataArray = new String[1][];//元数据

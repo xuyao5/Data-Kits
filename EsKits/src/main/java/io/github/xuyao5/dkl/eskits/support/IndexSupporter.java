@@ -3,6 +3,7 @@ package io.github.xuyao5.dkl.eskits.support;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest;
@@ -34,7 +35,6 @@ import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
 
 import javax.validation.constraints.NotNull;
@@ -60,18 +60,13 @@ public final class IndexSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String source) {
-        return client.indices().create(new CreateIndexRequest(index).source(source, XContentType.JSON), DEFAULT);
-    }
-
-    /**
-     * Create Index API
-     */
-    @SneakyThrows
-    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, @NotNull XContentBuilder builder) {
-        return client.indices().create(new CreateIndexRequest(index).settings(Settings.builder()
-                .put("index.number_of_shards", shards)
-        ).mapping(builder), DEFAULT);
+    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, int replicas, @NotNull XContentBuilder builder, @NotNull Alias alias) {
+        return client.indices().create(new CreateIndexRequest(index)
+                .settings(Settings.builder()
+                        .put("index.number_of_shards", shards)
+                        .put("index.number_of_replicas", replicas))
+                .mapping(builder)
+                .alias(alias), DEFAULT);
     }
 
     /**
