@@ -3,7 +3,6 @@ package io.github.xuyao5.dkl.eskits.support;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest;
@@ -60,13 +59,12 @@ public final class IndexSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, int replicas, @NotNull XContentBuilder builder, @NotNull Alias alias) {
+    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, int replicas, @NotNull XContentBuilder builder) {
         return client.indices().create(new CreateIndexRequest(index)
                 .settings(Settings.builder()
                         .put("index.number_of_shards", shards)
                         .put("index.number_of_replicas", replicas))
-                .mapping(builder)
-                .alias(alias), DEFAULT);
+                .mapping(builder), DEFAULT);
     }
 
     /**

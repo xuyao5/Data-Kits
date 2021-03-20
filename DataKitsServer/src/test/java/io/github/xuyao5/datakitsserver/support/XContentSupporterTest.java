@@ -5,7 +5,6 @@ import io.github.xuyao5.datakitsserver.vo.AllTypeDocument;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
-import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -21,6 +20,6 @@ public class XContentSupporterTest extends AbstractTest {
         if (indexSupporter.exists(esClient, index)) {
             indexSupporter.delete(esClient, index);
         }
-        indexSupporter.create(esClient, index, 1, 1, XContentSupporter.buildMapping(declaredFieldsMap), new Alias(index));
+        indexSupporter.create(esClient, index, 1, 1, XContentSupporter.buildMapping(declaredFieldsMap));
     }
 }

@@ -6,7 +6,6 @@ import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.util.Map;
@@ -38,7 +37,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
         if (!indexSupporter.exists(client, SEARCH_STORED_INDEX)) {
             Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(null);
             int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
-            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 1, XContentSupporter.buildMapping(declaredFieldsMap), new Alias(SEARCH_STORED_ALIAS));
+            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 1, XContentSupporter.buildMapping(declaredFieldsMap));
             //设置别名
         }
 
