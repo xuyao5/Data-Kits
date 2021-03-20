@@ -16,13 +16,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public enum ScriptConst {
 
-    PAINLESS("painless", "painless");
+    PAINLESS("painless");
 
     @Getter
     private final String type;
-
-    @Getter
-    private final String description;
 
     public static Optional<ScriptConst> getScriptByType(@NotNull String type) {
         return Arrays.stream(ScriptConst.values()).filter(scriptConst -> scriptConst.type.equalsIgnoreCase(type)).findAny();

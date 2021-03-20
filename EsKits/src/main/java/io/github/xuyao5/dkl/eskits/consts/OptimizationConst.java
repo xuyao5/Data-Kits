@@ -16,13 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public enum OptimizationConst {
 
-    DEFAULT(0, "painless");
+    DEFAULT(0);
 
     @Getter
     private final int value;
 
-    @Getter
-    private final String description;
 
     public static Optional<OptimizationConst> getOptimizationByValue(@NotNull int value) {
         return Arrays.stream(OptimizationConst.values()).filter(optimizationConst -> optimizationConst.value == value).findAny();

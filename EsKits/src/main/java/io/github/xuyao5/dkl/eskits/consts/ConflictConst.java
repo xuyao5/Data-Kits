@@ -16,14 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public enum ConflictConst {
 
-    PROCEED("proceed", "proceed"),
-    ABORT("abort", "abort");
+    PROCEED("proceed"),
+    ABORT("abort");
 
     @Getter
     private final String type;
-
-    @Getter
-    private final String description;
 
     public static Optional<ConflictConst> getConflictByType(@NotNull String type) {
         return Arrays.stream(ConflictConst.values()).filter(conflictConst -> conflictConst.type.equalsIgnoreCase(type)).findAny();
