@@ -43,7 +43,7 @@ public final class SearchSupporter {
      */
     @SneakyThrows
     public SearchResponse search(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, int from, int size, @NotNull String... indices) {
-        return client.search(new SearchRequest(indices).source(new SearchSourceBuilder().query(query).from(from).size(size)), DEFAULT);
+        return client.search(new SearchRequest(indices).source(SearchSourceBuilder.searchSource().query(query).from(from).size(size)), DEFAULT);
     }
 
     /**

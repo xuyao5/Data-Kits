@@ -8,7 +8,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.configuration.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
+import io.github.xuyao5.dkl.eskits.schema.BaseDocument;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ScrollSupporter;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public <T extends StandardDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
+    public <T extends BaseDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -46,7 +46,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         });
     }
 
-    public <T extends StandardDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document) {
+    public <T extends BaseDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -56,8 +56,8 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         });
     }
 
-    private void publish(@NotNull Disruptor<? extends StandardDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
-        RingBuffer<? extends StandardDocument> ringBuffer = disruptor.start();
+    private void publish(@NotNull Disruptor<? extends BaseDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
+        RingBuffer<? extends BaseDocument> ringBuffer = disruptor.start();
         try {
             ScrollSupporter.getInstance().scroll(client, RING_SIZE, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
                 searchHitList.forEach(documentFields -> {

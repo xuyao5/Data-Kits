@@ -8,7 +8,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.schema.StandardDocument;
+import io.github.xuyao5.dkl.eskits.schema.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.support.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
@@ -46,7 +46,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public <T extends StandardDocument> void execute(@NotNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends BaseDocument> void execute(@NotNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         //检查文件和索引是否存在
         if (!config.getFile().exists()) {
             return;

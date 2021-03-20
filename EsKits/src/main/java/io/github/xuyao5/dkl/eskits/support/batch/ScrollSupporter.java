@@ -38,7 +38,7 @@ public final class ScrollSupporter {
     @SneakyThrows
     public ClearScrollResponse scroll(@NotNull RestHighLevelClient client, int size, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
         final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(6));
-        SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(new SearchSourceBuilder().query(queryBuilder).size(size)), DEFAULT);
+        SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(SearchSourceBuilder.searchSource().query(queryBuilder).size(size)), DEFAULT);
         String scrollId = searchResponse.getScrollId();
         SearchHit[] searchHits = searchResponse.getHits().getHits();
 

@@ -7,6 +7,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -33,6 +34,12 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void test() {
-
+        String querySource = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.matchAllQuery())
+                .from(0)
+                .size(1000)
+                .sort(SortBuilders.fieldSort("id").order(SortOrder.ASC))
+                .toString();
+        System.out.println(querySource);
     }
 }
