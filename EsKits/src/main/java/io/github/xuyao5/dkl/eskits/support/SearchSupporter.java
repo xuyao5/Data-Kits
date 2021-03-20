@@ -19,7 +19,6 @@ import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +27,8 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 1/05/20 22:48
- * @apiNote EsIndexSupporter
- * @implNote EsIndexSupporter
+ * @apiNote SearchSupporter
+ * @implNote SearchSupporter
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SearchSupporter {
@@ -71,30 +70,8 @@ public final class SearchSupporter {
      * Multi Search Template API
      */
     @SneakyThrows
-    public MultiSearchTemplateResponse multiSearchTemplate(@NotNull RestHighLevelClient client) {
-        String[] searchTerms = {"elasticsearch", "logstash", "kibana"};
-
-        MultiSearchTemplateRequest multiRequest = new MultiSearchTemplateRequest();
-        for (String searchTerm : searchTerms) {
-            SearchTemplateRequest request = new SearchTemplateRequest();
-            request.setRequest(new SearchRequest("posts"));
-
-            request.setScriptType(ScriptType.INLINE);
-            request.setScript(
-                    "{" +
-                            "  \"query\": { \"match\" : { \"{{field}}\" : \"{{value}}\" } }," +
-                            "  \"size\" : \"{{size}}\"" +
-                            "}");
-
-            Map<String, Object> scriptParams = new HashMap<>();
-            scriptParams.put("field", "title");
-            scriptParams.put("value", searchTerm);
-            scriptParams.put("size", 5);
-            request.setScriptParams(scriptParams);
-
-            multiRequest.add(request);
-        }
-        return client.msearchTemplate(multiRequest, DEFAULT);
+    public MultiSearchTemplateResponse multiSearchTemplate(@NotNull RestHighLevelClient client, @NotNull List<SearchTemplateRequest> searchTemplateRequests) {
+        return client.msearchTemplate(searchTemplateRequests.stream().reduce(new MultiSearchTemplateRequest(), MultiSearchTemplateRequest::add, (item1, item2) -> null), DEFAULT);
     }
 
     /**
