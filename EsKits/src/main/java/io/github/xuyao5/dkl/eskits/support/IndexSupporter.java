@@ -45,8 +45,8 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 1/05/20 22:48
- * @apiNote EsIndexSupporter
- * @implNote EsIndexSupporter
+ * @apiNote IndexSupporter
+ * @implNote IndexSupporter
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IndexSupporter {

@@ -29,8 +29,8 @@ import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 1/05/20 22:49
- * @apiNote EsDocumentSupporter
- * @implNote EsDocumentSupporter
+ * @apiNote DocumentSupporter
+ * @implNote DocumentSupporter
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DocumentSupporter {
