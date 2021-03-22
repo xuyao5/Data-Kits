@@ -2,9 +2,9 @@ package io.github.xuyao5.datakitsserver.support;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.vo.MyDocument;
-import io.github.xuyao5.dkl.eskits.support.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
+import io.github.xuyao5.dkl.eskits.support.general.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyDateUtils;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.get.MultiGetRequest;

@@ -2,7 +2,7 @@ package io.github.xuyao5.datakitsserver.support;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.vo.AllTypeDocument;
-import io.github.xuyao5.dkl.eskits.support.IndexSupporter;
+import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
 import org.junit.jupiter.api.Test;

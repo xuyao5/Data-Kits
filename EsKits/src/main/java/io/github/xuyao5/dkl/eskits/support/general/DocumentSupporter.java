@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.support;
+package io.github.xuyao5.dkl.eskits.support.general;
 
 import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.AccessLevel;
