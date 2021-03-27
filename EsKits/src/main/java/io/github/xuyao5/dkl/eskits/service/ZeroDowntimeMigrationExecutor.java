@@ -7,13 +7,13 @@ import org.elasticsearch.client.RestHighLevelClient;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 18/03/21 21:12
- * @apiNote MigrateByReindex
- * @implNote MigrateByReindex
+ * @apiNote ZeroDowntimeMigrationExecutor
+ * @implNote ZeroDowntimeMigrationExecutor
  */
 @Slf4j
-public final class ZeroDowntimeMigration extends AbstractExecutor {
+public final class ZeroDowntimeMigrationExecutor extends AbstractExecutor {
 
-    public ZeroDowntimeMigration(RestHighLevelClient client) {
+    public ZeroDowntimeMigrationExecutor(RestHighLevelClient client) {
         super(client);
     }
 

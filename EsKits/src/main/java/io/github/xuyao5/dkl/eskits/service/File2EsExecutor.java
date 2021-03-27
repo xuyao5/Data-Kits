@@ -36,7 +36,7 @@ import java.util.function.UnaryOperator;
  * @author Thomas.XU(xuyao)
  * @implSpec 10/10/20 15:41
  * @apiNote File2EsExecutor
- * @implNote File2Es执行入口
+ * @implNote File2EsExecutor
  */
 @Slf4j
 public final class File2EsExecutor extends AbstractExecutor {
