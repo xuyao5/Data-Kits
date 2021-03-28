@@ -5,12 +5,15 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.ReindexRequest;
 
 import javax.validation.constraints.NotNull;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
+import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_SLICES;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -34,7 +37,12 @@ public final class ReindexSupporter {
         return client.reindex(new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
-                .setSourceBatchSize(sourceBatchSize), DEFAULT);
+                .setDestVersionType(VersionType.EXTERNAL)
+                .setDestOpType("create")
+                .setAbortOnVersionConflict(false)
+                .setSourceBatchSize(sourceBatchSize)
+                .setSlices(AUTO_SLICES)
+                .setScroll(TimeValue.timeValueMinutes(10)), DEFAULT);
     }
 
     private static class SingletonHolder {

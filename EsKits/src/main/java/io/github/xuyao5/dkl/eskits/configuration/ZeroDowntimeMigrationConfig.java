@@ -10,4 +10,7 @@ import lombok.Data;
  */
 @Data(staticConstructor = "of")
 public final class ZeroDowntimeMigrationConfig {
+
+    private String destinationIndex;
+    private String[] sourceIndices;
 }
