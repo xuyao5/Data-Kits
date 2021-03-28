@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service;
 
+import io.github.xuyao5.dkl.eskits.configuration.StoredSearchConfig;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.schema.StandardSearchSourceDocument;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
@@ -18,6 +19,7 @@ import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -39,7 +41,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
     }
 
     //用存储在ES中的代码来搜索
-    public void execute() {
+    public void execute(@NotNull StoredSearchConfig config) {
         String searchName = "my-search-1";
         QueryBuilder queryBuilder = QueryBuilders.boolQuery().filter(QueryBuilders.termQuery("searchName", searchName));
         SearchSupporter searchSupporter = SearchSupporter.getInstance();
