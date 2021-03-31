@@ -17,6 +17,11 @@ public class BulkSupporterTest extends AbstractTest {
                 myDocument.setCashAmount(Long.MAX_VALUE);
                 myDocument.setDesc("好");
                 myDocument.setDateTime(MyDateUtils.now());
+                MyDocument.MyTags myTags = MyDocument.MyTags.of();
+                myTags.setTag1("");
+                myTags.setTag2(MyDateUtils.now());
+                myTags.setTag3(0);
+                myDocument.setTags(myTags);
                 function.apply(BulkSupporter.buildIndexRequest("test_index_5", myDocument));
             }
         });
