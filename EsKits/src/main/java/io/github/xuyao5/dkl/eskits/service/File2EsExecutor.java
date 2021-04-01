@@ -2,6 +2,7 @@ package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -94,6 +95,25 @@ public final class File2EsExecutor extends AbstractExecutor {
                     }
 
                     function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
+                }
+            });
+
+            disruptor.handleExceptionsFor((standardFileLine, sequence, endOfBatch) -> {
+
+            }).with(new ExceptionHandler<StandardFileLine>() {
+                @Override
+                public void handleEventException(Throwable throwable, long sequence, StandardFileLine standardFileLine) {
+
+                }
+
+                @Override
+                public void handleOnStartException(Throwable throwable) {
+
+                }
+
+                @Override
+                public void handleOnShutdownException(Throwable throwable) {
+
                 }
             });
 
