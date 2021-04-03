@@ -68,6 +68,25 @@ public final class File2EsExecutor extends AbstractExecutor {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
+            disruptor.handleExceptionsFor((standardFileLine, sequence, endOfBatch) -> {
+
+            }).with(new ExceptionHandler<StandardFileLine>() {
+                @Override
+                public void handleEventException(Throwable throwable, long sequence, StandardFileLine standardFileLine) {
+
+                }
+
+                @Override
+                public void handleOnStartException(Throwable throwable) {
+
+                }
+
+                @Override
+                public void handleOnShutdownException(Throwable throwable) {
+
+                }
+            });
+
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                 if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                     return;
@@ -95,25 +114,6 @@ public final class File2EsExecutor extends AbstractExecutor {
                     }
 
                     function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
-                }
-            });
-
-            disruptor.handleExceptionsFor((standardFileLine, sequence, endOfBatch) -> {
-
-            }).with(new ExceptionHandler<StandardFileLine>() {
-                @Override
-                public void handleEventException(Throwable throwable, long sequence, StandardFileLine standardFileLine) {
-
-                }
-
-                @Override
-                public void handleOnStartException(Throwable throwable) {
-
-                }
-
-                @Override
-                public void handleOnShutdownException(Throwable throwable) {
-
                 }
             });
 

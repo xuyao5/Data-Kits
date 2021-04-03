@@ -41,8 +41,6 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
-
             disruptor.handleExceptionsFor((standardDocument, sequence, endOfBatch) -> {
 
             }).with(new ExceptionHandler<T>() {
@@ -61,6 +59,8 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
 
                 }
             });
+
+            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
 
             publish(disruptor, config.getQueryBuilder(), config.getIndex());
         });
