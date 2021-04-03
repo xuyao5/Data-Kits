@@ -39,13 +39,6 @@ public final class XContentSupporter {
 
             builder.startObject("properties");
             {
-                builder.startObject("recordId");
-                {
-                    builder.field("type", "keyword");
-                    builder.field("ignore_above", 100);
-                }
-                builder.endObject();
-
                 builder.startObject("dateTag");
                 {
                     builder.field("type", "keyword");
@@ -59,7 +52,7 @@ public final class XContentSupporter {
                 }
                 builder.endObject();
 
-                builder.startObject("allFieldMd5");
+                builder.startObject("recordMd5");
                 {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 32);
@@ -84,7 +77,7 @@ public final class XContentSupporter {
                 }
                 builder.endObject();
 
-                zdy(builder, declaredFieldsMap);
+                customized(builder, declaredFieldsMap);
             }
             builder.endObject();
         }
@@ -93,7 +86,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    private static void zdy(@NotNull XContentBuilder builder, @NotNull Map<String, Class<?>> declaredFieldsMap) {
+    private static void customized(@NotNull XContentBuilder builder, @NotNull Map<String, Class<?>> declaredFieldsMap) {
         for (Map.Entry<String, Class<?>> entry : declaredFieldsMap.entrySet()) {
             builder.startObject(entry.getKey());
             {

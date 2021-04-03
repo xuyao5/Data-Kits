@@ -100,7 +100,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     T standardDocument = document.newInstance();
                     standardDocument.setDateTag(MyDateUtils.getCurrentDateTag());
                     standardDocument.setSerialNo(snowflake.nextId());
-                    standardDocument.setAllFieldMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
+                    standardDocument.setRecordMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
                     standardDocument.setRandomNum(MyRandomUtils.getLong());
                     standardDocument.setCreateDate(MyDateUtils.now());
                     standardDocument.setModifyDate(MyDateUtils.now());

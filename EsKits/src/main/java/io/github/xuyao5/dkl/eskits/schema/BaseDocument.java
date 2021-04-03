@@ -17,11 +17,11 @@ public abstract class BaseDocument<T> implements Serializable {
     private transient String _index;
     private transient String _id;
 
+    //下列增删字段需要同步修改XContentSupporter.buildMapping()
     private String dateTag;
     private long serialNo;
-    private String allFieldMd5;
+    private String recordMd5;
     private long randomNum;
     private Date createDate;
     private Date modifyDate;
-    private T tags;
 }
