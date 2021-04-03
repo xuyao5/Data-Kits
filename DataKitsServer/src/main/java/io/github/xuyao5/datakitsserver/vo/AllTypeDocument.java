@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.LongAdder;
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public final class AllTypeDocument extends BaseDocument<AllTypeDocument.MyTags> {
+public final class AllTypeDocument extends BaseDocument {
 
     private String a;
     private char b;
@@ -38,12 +38,4 @@ public final class AllTypeDocument extends BaseDocument<AllTypeDocument.MyTags> 
     private DateRange s;
     private IpRange t;
     private Object z;
-
-    @Data(staticConstructor = "of")
-    public static class MyTags {
-
-        private String tag1;
-        private Date tag2;
-        private long tag3;
-    }
 }

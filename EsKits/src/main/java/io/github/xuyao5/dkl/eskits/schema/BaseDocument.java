@@ -12,7 +12,7 @@ import java.util.Date;
  * @implNote StandardDocument
  */
 @Data
-public abstract class BaseDocument<T> implements Serializable {
+public abstract class BaseDocument implements Serializable {
 
     private transient String _index;
     private transient String _id;
