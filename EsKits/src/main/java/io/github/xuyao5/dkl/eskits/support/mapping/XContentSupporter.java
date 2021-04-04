@@ -41,7 +41,7 @@ public final class XContentSupporter {
 
             builder.startObject("properties");
             {
-                builder.startObject("documentId");
+                builder.startObject("docId");
                 {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 100);
