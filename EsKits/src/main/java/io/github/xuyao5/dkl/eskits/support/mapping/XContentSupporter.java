@@ -2,6 +2,7 @@ package io.github.xuyao5.dkl.eskits.support.mapping;
 
 import com.google.gson.reflect.TypeToken;
 import io.github.xuyao5.dkl.eskits.schema.range.*;
+import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -9,6 +10,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -31,7 +33,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    public static XContentBuilder buildMapping(@NotNull Map<String, Class<?>> declaredFieldsMap) {
+    public static XContentBuilder buildMapping(@NotNull Serializable obj) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {
@@ -84,7 +86,7 @@ public final class XContentSupporter {
                 }
                 builder.endObject();
 
-                customized(builder, declaredFieldsMap);
+                customized(builder, MyFieldUtils.getDeclaredFieldsMap(obj));
             }
             builder.endObject();
         }

@@ -8,7 +8,6 @@ import io.github.xuyao5.dkl.eskits.support.general.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.SearchSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
-import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
 import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
@@ -21,7 +20,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -75,9 +73,8 @@ public final class StoredSearchExecutor extends AbstractExecutor {
 
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (!indexSupporter.exists(client, SEARCH_STORED_INDEX)) {
-            Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(searchDocument);
             int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
-            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 0, XContentSupporter.buildMapping(declaredFieldsMap));
+            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 0, XContentSupporter.buildMapping(searchDocument));
             //设置别名
         }
 

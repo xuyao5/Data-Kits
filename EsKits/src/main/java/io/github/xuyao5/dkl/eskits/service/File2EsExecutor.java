@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.UnaryOperator;
@@ -55,13 +54,10 @@ public final class File2EsExecutor extends AbstractExecutor {
             return;
         }
 
-        //用户自定义格式
-        Map<String, Class<?>> declaredFieldsMap = MyFieldUtils.getDeclaredFieldsMap(document.newInstance());
-
         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
 
         if (!IndexSupporter.getInstance().exists(client, config.getIndex())) {
-            IndexSupporter.getInstance().create(client, config.getIndex(), numberOfDataNodes, 1, XContentSupporter.buildMapping(declaredFieldsMap));
+            IndexSupporter.getInstance().create(client, config.getIndex(), numberOfDataNodes, 1, XContentSupporter.buildMapping(document.newInstance()));
         }
 
         String[][] metadataArray = new String[1][];//元数据
