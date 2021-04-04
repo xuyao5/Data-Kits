@@ -9,13 +9,12 @@ import org.junit.jupiter.api.Test;
 public class XContentSupporterTest extends AbstractTest {
 
     @Test
-    void testBuildMapping() {
-        XContentSupporter.buildMapping(AllTypeDocument.of());
+    void buildMapping() {
         String index = "all_type_document";
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (indexSupporter.exists(esClient, index)) {
             indexSupporter.delete(esClient, index);
         }
-        indexSupporter.create(esClient, index, 1, 1, XContentSupporter.buildMapping(AllTypeDocument.of()));
+        indexSupporter.create(esClient, index, 1, 0, XContentSupporter.buildMapping(AllTypeDocument.of()));
     }
 }
