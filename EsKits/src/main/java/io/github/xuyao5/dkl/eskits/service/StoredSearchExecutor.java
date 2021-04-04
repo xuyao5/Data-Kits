@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service;
 
+import com.google.gson.reflect.TypeToken;
 import io.github.xuyao5.dkl.eskits.configuration.StoredSearchConfig;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.schema.StandardSearchSourceDocument;
@@ -20,7 +21,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -49,9 +50,9 @@ public final class StoredSearchExecutor extends AbstractExecutor {
             SearchHit[] hits1 = search.getHits().getHits();
             SearchHit documentFields = hits1[0];
             String sourceAsString = documentFields.getSourceAsString();
-            Optional<StandardSearchSourceDocument> standardSearchSourceDocument = MyGsonUtils.json2Obj(sourceAsString);
-            standardSearchSourceDocument.ifPresent(document -> {
-                SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, document.getQuery(), Collections.EMPTY_MAP, "file2es_disruptor_1");
+            StandardSearchSourceDocument standardSearchSourceDocument = MyGsonUtils.json2Obj(sourceAsString, TypeToken.get(StandardSearchSourceDocument.class));
+            if (Objects.nonNull(standardSearchSourceDocument)) {
+                SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, standardSearchSourceDocument.getQuery(), Collections.EMPTY_MAP, "file2es_disruptor_1");
                 if (searchResponse.getResponse().getHits().getTotalHits().value > 0) {
                     System.out.println(searchResponse.getResponse().getHits().getTotalHits().value);
                     SearchHit[] hits = searchResponse.getResponse().getHits().getHits();
@@ -59,7 +60,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
                         System.out.println(hits[i]);
                     }
                 }
-            });
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service;
 
+import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.ExceptionHandler;
@@ -103,7 +104,9 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                     for (int i = 0; i < recordArray.length; i++) {
                         String fieldName = metadataArray[0][i];
-                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i]);
+                        //这里T会不会被擦除？
+                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i], new TypeToken<T>() {
+                        });
                         if (Objects.nonNull(obj)) {
                             MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
                         }
