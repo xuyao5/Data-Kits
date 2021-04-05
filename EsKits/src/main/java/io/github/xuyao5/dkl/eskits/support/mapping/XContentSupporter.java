@@ -169,13 +169,22 @@ public final class XContentSupporter {
                 } else if (StringBuilder.class.equals(type) || StringBuffer.class.equals(type)) {
                     builder.field("type", "text");
                     builder.startObject("fields");
-                    builder.startObject("keyword");
-                    builder.field("type", "keyword");
-                    builder.field("ignore_above", 256);
-                    builder.endObject();
+                    {
+                        builder.startObject("keyword");
+                        {
+                            builder.field("type", "keyword");
+                            builder.field("ignore_above", 256);
+                        }
+                        builder.endObject();
+                    }
                     builder.endObject();
                 } else {
-
+                    builder.field("type", "nested");
+//                    builder.startObject(entry.getKey());
+//                    {
+//                        customized(builder, MyFieldUtils.getDeclaredFieldsMap(type));
+//                    }
+//                    builder.endObject();
                 }
             }
             builder.endObject();

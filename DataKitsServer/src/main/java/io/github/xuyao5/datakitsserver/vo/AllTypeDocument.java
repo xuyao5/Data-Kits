@@ -1,6 +1,7 @@
 package io.github.xuyao5.datakitsserver.vo;
 
 import io.github.xuyao5.dkl.eskits.schema.BaseDocument;
+import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -15,4 +16,6 @@ public final class AllTypeDocument extends BaseDocument {
     private List<String> strList;
     private String str;
     private String[] strArray;
+
+    private StandardFileLine tags;
 }

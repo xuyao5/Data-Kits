@@ -21,6 +21,14 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyFieldUtils extends FieldUtils {
 
+    public static Map<String, Type> getDeclaredFieldsMap(Type type) {
+        return Arrays.stream(TypeToken.get(type).getRawType().getDeclaredFields()).collect(Collectors.toConcurrentMap(Field::getName, Field::getGenericType));
+    }
+
+    public static Map<String, Type> getDeclaredFieldsMap(Class<?> clz) {
+        return Arrays.stream(clz.getDeclaredFields()).collect(Collectors.toConcurrentMap(Field::getName, Field::getGenericType));
+    }
+
     public static <T> Map<String, Type> getDeclaredFieldsMap(T obj) {
         return Arrays.stream(obj.getClass().getDeclaredFields()).collect(Collectors.toConcurrentMap(Field::getName, Field::getGenericType));
     }
