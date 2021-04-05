@@ -104,7 +104,7 @@ public final class XContentSupporter {
                 if (String.class.equals(type) || String[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<String>>() {
                 }, type)) {
                     builder.field("type", "keyword");
-                    builder.field("ignore_above", 222);
+                    builder.field("ignore_above", 256);
                 } else if (char.class.equals(type) || Character.class.equals(type) || char[].class.equals(type) || Character[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Character>>() {
                 }, type)) {
                     builder.field("type", "keyword");
@@ -166,7 +166,9 @@ public final class XContentSupporter {
                 } else if (IpRange.class.equals(type) || IpRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<IpRange>>() {
                 }, type)) {
                     builder.field("type", "ip_range");
-                } else if (StringBuilder.class.equals(type) || StringBuffer.class.equals(type)) {
+                } else if (StringBuilder.class.equals(type) || StringBuilder[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<StringBuilder>>() {
+                }, type) || StringBuffer.class.equals(type) || StringBuffer[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<StringBuffer>>() {
+                }, type)) {
                     builder.field("type", "text");
                     builder.startObject("fields");
                     {
@@ -180,11 +182,11 @@ public final class XContentSupporter {
                     builder.endObject();
                 } else {
                     builder.field("type", "nested");
-//                    builder.startObject(entry.getKey());
-//                    {
-//                        customized(builder, MyFieldUtils.getDeclaredFieldsMap(type));
-//                    }
-//                    builder.endObject();
+                    builder.startObject("properties");
+                    {
+                        customized(builder, MyFieldUtils.getDeclaredFieldsMap(type));
+                    }
+                    builder.endObject();
                 }
             }
             builder.endObject();
