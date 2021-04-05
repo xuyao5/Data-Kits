@@ -105,75 +105,77 @@ public final class XContentSupporter {
                 }, type)) {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 222);
-                } else if (char.class.equals(type) || Character.class.equals(type) || char[].class.equals(type) || new TypeToken<List<Character>>() {
-                }.getClass().equals(type)) {
+                } else if (char.class.equals(type) || Character.class.equals(type) || char[].class.equals(type) || Character[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Character>>() {
+                }, type)) {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 1);
-                } else if (long.class.equals(type) || Long.class.equals(type) || long[].class.equals(type) || new TypeToken<List<Long>>() {
-                }.getClass().equals(type)) {
+                } else if (long.class.equals(type) || Long.class.equals(type) || long[].class.equals(type) || Long[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Long>>() {
+                }, type)) {
                     builder.field("type", "long");
-                } else if (int.class.equals(type) || Integer.class.equals(type) || int[].class.equals(type) || new TypeToken<List<Integer>>() {
-                }.getClass().equals(type)) {
+                } else if (int.class.equals(type) || Integer.class.equals(type) || int[].class.equals(type) || Integer[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Integer>>() {
+                }, type)) {
                     builder.field("type", "integer");
-                } else if (short.class.equals(type) || Short.class.equals(type) || short[].class.equals(type) || new TypeToken<List<Short>>() {
-                }.getClass().equals(type)) {
+                } else if (short.class.equals(type) || Short.class.equals(type) || short[].class.equals(type) || Short[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Short>>() {
+                }, type)) {
                     builder.field("type", "short");
-                } else if (byte.class.equals(type) || Byte.class.equals(type) || byte[].class.equals(type) || new TypeToken<List<Byte>>() {
-                }.getClass().equals(type)) {
+                } else if (byte.class.equals(type) || Byte.class.equals(type) || byte[].class.equals(type) || Byte[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Byte>>() {
+                }, type)) {
                     builder.field("type", "byte");
-                } else if (double.class.equals(type) || Double.class.equals(type) || double[].class.equals(type) || new TypeToken<List<Double>>() {
-                }.getClass().equals(type)) {
+                } else if (double.class.equals(type) || Double.class.equals(type) || double[].class.equals(type) || Double[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Double>>() {
+                }, type)) {
                     builder.field("type", "double");
-                } else if (float.class.equals(type) || Float.class.equals(type) || float[].class.equals(type) || new TypeToken<List<Float>>() {
-                }.getClass().equals(type)) {
+                } else if (float.class.equals(type) || Float.class.equals(type) || float[].class.equals(type) || Float[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Float>>() {
+                }, type)) {
                     builder.field("type", "float");
-                } else if (boolean.class.equals(type) || Boolean.class.equals(type) || boolean[].class.equals(type) || new TypeToken<List<Boolean>>() {
-                }.getClass().equals(type)) {
+                } else if (boolean.class.equals(type) || Boolean.class.equals(type) || boolean[].class.equals(type) || Boolean[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Boolean>>() {
+                }, type)) {
                     builder.field("type", "boolean");
-                } else if (Date.class.equals(type) || Date[].class.equals(type) || new TypeToken<List<Date>>() {
-                }.getClass().equals(type)) {
+                } else if (Date.class.equals(type) || Date[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Date>>() {
+                }, type)) {
                     builder.field("type", "date");
-                } else if (BigDecimal.class.equals(type) || BigDecimal[].class.equals(type) || new TypeToken<List<BigDecimal>>() {
-                }.getClass().equals(type)) {
+                } else if (BigDecimal.class.equals(type) || BigDecimal[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<BigDecimal>>() {
+                }, type)) {
                     builder.field("type", "scaled_float");
                     builder.field("scaling_factor", 100);
-                } else if (BigInteger.class.equals(type) || BigInteger[].class.equals(type) || new TypeToken<List<BigInteger>>() {
-                }.getClass().equals(type)) {
+                } else if (BigInteger.class.equals(type) || BigInteger[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<BigInteger>>() {
+                }, type)) {
                     builder.field("type", "scaled_float");
                     builder.field("scaling_factor", 100);
-                } else if (LongAdder.class.equals(type) || LongAdder[].class.equals(type) || new TypeToken<List<LongAdder>>() {
-                }.getClass().equals(type)) {
+                } else if (LongAdder.class.equals(type) || LongAdder[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<LongAdder>>() {
+                }, type)) {
                     builder.field("type", "scaled_float");
                     builder.field("scaling_factor", 100);
-                } else if (InetAddress.class.equals(type) || InetAddress[].class.equals(type) || new TypeToken<List<InetAddress>>() {
-                }.getClass().equals(type)) {
+                } else if (InetAddress.class.equals(type) || InetAddress[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<InetAddress>>() {
+                }, type)) {
                     builder.field("type", "ip");
-                } else if (IntegerRange.class.equals(type) || IntegerRange[].class.equals(type) || new TypeToken<List<IntegerRange>>() {
-                }.getClass().equals(type)) {
+                } else if (IntegerRange.class.equals(type) || IntegerRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<IntegerRange>>() {
+                }, type)) {
                     builder.field("type", "integer_range");
-                } else if (LongRange.class.equals(type) || LongRange[].class.equals(type) || new TypeToken<List<LongRange>>() {
-                }.getClass().equals(type)) {
+                } else if (LongRange.class.equals(type) || LongRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<LongRange>>() {
+                }, type)) {
                     builder.field("type", "long_range");
-                } else if (FloatRange.class.equals(type) || FloatRange[].class.equals(type) || new TypeToken<List<FloatRange>>() {
-                }.getClass().equals(type)) {
+                } else if (FloatRange.class.equals(type) || FloatRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<FloatRange>>() {
+                }, type)) {
                     builder.field("type", "float_range");
-                } else if (DoubleRange.class.equals(type) || DoubleRange[].class.equals(type) || new TypeToken<List<DoubleRange>>() {
-                }.getClass().equals(type)) {
+                } else if (DoubleRange.class.equals(type) || DoubleRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<DoubleRange>>() {
+                }, type)) {
                     builder.field("type", "double_range");
-                } else if (DateRange.class.equals(type) || DateRange[].class.equals(type) || new TypeToken<List<DateRange>>() {
-                }.getClass().equals(type)) {
+                } else if (DateRange.class.equals(type) || DateRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<DateRange>>() {
+                }, type)) {
                     builder.field("type", "date_range");
-                } else if (IpRange.class.equals(type) || IpRange[].class.equals(type) || new TypeToken<List<IpRange>>() {
-                }.getClass().equals(type)) {
+                } else if (IpRange.class.equals(type) || IpRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<IpRange>>() {
+                }, type)) {
                     builder.field("type", "ip_range");
-                } else {
-                    builder.field("type", "text");//nested??
+                } else if (StringBuilder.class.equals(type) || StringBuffer.class.equals(type)) {
+                    builder.field("type", "text");
                     builder.startObject("fields");
                     builder.startObject("keyword");
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 256);
                     builder.endObject();
                     builder.endObject();
+                } else {
+
                 }
             }
             builder.endObject();
