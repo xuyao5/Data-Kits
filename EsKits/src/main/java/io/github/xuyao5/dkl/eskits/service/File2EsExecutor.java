@@ -3,7 +3,6 @@ package io.github.xuyao5.dkl.eskits.service;
 import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
-import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -64,25 +63,6 @@ public final class File2EsExecutor extends AbstractExecutor {
         String[][] metadataArray = new String[1][];//元数据
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-
-            disruptor.handleExceptionsFor((standardFileLine, sequence, endOfBatch) -> {
-
-            }).with(new ExceptionHandler<StandardFileLine>() {
-                @Override
-                public void handleEventException(Throwable throwable, long sequence, StandardFileLine standardFileLine) {
-
-                }
-
-                @Override
-                public void handleOnStartException(Throwable throwable) {
-
-                }
-
-                @Override
-                public void handleOnShutdownException(Throwable throwable) {
-
-                }
-            });
 
             disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
                 if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {

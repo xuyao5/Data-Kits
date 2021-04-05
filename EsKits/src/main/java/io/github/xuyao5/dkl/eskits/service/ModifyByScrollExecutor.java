@@ -2,7 +2,6 @@ package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
-import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -40,25 +39,6 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
     public <T extends BaseDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-
-            disruptor.handleExceptionsFor((standardDocument, sequence, endOfBatch) -> {
-
-            }).with(new ExceptionHandler<T>() {
-                @Override
-                public void handleEventException(Throwable throwable, long sequence, T t) {
-
-                }
-
-                @Override
-                public void handleOnStartException(Throwable throwable) {
-
-                }
-
-                @Override
-                public void handleOnShutdownException(Throwable throwable) {
-
-                }
-            });
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
 
