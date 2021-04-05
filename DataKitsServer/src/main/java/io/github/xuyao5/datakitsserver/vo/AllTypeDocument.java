@@ -13,4 +13,6 @@ import java.util.List;
 public final class AllTypeDocument extends BaseDocument {
 
     private List<String> strList;
+    private String str;
+    private String[] strArray;
 }

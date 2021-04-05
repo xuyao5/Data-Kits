@@ -11,6 +11,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -95,75 +96,75 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    private static void customized(@NotNull XContentBuilder builder, @NotNull Map<String, Class<?>> declaredFieldsMap) {
-        for (Map.Entry<String, Class<?>> entry : declaredFieldsMap.entrySet()) {
+    private static void customized(@NotNull XContentBuilder builder, @NotNull Map<String, Type> declaredFieldsMap) {
+        for (Map.Entry<String, Type> entry : declaredFieldsMap.entrySet()) {
             builder.startObject(entry.getKey());
             {
-                Class<?> clz = entry.getValue();
-                if (String.class.equals(clz) || String[].class.equals(clz) || new TypeToken<List<String>>() {
-                }.getClass().equals(clz)) {
+                Type type = entry.getValue();
+                if (String.class.equals(type) || String[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<String>>() {
+                }, type)) {
                     builder.field("type", "keyword");
-                    builder.field("ignore_above", 256);
-                } else if (char.class.equals(clz) || Character.class.equals(clz) || char[].class.equals(clz) || new TypeToken<List<Character>>() {
-                }.getClass().equals(clz)) {
+                    builder.field("ignore_above", 222);
+                } else if (char.class.equals(type) || Character.class.equals(type) || char[].class.equals(type) || new TypeToken<List<Character>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 1);
-                } else if (long.class.equals(clz) || Long.class.equals(clz) || long[].class.equals(clz) || new TypeToken<List<Long>>() {
-                }.getClass().equals(clz)) {
+                } else if (long.class.equals(type) || Long.class.equals(type) || long[].class.equals(type) || new TypeToken<List<Long>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "long");
-                } else if (int.class.equals(clz) || Integer.class.equals(clz) || int[].class.equals(clz) || new TypeToken<List<Integer>>() {
-                }.getClass().equals(clz)) {
+                } else if (int.class.equals(type) || Integer.class.equals(type) || int[].class.equals(type) || new TypeToken<List<Integer>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "integer");
-                } else if (short.class.equals(clz) || Short.class.equals(clz) || short[].class.equals(clz) || new TypeToken<List<Short>>() {
-                }.getClass().equals(clz)) {
+                } else if (short.class.equals(type) || Short.class.equals(type) || short[].class.equals(type) || new TypeToken<List<Short>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "short");
-                } else if (byte.class.equals(clz) || Byte.class.equals(clz) || byte[].class.equals(clz) || new TypeToken<List<Byte>>() {
-                }.getClass().equals(clz)) {
+                } else if (byte.class.equals(type) || Byte.class.equals(type) || byte[].class.equals(type) || new TypeToken<List<Byte>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "byte");
-                } else if (double.class.equals(clz) || Double.class.equals(clz) || double[].class.equals(clz) || new TypeToken<List<Double>>() {
-                }.getClass().equals(clz)) {
+                } else if (double.class.equals(type) || Double.class.equals(type) || double[].class.equals(type) || new TypeToken<List<Double>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "double");
-                } else if (float.class.equals(clz) || Float.class.equals(clz) || float[].class.equals(clz) || new TypeToken<List<Float>>() {
-                }.getClass().equals(clz)) {
+                } else if (float.class.equals(type) || Float.class.equals(type) || float[].class.equals(type) || new TypeToken<List<Float>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "float");
-                } else if (boolean.class.equals(clz) || Boolean.class.equals(clz) || boolean[].class.equals(clz) || new TypeToken<List<Boolean>>() {
-                }.getClass().equals(clz)) {
+                } else if (boolean.class.equals(type) || Boolean.class.equals(type) || boolean[].class.equals(type) || new TypeToken<List<Boolean>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "boolean");
-                } else if (Date.class.equals(clz) || Date[].class.equals(clz) || new TypeToken<List<Date>>() {
-                }.getClass().equals(clz)) {
+                } else if (Date.class.equals(type) || Date[].class.equals(type) || new TypeToken<List<Date>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "date");
-                } else if (BigDecimal.class.equals(clz) || BigDecimal[].class.equals(clz) || new TypeToken<List<BigDecimal>>() {
-                }.getClass().equals(clz)) {
+                } else if (BigDecimal.class.equals(type) || BigDecimal[].class.equals(type) || new TypeToken<List<BigDecimal>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "scaled_float");
                     builder.field("scaling_factor", 100);
-                } else if (BigInteger.class.equals(clz) || BigInteger[].class.equals(clz) || new TypeToken<List<BigInteger>>() {
-                }.getClass().equals(clz)) {
+                } else if (BigInteger.class.equals(type) || BigInteger[].class.equals(type) || new TypeToken<List<BigInteger>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "scaled_float");
                     builder.field("scaling_factor", 100);
-                } else if (LongAdder.class.equals(clz) || LongAdder[].class.equals(clz) || new TypeToken<List<LongAdder>>() {
-                }.getClass().equals(clz)) {
+                } else if (LongAdder.class.equals(type) || LongAdder[].class.equals(type) || new TypeToken<List<LongAdder>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "scaled_float");
                     builder.field("scaling_factor", 100);
-                } else if (InetAddress.class.equals(clz) || InetAddress[].class.equals(clz) || new TypeToken<List<InetAddress>>() {
-                }.getClass().equals(clz)) {
+                } else if (InetAddress.class.equals(type) || InetAddress[].class.equals(type) || new TypeToken<List<InetAddress>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "ip");
-                } else if (IntegerRange.class.equals(clz) || IntegerRange[].class.equals(clz) || new TypeToken<List<IntegerRange>>() {
-                }.getClass().equals(clz)) {
+                } else if (IntegerRange.class.equals(type) || IntegerRange[].class.equals(type) || new TypeToken<List<IntegerRange>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "integer_range");
-                } else if (LongRange.class.equals(clz) || LongRange[].class.equals(clz) || new TypeToken<List<LongRange>>() {
-                }.getClass().equals(clz)) {
+                } else if (LongRange.class.equals(type) || LongRange[].class.equals(type) || new TypeToken<List<LongRange>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "long_range");
-                } else if (FloatRange.class.equals(clz) || FloatRange[].class.equals(clz) || new TypeToken<List<FloatRange>>() {
-                }.getClass().equals(clz)) {
+                } else if (FloatRange.class.equals(type) || FloatRange[].class.equals(type) || new TypeToken<List<FloatRange>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "float_range");
-                } else if (DoubleRange.class.equals(clz) || DoubleRange[].class.equals(clz) || new TypeToken<List<DoubleRange>>() {
-                }.getClass().equals(clz)) {
+                } else if (DoubleRange.class.equals(type) || DoubleRange[].class.equals(type) || new TypeToken<List<DoubleRange>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "double_range");
-                } else if (DateRange.class.equals(clz) || DateRange[].class.equals(clz) || new TypeToken<List<DateRange>>() {
-                }.getClass().equals(clz)) {
+                } else if (DateRange.class.equals(type) || DateRange[].class.equals(type) || new TypeToken<List<DateRange>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "date_range");
-                } else if (IpRange.class.equals(clz) || IpRange[].class.equals(clz) || new TypeToken<List<IpRange>>() {
-                }.getClass().equals(clz)) {
+                } else if (IpRange.class.equals(type) || IpRange[].class.equals(type) || new TypeToken<List<IpRange>>() {
+                }.getClass().equals(type)) {
                     builder.field("type", "ip_range");
                 } else {
                     builder.field("type", "text");//nested??
