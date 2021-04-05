@@ -84,9 +84,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                     for (int i = 0; i < recordArray.length; i++) {
                         String fieldName = metadataArray[0][i];
-                        //这里T会不会被擦除？
-                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i], new TypeToken<T>() {
-                        });
+                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i], TypeToken.get(MyFieldUtils.getDeclaredField(standardDocument.getClass(), fieldName, true).getType()));
                         if (Objects.nonNull(obj)) {
                             MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
                         }
