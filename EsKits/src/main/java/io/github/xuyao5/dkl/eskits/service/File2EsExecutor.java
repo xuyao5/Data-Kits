@@ -90,7 +90,9 @@ public final class File2EsExecutor extends AbstractExecutor {
                         }
                     }
 
-                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
+                    if (standardDocument.isAccept()) {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
+                    }
                 }
             });
 
