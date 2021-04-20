@@ -63,7 +63,9 @@ public final class IndexSupporter {
         return client.indices().create(new CreateIndexRequest(index)
                 .settings(Settings.builder()
                         .put("index.number_of_shards", shards)
-                        .put("index.number_of_replicas", replicas))
+                        .put("index.number_of_replicas", replicas)
+                        .putList("index.sort.field", "dateTag", "serialNo", "createDate", "modifyDate")
+                        .putList("index.sort.order", "desc", "desc", "desc", "desc"))
                 .mapping(builder), DEFAULT);
     }
 
