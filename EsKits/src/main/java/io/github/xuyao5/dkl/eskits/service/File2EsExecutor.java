@@ -75,7 +75,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
                 } else {
                     T standardDocument = document.newInstance();
-                    standardDocument.setDateTag(MyDateUtils.getCurrentDateTag());
+                    standardDocument.setDateTag(MyDateUtils.getCurrentDate());
                     standardDocument.setSerialNo(snowflake.nextId());
                     standardDocument.setRecordMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
                     standardDocument.setRandomNum(MyRandomUtils.getLong());

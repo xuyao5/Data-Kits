@@ -18,7 +18,6 @@ import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -87,6 +86,7 @@ public final class XContentSupporter {
                 }
                 builder.endObject();
 
+                //定义继承自BaseDocument的自定义文档类型
                 customized(builder, MyFieldUtils.getDeclaredFieldsMap(obj));
             }
             builder.endObject();
@@ -139,12 +139,7 @@ public final class XContentSupporter {
                     builder.field("scaling_factor", 100);
                 } else if (BigInteger.class.equals(type) || BigInteger[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<BigInteger>>() {
                 }, type)) {
-                    builder.field("type", "scaled_float");
-                    builder.field("scaling_factor", 100);
-                } else if (LongAdder.class.equals(type) || LongAdder[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<LongAdder>>() {
-                }, type)) {
-                    builder.field("type", "scaled_float");
-                    builder.field("scaling_factor", 100);
+                    builder.field("type", "unsigned_long");
                 } else if (InetAddress.class.equals(type) || InetAddress[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<InetAddress>>() {
                 }, type)) {
                     builder.field("type", "ip");
@@ -175,7 +170,7 @@ public final class XContentSupporter {
                         builder.startObject("keyword");
                         {
                             builder.field("type", "keyword");
-                            builder.field("ignore_above", 256);
+                            builder.field("ignore_above", 512);
                         }
                         builder.endObject();
                     }
@@ -184,6 +179,7 @@ public final class XContentSupporter {
                     builder.field("type", "nested");
                     builder.startObject("properties");
                     {
+                        //递归调用
                         customized(builder, MyFieldUtils.getDeclaredFieldsMap(type));
                     }
                     builder.endObject();
