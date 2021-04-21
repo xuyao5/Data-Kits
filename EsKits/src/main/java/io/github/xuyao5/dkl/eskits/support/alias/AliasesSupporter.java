@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.support.mapping;
+package io.github.xuyao5.dkl.eskits.support.alias;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
