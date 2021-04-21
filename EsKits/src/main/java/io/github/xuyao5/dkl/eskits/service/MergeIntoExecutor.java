@@ -29,7 +29,7 @@ public final class MergeIntoExecutor extends AbstractExecutor {
     //用别名和reindex来0停机切换
     public void execute(@NotNull ZeroDowntimeMigrationConfig config) {
         ReindexSupporter instance = ReindexSupporter.getInstance();
-        BulkByScrollResponse reindex = instance.reindex(client, config.getDestinationIndex(), 1000, config.getSourceIndices());
+        BulkByScrollResponse reindex = instance.reindex(client, config.getDestinationIndex(), config.getSourceIndices());
 
         List<IndicesAliasesRequest.AliasActions> aliasActionsList = new ArrayList<>();
         aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index("index1").alias("alias1"));
