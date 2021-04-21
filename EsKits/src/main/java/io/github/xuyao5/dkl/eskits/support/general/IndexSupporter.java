@@ -59,13 +59,13 @@ public final class IndexSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, int replicas, @NotNull XContentBuilder builder) {
+    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, int replicas, String[] sortField, String[] sortOrder, @NotNull XContentBuilder builder) {
         return client.indices().create(new CreateIndexRequest(index)
                 .settings(Settings.builder()
                         .put("index.number_of_shards", shards)
                         .put("index.number_of_replicas", replicas)
-                        .putList("index.sort.field", "dateTag", "serialNo", "createDate", "modifyDate")
-                        .putList("index.sort.order", "desc", "desc", "desc", "desc"))
+                        .putList("index.sort.field", sortField)
+                        .putList("index.sort.order", sortOrder))
                 .mapping(builder), DEFAULT);
     }
 

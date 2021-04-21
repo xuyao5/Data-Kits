@@ -17,6 +17,6 @@ public class IndexSupporterTest extends AbstractTest {
         if (indexSupporter.exists(esClient, index)) {
             indexSupporter.delete(esClient, index);
         }
-        indexSupporter.create(esClient, index, 1, 0, XContentSupporter.buildMapping(MyDocument.of()));
+        indexSupporter.create(esClient, index, 1, 0, new String[]{"dateTag", "serialNo", "createDate", "modifyDate"}, new String[]{"desc", "desc", "desc", "desc"}, XContentSupporter.buildMapping(MyDocument.of()));
     }
 }
