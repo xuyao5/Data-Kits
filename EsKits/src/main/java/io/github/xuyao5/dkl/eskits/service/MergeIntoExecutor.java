@@ -20,9 +20,9 @@ import java.util.List;
  * @implNote ZeroDowntimeMigrationExecutor
  */
 @Slf4j
-public final class ZeroDowntimeMigrationExecutor extends AbstractExecutor {
+public final class MergeIntoExecutor extends AbstractExecutor {
 
-    public ZeroDowntimeMigrationExecutor(RestHighLevelClient client) {
+    public MergeIntoExecutor(RestHighLevelClient client) {
         super(client);
     }
 
