@@ -19,7 +19,7 @@ public class SystemTest extends AbstractTest {
     @Test
     void testAliasesSupporter() {
         AliasesSupporter aliasesSupporter = AliasesSupporter.getInstance();
-        boolean migrate = aliasesSupporter.migrate(esClient, "my_index_v1", "my_index_v1");
+        boolean migrate = aliasesSupporter.migrate(esClient, "my_index_v1", "my_index_v2");
         System.out.println(migrate);
     }
 
