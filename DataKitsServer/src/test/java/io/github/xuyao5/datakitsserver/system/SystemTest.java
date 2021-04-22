@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.support.alias.AliasesSupporter;
+import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import lombok.SneakyThrows;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;

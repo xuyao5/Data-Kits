@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.support.alias;
+package io.github.xuyao5.dkl.eskits.support.boost;
 
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
@@ -39,6 +39,10 @@ public final class AliasesSupporter {
             return indexSupporter.updateAliases(client, actionsList).isAcknowledged();
         }
         return false;
+    }
+
+    public void addAsToIndex() {
+
     }
 
     private static class SingletonHolder {
