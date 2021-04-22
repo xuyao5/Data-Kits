@@ -36,14 +36,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>3.0.0</version>
-            </dependency>
-            <dependency>
                 <groupId>com.lmax</groupId>
                 <artifactId>disruptor</artifactId>
-                <version>3.4.2</version>
+                <version>3.4.3</version>
             </dependency>
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
@@ -73,12 +68,7 @@
             <dependency>
                 <groupId>com.googlecode.aviator</groupId>
                 <artifactId>aviator</artifactId>
-                <version>5.2.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.pf4j</groupId>
-                <artifactId>pf4j</artifactId>
-                <version>3.6.0</version>
+                <version>5.2.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
