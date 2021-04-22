@@ -1,12 +1,12 @@
 package io.github.xuyao5.dkl.eskits.support.alias;
 
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
+import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.cluster.metadata.AliasMetadata;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -26,20 +26,19 @@ public final class AliasesSupporter {
         return AliasesSupporter.SingletonHolder.INSTANCE;
     }
 
-    public void migrate(@NotNull RestHighLevelClient client, @NotNull String sourceIndex, @NotNull String targetIndex) {
-        IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        List<AliasMetadata> indexAliases = indexSupporter.get(client, sourceIndex).getAliases().get(sourceIndex);
-        List<IndicesAliasesRequest.AliasActions> collect = indexAliases.stream().collect(() -> new ArrayList<IndicesAliasesRequest.AliasActions>(), (aliasActionsList, aliasMetadata) -> {
-            aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
-                    .index(targetIndex)
-                    .alias(aliasMetadata.alias()));
-            aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
-                    .index(sourceIndex)
-                    .alias(aliasMetadata.alias()));
-        }, ArrayList::addAll);
-        if (!collect.isEmpty()) {
-            indexSupporter.updateAliases(client, collect);
+    public boolean migrate(@NotNull RestHighLevelClient client, @NotNull String sourceIndex, @NotNull String targetIndex) {
+        if (MyStringUtils.equalsIgnoreCase(sourceIndex, targetIndex)) {
+            return false;
         }
+        IndexSupporter indexSupporter = IndexSupporter.getInstance();
+        List<IndicesAliasesRequest.AliasActions> actionsList = indexSupporter.get(client, sourceIndex).getAliases().get(sourceIndex).stream().collect(ArrayList::new, (aliasActionsList, aliasMetadata) -> {
+            aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index(targetIndex).alias(aliasMetadata.alias()));
+            aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE).index(sourceIndex).alias(aliasMetadata.alias()));
+        }, ArrayList::addAll);
+        if (!actionsList.isEmpty()) {
+            return indexSupporter.updateAliases(client, actionsList).isAcknowledged();
+        }
+        return false;
     }
 
     private static class SingletonHolder {
