@@ -9,8 +9,8 @@ import lombok.Data;
  * @implNote ZeroDowntimeMigrationConfig
  */
 @Data(staticConstructor = "of")
-public final class ZeroDowntimeMigrationConfig {
+public final class MergeIntoConfig {
 
-    private String destinationIndex;
-    private String[] sourceIndices;
+    private final String sourceIndex;
+    private final String targetIndex;
 }
