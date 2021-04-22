@@ -50,7 +50,8 @@ public final class SearchSupporter {
      */
     @SneakyThrows
     public MultiSearchResponse multiSearch(@NotNull RestHighLevelClient client, @NotNull List<SearchRequest> searchRequests) {
-        return client.msearch(searchRequests.stream().reduce(new MultiSearchRequest(), MultiSearchRequest::add, (item1, item2) -> null), DEFAULT);
+        return client.msearch(searchRequests.stream().collect(MultiSearchRequest::new, MultiSearchRequest::add, (item1, item2) -> {
+        }), DEFAULT);
     }
 
     /**
@@ -71,7 +72,8 @@ public final class SearchSupporter {
      */
     @SneakyThrows
     public MultiSearchTemplateResponse multiSearchTemplate(@NotNull RestHighLevelClient client, @NotNull List<SearchTemplateRequest> searchTemplateRequests) {
-        return client.msearchTemplate(searchTemplateRequests.stream().reduce(new MultiSearchTemplateRequest(), MultiSearchTemplateRequest::add, (item1, item2) -> null), DEFAULT);
+        return client.msearchTemplate(searchTemplateRequests.stream().collect(MultiSearchTemplateRequest::new, MultiSearchTemplateRequest::add, (item1, item2) -> {
+        }), DEFAULT);
     }
 
     /**

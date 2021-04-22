@@ -149,7 +149,8 @@ public final class IndexSupporter {
      */
     @SneakyThrows
     public AcknowledgedResponse updateAliases(@NotNull RestHighLevelClient client, @NotNull List<IndicesAliasesRequest.AliasActions> aliasActionsList) {
-        return client.indices().updateAliases(aliasActionsList.stream().reduce(new IndicesAliasesRequest(), IndicesAliasesRequest::addAliasAction, (item1, item2) -> null), DEFAULT);
+        return client.indices().updateAliases(aliasActionsList.stream().collect(IndicesAliasesRequest::new, IndicesAliasesRequest::addAliasAction, (item1, item2) -> {
+        }), DEFAULT);
     }
 
     /**

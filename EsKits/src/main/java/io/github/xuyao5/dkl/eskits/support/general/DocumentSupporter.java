@@ -60,7 +60,8 @@ public final class DocumentSupporter {
      */
     @SneakyThrows
     public MultiGetResponse multiGet(@NotNull RestHighLevelClient client, @NotNull List<MultiGetRequest.Item> items) {
-        return client.mget(items.stream().reduce(new MultiGetRequest(), MultiGetRequest::add, (item1, item2) -> null), DEFAULT);
+        return client.mget(items.stream().collect(MultiGetRequest::new, MultiGetRequest::add, (item1, item2) -> {
+        }), DEFAULT);
     }
 
     /**
