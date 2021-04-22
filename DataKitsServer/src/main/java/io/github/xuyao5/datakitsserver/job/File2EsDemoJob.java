@@ -5,6 +5,7 @@ import io.github.xuyao5.datakitsserver.vo.MyDocument;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
+import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,14 +23,18 @@ public final class File2EsDemoJob implements Runnable {
 
     @Override
     public void run() {
+        final String INDEX = "file2es_disruptor_1";
         //获取配置文件并执行
 //        File2EsTasks file2EsTasks = JAXB.unmarshal(ResourceUtils.getFile(CLASSPATH_URL_PREFIX + FILE2ES_CONFIG_XML), File2EsTasks.class);
 //        file2EsTasks.seek(taskId).ifPresent(File2EsExecutor.builder().build()::execute);
         //1.获取文件和索引名称
-        File2EsConfig config = File2EsConfig.of(new File("/Users/xuyao/Downloads/DISRUPTOR_1000W_T_00.txt"), "file2es_disruptor_1");
+        File2EsConfig config = File2EsConfig.of(new File("/Users/xuyao/Downloads/DISRUPTOR_1000W_T_00.txt"), INDEX);
 
         //2.写入索引
         new File2EsExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyDocument::of, myDocument -> myDocument);
+
+        //3.升副本
+        SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, INDEX, 1);
 
         //3.设置别名
         AliasesSupporter aliasesSupporter = AliasesSupporter.getInstance();

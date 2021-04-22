@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
+import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import lombok.SneakyThrows;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -17,10 +17,9 @@ import org.junit.jupiter.api.Test;
 public class SystemTest extends AbstractTest {
 
     @Test
-    void testAliasesSupporter() {
-        AliasesSupporter aliasesSupporter = AliasesSupporter.getInstance();
-        boolean migrate = aliasesSupporter.migrate(esClient, "my_index_v1", "my_index_v2");
-        System.out.println(migrate);
+    void test() {
+        final String INDEX = "file2es_disruptor_1";
+        System.out.println(SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, INDEX, 0));
     }
 
 
@@ -42,7 +41,7 @@ public class SystemTest extends AbstractTest {
     }
 
     @Test
-    void test() {
+    void test1() {
         String querySource = SearchSourceBuilder.searchSource()
                 .query(QueryBuilders.matchAllQuery())
                 .from(0)
