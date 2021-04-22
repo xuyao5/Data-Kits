@@ -3,9 +3,9 @@ package io.github.xuyao5.datakitsserver.job;
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.datakitsserver.vo.MyDocument;
 import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
-import io.github.xuyao5.dkl.eskits.configuration.MergeIntoConfig;
+import io.github.xuyao5.dkl.eskits.configuration.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
-import io.github.xuyao5.dkl.eskits.service.MergeIntoExecutor;
+import io.github.xuyao5.dkl.eskits.service.ModifyByScrollExecutor;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
@@ -42,7 +42,7 @@ public final class File2EsDemoJob implements Runnable {
         aliasesSupporter.addAsToIndex();
 
         //4.迁移老索引数据
-        new MergeIntoExecutor(esClient).execute(MergeIntoConfig.of(OLD_INDEX, NEW_INDEX));
+        new ModifyByScrollExecutor(esClient, esClientConfig.getEsBulkThreads()).upsertByScroll(ModifyByScrollConfig.of(OLD_INDEX, NEW_INDEX), MyDocument::of, myDocument -> null);
 
         //5.关闭老索引
         IndexSupporter.getInstance().close(esClient, OLD_INDEX).isAcknowledged();

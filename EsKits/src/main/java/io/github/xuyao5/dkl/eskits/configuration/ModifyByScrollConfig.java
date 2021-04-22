@@ -12,7 +12,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 @Data(staticConstructor = "of")
 public final class ModifyByScrollConfig {
 
-    private final String index;
+    private final String sourceIndex;
+    private final String targetIndex;
 
     private QueryBuilder queryBuilder;
 }

@@ -36,23 +36,23 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public <T extends BaseDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
+    public <T extends BaseDocument> void upsertByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
+            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getTargetIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
 
-            publish(disruptor, config.getQueryBuilder(), config.getIndex());
+            publish(disruptor, config.getQueryBuilder(), config.getSourceIndex());
         });
     }
 
-    public <T extends BaseDocument> void execute(@NotNull ModifyByScrollConfig config, EventFactory<T> document) {
+    public <T extends BaseDocument> void deleteByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id())));
+            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getTargetIndex(), standardDocument.get_id())));
 
-            publish(disruptor, config.getQueryBuilder(), config.getIndex());
+            publish(disruptor, config.getQueryBuilder(), config.getSourceIndex());
         });
     }
 
