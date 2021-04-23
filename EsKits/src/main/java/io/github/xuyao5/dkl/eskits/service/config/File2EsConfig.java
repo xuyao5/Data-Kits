@@ -21,4 +21,7 @@ public final class File2EsConfig {
     private Charset charset = StandardCharsets.UTF_8;
     private char recordSeparator = 0x1E;
     private String fileComments = "#";
+
+    private String[] sortField;
+    private String[] sortOrder;
 }
