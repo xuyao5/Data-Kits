@@ -1,10 +1,10 @@
 package io.github.xuyao5.datakitsserver.vo;
 
-import io.github.xuyao5.dkl.eskits.schema.BaseDocument;
-import io.github.xuyao5.dkl.eskits.schema.StandardFileLine;
+import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.range.DateRange;
 import io.github.xuyao5.dkl.eskits.schema.range.DoubleRange;
 import io.github.xuyao5.dkl.eskits.schema.range.IpRange;
+import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

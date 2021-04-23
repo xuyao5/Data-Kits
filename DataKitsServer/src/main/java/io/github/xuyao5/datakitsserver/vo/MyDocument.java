@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.vo;
 
-import io.github.xuyao5.dkl.eskits.schema.BaseDocument;
+import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
