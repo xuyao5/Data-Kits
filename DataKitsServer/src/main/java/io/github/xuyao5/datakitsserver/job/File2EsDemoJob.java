@@ -2,10 +2,10 @@ package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.datakitsserver.vo.MyDocument;
-import io.github.xuyao5.dkl.eskits.configuration.File2EsConfig;
-import io.github.xuyao5.dkl.eskits.configuration.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
 import io.github.xuyao5.dkl.eskits.service.ModifyByScrollExecutor;
+import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
+import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;

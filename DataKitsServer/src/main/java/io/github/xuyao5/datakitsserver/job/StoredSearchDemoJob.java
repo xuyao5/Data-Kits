@@ -1,8 +1,8 @@
 package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
-import io.github.xuyao5.dkl.eskits.configuration.StoredSearchConfig;
 import io.github.xuyao5.dkl.eskits.service.StoredSearchExecutor;
+import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

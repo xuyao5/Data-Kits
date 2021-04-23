@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.configuration;
+package io.github.xuyao5.dkl.eskits.service.config;
 
 import lombok.Data;
 import org.elasticsearch.index.query.QueryBuilder;

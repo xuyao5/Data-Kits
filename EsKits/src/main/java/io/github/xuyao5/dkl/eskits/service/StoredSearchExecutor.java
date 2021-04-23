@@ -1,9 +1,9 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import com.google.gson.reflect.TypeToken;
-import io.github.xuyao5.dkl.eskits.configuration.StoredSearchConfig;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.schema.StandardSearchSourceDocument;
+import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
