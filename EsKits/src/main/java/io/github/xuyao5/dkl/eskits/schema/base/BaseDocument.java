@@ -23,7 +23,6 @@ public abstract class BaseDocument implements Serializable {
     private String dateTag;
     private long serialNo;
     private String recordMd5;
-    private long randomNum;
     private Date createDate;
     private Date modifyDate;
 }

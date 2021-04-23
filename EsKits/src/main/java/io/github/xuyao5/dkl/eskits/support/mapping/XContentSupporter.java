@@ -68,12 +68,6 @@ public final class XContentSupporter {
                 }
                 builder.endObject();
 
-                builder.startObject("randomNum");
-                {
-                    builder.field("type", "long");
-                }
-                builder.endObject();
-
                 builder.startObject("createDate");
                 {
                     builder.field("type", "date");
