@@ -9,6 +9,8 @@ import org.elasticsearch.common.settings.Settings;
 
 import javax.validation.constraints.NotNull;
 
+import static io.github.xuyao5.dkl.eskits.consts.SettingConst.INDEX_NUMBER_OF_REPLICAS;
+
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 18/03/21 21:57
@@ -24,11 +26,10 @@ public final class SettingsSupporter {
     }
 
     public boolean updateNumberOfReplicas(@NotNull RestHighLevelClient client, @NotNull String index, int replicas) {
-        String INDEX_NUMBER_OF_REPLICAS = "index.number_of_replicas";
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        int numberOfReplicas = indexSupporter.getSettings(client, index).getIndexToSettings().get(index).getAsInt(INDEX_NUMBER_OF_REPLICAS, replicas);
+        int numberOfReplicas = indexSupporter.getSettings(client, index).getIndexToSettings().get(index).getAsInt(INDEX_NUMBER_OF_REPLICAS.getName(), replicas);
         if (numberOfReplicas != replicas) {
-            return indexSupporter.putSettings(client, Settings.builder().put(INDEX_NUMBER_OF_REPLICAS, replicas).build(), index).isAcknowledged();
+            return indexSupporter.putSettings(client, Settings.builder().put(INDEX_NUMBER_OF_REPLICAS.getName(), replicas).build(), index).isAcknowledged();
         }
         return false;
     }
