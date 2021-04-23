@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service;
 
+import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
@@ -11,11 +12,14 @@ import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ScrollSupporter;
+import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
@@ -56,14 +60,18 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         });
     }
 
-    private void publish(@NotNull Disruptor<? extends BaseDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
+    private void publish(@NotNull Disruptor<? extends BaseDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String index) {
         RingBuffer<? extends BaseDocument> ringBuffer = disruptor.start();
         try {
-            ScrollSupporter.getInstance().scroll(client, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> {
-                searchHitList.forEach(documentFields -> {
-                    standardDocument.set_index(documentFields.getIndex());//demo
-                });
-            }, Arrays.asList(searchHits)), queryBuilder, indices);
+            ScrollSupporter.getInstance().scroll(client, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> searchHitList.forEach(documentFields -> {
+                try {
+                    standardDocument.set_id(documentFields.getId());
+                    standardDocument.set_index(documentFields.getIndex());
+                    BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj(documentFields.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
+                } catch (IllegalAccessException | InvocationTargetException ex) {
+                    log.error("StandardDocument类型转换错误", ex);
+                }
+            }), Arrays.asList(searchHits)), queryBuilder, index);
         } finally {
             disruptor.shutdown();
         }
