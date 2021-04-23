@@ -16,4 +16,5 @@ public final class MyDocument extends BaseDocument {
     private long cashAmount;
     private String desc;
     private Date dateTime;
+    private int discount;
 }
