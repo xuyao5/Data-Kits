@@ -75,7 +75,7 @@ public final class BulkSupporter {
                         if (response.hasFailures()) {
                             log.warn("Bulk [{}] executed with failures", executionId);
                         } else {
-                            log.info("Bulk [{}] completed in {} milliseconds", executionId, response.getTook().getMillis());
+                            log.info("Bulk [{}] completed in {} seconds", executionId, response.getTook().getMillis() / 1000);
                         }
                     }
 
