@@ -1,6 +1,7 @@
 package io.github.xuyao5.dkl.eskits.util;
 
 import com.google.gson.*;
+import com.google.gson.internal.bind.DateTypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public final class MyGsonUtils {
                 .setPrettyPrinting()
                 .setVersion(1.0)
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))
+                .registerTypeAdapter(Date.class, new DateTypeAdapter())
                 .create();
     }
 

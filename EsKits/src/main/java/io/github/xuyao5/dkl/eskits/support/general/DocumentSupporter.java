@@ -93,7 +93,7 @@ public final class DocumentSupporter {
      */
     @SneakyThrows
     public UpdateResponse update(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id, @NotNull Serializable json) {
-        return client.update(new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
+        return client.update(new UpdateRequest(index, id).docAsUpsert(true).doc(MyGsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 
     private static class SingletonHolder {

@@ -20,7 +20,6 @@ import org.elasticsearch.common.xcontent.XContentType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,12 +44,8 @@ public final class BulkSupporter {
         return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
-    public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Map<String, Object> obj) {
-        return new UpdateRequest(index, id).doc(obj);
-    }
-
-    public static UpdateRequest buildUpsertRequest(@NotNull String index, @NotNull String id, @NotNull Map<String, Object> obj) {
-        return new UpdateRequest(index, id).upsert(obj);
+    public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
+        return new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
     public static DeleteRequest buildDeleteRequest(@NotNull String index, @NotNull String id) {
@@ -73,7 +68,7 @@ public final class BulkSupporter {
                     @Override
                     public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
                         if (response.hasFailures()) {
-                            log.warn("Bulk [{}] executed with failures", executionId);
+                            log.warn("Bulk [{}] executed with {}", executionId, response.buildFailureMessage());
                         } else {
                             log.info("Bulk [{}] completed in {} seconds", executionId, response.getTook().getMillis() / 1000);
                         }

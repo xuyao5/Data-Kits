@@ -71,12 +71,14 @@ public final class XContentSupporter {
                 builder.startObject("createDate");
                 {
                     builder.field("type", "date");
+                    builder.field("format", "strict_date_time_no_millis||strict_date_optional_time||epoch_millis");
                 }
                 builder.endObject();
 
                 builder.startObject("modifyDate");
                 {
                     builder.field("type", "date");
+                    builder.field("format", "strict_date_time_no_millis||strict_date_optional_time||epoch_millis");
                 }
                 builder.endObject();
 
@@ -127,6 +129,7 @@ public final class XContentSupporter {
                 } else if (Date.class.equals(type) || Date[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Date>>() {
                 }, type)) {
                     builder.field("type", "date");
+                    builder.field("format", "strict_date_time_no_millis||strict_date_optional_time||epoch_millis");
                 } else if (BigDecimal.class.equals(type) || BigDecimal[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<BigDecimal>>() {
                 }, type)) {
                     builder.field("type", "scaled_float");

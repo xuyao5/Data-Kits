@@ -21,7 +21,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -40,11 +39,11 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public <T extends BaseDocument> void upsertByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, Map<String, Object>> operator) {
+    public <T extends BaseDocument> void upsertByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, T> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
-            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpsertRequest(config.getTargetIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
+            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getTargetIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
 
             publish(disruptor, config.getQueryBuilder(), config.getSourceIndex());
         });
@@ -65,9 +64,9 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         try {
             ScrollSupporter.getInstance().scroll(client, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> searchHitList.forEach(documentFields -> {
                 try {
+                    BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj(documentFields.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
                     standardDocument.set_id(documentFields.getId());
                     standardDocument.set_index(documentFields.getIndex());
-                    BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj(documentFields.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
                 } catch (IllegalAccessException | InvocationTargetException ex) {
                     log.error("StandardDocument类型转换错误", ex);
                 }
