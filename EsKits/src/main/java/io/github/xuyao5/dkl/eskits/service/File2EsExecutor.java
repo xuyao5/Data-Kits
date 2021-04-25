@@ -32,6 +32,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.UnaryOperator;
 
+import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.BASIC_DATE;
+
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 10/10/20 15:41
@@ -75,7 +77,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
                 } else {
                     T standardDocument = document.newInstance();
-                    standardDocument.setDateTag(MyDateUtils.getCurrentDate());
+                    standardDocument.setDateTag(MyDateUtils.getFormatDate(BASIC_DATE));
                     standardDocument.setSerialNo(snowflake.nextId());
                     standardDocument.setRecordMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
                     standardDocument.setCreateDate(MyDateUtils.now());

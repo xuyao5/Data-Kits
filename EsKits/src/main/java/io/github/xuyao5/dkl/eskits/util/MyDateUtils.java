@@ -3,7 +3,9 @@ package io.github.xuyao5.dkl.eskits.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Locale;
 
@@ -16,18 +18,15 @@ import java.util.Locale;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyDateUtils extends DateFormatUtils {
 
-    public static final String STD_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static final String STD_DATE_FORMAT = "yyyyMMdd";
+    public static final FastDateFormat STD_DATETIME_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+    public static final FastDateFormat BASIC_DATE = FastDateFormat.getInstance("yyyyMMdd");
+    public static final FastDateFormat STRICT_DATE_OPTIONAL_TIME = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     public static Date now() {
         return new Date();
     }
 
-    public static String getCurrentDate() {
-        return format(now(), STD_DATE_FORMAT, Locale.ROOT);
-    }
-
-    public static String getCurrentDatetime() {
-        return format(now(), STD_DATETIME_FORMAT, Locale.ROOT);
+    public static String getFormatDate(@NotNull FastDateFormat format) {
+        return format(now(), format.getPattern(), Locale.ROOT);
     }
 }

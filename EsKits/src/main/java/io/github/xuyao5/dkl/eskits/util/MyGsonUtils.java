@@ -29,7 +29,7 @@ public final class MyGsonUtils {
         GSON = new GsonBuilder()
                 .enableComplexMapKeySerialization()
                 .serializeSpecialFloatingPointValues()
-                .setDateFormat(STD_DATETIME_FORMAT)
+                .setDateFormat(STD_DATETIME_FORMAT.getPattern())
                 .setPrettyPrinting()
                 .setVersion(1.0)
                 .registerTypeAdapter(Date.class, new DateTypeAdapter())
