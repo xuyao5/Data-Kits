@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
-import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT;
+import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.STD_DATETIME_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -29,11 +29,11 @@ public final class MyGsonUtils {
         GSON = new GsonBuilder()
                 .enableComplexMapKeySerialization()
                 .serializeSpecialFloatingPointValues()
-                .setDateFormat(ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.getPattern())
+                .setDateFormat(STD_DATETIME_FORMAT)
                 .setPrettyPrinting()
                 .setVersion(1.0)
-                .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))
                 .registerTypeAdapter(Date.class, new DateTypeAdapter())
+                .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))
                 .create();
     }
 
