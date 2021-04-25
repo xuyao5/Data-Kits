@@ -33,9 +33,9 @@ public final class MyGsonUtils {
                 .setVersion(1.0)
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> {
                     if (MyStringUtils.isNumeric(json.getAsJsonPrimitive().getAsString())) {
-                        return MyDateUtils.parseDate(json.getAsJsonPrimitive().getAsLong());
+                        return MyDateUtils.parse2Date(json.getAsJsonPrimitive().getAsLong());
                     } else {
-                        return MyDateUtils.parseDate(json.getAsJsonPrimitive().getAsString(), STD_DATETIME_FORMAT);
+                        return MyDateUtils.parse2Date(json.getAsJsonPrimitive().getAsString(), STD_DATETIME_FORMAT);
                     }
                 })
                 .create();
