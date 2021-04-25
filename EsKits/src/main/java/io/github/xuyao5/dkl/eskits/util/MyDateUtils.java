@@ -21,7 +21,8 @@ import java.util.Locale;
 public final class MyDateUtils extends DateFormatUtils {
 
     public static final FastDateFormat STD_DATETIME_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
-    public static final FastDateFormat STD_DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd");
+    public static final FastDateFormat BASIC_DATE = FastDateFormat.getInstance("yyyyMMdd");
+    public static final FastDateFormat STD_DATE_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd");
 
     public static Date now() {
         return new Date();
