@@ -30,7 +30,6 @@ public final class MyGsonUtils {
                 .enableComplexMapKeySerialization()
                 .serializeSpecialFloatingPointValues()
                 .setDateFormat(ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.getPattern())
-                .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
                 .setPrettyPrinting()
                 .setVersion(1.0)
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))

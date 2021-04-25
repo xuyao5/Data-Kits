@@ -24,7 +24,7 @@ public enum SettingConst {
     INDEX_TRANSLOG_SYNC_INTERVAL("index.translog.sync_interval"),
     INDEX_SORT_FIELD("index.sort.field"),
     INDEX_SORT_ORDER("index.sort.order"),
-    MAPPING_DATE_FORMAT("strict_date_time_no_millis||strict_date_optional_time||epoch_millis"),
+    MAPPING_DATE_FORMAT("yyyy-MM-dd HH:mm:ss||strict_date_time_no_millis||strict_date_optional_time||epoch_millis"),
     ;
 
     @Getter
