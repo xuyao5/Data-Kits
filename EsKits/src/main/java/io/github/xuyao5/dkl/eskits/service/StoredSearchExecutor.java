@@ -52,13 +52,19 @@ public final class StoredSearchExecutor extends AbstractExecutor {
             String sourceAsString = documentFields.getSourceAsString();
             StandardSearchSourceDocument standardSearchSourceDocument = MyGsonUtils.json2Obj(sourceAsString, TypeToken.get(StandardSearchSourceDocument.class));
             if (Objects.nonNull(standardSearchSourceDocument)) {
-                SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, standardSearchSourceDocument.getSearchCode().toString(), Collections.EMPTY_MAP, "file2es_disruptor_1");
-                if (searchResponse.getResponse().getHits().getTotalHits().value > 0) {
-                    System.out.println(searchResponse.getResponse().getHits().getTotalHits().value);
-                    SearchHit[] hits = searchResponse.getResponse().getHits().getHits();
-                    for (int i = 0; i < hits.length; i++) {
-                        System.out.println(hits[i]);
+                if ("DSL".equals(standardSearchSourceDocument.getSearchType())) {
+                    SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, standardSearchSourceDocument.getSearchCode().toString(), Collections.EMPTY_MAP, "file2es_disruptor_1");
+                    if (searchResponse.getResponse().getHits().getTotalHits().value > 0) {
+                        System.out.println(searchResponse.getResponse().getHits().getTotalHits().value);
+                        SearchHit[] hits = searchResponse.getResponse().getHits().getHits();
+                        for (int i = 0; i < hits.length; i++) {
+                            System.out.println(hits[i]);//TODO
+                        }
                     }
+                } else if ("SQL".equals(standardSearchSourceDocument.getSearchType())) {
+                    //封装SQL
+                } else {
+                    log.error("错误的类型:{}", standardSearchSourceDocument);
                 }
             }
         }
