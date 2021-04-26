@@ -7,10 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.cluster.metadata.AliasMetadata;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -27,10 +30,11 @@ public final class AliasesSupporter {
     }
 
     public boolean migrate(@NotNull RestHighLevelClient client, @NotNull String sourceIndex, @NotNull String targetIndex) {
-        if (MyStringUtils.equalsIgnoreCase(sourceIndex, targetIndex)) {
+        IndexSupporter indexSupporter = IndexSupporter.getInstance();
+        if (MyStringUtils.equalsIgnoreCase(sourceIndex, targetIndex) || !indexSupporter.exists(client, sourceIndex) || !indexSupporter.exists(client, targetIndex)) {
             return false;
         }
-        IndexSupporter indexSupporter = IndexSupporter.getInstance();
+
         List<IndicesAliasesRequest.AliasActions> actionsList = indexSupporter.get(client, sourceIndex).getAliases().get(sourceIndex).stream().collect(ArrayList::new, (aliasActionsList, aliasMetadata) -> {
             aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index(targetIndex).alias(aliasMetadata.alias()));
             aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE).index(sourceIndex).alias(aliasMetadata.alias()));
@@ -41,8 +45,16 @@ public final class AliasesSupporter {
         return false;
     }
 
-    public void addAsToIndex() {
+    public boolean migrate1(@NotNull RestHighLevelClient client, @NotNull String alias, @NotNull String targetIndex) {
+        IndexSupporter indexSupporter = IndexSupporter.getInstance();
+        if (MyStringUtils.equalsIgnoreCase(alias, targetIndex) || !indexSupporter.existsAlias(client, alias) || !indexSupporter.exists(client, targetIndex)) {
+            return false;
+        }
 
+        Map<String, Set<AliasMetadata>> aliases = indexSupporter.getAlias(client, alias).getAliases();
+
+        //获取alias对应的索引
+        return false;
     }
 
     private static class SingletonHolder {
