@@ -14,5 +14,7 @@ import java.io.Serializable;
 public final class StandardSearchSourceDocument implements Serializable {
 
     private final String searchName;
-    private final String query;
+    private final StringBuilder searchCode;
+
+    private String searchType = "DSL";//DSL or SQL
 }

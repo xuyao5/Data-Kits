@@ -10,4 +10,6 @@ import lombok.Data;
  */
 @Data(staticConstructor = "of")
 public final class StoredSearchConfig {
+
+    private final String searchName;
 }

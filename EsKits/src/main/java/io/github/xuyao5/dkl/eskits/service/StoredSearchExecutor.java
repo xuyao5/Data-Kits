@@ -52,7 +52,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
             String sourceAsString = documentFields.getSourceAsString();
             StandardSearchSourceDocument standardSearchSourceDocument = MyGsonUtils.json2Obj(sourceAsString, TypeToken.get(StandardSearchSourceDocument.class));
             if (Objects.nonNull(standardSearchSourceDocument)) {
-                SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, standardSearchSourceDocument.getQuery(), Collections.EMPTY_MAP, "file2es_disruptor_1");
+                SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, standardSearchSourceDocument.getSearchCode().toString(), Collections.EMPTY_MAP, "file2es_disruptor_1");
                 if (searchResponse.getResponse().getHits().getTotalHits().value > 0) {
                     System.out.println(searchResponse.getResponse().getHits().getTotalHits().value);
                     SearchHit[] hits = searchResponse.getResponse().getHits().getHits();
@@ -65,17 +65,13 @@ public final class StoredSearchExecutor extends AbstractExecutor {
     }
 
     public void initial() {
-        String querySource = SearchSourceBuilder.searchSource()
-                .query(QueryBuilders.matchAllQuery())
-                .from(0)
-                .size(1000)
-                .toString();
-        StandardSearchSourceDocument searchDocument = StandardSearchSourceDocument.of("my-search-1", querySource);
+        String querySource = SearchSourceBuilder.searchSource().query(QueryBuilders.matchAllQuery()).from(0).size(1000).toString();
+        StandardSearchSourceDocument searchDocument = StandardSearchSourceDocument.of("my-search-1", new StringBuilder(querySource));
 
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (!indexSupporter.exists(client, SEARCH_STORED_INDEX)) {
             int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
-            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 0, new String[]{"dateTag", "serialNo", "createDate", "modifyDate"}, new String[]{"desc", "desc", "desc", "desc"}, XContentSupporter.buildMapping(searchDocument));
+            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 0, new String[]{"searchType"}, new String[]{"desc"}, XContentSupporter.buildMapping(searchDocument));
             //设置别名
         }
 

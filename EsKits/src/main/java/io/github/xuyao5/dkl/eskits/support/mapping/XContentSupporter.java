@@ -46,7 +46,7 @@ public final class XContentSupporter {
                 builder.startObject("docId");
                 {
                     builder.field("type", "keyword");
-                    builder.field("ignore_above", 100);
+                    builder.field("ignore_above", 32);
                 }
                 builder.endObject();
 
@@ -102,7 +102,7 @@ public final class XContentSupporter {
                 if (String.class.equals(type) || String[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<String>>() {
                 }, type)) {
                     builder.field("type", "keyword");
-                    builder.field("ignore_above", 256);
+                    builder.field("ignore_above", 512);
                 } else if (char.class.equals(type) || Character.class.equals(type) || char[].class.equals(type) || Character[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Character>>() {
                 }, type)) {
                     builder.field("type", "keyword");
@@ -169,7 +169,7 @@ public final class XContentSupporter {
                         builder.startObject("keyword");
                         {
                             builder.field("type", "keyword");
-                            builder.field("ignore_above", 512);
+                            builder.field("ignore_above", 1024);
                         }
                         builder.endObject();
                     }

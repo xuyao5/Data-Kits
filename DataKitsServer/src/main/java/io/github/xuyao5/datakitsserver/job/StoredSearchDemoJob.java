@@ -2,7 +2,6 @@ package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.dkl.eskits.service.StoredSearchExecutor;
-import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +18,7 @@ public final class StoredSearchDemoJob implements Runnable {
     @Override
     public void run() {
         StoredSearchExecutor storedSearchExecutor = new StoredSearchExecutor(esClient);
-        storedSearchExecutor.execute(StoredSearchConfig.of());
+//        storedSearchExecutor.execute(StoredSearchConfig.of("my-search-1"));
+//        storedSearchExecutor.initial();
     }
 }
