@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 
 import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.STD_DATETIME_FORMAT;
 
@@ -30,14 +29,6 @@ public final class MyGsonUtils {
                 .serializeSpecialFloatingPointValues()
                 .setDateFormat(STD_DATETIME_FORMAT.getPattern())
                 .setPrettyPrinting()
-                .setVersion(1.0)
-                .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> {
-                    if (MyStringUtils.isNumeric(json.getAsJsonPrimitive().getAsString())) {
-                        return MyDateUtils.parse2Date(json.getAsJsonPrimitive().getAsLong());
-                    } else {
-                        return MyDateUtils.parse2Date(json.getAsJsonPrimitive().getAsString(), STD_DATETIME_FORMAT);
-                    }
-                })
                 .create();
     }
 
