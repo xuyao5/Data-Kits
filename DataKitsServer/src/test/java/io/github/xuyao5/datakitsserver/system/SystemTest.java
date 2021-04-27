@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
+import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import lombok.SneakyThrows;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -18,8 +18,8 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void test() {
-        final String INDEX = "file2es_disruptor_1";
-        System.out.println(SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, INDEX, 0));
+        AliasesSupporter aliasesSupporter = AliasesSupporter.getInstance();
+        boolean migrate = aliasesSupporter.removeNonWriteIndexFromAlias(esClient, "MY_INDEX");
     }
 
 
