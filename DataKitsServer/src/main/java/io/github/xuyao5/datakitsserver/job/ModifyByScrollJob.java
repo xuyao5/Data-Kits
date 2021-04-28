@@ -21,11 +21,11 @@ public final class ModifyByScrollJob implements Runnable {
 
     @Override
     public void run() {
-        final String OLD_INDEX = "file2es_disruptor_0";
-        final String NEW_INDEX = "file2es_disruptor_1";
+        final String[] OLD_INDEX = {"file2es_disruptor_100w_1619626642176"};
+        final String NEW_INDEX = "file2es_disruptor_100w_1619626642176";
 
-        ModifyByScrollConfig modifyByScrollConfig = ModifyByScrollConfig.of(NEW_INDEX, NEW_INDEX);
-        modifyByScrollConfig.setQueryBuilder(QueryBuilders.boolQuery().filter(QueryBuilders.termQuery("uuid", "568570402385690879")));
+        ModifyByScrollConfig modifyByScrollConfig = ModifyByScrollConfig.of(OLD_INDEX, NEW_INDEX);
+        modifyByScrollConfig.setQueryBuilder(QueryBuilders.boolQuery().filter(QueryBuilders.termQuery("uuid", "583852675070689280")));
         new ModifyByScrollExecutor(esClient, esClientConfig.getEsBulkThreads()).upsertByScroll(modifyByScrollConfig, MyDocument::of, myDocument -> {
             myDocument.setModifyDate(MyDateUtils.now());
             return myDocument;

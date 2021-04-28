@@ -3,16 +3,20 @@ package io.github.xuyao5.datakitsserver.job;
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.datakitsserver.vo.MyDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
+import io.github.xuyao5.dkl.eskits.service.ModifyByScrollExecutor;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
+import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.function.UnaryOperator;
 
 @Slf4j
 @Component("file2EsDemoJob")
@@ -52,11 +56,13 @@ public final class File2EsDemoJob implements Runnable {
         String[] indexArray = aliasesSupporter.migrate(esClient, ALIAS, NEW_INDEX);
         log.info("迁移别名[{}]到[{}]返回[{}]", ALIAS, NEW_INDEX, indexArray);
 
-        //4.迁移老索引数据
-//        new ModifyByScrollExecutor(esClient, esClientConfig.getEsBulkThreads()).upsertByScroll(ModifyByScrollConfig.of(OLD_INDEX, NEW_INDEX), MyDocument::of, myDocument -> null);
-
-        //5.关闭老索引
         if (indexArray.length > 0) {
+            //4.迁移老索引数据
+            ModifyByScrollConfig modifyByScrollConfig = ModifyByScrollConfig.of(indexArray, NEW_INDEX);
+            modifyByScrollConfig.setQueryBuilder(QueryBuilders.boolQuery().filter(QueryBuilders.matchAllQuery()));
+            new ModifyByScrollExecutor(esClient, esClientConfig.getEsBulkThreads()).upsertByScroll(modifyByScrollConfig, MyDocument::of, UnaryOperator.identity());
+
+            //5.关闭老索引
             boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
             log.info("关闭索引[{}]返回[{}]", indexArray, acknowledged);
         }

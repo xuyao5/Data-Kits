@@ -21,7 +21,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -39,13 +39,13 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public <T extends BaseDocument> void upsertByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document, Function<T, T> operator) {
+    public <T extends BaseDocument> void upsertByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getTargetIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
 
-            publish(disruptor, config.getQueryBuilder(), config.getSourceIndex());
+            publish(disruptor, config.getQueryBuilder(), config.getSourceIndexArray());
         });
     }
 
@@ -55,22 +55,22 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getTargetIndex(), standardDocument.get_id())));
 
-            publish(disruptor, config.getQueryBuilder(), config.getSourceIndex());
+            publish(disruptor, config.getQueryBuilder(), config.getSourceIndexArray());
         });
     }
 
-    private void publish(@NotNull Disruptor<? extends BaseDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String index) {
+    private void publish(@NotNull Disruptor<? extends BaseDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String[] indexArray) {
         RingBuffer<? extends BaseDocument> ringBuffer = disruptor.start();
         try {
             ScrollSupporter.getInstance().scroll(client, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> searchHitList.forEach(documentFields -> {
                 try {
-                    BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj(documentFields.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
+                    BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj2(documentFields.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
                     standardDocument.set_id(documentFields.getId());
                     standardDocument.set_index(documentFields.getIndex());
                 } catch (IllegalAccessException | InvocationTargetException ex) {
                     log.error("StandardDocument类型转换错误", ex);
                 }
-            }), Arrays.asList(searchHits)), queryBuilder, index);
+            }), Arrays.asList(searchHits)), queryBuilder, indexArray);
         } finally {
             disruptor.shutdown();
         }

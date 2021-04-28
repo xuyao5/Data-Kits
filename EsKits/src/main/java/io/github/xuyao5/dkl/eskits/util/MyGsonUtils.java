@@ -48,4 +48,8 @@ public final class MyGsonUtils {
     public static <T extends Serializable> T json2Obj(@NotNull String json, @NotNull TypeToken<?> typeToken) {
         return GSON.fromJson(GSON.toJson(json), typeToken.getType());
     }
+
+    public static <T extends Serializable> T json2Obj2(@NotNull String json, @NotNull TypeToken<?> typeToken) {
+        return GSON.fromJson(json, typeToken.getType());
+    }
 }

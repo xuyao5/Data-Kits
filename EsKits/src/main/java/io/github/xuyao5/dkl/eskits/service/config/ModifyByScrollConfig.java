@@ -14,7 +14,7 @@ public final class ModifyByScrollConfig {
 
     //如果sourceIndex和targetIndex相同，等于对单一索引操作
     //如果sourceIndex和targetIndex不同，等于Merge Into操作
-    private final String sourceIndex;
+    private final String[] sourceIndexArray;
     private final String targetIndex;
 
     private QueryBuilder queryBuilder;
