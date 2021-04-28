@@ -6,6 +6,7 @@ import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
+import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,18 +49,17 @@ public final class File2EsDemoJob implements Runnable {
 
         //3.新索引加入使用writeIndex(true)进行引流
         AliasesSupporter aliasesSupporter = AliasesSupporter.getInstance();
-        boolean migrate1 = aliasesSupporter.addWriteIndexToAlias(esClient, ALIAS, NEW_INDEX);
-        log.info("迁移别名[{}]到[{}]返回[{}]", ALIAS, NEW_INDEX, migrate1);
+        String[] indexArray = aliasesSupporter.migrate(esClient, ALIAS, NEW_INDEX);
+        log.info("迁移别名[{}]到[{}]返回[{}]", ALIAS, NEW_INDEX, indexArray);
 
         //4.迁移老索引数据
 //        new ModifyByScrollExecutor(esClient, esClientConfig.getEsBulkThreads()).upsertByScroll(ModifyByScrollConfig.of(OLD_INDEX, NEW_INDEX), MyDocument::of, myDocument -> null);
 
         //5.关闭老索引
-//        IndexSupporter.getInstance().close(esClient, OLD_INDEX).isAcknowledged();
-
-        //6.移除writeIndex(false)索引
-        boolean migrate2 = aliasesSupporter.removeNonWriteIndexFromAlias(esClient, ALIAS);
-        log.info("移除非写索引从[{}]", ALIAS);
+        if (indexArray.length > 0) {
+            boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
+            log.info("关闭索引[{}]返回[{}]", indexArray, acknowledged);
+        }
 
         //6.升副本
         SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, NEW_INDEX, 1);

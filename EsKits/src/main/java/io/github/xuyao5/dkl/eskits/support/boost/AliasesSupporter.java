@@ -6,12 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.cluster.metadata.AliasMetadata;
+import org.elasticsearch.common.Strings;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,29 +27,15 @@ public final class AliasesSupporter {
         return AliasesSupporter.SingletonHolder.INSTANCE;
     }
 
-    public boolean addWriteIndexToAlias(@NotNull RestHighLevelClient client, @NotNull String alias, @NotNull String targetIndex) {
+    public String[] migrate(@NotNull RestHighLevelClient client, @NotNull String alias, @NotNull String targetIndex) {
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        if (!indexSupporter.exists(client, targetIndex)) {
-            return false;
+        if (indexSupporter.exists(client, targetIndex)) {
+            Set<String> indexSet = indexSupporter.getAlias(client, alias).getAliases().keySet();
+            List<IndicesAliasesRequest.AliasActions> actionsList = indexSet.stream().collect(ArrayList::new, (aliasActionsList, index) -> aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE).index(index).alias(alias)), ArrayList::addAll);
+            actionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index(targetIndex).alias(alias).writeIndex(true));
+            return indexSupporter.updateAliases(client, actionsList).isAcknowledged() ? indexSet.stream().toArray(String[]::new) : Strings.EMPTY_ARRAY;
         }
-        List<IndicesAliasesRequest.AliasActions> actionsList = indexSupporter.getAlias(client, alias).getAliases().keySet().stream().collect(ArrayList::new, (aliasActionsList, index) -> aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index(index).alias(alias).writeIndex(false)), ArrayList::addAll);
-        actionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index(targetIndex).alias(alias).writeIndex(true));
-        return indexSupporter.updateAliases(client, actionsList).isAcknowledged();
-    }
-
-    public boolean removeNonWriteIndexFromAlias(@NotNull RestHighLevelClient client, @NotNull String alias) {
-        IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        Set<Map.Entry<String, Set<AliasMetadata>>> entries = indexSupporter.getAlias(client, alias).getAliases().entrySet();
-        List<IndicesAliasesRequest.AliasActions> actionsList = entries.stream().filter(stringSetEntry -> {
-            for (AliasMetadata aliasMetadata : stringSetEntry.getValue()) {
-                return !aliasMetadata.writeIndex();
-            }
-            return false;
-        }).collect(ArrayList::new, (aliasActionsList, index) -> aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE).index(index.getKey()).alias(alias)), ArrayList::addAll);
-        if (!actionsList.isEmpty()) {
-            return indexSupporter.updateAliases(client, actionsList).isAcknowledged();
-        }
-        return false;
+        return Strings.EMPTY_ARRAY;
     }
 
     private static class SingletonHolder {
