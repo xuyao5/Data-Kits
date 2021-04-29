@@ -10,9 +10,12 @@ import org.elasticsearch.index.query.QueryBuilder;
  * @implNote ModifyByScrollConfig
  */
 @Data(staticConstructor = "of")
-public final class ModifyByScrollConfig {
+public final class MergeIntoConfig {
 
-    private final String index;
+    //如果sourceIndex和targetIndex相同，等于对单一索引操作
+    //如果sourceIndex和targetIndex不同，等于Merge Into操作
+    private final String[] sourceIndexArray;
+    private final String targetIndex;
 
     private QueryBuilder queryBuilder;
 }

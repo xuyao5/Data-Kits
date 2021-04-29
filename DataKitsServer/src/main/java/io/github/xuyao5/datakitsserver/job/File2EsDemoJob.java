@@ -3,9 +3,9 @@ package io.github.xuyao5.datakitsserver.job;
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.datakitsserver.vo.MyDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
-import io.github.xuyao5.dkl.eskits.service.ModifyByScrollExecutor;
+import io.github.xuyao5.dkl.eskits.service.MergeIntoExecutor;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
-import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
+import io.github.xuyao5.dkl.eskits.service.config.MergeIntoConfig;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
@@ -58,9 +58,9 @@ public final class File2EsDemoJob implements Runnable {
 
         if (indexArray.length > 0) {
             //4.迁移老索引数据
-            ModifyByScrollConfig modifyByScrollConfig = ModifyByScrollConfig.of(indexArray, NEW_INDEX);
-            modifyByScrollConfig.setQueryBuilder(QueryBuilders.boolQuery().filter(QueryBuilders.matchAllQuery()));
-            new ModifyByScrollExecutor(esClient, esClientConfig.getEsBulkThreads()).upsertByScroll(modifyByScrollConfig, MyDocument::of, UnaryOperator.identity());
+            MergeIntoConfig mergeIntoConfig = MergeIntoConfig.of(indexArray, NEW_INDEX);
+            mergeIntoConfig.setQueryBuilder(QueryBuilders.boolQuery().filter(QueryBuilders.matchAllQuery()));
+            new MergeIntoExecutor(esClient, esClientConfig.getEsBulkThreads()).upsertByScroll(mergeIntoConfig, MyDocument::of, UnaryOperator.identity());
 
             //5.关闭老索引
             boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
