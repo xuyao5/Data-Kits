@@ -17,10 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHit;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.function.UnaryOperator;
 
 /**
@@ -62,15 +62,19 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
     private void publish(@NotNull Disruptor<? extends BaseDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String[] indexArray) {
         RingBuffer<? extends BaseDocument> ringBuffer = disruptor.start();
         try {
-            ScrollSupporter.getInstance().scroll(client, searchHits -> ringBuffer.publishEvent((standardDocument, sequence, searchHitList) -> searchHitList.forEach(documentFields -> {
-                try {
-                    BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj2(documentFields.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
-                    standardDocument.set_id(documentFields.getId());
-                    standardDocument.set_index(documentFields.getIndex());
-                } catch (IllegalAccessException | InvocationTargetException ex) {
-                    log.error("StandardDocument类型转换错误", ex);
+            ScrollSupporter.getInstance().scroll(client, searchHits -> {
+                for (SearchHit documentFields : searchHits) {
+                    ringBuffer.publishEvent((standardDocument, sequence, searchHit) -> {
+                        try {
+                            BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj2(searchHit.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
+                            standardDocument.set_id(searchHit.getId());
+                            standardDocument.set_index(searchHit.getIndex());
+                        } catch (IllegalAccessException | InvocationTargetException ex) {
+                            log.error("StandardDocument类型转换错误", ex);
+                        }
+                    }, documentFields);
                 }
-            }), Arrays.asList(searchHits)), queryBuilder, indexArray);
+            }, queryBuilder, indexArray);
         } finally {
             disruptor.shutdown();
         }
