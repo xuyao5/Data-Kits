@@ -28,9 +28,7 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.UnaryOperator;
 
@@ -69,7 +67,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         String[][] metadataArray = new String[1][];//元数据
-        Map<String, TypeToken<?>> typeTokenMap = new ConcurrentHashMap<>();//反射Cache
+        TypeToken<?>[][] typeTokenArray = new TypeToken[1][];//反射Cache
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -82,6 +80,11 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                 if (standardFileLine.getLineNo() == 1) {
                     metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
+                    typeTokenArray[0] = new TypeToken[metadataArray[0].length];
+                    Class<? extends BaseDocument> docClass = document.newInstance().getClass();
+                    for (int i = 0; i < typeTokenArray[0].length; i++) {
+                        typeTokenArray[0][i] = TypeToken.get(MyFieldUtils.getDeclaredField(docClass, metadataArray[0][i], true).getType());
+                    }
                 } else {
                     T standardDocument = document.newInstance();
                     standardDocument.setDateTag(MyDateUtils.format2Date(STD_DATE_FORMAT));
@@ -91,13 +94,9 @@ public final class File2EsExecutor extends AbstractExecutor {
                     standardDocument.setModifyDate(standardDocument.getCreateDate());
 
                     for (int i = 0; i < recordArray.length; i++) {
-                        String fieldName = metadataArray[0][i];
-                        if (!typeTokenMap.containsKey(fieldName)) {
-                            typeTokenMap.put(fieldName, TypeToken.get(MyFieldUtils.getDeclaredField(standardDocument.getClass(), fieldName, true).getType()));
-                        }
-                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i], typeTokenMap.get(fieldName));
+                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i], typeTokenArray[0][i]);
                         if (Objects.nonNull(obj)) {
-                            MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
+                            MyFieldUtils.writeDeclaredField(standardDocument, metadataArray[0][i], obj, true);
                         }
                     }
 
