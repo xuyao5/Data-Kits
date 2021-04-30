@@ -16,7 +16,6 @@ public abstract class BaseDocument implements Serializable {
 
     private transient String _index;
     private transient String _id;
-    private transient boolean _accept = true;
 
     //下列增删字段需要同步修改XContentSupporter.buildMapping()
     private String docId;
