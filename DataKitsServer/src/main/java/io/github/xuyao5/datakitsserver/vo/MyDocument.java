@@ -15,7 +15,7 @@ public final class MyDocument extends BaseDocument {
     private String uuid;
     private long cashAmount;
     private String desc;
-    private Date dateTime1;
+    private long dateTime1;
     private Date dateTime2;
     private int discount;
 }
