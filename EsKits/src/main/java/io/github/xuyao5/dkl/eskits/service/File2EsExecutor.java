@@ -28,7 +28,9 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.UnaryOperator;
 
@@ -67,6 +69,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         }
 
         String[][] metadataArray = new String[1][];//元数据
+        Map<String, TypeToken<?>> typeTokenMap = new ConcurrentHashMap<>();//反射Cache
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -89,7 +92,10 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                     for (int i = 0; i < recordArray.length; i++) {
                         String fieldName = metadataArray[0][i];
-                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i], TypeToken.get(MyFieldUtils.getDeclaredField(standardDocument.getClass(), fieldName, true).getType()));
+                        if (!typeTokenMap.containsKey(fieldName)) {
+                            typeTokenMap.put(fieldName, TypeToken.get(MyFieldUtils.getDeclaredField(standardDocument.getClass(), fieldName, true).getType()));
+                        }
+                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i], typeTokenMap.get(fieldName));
                         if (Objects.nonNull(obj)) {
                             MyFieldUtils.writeDeclaredField(standardDocument, fieldName, obj, true);
                         }
