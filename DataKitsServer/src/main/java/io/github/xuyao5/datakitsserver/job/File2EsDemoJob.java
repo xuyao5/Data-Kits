@@ -36,7 +36,7 @@ public final class File2EsDemoJob implements Runnable {
 //        File2EsTasks file2EsTasks = JAXB.unmarshal(ResourceUtils.getFile(CLASSPATH_URL_PREFIX + FILE2ES_CONFIG_XML), File2EsTasks.class);
 //        file2EsTasks.seek(taskId).ifPresent(File2EsExecutor.builder().build()::execute);
         //1.获取文件和索引名称
-        File2EsConfig config = File2EsConfig.of(new File("/Users/xuyao/Downloads/DISRUPTOR_100W_T_00.txt"), NEW_INDEX);
+        File2EsConfig config = File2EsConfig.of(new File("/Users/xuyao/Downloads/DISRUPTOR_10W_T_00.txt"), NEW_INDEX);
         config.setSortField(new String[]{"dateTag"});
         config.setSortOrder(new String[]{"desc"});
         log.info("获取参数[{}]", config);
