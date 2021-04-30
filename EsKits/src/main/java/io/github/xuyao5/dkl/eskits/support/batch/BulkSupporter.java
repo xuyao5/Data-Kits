@@ -15,6 +15,7 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import javax.validation.constraints.NotNull;
@@ -25,7 +26,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
-import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_TIMEOUT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -58,7 +58,7 @@ public final class BulkSupporter {
      */
     @SneakyThrows
     public boolean bulk(@NotNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
-        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request.timeout(DEFAULT_SCROLL_TIMEOUT), DEFAULT, bulkListener),
+        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request.timeout(TimeValue.MINUS_ONE), DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
                     public void beforeBulk(long executionId, BulkRequest request) {
