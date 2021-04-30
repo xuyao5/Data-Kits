@@ -39,6 +39,10 @@ public final class MergeIntoExecutor extends AbstractExecutor {
         bulkThreads = threads;
     }
 
+    public MergeIntoExecutor(@NotNull RestHighLevelClient esClient) {
+        this(esClient, 3);
+    }
+
     public <T extends BaseDocument> void upsertByScroll(@NotNull MergeIntoConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
