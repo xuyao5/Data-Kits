@@ -66,8 +66,9 @@ public final class File2EsExecutor extends AbstractExecutor {
             IndexSupporter.getInstance().create(client, config.getIndex(), numberOfDataNodes, 0, config.getSortField(), config.getSortOrder(), XContentSupporter.buildMapping(document.newInstance()));
         }
 
-        String[][] metadataArray = new String[1][];//元数据
-        TypeToken<?>[][] typeTokenArray = new TypeToken[1][];//反射Cache
+        final String[][] metadataArray = new String[1][];//元数据
+        final TypeToken<?>[][] typeTokenArray = new TypeToken[1][];//反射Cache
+        final String dateTag = MyDateUtils.format2Date(STD_DATE_FORMAT);//DateTag以开始计算时的Tag为准
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -87,7 +88,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     }
                 } else {
                     T standardDocument = document.newInstance();
-                    standardDocument.setDateTag(MyDateUtils.format2Date(STD_DATE_FORMAT));
+                    standardDocument.setDateTag(dateTag);
                     standardDocument.setSerialNo(snowflake.nextId());
                     standardDocument.setRecordMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
                     standardDocument.setCreateDate(MyDateUtils.now());
