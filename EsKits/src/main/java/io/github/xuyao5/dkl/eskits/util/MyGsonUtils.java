@@ -44,11 +44,11 @@ public final class MyGsonUtils {
         return GSON.toJson(obj);
     }
 
-    public static <T extends Serializable> T json2Obj(@NotNull String json, @NotNull TypeToken<?> typeToken) {
-        return GSON.fromJson(GSON.toJson(json), typeToken.getType());
+    public static <T extends Serializable> T deserialize(@NotNull String obj, @NotNull TypeToken<?> typeToken) {
+        return GSON.fromJson(GSON.toJson(obj), typeToken.getType());
     }
 
-    public static <T extends Serializable> T json2Obj2(@NotNull String json, @NotNull TypeToken<?> typeToken) {
+    public static <T extends Serializable> T json2Obj(@NotNull String json, @NotNull TypeToken<?> typeToken) {
         return GSON.fromJson(json, typeToken.getType());
     }
 }

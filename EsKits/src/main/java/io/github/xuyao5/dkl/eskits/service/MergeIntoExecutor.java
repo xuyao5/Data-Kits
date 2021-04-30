@@ -70,7 +70,7 @@ public final class MergeIntoExecutor extends AbstractExecutor {
                 for (SearchHit documentFields : searchHits) {
                     ringBuffer.publishEvent((standardDocument, sequence, searchHit) -> {
                         try {
-                            BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj2(searchHit.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
+                            BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj(searchHit.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
                             standardDocument.set_id(searchHit.getId());
                             standardDocument.set_index(searchHit.getIndex());
                         } catch (IllegalAccessException | InvocationTargetException ex) {

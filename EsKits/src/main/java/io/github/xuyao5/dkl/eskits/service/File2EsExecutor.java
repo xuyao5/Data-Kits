@@ -24,11 +24,9 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.UnaryOperator;
 
@@ -88,18 +86,15 @@ public final class File2EsExecutor extends AbstractExecutor {
                     }
                 } else {
                     T standardDocument = document.newInstance();
+
+                    for (int i = 0; i < recordArray.length; i++) {
+                        MyFieldUtils.writeDeclaredField(standardDocument, metadataArray[0][i], MyGsonUtils.deserialize(recordArray[i], typeTokenArray[0][i]), true);
+                    }
                     standardDocument.setDateTag(dateTag);
                     standardDocument.setSerialNo(snowflake.nextId());
                     standardDocument.setRecordMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
                     standardDocument.setCreateDate(MyDateUtils.now());
                     standardDocument.setModifyDate(standardDocument.getCreateDate());
-
-                    for (int i = 0; i < recordArray.length; i++) {
-                        Serializable obj = MyGsonUtils.json2Obj(recordArray[i], typeTokenArray[0][i]);
-                        if (Objects.nonNull(obj)) {
-                            MyFieldUtils.writeDeclaredField(standardDocument, metadataArray[0][i], obj, true);
-                        }
-                    }
 
                     function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(standardDocument)));
                 }
