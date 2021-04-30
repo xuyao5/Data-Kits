@@ -28,7 +28,6 @@ public final class MyGsonUtils {
                 .enableComplexMapKeySerialization()
                 .serializeSpecialFloatingPointValues()
                 .setDateFormat(STD_DATETIME_FORMAT.getPattern())
-                .setPrettyPrinting()
                 .create();
     }
 
