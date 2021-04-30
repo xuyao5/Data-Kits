@@ -45,8 +45,8 @@ public final class BulkSupporter {
         return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
-    public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
-        return new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(obj), XContentType.JSON).docAsUpsert(true);
+    public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj, boolean isUpsert) {
+        return new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(obj), XContentType.JSON).docAsUpsert(isUpsert);
     }
 
     public static DeleteRequest buildDeleteRequest(@NotNull String index, @NotNull String id) {
