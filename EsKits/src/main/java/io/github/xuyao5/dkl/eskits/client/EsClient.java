@@ -40,12 +40,12 @@ public final class EsClient implements Closeable {
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
         return new RestHighLevelClient(RestClient.builder(hosts)
                 .setHttpClientConfigCallback(builder -> builder
-                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * 30)//10*30
-                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * 30)//30*30
+                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * 360)//10*360
+                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * 360)//30*360
                         .setDefaultCredentialsProvider(credentialsProvider))
                 .setRequestConfigCallback(builder -> builder
-                        .setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS * 30)//1s*30
-                        .setSocketTimeout(DEFAULT_SOCKET_TIMEOUT_MILLIS * 30)));//30s*30
+                        .setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS * 360)//1s*360=6min
+                        .setSocketTimeout(DEFAULT_SOCKET_TIMEOUT_MILLIS * 360)));//30s*360=3h
     }
 
     @Override
