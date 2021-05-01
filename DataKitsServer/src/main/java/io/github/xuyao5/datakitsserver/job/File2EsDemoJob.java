@@ -60,7 +60,7 @@ public final class File2EsDemoJob implements Runnable {
             //4.迁移老索引数据
             MergeIntoConfig mergeIntoConfig = MergeIntoConfig.of(indexArray, NEW_INDEX);
             mergeIntoConfig.setQueryBuilder(QueryBuilders.boolQuery().filter(QueryBuilders.matchAllQuery()));
-            new MergeIntoExecutor(esClient, esClientConfig.getEsBulkThreads()).upsertByScroll(mergeIntoConfig, MyDocument::of, UnaryOperator.identity());
+            new MergeIntoExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(mergeIntoConfig, MyDocument::of, UnaryOperator.identity());
 
             //5.关闭老索引
             boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();

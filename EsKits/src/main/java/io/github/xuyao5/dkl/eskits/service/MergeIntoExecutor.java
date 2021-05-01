@@ -43,21 +43,11 @@ public final class MergeIntoExecutor extends AbstractExecutor {
         this(esClient, 3);
     }
 
-    public <T extends BaseDocument> void upsertByScroll(@NotNull MergeIntoConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends BaseDocument> void execute(@NotNull MergeIntoConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getTargetIndex(), standardDocument.get_id(), operator.apply(standardDocument), true)));
-
-            publish(disruptor, config.getQueryBuilder(), config.getSourceIndexArray());
-        });
-    }
-
-    public <T extends BaseDocument> void deleteByScroll(@NotNull MergeIntoConfig config, EventFactory<T> document) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
-            final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-
-            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getTargetIndex(), standardDocument.get_id())));
 
             publish(disruptor, config.getQueryBuilder(), config.getSourceIndexArray());
         });
