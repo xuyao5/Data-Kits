@@ -90,6 +90,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     for (int i = 0; i < recordArray.length; i++) {
                         MyFieldUtils.writeDeclaredField(standardDocument, metadataArray[0][i], MyGsonUtils.deserialize(recordArray[i], typeTokenArray[0][i]), true);
                     }
+                    standardDocument.setDocId(recordArray[config.getIdColumn()]);
                     standardDocument.setDateTag(dateTag);
                     standardDocument.setSerialNo(snowflake.nextId());
                     standardDocument.setRecordMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
