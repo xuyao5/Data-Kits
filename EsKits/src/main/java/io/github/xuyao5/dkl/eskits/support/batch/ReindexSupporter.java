@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.VersionType;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.ReindexRequest;
 
@@ -32,7 +33,7 @@ public final class ReindexSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull String destinationIndex, @NotNull String... sourceIndices) {
+    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String destinationIndex, @NotNull String... sourceIndices) {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
@@ -40,7 +41,8 @@ public final class ReindexSupporter {
                 .setDestOpType("create")
                 .setSourceBatchSize(DEFAULT_SCROLL_SIZE)
                 .setSlices(AUTO_SLICES)
-                .setScroll(DEFAULT_SCROLL_TIMEOUT);
+                .setScroll(DEFAULT_SCROLL_TIMEOUT)
+                .setSourceQuery(queryBuilder);
         reindexRequest.setConflicts("proceed");
         return client.reindex(reindexRequest, DEFAULT);
     }
