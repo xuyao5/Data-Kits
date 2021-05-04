@@ -47,6 +47,23 @@ public final class ReindexSupporter {
         return client.reindex(reindexRequest, DEFAULT);
     }
 
+    /**
+     * Reindex API
+     */
+    @SneakyThrows
+    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull String destinationIndex, @NotNull String... sourceIndices) {
+        ReindexRequest reindexRequest = new ReindexRequest()
+                .setSourceIndices(sourceIndices)
+                .setDestIndex(destinationIndex)
+                .setDestVersionType(VersionType.INTERNAL)
+                .setDestOpType("create")
+                .setSourceBatchSize(DEFAULT_SCROLL_SIZE)
+                .setSlices(AUTO_SLICES)
+                .setScroll(DEFAULT_SCROLL_TIMEOUT);
+        reindexRequest.setConflicts("proceed");
+        return client.reindex(reindexRequest, DEFAULT);
+    }
+
     private static class SingletonHolder {
         private static final ReindexSupporter INSTANCE = new ReindexSupporter();
     }
