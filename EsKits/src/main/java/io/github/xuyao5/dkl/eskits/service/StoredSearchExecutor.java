@@ -80,7 +80,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
             //设置别名
         }
 
-        DocumentSupporter.getInstance().index(client, SEARCH_STORED_INDEX, searchDocument);
+        DocumentSupporter.getInstance().index(client, SEARCH_STORED_INDEX, "Initial", searchDocument);
 
         //设置别名
     }

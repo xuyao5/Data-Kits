@@ -43,13 +43,6 @@ public final class XContentSupporter {
 
             builder.startObject("properties");
             {
-                builder.startObject("docId");
-                {
-                    builder.field("type", "keyword");
-                    builder.field("ignore_above", 32);
-                }
-                builder.endObject();
-
                 builder.startObject("dateTag");
                 {
                     builder.field("type", "keyword");

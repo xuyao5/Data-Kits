@@ -40,8 +40,8 @@ public final class BulkSupporter {
         return BulkSupporter.SingletonHolder.INSTANCE;
     }
 
-    public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull Serializable obj) {
-        return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
+    public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
+        return new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
     public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj, boolean isUpsert) {

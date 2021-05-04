@@ -43,8 +43,8 @@ public final class DocumentSupporter {
      * Index API
      */
     @SneakyThrows
-    public IndexResponse index(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull Serializable obj) {
-        return client.index(new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON), DEFAULT);
+    public IndexResponse index(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id, @NotNull Serializable obj) {
+        return client.index(new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(obj), XContentType.JSON), DEFAULT);
     }
 
     /**
