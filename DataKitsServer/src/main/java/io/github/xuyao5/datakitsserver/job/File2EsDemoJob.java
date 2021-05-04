@@ -3,20 +3,17 @@ package io.github.xuyao5.datakitsserver.job;
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.datakitsserver.vo.MyDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
-import io.github.xuyao5.dkl.eskits.service.MergeIntoExecutor;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
-import io.github.xuyao5.dkl.eskits.service.config.MergeIntoConfig;
+import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.function.UnaryOperator;
 
 @Slf4j
 @Component("file2EsDemoJob")
@@ -58,9 +55,7 @@ public final class File2EsDemoJob implements Runnable {
 
         if (indexArray.length > 0) {
             //4.迁移老索引数据
-            MergeIntoConfig mergeIntoConfig = MergeIntoConfig.of(indexArray, NEW_INDEX);
-            mergeIntoConfig.setQueryBuilder(QueryBuilders.boolQuery().filter(QueryBuilders.matchAllQuery()));
-            new MergeIntoExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(mergeIntoConfig, MyDocument::of, UnaryOperator.identity());
+            ReindexSupporter.getInstance().reindex(esClient, NEW_INDEX, indexArray);
 
             //5.关闭老索引
             boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.ReindexRequest;
@@ -13,8 +12,7 @@ import org.elasticsearch.index.reindex.ReindexRequest;
 import javax.validation.constraints.NotNull;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
-import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_SLICES;
-import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_SIZE;
+import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.*;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -38,11 +36,11 @@ public final class ReindexSupporter {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
-                .setDestVersionType(VersionType.EXTERNAL)
+                .setDestVersionType(VersionType.INTERNAL)
                 .setDestOpType("create")
                 .setSourceBatchSize(DEFAULT_SCROLL_SIZE)
                 .setSlices(AUTO_SLICES)
-                .setScroll(TimeValue.MINUS_ONE);
+                .setScroll(DEFAULT_SCROLL_TIMEOUT);
         reindexRequest.setConflicts("proceed");
         return client.reindex(reindexRequest, DEFAULT);
     }
