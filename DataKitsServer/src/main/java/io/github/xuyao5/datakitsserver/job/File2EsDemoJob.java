@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,7 +59,8 @@ public final class File2EsDemoJob implements Runnable {
         if (indexArray.length > 0) {
             //4.迁移老索引数据
             QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
-            ReindexSupporter.getInstance().reindex(esClient, queryBuilder, NEW_INDEX, indexArray);
+            BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, queryBuilder, NEW_INDEX, indexArray);
+            log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
 
             //5.关闭老索引
             boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
