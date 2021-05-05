@@ -36,9 +36,9 @@ public final class ModifyByQuerySupporter {
      * Update By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse updateByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, @NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
+    public BulkByScrollResponse updateByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
         UpdateByQueryRequest request = new UpdateByQueryRequest(indices)
-                .setQuery(query)
+                .setQuery(queryBuilder)
                 .setBatchSize(DEFAULT_SCROLL_SIZE)
                 .setSlices(AUTO_SLICES)
                 .setScroll(DEFAULT_SCROLL_TIMEOUT)
@@ -51,9 +51,9 @@ public final class ModifyByQuerySupporter {
      * Delete By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse deleteByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, @NotNull String... indices) {
+    public BulkByScrollResponse deleteByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
         DeleteByQueryRequest request = new DeleteByQueryRequest(indices)
-                .setQuery(query)
+                .setQuery(queryBuilder)
                 .setBatchSize(DEFAULT_SCROLL_SIZE)
                 .setSlices(AUTO_SLICES)
                 .setScroll(DEFAULT_SCROLL_TIMEOUT);
