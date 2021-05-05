@@ -37,8 +37,6 @@ public final class ReindexSupporter {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
-                .setDestVersionType(VersionType.EXTERNAL)
-//                .setDestOpType("create")
                 .setSourceBatchSize(DEFAULT_SCROLL_SIZE)
                 .setSlices(AUTO_SLICES)
                 .setScroll(DEFAULT_SCROLL_TIMEOUT)
@@ -55,8 +53,7 @@ public final class ReindexSupporter {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
-                .setDestVersionType(VersionType.INTERNAL)
-//                .setDestOpType("create")
+                .setDestVersionType(VersionType.EXTERNAL)
                 .setSourceBatchSize(DEFAULT_SCROLL_SIZE)
                 .setSlices(AUTO_SLICES)
                 .setScroll(DEFAULT_SCROLL_TIMEOUT);
