@@ -8,6 +8,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import io.github.xuyao5.dkl.eskits.context.DisruptorExceptionHandler;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
@@ -99,6 +100,8 @@ public final class File2EsExecutor extends AbstractExecutor {
                     function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
                 }
             });
+
+            disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler());
 
             publish(disruptor, config.getFile(), config.getCharset());
         });

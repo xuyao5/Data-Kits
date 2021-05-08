@@ -8,6 +8,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import io.github.xuyao5.dkl.eskits.context.DisruptorExceptionHandler;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
@@ -48,6 +49,8 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument), true)));
+
+            disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler());
 
             publish(disruptor, config.getQueryBuilder(), config.getIndex());
         });
