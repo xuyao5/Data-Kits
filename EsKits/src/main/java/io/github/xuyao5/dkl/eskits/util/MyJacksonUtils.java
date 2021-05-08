@@ -3,6 +3,7 @@ package io.github.xuyao5.dkl.eskits.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -25,6 +26,7 @@ public final class MyJacksonUtils {
 
     static {
         JACKSON = new ObjectMapper()
+                .registerModule(new Jdk8Module())
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT));
     }
