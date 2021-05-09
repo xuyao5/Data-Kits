@@ -13,17 +13,17 @@ import lombok.extern.slf4j.Slf4j;
 public final class DisruptorExceptionHandler<T> implements ExceptionHandler<T> {
 
     @Override
-    public void handleEventException(Throwable throwable, long l, T t) {
-        log.error(t.toString(), throwable);
+    public void handleEventException(Throwable ex, long sequence, T event) {
+        log.error("Exception processing: " + sequence + " " + event, ex);
     }
 
     @Override
-    public void handleOnStartException(Throwable throwable) {
-        log.error("HandleOnStartException", throwable);
+    public void handleOnStartException(Throwable ex) {
+        log.error("Exception during onStart()", ex);
     }
 
     @Override
-    public void handleOnShutdownException(Throwable throwable) {
-        log.error("HandleOnShutdownException", throwable);
+    public void handleOnShutdownException(Throwable ex) {
+        log.error("Exception during onShutdown()", ex);
     }
 }
