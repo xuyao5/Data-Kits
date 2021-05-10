@@ -61,8 +61,10 @@ public final class File2EsExecutor extends AbstractExecutor {
 
         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
 
-        if (!IndexSupporter.getInstance().exists(client, config.getIndex())) {
-            IndexSupporter.getInstance().create(client, config.getIndex(), numberOfDataNodes, 0, config.getSortField(), config.getSortOrder(), XContentSupporter.buildMapping(document.newInstance()));
+        IndexSupporter indexSupporter = IndexSupporter.getInstance();
+        final boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
+        if (!isIndexExist) {
+            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, config.getSortField(), config.getSortOrder(), XContentSupporter.buildMapping(document.newInstance()));
         }
 
         final String[][] metadataArray = new String[1][];//元数据
@@ -97,7 +99,11 @@ public final class File2EsExecutor extends AbstractExecutor {
                     standardDocument.setCreateDate(MyDateUtils.now());
                     standardDocument.setModifyDate(standardDocument.getCreateDate());
 
-                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
+                    if (!isIndexExist) {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
+                    } else {
+                        function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument), true));
+                    }
                 }
             });
 
