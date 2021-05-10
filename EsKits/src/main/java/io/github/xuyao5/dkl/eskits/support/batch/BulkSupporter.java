@@ -10,7 +10,6 @@ import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
@@ -38,14 +37,6 @@ public final class BulkSupporter {
 
     public static final BulkSupporter getInstance() {
         return BulkSupporter.SingletonHolder.INSTANCE;
-    }
-
-    public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
-        return new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
-    }
-
-    public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull Serializable obj) {
-        return new IndexRequest(index).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
     public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj, boolean isUpsert) {
