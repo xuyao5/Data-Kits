@@ -97,7 +97,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     standardDocument.setCreateDate(MyDateUtils.now());
                     standardDocument.setModifyDate(standardDocument.getCreateDate());
 
-                    function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument), true));
+                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
                 }
             });
 
