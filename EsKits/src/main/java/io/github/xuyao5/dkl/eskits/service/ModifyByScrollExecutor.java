@@ -50,7 +50,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument), true)));
 
-            disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler());
+            disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler<>());
 
             publish(disruptor, config.getQueryBuilder(), config.getIndex());
         });

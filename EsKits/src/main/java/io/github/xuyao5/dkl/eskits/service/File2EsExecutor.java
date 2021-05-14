@@ -9,6 +9,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorExceptionHandler;
+import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
@@ -25,11 +26,16 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.STD_DATE_FORMAT;
 
@@ -67,9 +73,12 @@ public final class File2EsExecutor extends AbstractExecutor {
             indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, config.getSortField(), config.getSortOrder(), XContentSupporter.buildMapping(document.newInstance()));
         }
 
+        final Class<? extends BaseDocument> docClass = document.newInstance().getClass();
         final String[][] metadataArray = new String[1][];//元数据
-        final TypeToken<?>[][] typeTokenArray = new TypeToken[1][];//反射Cache
         final String dateTag = MyDateUtils.format2Date(STD_DATE_FORMAT);//DateTag以开始计算时的Tag为准
+        final Map<String, Field> fieldMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
+        final Map<String, TypeToken<?>> typeTokenMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
+
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -81,17 +90,15 @@ public final class File2EsExecutor extends AbstractExecutor {
                 String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
                 if (standardFileLine.getLineNo() == 1) {
-                    metadataArray[0] = Arrays.stream(recordArray).map(MyCaseUtils::toCamelCaseDefault).toArray(String[]::new);
-                    typeTokenArray[0] = new TypeToken[metadataArray[0].length];
-                    Class<? extends BaseDocument> docClass = document.newInstance().getClass();
-                    for (int i = 0; i < typeTokenArray[0].length; i++) {
-                        typeTokenArray[0][i] = TypeToken.get(MyFieldUtils.getDeclaredField(docClass, metadataArray[0][i], true).getType());
-                    }
+                    metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
                 } else {
                     T standardDocument = document.newInstance();
 
-                    for (int i = 0; i < recordArray.length; i++) {
-                        MyFieldUtils.writeDeclaredField(standardDocument, metadataArray[0][i], MyGsonUtils.deserialize(recordArray[i], typeTokenArray[0][i]), true);
+                    for (int i = 0; i < metadataArray[0].length; i++) {
+                        Field field = fieldMap.get(metadataArray[0][i]);
+                        if (Objects.nonNull(field)) {
+                            MyFieldUtils.writeField(field, standardDocument, MyGsonUtils.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
+                        }
                     }
                     standardDocument.setDateTag(dateTag);
                     standardDocument.setSerialNo(snowflake.nextId());
@@ -107,7 +114,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                 }
             });
 
-            disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler());
+            disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler<>());
 
             publish(disruptor, config.getFile(), config.getCharset());
         });
