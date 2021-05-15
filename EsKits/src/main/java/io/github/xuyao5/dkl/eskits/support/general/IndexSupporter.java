@@ -60,6 +60,18 @@ public final class IndexSupporter {
      * Create Index API
      */
     @SneakyThrows
+    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, int replicas, @NotNull XContentBuilder builder) {
+        return client.indices().create(new CreateIndexRequest(index)
+                .settings(Settings.builder()
+                        .put(INDEX_NUMBER_OF_SHARDS.getName(), shards)
+                        .put(INDEX_NUMBER_OF_REPLICAS.getName(), replicas))
+                .mapping(builder), DEFAULT);
+    }
+
+    /**
+     * Create Index API
+     */
+    @SneakyThrows
     public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, int replicas, String[] sortField, String[] sortOrder, @NotNull XContentBuilder builder) {
         return client.indices().create(new CreateIndexRequest(index)
                 .settings(Settings.builder()
