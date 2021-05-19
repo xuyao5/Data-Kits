@@ -31,7 +31,7 @@ public final class File2EsDemoJob implements Runnable {
     @Override
     public void run() {
         final String ALIAS = "FILE2ES_DISRUPTOR";
-        final String NEW_INDEX = "file2es_disruptor_100w_" + System.currentTimeMillis();
+        final String NEW_INDEX = "file2es_disruptor_100w_";// + System.currentTimeMillis();
         //获取配置文件并执行
 //        File2EsTasks file2EsTasks = JAXB.unmarshal(ResourceUtils.getFile(CLASSPATH_URL_PREFIX + FILE2ES_CONFIG_XML), File2EsTasks.class);
 //        file2EsTasks.seek(taskId).ifPresent(File2EsExecutor.builder().build()::execute);
