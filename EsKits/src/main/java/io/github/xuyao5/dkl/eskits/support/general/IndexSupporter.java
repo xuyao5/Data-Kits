@@ -158,6 +158,22 @@ public final class IndexSupporter {
     }
 
     /**
+     * Put Mapping API
+     */
+    @SneakyThrows
+    public boolean putMapping(@NotNull RestHighLevelClient client, @NotNull XContentBuilder builder, @NotNull String... indices) {
+        return client.indices().putMapping(new PutMappingRequest(indices).source(builder), DEFAULT).isAcknowledged();
+    }
+
+    /**
+     * Get Mappings API
+     */
+    @SneakyThrows
+    public GetMappingsResponse getMapping(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+        return client.indices().getMapping(new GetMappingsRequest().indices(indices), DEFAULT);
+    }
+
+    /**
      * Index Aliases API
      */
     @SneakyThrows
