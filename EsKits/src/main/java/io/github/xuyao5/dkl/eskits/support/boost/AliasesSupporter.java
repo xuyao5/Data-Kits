@@ -31,9 +31,9 @@ public final class AliasesSupporter {
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (indexSupporter.exists(client, targetIndex)) {
             Set<String> indexSet = indexSupporter.getAlias(client, alias).getAliases().keySet();
-            List<IndicesAliasesRequest.AliasActions> actionsList = indexSet.stream().collect(ArrayList::new, (aliasActionsList, index) -> aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE).index(index).alias(alias)), ArrayList::addAll);
+            List<IndicesAliasesRequest.AliasActions> actionsList = indexSet.stream().filter(sourceIndex -> !targetIndex.equals(sourceIndex)).collect(ArrayList::new, (aliasActionsList, index) -> aliasActionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE).index(index).alias(alias)), ArrayList::addAll);
             actionsList.add(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index(targetIndex).alias(alias).writeIndex(true));
-            return indexSupporter.updateAliases(client, actionsList).isAcknowledged() ? indexSet.stream().toArray(String[]::new) : Strings.EMPTY_ARRAY;
+            return indexSupporter.updateAliases(client, actionsList).isAcknowledged() ? indexSet.stream().filter(sourceIndex -> !targetIndex.equals(sourceIndex)).toArray(String[]::new) : Strings.EMPTY_ARRAY;
         }
         return Strings.EMPTY_ARRAY;
     }
