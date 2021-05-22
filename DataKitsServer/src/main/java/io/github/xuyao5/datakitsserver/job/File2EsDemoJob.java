@@ -8,7 +8,6 @@ import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
-import io.github.xuyao5.dkl.eskits.util.MyRandomUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -45,7 +44,7 @@ public final class File2EsDemoJob implements Runnable {
         //2.写入索引
         new File2EsExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyDocument::of, myDocument -> {
             //自定义计算
-            myDocument.setDiscount(MyRandomUtils.getInt());
+            myDocument.setDiscount(Math.abs(Math.toIntExact(myDocument.getCashAmount() % 10)));
             return myDocument;
         });
         log.info("文件[{}]写入索引[{}]完毕", config.getFile(), NEW_INDEX);
