@@ -19,4 +19,8 @@ public final class MyRandomUtils {
     public static long getLong() {
         return RANDOM.nextLong();
     }
+
+    public static int getInt() {
+        return RANDOM.nextInt();
+    }
 }

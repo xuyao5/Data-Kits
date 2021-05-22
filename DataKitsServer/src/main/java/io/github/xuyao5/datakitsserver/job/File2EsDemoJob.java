@@ -8,6 +8,7 @@ import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
+import io.github.xuyao5.dkl.eskits.util.MyRandomUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -31,7 +32,7 @@ public final class File2EsDemoJob implements Runnable {
     @Override
     public void run() {
         final String ALIAS = "FILE2ES_DISRUPTOR";
-        final String NEW_INDEX = "file2es_disruptor_100w_";// + System.currentTimeMillis();
+        final String NEW_INDEX = "file2es_disruptor_10w";// + System.currentTimeMillis();
         //获取配置文件并执行
 //        File2EsTasks file2EsTasks = JAXB.unmarshal(ResourceUtils.getFile(CLASSPATH_URL_PREFIX + FILE2ES_CONFIG_XML), File2EsTasks.class);
 //        file2EsTasks.seek(taskId).ifPresent(File2EsExecutor.builder().build()::execute);
@@ -44,9 +45,7 @@ public final class File2EsDemoJob implements Runnable {
         //2.写入索引
         new File2EsExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyDocument::of, myDocument -> {
             //自定义计算
-            if (myDocument.getCashAmount() > 100) {
-                myDocument.setDiscount(3);
-            }
+            myDocument.setDiscount(MyRandomUtils.getInt());
             return myDocument;
         });
         log.info("文件[{}]写入索引[{}]完毕", config.getFile(), NEW_INDEX);
@@ -68,6 +67,6 @@ public final class File2EsDemoJob implements Runnable {
         }
 
         //6.升副本
-        SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, NEW_INDEX, 1);
+        SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, NEW_INDEX, 0);
     }
 }
