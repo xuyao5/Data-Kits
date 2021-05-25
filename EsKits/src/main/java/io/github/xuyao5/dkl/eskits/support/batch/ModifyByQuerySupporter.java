@@ -16,7 +16,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
-import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.*;
+import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_SLICES;
+import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_TIMEOUT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -36,10 +37,10 @@ public final class ModifyByQuerySupporter {
      * Update By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse updateByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
+    public BulkByScrollResponse updateByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String code, @NotNull Map<String, Object> params, int scrollSize, @NotNull String... indices) {
         UpdateByQueryRequest request = new UpdateByQueryRequest(indices)
                 .setQuery(queryBuilder)
-                .setBatchSize(DEFAULT_SCROLL_SIZE)
+                .setBatchSize(scrollSize)
                 .setSlices(AUTO_SLICES)
                 .setScroll(DEFAULT_SCROLL_TIMEOUT)
                 .setScript(new Script(ScriptType.INLINE, "painless", code, params));
@@ -51,10 +52,10 @@ public final class ModifyByQuerySupporter {
      * Delete By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse deleteByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
+    public BulkByScrollResponse deleteByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, int scrollSize, @NotNull String... indices) {
         DeleteByQueryRequest request = new DeleteByQueryRequest(indices)
                 .setQuery(queryBuilder)
-                .setBatchSize(DEFAULT_SCROLL_SIZE)
+                .setBatchSize(scrollSize)
                 .setSlices(AUTO_SLICES)
                 .setScroll(DEFAULT_SCROLL_TIMEOUT);
         request.setConflicts("proceed");

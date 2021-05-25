@@ -57,7 +57,7 @@ public final class File2EsDemoJob implements Runnable {
         if (indexArray.length > 0) {
             //4.迁移老索引数据
             QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
-            BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, queryBuilder, NEW_INDEX, indexArray);
+            BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, queryBuilder, NEW_INDEX, esClientConfig.getEsScrollSize(), indexArray);
             log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
 
             //5.关闭老索引

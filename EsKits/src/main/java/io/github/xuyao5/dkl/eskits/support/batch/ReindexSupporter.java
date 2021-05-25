@@ -12,7 +12,8 @@ import org.elasticsearch.index.reindex.ReindexRequest;
 import javax.validation.constraints.NotNull;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
-import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.*;
+import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_SLICES;
+import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_TIMEOUT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -32,11 +33,11 @@ public final class ReindexSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String destinationIndex, @NotNull String... sourceIndices) {
+    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String destinationIndex, int scrollSize, @NotNull String... sourceIndices) {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
-                .setSourceBatchSize(DEFAULT_SCROLL_SIZE)
+                .setSourceBatchSize(scrollSize)
                 .setSlices(AUTO_SLICES)
                 .setScroll(DEFAULT_SCROLL_TIMEOUT)
                 .setSourceQuery(queryBuilder);
@@ -48,12 +49,12 @@ public final class ReindexSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull String destinationIndex, @NotNull String... sourceIndices) {
+    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull String destinationIndex, int scrollSize, @NotNull String... sourceIndices) {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
                 .setDestOpType("create")
-                .setSourceBatchSize(DEFAULT_SCROLL_SIZE)
+                .setSourceBatchSize(scrollSize)
                 .setSlices(AUTO_SLICES)
                 .setScroll(DEFAULT_SCROLL_TIMEOUT);
         reindexRequest.setConflicts("proceed");

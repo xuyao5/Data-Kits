@@ -24,6 +24,8 @@ import javax.validation.constraints.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.UnaryOperator;
 
+import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_SIZE;
+
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 15/03/21 20:57
@@ -34,14 +36,16 @@ import java.util.function.UnaryOperator;
 public final class ModifyByScrollExecutor extends AbstractExecutor {
 
     private final int bulkThreads;
+    private final int scrollSize;
 
-    public ModifyByScrollExecutor(@NotNull RestHighLevelClient esClient, int threads) {
+    public ModifyByScrollExecutor(@NotNull RestHighLevelClient esClient, int threads, int size) {
         super(esClient);
         bulkThreads = threads;
+        scrollSize = size;
     }
 
     public ModifyByScrollExecutor(@NotNull RestHighLevelClient esClient) {
-        this(esClient, 3);
+        this(esClient, 3, DEFAULT_SCROLL_SIZE);
     }
 
     public <T extends BaseDocument> void upsertByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
@@ -81,7 +85,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
                         }
                     }, documentFields);
                 }
-            }, queryBuilder, index);
+            }, queryBuilder, scrollSize, index);
         } finally {
             disruptor.shutdown();
         }

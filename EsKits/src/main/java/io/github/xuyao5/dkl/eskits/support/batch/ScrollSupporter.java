@@ -16,7 +16,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
-import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_SIZE;
 import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_TIMEOUT;
 
 /**
@@ -37,9 +36,9 @@ public final class ScrollSupporter {
      * Search Scroll API
      */
     @SneakyThrows
-    public ClearScrollResponse scroll(@NotNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, @NotNull String... indices) {
+    public ClearScrollResponse scroll(@NotNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, int scrollSize, @NotNull String... indices) {
         final Scroll scroll = new Scroll(DEFAULT_SCROLL_TIMEOUT);
-        SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(SearchSourceBuilder.searchSource().query(queryBuilder).size(DEFAULT_SCROLL_SIZE)), DEFAULT);
+        SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(SearchSourceBuilder.searchSource().query(queryBuilder).size(scrollSize)), DEFAULT);
         String scrollId = searchResponse.getScrollId();
         SearchHit[] searchHits = searchResponse.getHits().getHits();
 

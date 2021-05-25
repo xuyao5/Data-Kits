@@ -16,4 +16,7 @@ public final class EsClientConfig {
 
     @Value("${es.bulk.threads}")
     private int esBulkThreads;
+
+    @Value("${es.scroll.size}")
+    private int esScrollSize;
 }
