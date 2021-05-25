@@ -6,6 +6,7 @@ import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -27,6 +28,7 @@ import static io.github.xuyao5.dkl.eskits.consts.SettingConst.MAPPING_DATE_FORMA
  * @apiNote XContentSupporter
  * @implNote XContentSupporter
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class XContentSupporter {
 

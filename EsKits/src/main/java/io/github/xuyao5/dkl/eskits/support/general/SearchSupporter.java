@@ -3,6 +3,7 @@ package io.github.xuyao5.dkl.eskits.support.general;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.MultiSearchRequest;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -30,6 +31,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @apiNote SearchSupporter
  * @implNote SearchSupporter
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SearchSupporter {
 

@@ -3,6 +3,7 @@ package io.github.xuyao5.dkl.eskits.support.general;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest;
@@ -49,6 +50,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @apiNote IndexSupporter
  * @implNote IndexSupporter
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IndexSupporter {
 

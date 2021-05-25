@@ -3,6 +3,7 @@ package io.github.xuyao5.dkl.eskits.support.general;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.settings.ClusterGetSettingsRequest;
@@ -21,6 +22,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
  * @apiNote ClusterSupporter
  * @implNote ClusterSupporter
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClusterSupporter {
 

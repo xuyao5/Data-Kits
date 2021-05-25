@@ -4,6 +4,7 @@ import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -32,6 +33,7 @@ import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_
  * @apiNote DocumentSupporter
  * @implNote DocumentSupporter
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DocumentSupporter {
 
