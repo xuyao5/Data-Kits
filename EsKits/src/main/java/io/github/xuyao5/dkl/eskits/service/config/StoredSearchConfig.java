@@ -12,4 +12,5 @@ import lombok.Data;
 public final class StoredSearchConfig {
 
     private final String searchName;
+    private final String index;
 }

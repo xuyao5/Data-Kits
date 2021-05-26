@@ -1,27 +1,23 @@
 package io.github.xuyao5.dkl.eskits.service;
 
-import com.google.gson.reflect.TypeToken;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardSearchSourceDocument;
 import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
+import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.SearchSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
-import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -32,56 +28,38 @@ import java.util.Objects;
 @Slf4j
 public final class StoredSearchExecutor extends AbstractExecutor {
 
-    private static final String SEARCH_STORED_INDEX = "search_stored_index";
-    private static final String SEARCH_STORED_ALIAS = "";
+    private static final String SEARCH_STORED_INDEX = "search_stored_v1";
+    private static final String SEARCH_STORED_ALIAS = "SEARCH-STORED";
+    private static final String DEFAULT_SEARCH = "default-search";
 
     public StoredSearchExecutor(RestHighLevelClient client) {
         super(client);
     }
 
     //用存储在ES中的代码来搜索
-    public void execute(@NotNull StoredSearchConfig config) {
-        String searchName = "my-search-1";
-        QueryBuilder queryBuilder = QueryBuilders.boolQuery().filter(QueryBuilders.termQuery("searchName", searchName));
-        SearchSupporter searchSupporter = SearchSupporter.getInstance();
-        SearchResponse search = searchSupporter.search(client, queryBuilder, 0, 1, SEARCH_STORED_INDEX);
-
-        if (search.getHits().getTotalHits().value > 0) {
-            SearchHit[] hits1 = search.getHits().getHits();
-            SearchHit documentFields = hits1[0];
-            StandardSearchSourceDocument standardSearchSourceDocument = MyGsonUtils.json2Obj(documentFields.getSourceAsString(), TypeToken.get(StandardSearchSourceDocument.class));
-            if (Objects.nonNull(standardSearchSourceDocument)) {
-                if ("DSL".equals(standardSearchSourceDocument.getSearchType())) {
-                    SearchTemplateResponse searchResponse = searchSupporter.searchTemplate(client, standardSearchSourceDocument.getSearchCode().toString(), Collections.EMPTY_MAP, "file2es_disruptor_1");
-                    if (searchResponse.getResponse().getHits().getTotalHits().value > 0) {
-                        System.out.println(searchResponse.getResponse().getHits().getTotalHits().value);
-                        SearchHit[] hits = searchResponse.getResponse().getHits().getHits();
-                        for (int i = 0; i < hits.length; i++) {
-                            System.out.println(hits[i]);//TODO
-                        }
-                    }
-                } else if ("SQL".equals(standardSearchSourceDocument.getSearchType())) {
-                    //封装SQL
-                } else {
-                    log.error("错误的类型:{}", standardSearchSourceDocument);
-                }
-            }
+    public SearchTemplateResponse execute(@NotNull StoredSearchConfig config) {
+        DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
+        Map<String, Object> source = documentSupporter.getSource(client, SEARCH_STORED_ALIAS, config.getSearchName()).getSource();
+        if ("DSL".equals(source.get("searchType"))) {
+            return SearchSupporter.getInstance().searchTemplate(client, source.get("searchCode").toString(), new HashMap<>(), config.getIndex());
+        } else if ("SQL".equals(source.get("searchType"))) {
+            log.warn("暂时无法支持SQL类型搜索，请使用DSL，类型为【{}】", source);
+        } else {
+            log.error("搜索类型必须为DSL或SQL，错误类型为【{}】", source);
         }
+        return null;
     }
 
     public void initial() {
         String querySource = SearchSourceBuilder.searchSource().query(QueryBuilders.matchAllQuery()).from(0).size(1000).toString();
-        StandardSearchSourceDocument searchDocument = StandardSearchSourceDocument.of("my-search-1", new StringBuilder(querySource));
-
+        StandardSearchSourceDocument searchDocument = StandardSearchSourceDocument.of(new StringBuilder(querySource));
+        searchDocument.setSearchDescription("搜索器示例");
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (!indexSupporter.exists(client, SEARCH_STORED_INDEX)) {
             int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
-            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 0, new String[]{"searchType"}, new String[]{"desc"}, XContentSupporter.getInstance().buildMapping(searchDocument));
-            //设置别名
+            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 2, XContentSupporter.getInstance().buildMapping(searchDocument));
+            AliasesSupporter.getInstance().migrate(client, SEARCH_STORED_ALIAS, SEARCH_STORED_INDEX);
         }
-
-        DocumentSupporter.getInstance().index(client, SEARCH_STORED_INDEX, "Initial", searchDocument);
-
-        //设置别名
+        DocumentSupporter.getInstance().index(client, SEARCH_STORED_ALIAS, DEFAULT_SEARCH, searchDocument);
     }
 }

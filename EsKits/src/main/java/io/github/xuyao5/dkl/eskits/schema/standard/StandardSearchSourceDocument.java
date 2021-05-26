@@ -13,9 +13,7 @@ import java.io.Serializable;
 @Data(staticConstructor = "of")
 public final class StandardSearchSourceDocument implements Serializable {
 
-    private final String searchName;
     private final StringBuilder searchCode;
-
     private String searchType = "DSL";//DSL or SQL
     private String searchDescription;//描述
 }
