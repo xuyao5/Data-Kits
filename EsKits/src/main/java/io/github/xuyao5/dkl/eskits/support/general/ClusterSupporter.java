@@ -26,7 +26,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClusterSupporter {
 
-    public static final ClusterSupporter getInstance() {
+    public static ClusterSupporter getInstance() {
         return ClusterSupporter.SingletonHolder.INSTANCE;
     }
 

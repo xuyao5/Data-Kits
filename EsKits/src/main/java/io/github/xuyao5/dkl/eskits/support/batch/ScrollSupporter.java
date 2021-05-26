@@ -28,7 +28,7 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAUL
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScrollSupporter {
 
-    public static final ScrollSupporter getInstance() {
+    public static ScrollSupporter getInstance() {
         return ScrollSupporter.SingletonHolder.INSTANCE;
     }
 

@@ -54,7 +54,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IndexSupporter {
 
-    public static final IndexSupporter getInstance() {
+    public static IndexSupporter getInstance() {
         return IndexSupporter.SingletonHolder.INSTANCE;
     }
 

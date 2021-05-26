@@ -32,7 +32,7 @@ import static io.github.xuyao5.dkl.eskits.consts.SettingConst.MAPPING_DATE_FORMA
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class XContentSupporter {
 
-    public static final XContentSupporter getInstance() {
+    public static XContentSupporter getInstance() {
         return XContentSupporter.SingletonHolder.INSTANCE;
     }
 

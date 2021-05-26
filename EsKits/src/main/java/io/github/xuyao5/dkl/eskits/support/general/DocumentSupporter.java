@@ -37,7 +37,7 @@ import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DocumentSupporter {
 
-    public static final DocumentSupporter getInstance() {
+    public static DocumentSupporter getInstance() {
         return DocumentSupporter.SingletonHolder.INSTANCE;
     }
 

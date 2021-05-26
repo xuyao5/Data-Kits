@@ -36,7 +36,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BulkSupporter {
 
-    public static final BulkSupporter getInstance() {
+    public static BulkSupporter getInstance() {
         return BulkSupporter.SingletonHolder.INSTANCE;
     }
 

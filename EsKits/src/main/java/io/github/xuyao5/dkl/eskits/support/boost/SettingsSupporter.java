@@ -21,7 +21,7 @@ import static io.github.xuyao5.dkl.eskits.consts.SettingConst.INDEX_NUMBER_OF_RE
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SettingsSupporter {
 
-    public static final SettingsSupporter getInstance() {
+    public static SettingsSupporter getInstance() {
         return SettingsSupporter.SingletonHolder.INSTANCE;
     }
 

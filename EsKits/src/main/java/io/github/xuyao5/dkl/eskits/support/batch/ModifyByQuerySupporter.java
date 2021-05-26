@@ -29,7 +29,7 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAUL
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ModifyByQuerySupporter {
 
-    public static final ModifyByQuerySupporter getInstance() {
+    public static ModifyByQuerySupporter getInstance() {
         return ModifyByQuerySupporter.SingletonHolder.INSTANCE;
     }
 

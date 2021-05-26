@@ -23,7 +23,7 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AliasesSupporter {
 
-    public static final AliasesSupporter getInstance() {
+    public static AliasesSupporter getInstance() {
         return AliasesSupporter.SingletonHolder.INSTANCE;
     }
 

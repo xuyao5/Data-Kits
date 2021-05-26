@@ -35,7 +35,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SearchSupporter {
 
-    public static final SearchSupporter getInstance() {
+    public static SearchSupporter getInstance() {
         return SearchSupporter.SingletonHolder.INSTANCE;
     }
 

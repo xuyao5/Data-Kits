@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JoinSupporter {
 
-    public static final JoinSupporter getInstance() {
+    public static JoinSupporter getInstance() {
         return JoinSupporter.SingletonHolder.INSTANCE;
     }
 
