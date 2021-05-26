@@ -37,7 +37,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    public static XContentBuilder buildMapping(@NotNull Serializable obj) {
+    public XContentBuilder buildMapping(@NotNull Serializable obj) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {
@@ -89,7 +89,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    private static void customized(@NotNull XContentBuilder builder, @NotNull Map<String, Type> declaredFieldsMap) {
+    private void customized(@NotNull XContentBuilder builder, @NotNull Map<String, Type> declaredFieldsMap) {
         for (Map.Entry<String, Type> entry : declaredFieldsMap.entrySet()) {
             builder.startObject(entry.getKey());
             {

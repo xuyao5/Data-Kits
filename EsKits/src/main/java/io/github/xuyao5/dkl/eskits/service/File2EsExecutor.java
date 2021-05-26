@@ -68,11 +68,12 @@ public final class File2EsExecutor extends AbstractExecutor {
         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
 
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
+        XContentSupporter xContentSupporter = XContentSupporter.getInstance();
         final boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
         if (!isIndexExist) {
-            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, config.getSortField(), config.getSortOrder(), XContentSupporter.buildMapping(document.newInstance()));
+            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, config.getSortField(), config.getSortOrder(), xContentSupporter.buildMapping(document.newInstance()));
         } else {
-            indexSupporter.putMapping(client, XContentSupporter.buildMapping(document.newInstance()), config.getIndex());
+            indexSupporter.putMapping(client, xContentSupporter.buildMapping(document.newInstance()), config.getIndex());
         }
 
         final Class<? extends BaseDocument> docClass = document.newInstance().getClass();
