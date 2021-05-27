@@ -56,13 +56,12 @@ public final class BulkSupporter {
      * Bulk Processor
      */
     @SneakyThrows
-    public boolean bulk(@NotNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    public void bulk(@NotNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
                     public void beforeBulk(long executionId, BulkRequest request) {
-                        int numberOfActions = request.numberOfActions();
-                        log.info("Executing bulk [{}] with {} requests", executionId, numberOfActions);
+                        log.info("Executing bulk [{}] with {} requests", executionId, request.numberOfActions());
                     }
 
                     @Override
@@ -83,7 +82,7 @@ public final class BulkSupporter {
                 .setConcurrentRequests(threads - 1)
                 .build()) {
             consumer.accept(bulkProcessor::add);
-            return bulkProcessor.awaitClose(6, TimeUnit.MINUTES);
+            log.info("BulkProcessor awaitClose is {}", bulkProcessor.awaitClose(6, TimeUnit.MINUTES));
         }
     }
 
