@@ -36,7 +36,7 @@ public final class ScrollSupporter {
      * Search Scroll API
      */
     @SneakyThrows
-    public ClearScrollResponse scroll(@NotNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, int scrollSize, @NotNull String... indices) {
+    public void scroll(@NotNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, int scrollSize, @NotNull String... indices) {
         final Scroll scroll = new Scroll(DEFAULT_SCROLL_TIMEOUT);
         SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(SearchSourceBuilder.searchSource().query(queryBuilder).size(scrollSize)), DEFAULT);
         String scrollId = searchResponse.getScrollId();
@@ -51,7 +51,8 @@ public final class ScrollSupporter {
 
         ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
         clearScrollRequest.addScrollId(scrollId);
-        return client.clearScroll(clearScrollRequest, DEFAULT);
+        ClearScrollResponse response = client.clearScroll(clearScrollRequest, DEFAULT);
+        log.info("ClearScroll succeeded is {}, released {} search contexts", response.isSucceeded(), response.getNumFreed());
     }
 
     private static class SingletonHolder {
