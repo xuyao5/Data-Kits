@@ -19,4 +19,10 @@ public final class EsClientConfig {
 
     @Value("${es.scroll.size}")
     private int esScrollSize;
+
+    @Value("${file.data.regexp}")
+    private String fileDataRegexp;
+
+    @Value("${file.confirm.regexp}")
+    private String fileConfirmRegexp;
 }
