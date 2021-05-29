@@ -1,6 +1,7 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
+import io.github.xuyao5.dkl.eskits.util.MyFilenameUtils;
 import lombok.SneakyThrows;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -12,6 +13,10 @@ import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+import java.util.Objects;
 
 public class SystemTest extends AbstractTest {
 
@@ -41,5 +46,13 @@ public class SystemTest extends AbstractTest {
                 .sort(SortBuilders.fieldSort("id").order(SortOrder.ASC))
                 .toString();
         System.out.println(querySource);
+    }
+
+    @Test
+    void test2() {
+        List<File> decisionFiles = MyFilenameUtils.getDecisionFiles(esClientConfig.getFileRootPath(), esClientConfig.getFileDataRegexp(), esClientConfig.getFileConfirmRegexp());
+        if (Objects.nonNull(decisionFiles)) {
+            decisionFiles.forEach(System.out::println);
+        }
     }
 }
