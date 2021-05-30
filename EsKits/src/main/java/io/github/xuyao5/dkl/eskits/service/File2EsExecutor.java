@@ -75,7 +75,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         XContentSupporter xContentSupporter = XContentSupporter.getInstance();
         final boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
         if (!isIndexExist) {
-            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, config.getSortField(), config.getSortOrder(), xContentSupporter.buildMapping(document.newInstance()));
+            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentSupporter.buildMapping(document.newInstance()));
         } else {
             indexSupporter.putMapping(client, xContentSupporter.buildMapping(document.newInstance()), config.getIndex());
         }
