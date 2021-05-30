@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data(staticConstructor = "of")
@@ -36,4 +37,13 @@ public final class MyDocument extends BaseDocument {
     private Date dateTime2;
 
     private int discount;
+
+    private NestedTags tags;
+
+    @Data(staticConstructor = "of")
+    public static class NestedTags implements Serializable {
+
+        private final String name;
+        private final boolean isSuccess;
+    }
 }

@@ -43,6 +43,7 @@ public final class File2EsDemoJob implements Runnable {
         new File2EsExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyDocument::of, myDocument -> {
             //自定义计算
             myDocument.setDiscount(Math.abs(Math.toIntExact(myDocument.getCashAmount() % 10)));
+            myDocument.setTags(MyDocument.NestedTags.of("YAO", true));
             return myDocument;
         });
         log.info("文件[{}]写入索引[{}]完毕", config.getFile(), NEW_INDEX);
