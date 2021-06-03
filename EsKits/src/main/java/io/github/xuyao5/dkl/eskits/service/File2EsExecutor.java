@@ -103,7 +103,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                     for (int i = 0; i < metadataArray[0].length; i++) {
                         Field field = fieldMap.get(metadataArray[0][i]);
-                        if (Objects.nonNull(field)) {
+                        if (Objects.nonNull(field) && MyStringUtils.isNotBlank(recordArray[i])) {
                             MyFieldUtils.writeField(field, standardDocument, MyGsonUtils.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
                         }
                     }
