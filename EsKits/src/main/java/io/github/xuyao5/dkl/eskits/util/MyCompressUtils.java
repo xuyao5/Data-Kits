@@ -3,15 +3,19 @@ package io.github.xuyao5.dkl.eskits.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.utils.IOUtils;
 
 import javax.validation.constraints.NotNull;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
+import java.nio.file.StandardOpenOption;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -22,14 +26,25 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyCompressUtils {
 
-    @SneakyThrows
-    public static void createTarGz(@NotNull List<Path> fileList) {
-        try (TarArchiveOutputStream outputStream = (TarArchiveOutputStream) new ArchiveStreamFactory().createArchiveOutputStream("", new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, Files.newOutputStream(Paths.get("my.tar.gz"))))) {
-            fileList.forEach(path -> {
+    public static final String TAR_GZ_FILE_EXTENSION = ".tar.gz";
+    public static final String BAK_FILE_EXTENSION = ".bak";
 
-            });
-            outputStream.closeArchiveEntry();
-            outputStream.finish();
+    @SneakyThrows
+    public static void createTarGz(@NotNull File file) {
+        try (ArchiveOutputStream outputStream = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, new BufferedOutputStream(Files.newOutputStream(Paths.get(file.toString() + TAR_GZ_FILE_EXTENSION), StandardOpenOption.CREATE))))) {
+            if (outputStream instanceof TarArchiveOutputStream) {
+                ((TarArchiveOutputStream) outputStream).setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
+                ((TarArchiveOutputStream) outputStream).setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
+
+                outputStream.putArchiveEntry(outputStream.createArchiveEntry(file, file.getName() + BAK_FILE_EXTENSION));
+                if (file.isFile()) {
+                    try (BufferedInputStream inputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
+                        IOUtils.copy(inputStream, outputStream);
+                    }
+                }
+                outputStream.closeArchiveEntry();
+                outputStream.finish();
+            }
         }
     }
 }
