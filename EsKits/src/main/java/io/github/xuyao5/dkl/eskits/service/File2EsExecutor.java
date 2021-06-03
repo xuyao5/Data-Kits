@@ -94,7 +94,7 @@ public final class File2EsExecutor extends AbstractExecutor {
                     return;
                 }
 
-                String[] recordArray = MyStringUtils.split(standardFileLine.getLineRecord(), config.getRecordSeparator());
+                String[] recordArray = MyStringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
                 if (standardFileLine.getLineNo() == 1) {
                     metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
