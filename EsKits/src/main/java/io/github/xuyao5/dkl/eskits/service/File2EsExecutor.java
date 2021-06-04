@@ -23,8 +23,8 @@ import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
 import org.elasticsearch.client.RestHighLevelClient;
 
@@ -33,7 +33,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.LongAdder;
@@ -83,6 +82,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         final Class<? extends BaseDocument> docClass = document.newInstance().getClass();
         final String[][] metadataArray = new String[1][];//元数据
         final String dateTag = MyDateUtils.format2Date(STD_DATE_FORMAT);//DateTag以开始计算时的Tag为准
+        final String batchNo = FilenameUtils.getBaseName(config.getFile().getName());
         final Map<String, Field> fieldMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
         final Map<String, TypeToken<?>> typeTokenMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
 
@@ -108,8 +108,8 @@ public final class File2EsExecutor extends AbstractExecutor {
                         }
                     }
                     standardDocument.setDateTag(dateTag);
+                    standardDocument.setBatchNo(batchNo);
                     standardDocument.setSerialNo(snowflake.nextId());
-                    standardDocument.setRecordMd5(DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT));
                     standardDocument.setCreateDate(MyDateUtils.now());
                     standardDocument.setModifyDate(standardDocument.getCreateDate());
 

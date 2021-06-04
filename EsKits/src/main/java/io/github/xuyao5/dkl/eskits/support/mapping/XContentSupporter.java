@@ -58,10 +58,10 @@ public final class XContentSupporter {
                 }
                 builder.endObject();
 
-                builder.startObject("recordMd5");
+                builder.startObject("batchNo");
                 {
                     builder.field("type", "keyword");
-                    builder.field("ignore_above", 32);
+                    builder.field("ignore_above", 256);
                 }
                 builder.endObject();
 
