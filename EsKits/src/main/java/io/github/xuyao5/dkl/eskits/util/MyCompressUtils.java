@@ -3,7 +3,6 @@ package io.github.xuyao5.dkl.eskits.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
@@ -31,20 +30,19 @@ public final class MyCompressUtils {
 
     @SneakyThrows
     public static void createTarGz(@NotNull File file) {
-        try (ArchiveOutputStream outputStream = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, new BufferedOutputStream(Files.newOutputStream(Paths.get(file.toString() + TAR_GZ_FILE_EXTENSION), StandardOpenOption.CREATE))))) {
-            if (outputStream instanceof TarArchiveOutputStream) {
-                ((TarArchiveOutputStream) outputStream).setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
-                ((TarArchiveOutputStream) outputStream).setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
+        try (TarArchiveOutputStream outputStream = (TarArchiveOutputStream) new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, new BufferedOutputStream(Files.newOutputStream(Paths.get(file.toString() + TAR_GZ_FILE_EXTENSION), StandardOpenOption.CREATE))))) {
+            outputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
+            outputStream.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
 
-                outputStream.putArchiveEntry(outputStream.createArchiveEntry(file, file.getName() + BAK_FILE_EXTENSION));
-                if (file.isFile()) {
-                    try (BufferedInputStream inputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
-                        IOUtils.copy(inputStream, outputStream);
-                    }
+            outputStream.putArchiveEntry(outputStream.createArchiveEntry(file, file.getName() + BAK_FILE_EXTENSION));
+
+            if (file.isFile()) {
+                try (BufferedInputStream inputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
+                    IOUtils.copy(inputStream, outputStream);
                 }
-                outputStream.closeArchiveEntry();
-                outputStream.finish();
             }
+            outputStream.closeArchiveEntry();
+            outputStream.finish();
         }
     }
 }
