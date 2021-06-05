@@ -18,9 +18,9 @@ public abstract class BaseDocument implements Serializable {
     private transient String _id;
 
     //下列增删字段需要同步修改XContentSupporter.buildMapping()
-    private String dateTag;//YYYYMMDD
-    private String batchNo;//批次号
-    private long serialNo;//全局唯一ID
+    private long dna;//DNA，写入永久不变
+    private String dateTag;//日期Tag
+    private String sourceTag;//数据源Tag
     private Date createDate;
     private Date modifyDate;
 }

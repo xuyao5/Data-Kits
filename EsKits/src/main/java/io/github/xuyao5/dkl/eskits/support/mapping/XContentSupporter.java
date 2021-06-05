@@ -45,6 +45,12 @@ public final class XContentSupporter {
 
             builder.startObject("properties");
             {
+                builder.startObject("dna");
+                {
+                    builder.field("type", "long");
+                }
+                builder.endObject();
+
                 builder.startObject("dateTag");
                 {
                     builder.field("type", "keyword");
@@ -52,13 +58,7 @@ public final class XContentSupporter {
                 }
                 builder.endObject();
 
-                builder.startObject("serialNo");
-                {
-                    builder.field("type", "long");
-                }
-                builder.endObject();
-
-                builder.startObject("batchNo");
+                builder.startObject("sourceTag");
                 {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 256);

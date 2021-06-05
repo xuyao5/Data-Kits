@@ -82,7 +82,7 @@ public final class File2EsExecutor extends AbstractExecutor {
         final Class<? extends BaseDocument> docClass = document.newInstance().getClass();
         final String[][] metadataArray = new String[1][];//元数据
         final String dateTag = MyDateUtils.format2Date(STD_DATE_FORMAT);//DateTag以开始计算时的Tag为准
-        final String batchNo = FilenameUtils.getBaseName(config.getFile().getName());
+        final String sourceTag = FilenameUtils.getBaseName(config.getFile().getName());
         final Map<String, Field> fieldMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
         final Map<String, TypeToken<?>> typeTokenMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
 
@@ -108,8 +108,8 @@ public final class File2EsExecutor extends AbstractExecutor {
                         }
                     }
                     standardDocument.setDateTag(dateTag);
-                    standardDocument.setBatchNo(batchNo);
-                    standardDocument.setSerialNo(snowflake.nextId());
+                    standardDocument.setSourceTag(sourceTag);
+                    standardDocument.setDna(snowflake.nextId());
                     standardDocument.setCreateDate(MyDateUtils.now());
                     standardDocument.setModifyDate(standardDocument.getCreateDate());
 
