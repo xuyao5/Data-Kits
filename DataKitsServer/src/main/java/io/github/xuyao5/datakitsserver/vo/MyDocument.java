@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data(staticConstructor = "of")
@@ -22,7 +23,7 @@ public final class MyDocument extends BaseDocument {
 
     @FileField("CASH_AMOUNT")
     @MessageField("CASH_AMOUNT")
-    private long cashAmount;
+    private BigDecimal cashAmount;
 
     @FileField("DESC")
     @MessageField("DESC")
@@ -36,7 +37,7 @@ public final class MyDocument extends BaseDocument {
     @MessageField("DATE_TIME_2")
     private Date dateTime2;
 
-    private int discount;
+    private BigDecimal discount;
 
     private NestedTags tags;
 

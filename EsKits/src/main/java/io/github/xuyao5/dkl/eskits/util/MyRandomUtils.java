@@ -23,4 +23,12 @@ public final class MyRandomUtils {
     public static int getInt() {
         return RANDOM.nextInt();
     }
+
+    public static double getDouble() {
+        return RANDOM.nextDouble();
+    }
+
+    public static float getFloat() {
+        return RANDOM.nextFloat();
+    }
 }

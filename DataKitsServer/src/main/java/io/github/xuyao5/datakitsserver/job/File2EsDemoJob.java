@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 @Slf4j
 @Component("file2EsDemoJob")
@@ -36,13 +37,13 @@ public final class File2EsDemoJob implements Runnable {
 //        File2EsTasks file2EsTasks = JAXB.unmarshal(ResourceUtils.getFile(CLASSPATH_URL_PREFIX + FILE2ES_CONFIG_XML), File2EsTasks.class);
 //        file2EsTasks.seek(taskId).ifPresent(File2EsExecutor.builder().build()::execute);
         //1.获取文件和索引名称
-        File2EsConfig config = File2EsConfig.of(new File("/Users/xuyao/Downloads/DISRUPTOR_10W_T_00.txt"), NEW_INDEX);
+        File2EsConfig config = File2EsConfig.of(new File("/Users/xuyao/Downloads/DISRUPTOR_1W_T_00.txt"), NEW_INDEX);
         log.info("获取参数[{}]", config);
 
         //2.写入索引
         new File2EsExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyDocument::of, myDocument -> {
             //自定义计算
-            myDocument.setDiscount(Math.abs(Math.toIntExact(myDocument.getCashAmount() % 10)));
+            myDocument.setDiscount(BigDecimal.TEN);
             myDocument.setTags(MyDocument.NestedTags.of("YAO", true));
             return myDocument;
         });
