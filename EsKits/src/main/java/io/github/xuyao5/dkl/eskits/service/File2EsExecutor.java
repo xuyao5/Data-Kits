@@ -107,9 +107,10 @@ public final class File2EsExecutor extends AbstractExecutor {
                             MyFieldUtils.writeField(field, standardDocument, MyGsonUtils.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
                         }
                     }
+
+                    standardDocument.setSerialNo(snowflake.nextId());
                     standardDocument.setDateTag(dateTag);
                     standardDocument.setSourceTag(sourceTag);
-                    standardDocument.setDna(snowflake.nextId());
                     standardDocument.setCreateDate(MyDateUtils.now());
                     standardDocument.setModifyDate(standardDocument.getCreateDate());
 

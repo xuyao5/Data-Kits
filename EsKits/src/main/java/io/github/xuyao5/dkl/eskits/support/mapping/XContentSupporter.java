@@ -45,7 +45,7 @@ public final class XContentSupporter {
 
             builder.startObject("properties");
             {
-                builder.startObject("dna");
+                builder.startObject("serialNo");
                 {
                     builder.field("type", "long");
                 }
