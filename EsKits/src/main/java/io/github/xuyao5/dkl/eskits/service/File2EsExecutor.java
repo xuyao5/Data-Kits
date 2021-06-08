@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
@@ -67,12 +68,12 @@ public final class File2EsExecutor extends AbstractExecutor {
         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
 
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        XContentSupporter xContentSupporter = XContentSupporter.getInstance();
-        final boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
+        XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(document.newInstance());
+        boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
         if (!isIndexExist) {
-            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentSupporter.buildMapping(document.newInstance()));
+            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder);
         } else {
-            indexSupporter.putMapping(client, xContentSupporter.buildMapping(document.newInstance()), config.getIndex());
+            indexSupporter.putMapping(client, xContentBuilder, config.getIndex());
         }
 
         final Class<? extends BaseDocument> docClass = document.newInstance().getClass();
