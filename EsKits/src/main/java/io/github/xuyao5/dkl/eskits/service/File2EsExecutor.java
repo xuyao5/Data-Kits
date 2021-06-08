@@ -130,15 +130,15 @@ public final class File2EsExecutor extends AbstractExecutor {
 
     @SneakyThrows
     private void publish(@NotNull Disruptor<StandardFileLine> disruptor, @NotNull File file, @NotNull Charset charset) {
-        LongAdder longAdder = new LongAdder();
+        final LongAdder lineCount = new LongAdder();
         RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
         try (LineIterator lineIterator = FileUtils.lineIterator(file, charset.name())) {
             while (lineIterator.hasNext()) {
-                longAdder.increment();
+                lineCount.increment();
                 ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
                     standardFileLine.setLineNo(lineNo);
                     standardFileLine.setLineRecord(lineRecord);
-                }, longAdder.intValue(), lineIterator.nextLine());
+                }, lineCount.intValue(), lineIterator.nextLine());
             }
         } finally {
             disruptor.shutdown();
