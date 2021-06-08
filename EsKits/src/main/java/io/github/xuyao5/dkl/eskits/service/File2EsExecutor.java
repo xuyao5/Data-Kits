@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -126,18 +126,18 @@ public final class File2EsExecutor extends AbstractExecutor {
 
     @SneakyThrows
     private void publish(@NotNull Disruptor<StandardFileLine> disruptor, @NotNull File file, @NotNull Charset charset) {
-        LongAdder lineCount = new LongAdder();
+        AtomicInteger lineCount = new AtomicInteger();
         RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
             while (lineIterator.hasNext()) {
-                lineCount.increment();
                 ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
                     standardFileLine.setLineNo(lineNo);
                     standardFileLine.setLineRecord(lineRecord);
-                }, lineCount.intValue(), lineIterator.nextLine());
+                }, lineCount.incrementAndGet(), lineIterator.nextLine());
             }
         } finally {
             disruptor.shutdown();
+            log.info("File2Es读取【{}】共【{}】行记录完成", file.getCanonicalPath(), lineCount.get());
         }
     }
 }
