@@ -20,7 +20,6 @@ import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -105,7 +104,7 @@ public final class File2EsExecutor extends AbstractExecutor {
 
                     standardDocument.setSerialNo(snowflake.nextId());
                     standardDocument.setDateTag(MyDateUtils.format2Date(STD_DATE_FORMAT));
-                    standardDocument.setSourceTag(FilenameUtils.getBaseName(config.getFile().getName()));
+                    standardDocument.setSourceTag(MyFilenameUtils.getBaseName(config.getFile().getName()));
                     standardDocument.setCreateDate(MyDateUtils.now());
                     standardDocument.setModifyDate(standardDocument.getCreateDate());
 
