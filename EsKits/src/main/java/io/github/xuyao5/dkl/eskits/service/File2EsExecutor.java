@@ -17,13 +17,9 @@ import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
-import io.github.xuyao5.dkl.eskits.util.MyDateUtils;
-import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
-import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
-import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
+import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -132,7 +128,7 @@ public final class File2EsExecutor extends AbstractExecutor {
     private void publish(@NotNull Disruptor<StandardFileLine> disruptor, @NotNull File file, @NotNull Charset charset) {
         LongAdder lineCount = new LongAdder();
         RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-        try (LineIterator lineIterator = FileUtils.lineIterator(file, charset.name())) {
+        try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
             while (lineIterator.hasNext()) {
                 lineCount.increment();
                 ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
