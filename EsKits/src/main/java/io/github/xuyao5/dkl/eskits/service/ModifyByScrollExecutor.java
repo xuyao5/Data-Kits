@@ -3,12 +3,12 @@ package io.github.xuyao5.dkl.eskits.service;
 import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.IgnoreExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.context.DisruptorExceptionHandler;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
@@ -54,7 +54,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
 
             disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
 
-            disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler<>());
+            disruptor.setDefaultExceptionHandler(new IgnoreExceptionHandler());
 
             publish(disruptor, config.getQueryBuilder(), config.getIndex());
         });

@@ -3,12 +3,12 @@ package io.github.xuyao5.dkl.eskits.service;
 import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.context.DisruptorExceptionHandler;
 import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
@@ -22,12 +22,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.LineIterator;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.collect.List;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -116,7 +118,24 @@ public final class File2EsExecutor extends AbstractExecutor {
                 }
             });
 
-            disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler<>());
+            disruptor.setDefaultExceptionHandler(new ExceptionHandler<StandardFileLine>() {
+                @SneakyThrows
+                @Override
+                public void handleEventException(Throwable throwable, long l, StandardFileLine standardFileLine) {
+                    log.error(l + "|" + standardFileLine.toString(), throwable);
+                    MyFileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), List.of(standardFileLine.getLineRecord()), true);
+                }
+
+                @Override
+                public void handleOnStartException(Throwable throwable) {
+                    log.error("Exception during onStart()", throwable);
+                }
+
+                @Override
+                public void handleOnShutdownException(Throwable throwable) {
+                    log.error("Exception during onShutdown()", throwable);
+                }
+            });
 
             publish(disruptor, config.getFile(), config.getCharset());
         });
