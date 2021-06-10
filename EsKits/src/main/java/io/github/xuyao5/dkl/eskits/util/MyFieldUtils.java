@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -20,19 +21,19 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MyFieldUtils extends FieldUtils {
 
-    public static Map<String, Type> getDeclaredFieldsMap(Class<?> clz) {
+    public static Map<String, Type> getDeclaredFieldsMap(@NotNull Class<?> clz) {
         return Arrays.stream(clz.getDeclaredFields()).collect(Collectors.toConcurrentMap(Field::getName, Field::getGenericType));
     }
 
-    public static Map<String, Type> getDeclaredFieldsMap(Type type) {
+    public static Map<String, Type> getDeclaredFieldsMap(@NotNull Type type) {
         return getDeclaredFieldsMap(TypeToken.get(type).getRawType());
     }
 
-    public static <T> Map<String, Type> getDeclaredFieldsMap(T obj) {
+    public static <T> Map<String, Type> getDeclaredFieldsMap(@NotNull T obj) {
         return getDeclaredFieldsMap(obj.getClass());
     }
 
-    public static boolean isSameType(TypeToken<?> typeToken, Type type) {
+    public static boolean isSameType(@NotNull TypeToken<?> typeToken, @NotNull Type type) {
         return typeToken.getType().equals(type);
     }
 }

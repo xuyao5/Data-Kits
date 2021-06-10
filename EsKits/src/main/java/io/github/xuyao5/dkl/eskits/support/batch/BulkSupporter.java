@@ -17,6 +17,7 @@ import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -39,15 +40,15 @@ public final class BulkSupporter {
         return BulkSupporter.SingletonHolder.INSTANCE;
     }
 
-    public static IndexRequest buildIndexRequest(String index, String id, Serializable obj) {
+    public static IndexRequest buildIndexRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
         return new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
     }
 
-    public static UpdateRequest buildUpdateRequest(String index, String id, Serializable obj) {
+    public static UpdateRequest buildUpdateRequest(@NotNull String index, @NotNull String id, @NotNull Serializable obj) {
         return new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(obj), XContentType.JSON).docAsUpsert(true);
     }
 
-    public static DeleteRequest buildDeleteRequest(String index, String id) {
+    public static DeleteRequest buildDeleteRequest(@NotNull String index, @NotNull String id) {
         return new DeleteRequest(index, id);
     }
 
@@ -55,7 +56,7 @@ public final class BulkSupporter {
      * Bulk Processor
      */
     @SneakyThrows
-    public void bulk(RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    public void bulk(@NotNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override
@@ -89,7 +90,7 @@ public final class BulkSupporter {
      * Bulk API
      */
     @SneakyThrows
-    public BulkResponse bulk(RestHighLevelClient client, List<DocWriteRequest<?>> requests) {
+    public BulkResponse bulk(@NotNull RestHighLevelClient client, @NotNull List<DocWriteRequest<?>> requests) {
         return client.bulk(new BulkRequest().add(requests), DEFAULT);
     }
 

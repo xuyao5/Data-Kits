@@ -11,6 +11,7 @@ import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -35,7 +36,7 @@ public final class ScrollSupporter {
      * Search Scroll API
      */
     @SneakyThrows
-    public void scroll(RestHighLevelClient client, Consumer<SearchHit[]> consumer, QueryBuilder queryBuilder, int scrollSize, String... indices) {
+    public void scroll(@NotNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NotNull QueryBuilder queryBuilder, int scrollSize, @NotNull String... indices) {
         final Scroll scroll = new Scroll(DEFAULT_SCROLL_TIMEOUT);
         SearchResponse searchResponse = client.search(new SearchRequest(indices).scroll(scroll).source(SearchSourceBuilder.searchSource().query(queryBuilder).size(scrollSize)), DEFAULT);
         String scrollId = searchResponse.getScrollId();

@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.settings.Settings;
 
+import javax.validation.constraints.NotNull;
+
 import static io.github.xuyao5.dkl.eskits.consts.SettingConst.INDEX_NUMBER_OF_REPLICAS;
 
 /**
@@ -23,7 +25,7 @@ public final class SettingsSupporter {
         return SettingsSupporter.SingletonHolder.INSTANCE;
     }
 
-    public boolean updateNumberOfReplicas(RestHighLevelClient client, String index, int replicas) {
+    public boolean updateNumberOfReplicas(@NotNull RestHighLevelClient client, @NotNull String index, int replicas) {
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         int numberOfReplicas = indexSupporter.getSettings(client, index).getIndexToSettings().get(index).getAsInt(INDEX_NUMBER_OF_REPLICAS.getName(), replicas);
         if (numberOfReplicas != replicas) {

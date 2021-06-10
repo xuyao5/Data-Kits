@@ -15,6 +15,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
     }
 
     //用存储在ES中的代码来搜索
-    public SearchTemplateResponse execute(StoredSearchConfig config) {
+    public SearchTemplateResponse execute(@NotNull StoredSearchConfig config) {
         DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
         Map<String, Object> source = documentSupporter.getSource(client, SEARCH_STORED_ALIAS, config.getSearchName()).getSource();
         if ("DSL".equals(source.get("searchType"))) {

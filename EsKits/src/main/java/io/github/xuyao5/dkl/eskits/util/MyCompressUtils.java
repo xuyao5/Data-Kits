@@ -8,6 +8,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 
+import javax.validation.constraints.NotNull;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -28,7 +29,7 @@ public final class MyCompressUtils {
     public static final String BAK_FILE_EXTENSION = ".bak";
 
     @SneakyThrows
-    public static void createTarGz(File file) {
+    public static void createTarGz(@NotNull File file) {
         try (TarArchiveOutputStream outputStream = (TarArchiveOutputStream) new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, new BufferedOutputStream(Files.newOutputStream(Paths.get(file.toString() + TAR_GZ_FILE_EXTENSION), StandardOpenOption.CREATE))))) {
             outputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
             outputStream.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);

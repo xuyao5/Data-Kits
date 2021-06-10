@@ -12,6 +12,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.cluster.RemoteInfoRequest;
 import org.elasticsearch.client.cluster.RemoteInfoResponse;
 
+import javax.validation.constraints.NotNull;
+
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 /**
@@ -32,7 +34,7 @@ public final class ClusterSupporter {
      * Cluster Get Settings API
      */
     @SneakyThrows
-    public ClusterGetSettingsResponse getSettings(RestHighLevelClient client) {
+    public ClusterGetSettingsResponse getSettings(@NotNull RestHighLevelClient client) {
         return client.cluster().getSettings(new ClusterGetSettingsRequest(), DEFAULT);
     }
 
@@ -40,7 +42,7 @@ public final class ClusterSupporter {
      * Cluster Health API
      */
     @SneakyThrows
-    public ClusterHealthResponse health(RestHighLevelClient client, String... indices) {
+    public ClusterHealthResponse health(@NotNull RestHighLevelClient client, @NotNull String... indices) {
         return client.cluster().health(new ClusterHealthRequest(indices), DEFAULT);
     }
 
@@ -48,7 +50,7 @@ public final class ClusterSupporter {
      * Remote Cluster Info API
      */
     @SneakyThrows
-    public RemoteInfoResponse remoteInfo(RestHighLevelClient client) {
+    public RemoteInfoResponse remoteInfo(@NotNull RestHighLevelClient client) {
         return client.cluster().remoteInfo(new RemoteInfoRequest(), DEFAULT);
     }
 
