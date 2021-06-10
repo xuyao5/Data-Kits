@@ -37,7 +37,6 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -63,7 +62,7 @@ public final class IndexSupporter {
      * Create Index API
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NotNull RestHighLevelClient client, @NotNull String index, int shards, int replicas, @NotNull XContentBuilder builder) {
+    public CreateIndexResponse create(RestHighLevelClient client, String index, int shards, int replicas, XContentBuilder builder) {
         return client.indices().create(new CreateIndexRequest(index)
                 .settings(Settings.builder()
                         .put(INDEX_NUMBER_OF_SHARDS.getName(), shards)
@@ -75,7 +74,7 @@ public final class IndexSupporter {
      * Delete Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse delete(@NotNull RestHighLevelClient client, @NotNull String... index) {
+    public AcknowledgedResponse delete(RestHighLevelClient client, String... index) {
         return client.indices().delete(new DeleteIndexRequest(index), DEFAULT);
     }
 
@@ -83,7 +82,7 @@ public final class IndexSupporter {
      * Index Exists API
      */
     @SneakyThrows
-    public boolean exists(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public boolean exists(RestHighLevelClient client, String... indices) {
         return client.indices().exists(new GetIndexRequest(indices), DEFAULT);
     }
 
@@ -91,7 +90,7 @@ public final class IndexSupporter {
      * Open Index API
      */
     @SneakyThrows
-    public OpenIndexResponse open(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public OpenIndexResponse open(RestHighLevelClient client, String... indices) {
         return client.indices().open(new OpenIndexRequest(indices), DEFAULT);
     }
 
@@ -99,7 +98,7 @@ public final class IndexSupporter {
      * Close Index API
      */
     @SneakyThrows
-    public AcknowledgedResponse close(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public AcknowledgedResponse close(RestHighLevelClient client, String... indices) {
         return client.indices().close(new CloseIndexRequest(indices), DEFAULT);
     }
 
@@ -107,7 +106,7 @@ public final class IndexSupporter {
      * Refresh API
      */
     @SneakyThrows
-    public RefreshResponse refresh(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public RefreshResponse refresh(RestHighLevelClient client, String... indices) {
         return client.indices().refresh(new RefreshRequest(indices), DEFAULT);
     }
 
@@ -115,7 +114,7 @@ public final class IndexSupporter {
      * Flush API
      */
     @SneakyThrows
-    public FlushResponse flush(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public FlushResponse flush(RestHighLevelClient client, String... indices) {
         return client.indices().flush(new FlushRequest(indices), DEFAULT);
     }
 
@@ -123,7 +122,7 @@ public final class IndexSupporter {
      * Clear Cache API
      */
     @SneakyThrows
-    public ClearIndicesCacheResponse clearCache(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public ClearIndicesCacheResponse clearCache(RestHighLevelClient client, String... indices) {
         return client.indices().clearCache(new ClearIndicesCacheRequest(indices), DEFAULT);
     }
 
@@ -131,7 +130,7 @@ public final class IndexSupporter {
      * Force Merge API
      */
     @SneakyThrows
-    public ForceMergeResponse forcemerge(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public ForceMergeResponse forcemerge(RestHighLevelClient client, String... indices) {
         return client.indices().forcemerge(new ForceMergeRequest(indices), DEFAULT);
     }
 
@@ -139,7 +138,7 @@ public final class IndexSupporter {
      * Rollover Index API
      */
     @SneakyThrows
-    public RolloverResponse rollover(@NotNull RestHighLevelClient client, @NotNull String alias, @NotNull String newIndexName, @NotNull int duration, @NotNull long docsCondition, @NotNull long sizeCondition) {
+    public RolloverResponse rollover(RestHighLevelClient client, String alias, String newIndexName, int duration, long docsCondition, long sizeCondition) {
         return client.indices().rollover(new RolloverRequest(alias, newIndexName)
                 .addMaxIndexAgeCondition(new TimeValue(duration, TimeUnit.DAYS))
                 .addMaxIndexDocsCondition(docsCondition)
@@ -150,7 +149,7 @@ public final class IndexSupporter {
      * Put Mapping API
      */
     @SneakyThrows
-    public boolean putMapping(@NotNull RestHighLevelClient client, @NotNull XContentBuilder builder, @NotNull String... indices) {
+    public boolean putMapping(RestHighLevelClient client, XContentBuilder builder, String... indices) {
         return client.indices().putMapping(new PutMappingRequest(indices).source(builder), DEFAULT).isAcknowledged();
     }
 
@@ -158,7 +157,7 @@ public final class IndexSupporter {
      * Get Mappings API
      */
     @SneakyThrows
-    public GetMappingsResponse getMapping(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public GetMappingsResponse getMapping(RestHighLevelClient client, String... indices) {
         return client.indices().getMapping(new GetMappingsRequest().indices(indices), DEFAULT);
     }
 
@@ -166,7 +165,7 @@ public final class IndexSupporter {
      * Index Aliases API
      */
     @SneakyThrows
-    public AcknowledgedResponse updateAliases(@NotNull RestHighLevelClient client, @NotNull List<IndicesAliasesRequest.AliasActions> aliasActionsList) {
+    public AcknowledgedResponse updateAliases(RestHighLevelClient client, List<IndicesAliasesRequest.AliasActions> aliasActionsList) {
         return client.indices().updateAliases(aliasActionsList.stream().collect(IndicesAliasesRequest::new, IndicesAliasesRequest::addAliasAction, (item1, item2) -> {
         }), DEFAULT);
     }
@@ -175,7 +174,7 @@ public final class IndexSupporter {
      * Delete Alias API
      */
     @SneakyThrows
-    public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String alias) {
+    public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias(RestHighLevelClient client, String index, String alias) {
         return client.indices().deleteAlias(new DeleteAliasRequest(index, alias), DEFAULT);
     }
 
@@ -183,7 +182,7 @@ public final class IndexSupporter {
      * Exists Alias API
      */
     @SneakyThrows
-    public boolean existsAlias(@NotNull RestHighLevelClient client, @NotNull String... aliases) {
+    public boolean existsAlias(RestHighLevelClient client, String... aliases) {
         return client.indices().existsAlias(new GetAliasesRequest(aliases), DEFAULT);
     }
 
@@ -191,7 +190,7 @@ public final class IndexSupporter {
      * Get Alias API
      */
     @SneakyThrows
-    public GetAliasesResponse getAlias(@NotNull RestHighLevelClient client, @NotNull String... aliases) {
+    public GetAliasesResponse getAlias(RestHighLevelClient client, String... aliases) {
         return client.indices().getAlias(new GetAliasesRequest(aliases), DEFAULT);
     }
 
@@ -199,7 +198,7 @@ public final class IndexSupporter {
      * Update Indices Settings API
      */
     @SneakyThrows
-    public AcknowledgedResponse putSettings(@NotNull RestHighLevelClient client, @NotNull Settings settings, @NotNull String... indices) {
+    public AcknowledgedResponse putSettings(RestHighLevelClient client, Settings settings, String... indices) {
         return client.indices().putSettings(new UpdateSettingsRequest(settings, indices), DEFAULT);
     }
 
@@ -207,7 +206,7 @@ public final class IndexSupporter {
      * Get Settings API
      */
     @SneakyThrows
-    public GetSettingsResponse getSettings(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public GetSettingsResponse getSettings(RestHighLevelClient client, String... indices) {
         return client.indices().getSettings(new GetSettingsRequest().indices(indices), DEFAULT);
     }
 
@@ -215,7 +214,7 @@ public final class IndexSupporter {
      * Put Template API
      */
     @SneakyThrows
-    public AcknowledgedResponse putTemplate(@NotNull RestHighLevelClient client, @NotNull String templateName, @NotNull List<String> indexPatterns) {
+    public AcknowledgedResponse putTemplate(RestHighLevelClient client, String templateName, List<String> indexPatterns) {
         return client.indices().putTemplate(new PutIndexTemplateRequest(templateName).patterns(indexPatterns), DEFAULT);
     }
 
@@ -223,7 +222,7 @@ public final class IndexSupporter {
      * Validate Query API
      */
     @SneakyThrows
-    public ValidateQueryResponse validateQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder builder, @NotNull String... indices) {
+    public ValidateQueryResponse validateQuery(RestHighLevelClient client, QueryBuilder builder, String... indices) {
         return client.indices().validateQuery(new ValidateQueryRequest(indices).query(builder), DEFAULT);
     }
 
@@ -231,7 +230,7 @@ public final class IndexSupporter {
      * Get Templates API
      */
     @SneakyThrows
-    public GetIndexTemplatesResponse getIndexTemplate(@NotNull RestHighLevelClient client, @NotNull String... templateNames) {
+    public GetIndexTemplatesResponse getIndexTemplate(RestHighLevelClient client, String... templateNames) {
         return client.indices().getIndexTemplate(new GetIndexTemplatesRequest(templateNames), DEFAULT);
     }
 
@@ -239,7 +238,7 @@ public final class IndexSupporter {
      * Templates Exist API
      */
     @SneakyThrows
-    public boolean existsTemplate(@NotNull RestHighLevelClient client, @NotNull String... templateNames) {
+    public boolean existsTemplate(RestHighLevelClient client, String... templateNames) {
         return client.indices().existsTemplate(new IndexTemplatesExistRequest(templateNames), DEFAULT);
     }
 
@@ -247,7 +246,7 @@ public final class IndexSupporter {
      * Get Index API
      */
     @SneakyThrows
-    public GetIndexResponse get(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public GetIndexResponse get(RestHighLevelClient client, String... indices) {
         return client.indices().get(new GetIndexRequest(indices), DEFAULT);
     }
 
@@ -255,7 +254,7 @@ public final class IndexSupporter {
      * Freeze Index API
      */
     @SneakyThrows
-    public ShardsAcknowledgedResponse freeze(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public ShardsAcknowledgedResponse freeze(RestHighLevelClient client, String... indices) {
         return client.indices().freeze(new FreezeIndexRequest(indices), DEFAULT);
     }
 
@@ -263,7 +262,7 @@ public final class IndexSupporter {
      * Unfreeze Index API
      */
     @SneakyThrows
-    public ShardsAcknowledgedResponse unfreeze(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public ShardsAcknowledgedResponse unfreeze(RestHighLevelClient client, String... indices) {
         return client.indices().unfreeze(new UnfreezeIndexRequest(indices), DEFAULT);
     }
 
@@ -271,7 +270,7 @@ public final class IndexSupporter {
      * Delete Template API
      */
     @SneakyThrows
-    public AcknowledgedResponse deleteTemplate(@NotNull RestHighLevelClient client, @NotNull String templateName) {
+    public AcknowledgedResponse deleteTemplate(RestHighLevelClient client, String templateName) {
         return client.indices().deleteTemplate(new DeleteIndexTemplateRequest(templateName), DEFAULT);
     }
 
@@ -279,7 +278,7 @@ public final class IndexSupporter {
      * Reload Search Analyzers API
      */
     @SneakyThrows
-    public ReloadAnalyzersResponse reloadAnalyzers(@NotNull RestHighLevelClient client, @NotNull String... indices) {
+    public ReloadAnalyzersResponse reloadAnalyzers(RestHighLevelClient client, String... indices) {
         return client.indices().reloadAnalyzers(new ReloadAnalyzersRequest(indices), DEFAULT);
     }
 

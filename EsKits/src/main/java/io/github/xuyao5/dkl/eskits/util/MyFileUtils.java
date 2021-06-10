@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 
-import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -26,7 +25,7 @@ import java.util.stream.StreamSupport;
 public final class MyFileUtils extends FileUtils {
 
     @SneakyThrows
-    public static List<File> getDecisionFiles(@NotNull String basePath, @NotNull String filenameRegex) {
+    public static List<File> getDecisionFiles(String basePath, String filenameRegex) {
         try (DirectoryStream<Path> dataFileStream = Files.newDirectoryStream(Paths.get(basePath), path -> Pattern.matches(filenameRegex, path.getFileName().toString()))) {
             return StreamSupport.stream(dataFileStream.spliterator(), false).map(Path::toFile).collect(Collectors.toList());
         }

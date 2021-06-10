@@ -9,8 +9,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.ReindexRequest;
 
-import javax.validation.constraints.NotNull;
-
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_SLICES;
 import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_TIMEOUT;
@@ -33,7 +31,7 @@ public final class ReindexSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String destinationIndex, int scrollSize, @NotNull String... sourceIndices) {
+    public BulkByScrollResponse reindex(RestHighLevelClient client, QueryBuilder queryBuilder, String destinationIndex, int scrollSize, String... sourceIndices) {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
@@ -49,7 +47,7 @@ public final class ReindexSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull String destinationIndex, int scrollSize, @NotNull String... sourceIndices) {
+    public BulkByScrollResponse reindex(RestHighLevelClient client, String destinationIndex, int scrollSize, String... sourceIndices) {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)

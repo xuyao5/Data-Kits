@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -37,7 +36,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    public XContentBuilder buildMapping(@NotNull Serializable obj) {
+    public XContentBuilder buildMapping(Serializable obj) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {
@@ -89,7 +88,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    private void customized(@NotNull XContentBuilder builder, @NotNull Map<String, Type> declaredFieldsMap) {
+    private void customized(XContentBuilder builder, Map<String, Type> declaredFieldsMap) {
         for (Map.Entry<String, Type> entry : declaredFieldsMap.entrySet()) {
             builder.startObject(entry.getKey());
             {

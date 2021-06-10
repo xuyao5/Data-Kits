@@ -20,7 +20,6 @@ import org.elasticsearch.client.core.GetSourceRequest;
 import org.elasticsearch.client.core.GetSourceResponse;
 import org.elasticsearch.common.xcontent.XContentType;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public final class DocumentSupporter {
      * Index API
      */
     @SneakyThrows
-    public IndexResponse index(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id, @NotNull Serializable obj) {
+    public IndexResponse index(RestHighLevelClient client, String index, String id, Serializable obj) {
         return client.index(new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(obj), XContentType.JSON), DEFAULT);
     }
 
@@ -53,7 +52,7 @@ public final class DocumentSupporter {
      * Get API
      */
     @SneakyThrows
-    public GetResponse get(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
+    public GetResponse get(RestHighLevelClient client, String index, String id) {
         return client.get(new GetRequest(index, id), DEFAULT);
     }
 
@@ -61,7 +60,7 @@ public final class DocumentSupporter {
      * Multi-Get API
      */
     @SneakyThrows
-    public MultiGetResponse multiGet(@NotNull RestHighLevelClient client, @NotNull List<MultiGetRequest.Item> items) {
+    public MultiGetResponse multiGet(RestHighLevelClient client, List<MultiGetRequest.Item> items) {
         return client.mget(items.stream().collect(MultiGetRequest::new, MultiGetRequest::add, (item1, item2) -> {
         }), DEFAULT);
     }
@@ -70,7 +69,7 @@ public final class DocumentSupporter {
      * Get Source API
      */
     @SneakyThrows
-    public GetSourceResponse getSource(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
+    public GetSourceResponse getSource(RestHighLevelClient client, String index, String id) {
         return client.getSource(new GetSourceRequest(index, id), DEFAULT);
     }
 
@@ -78,7 +77,7 @@ public final class DocumentSupporter {
      * Exists API
      */
     @SneakyThrows
-    public boolean exists(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
+    public boolean exists(RestHighLevelClient client, String index, String id) {
         return client.exists(new GetRequest(index, id).fetchSourceContext(DO_NOT_FETCH_SOURCE).storedFields("_none_"), DEFAULT);
     }
 
@@ -86,7 +85,7 @@ public final class DocumentSupporter {
      * Delete API
      */
     @SneakyThrows
-    public DeleteResponse delete(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id) {
+    public DeleteResponse delete(RestHighLevelClient client, String index, String id) {
         return client.delete(new DeleteRequest(index, id), DEFAULT);
     }
 
@@ -94,7 +93,7 @@ public final class DocumentSupporter {
      * Update API
      */
     @SneakyThrows
-    public UpdateResponse update(@NotNull RestHighLevelClient client, @NotNull String index, @NotNull String id, @NotNull Serializable json) {
+    public UpdateResponse update(RestHighLevelClient client, String index, String id, Serializable json) {
         return client.update(new UpdateRequest(index, id).docAsUpsert(true).doc(MyGsonUtils.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 

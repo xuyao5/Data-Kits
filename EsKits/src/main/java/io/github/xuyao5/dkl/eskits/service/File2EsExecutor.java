@@ -25,7 +25,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.collect.List;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
-import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -51,16 +50,16 @@ public final class File2EsExecutor extends AbstractExecutor {
 
     private final int bulkThreads;
 
-    public File2EsExecutor(@NotNull RestHighLevelClient esClient, int threads) {
+    public File2EsExecutor(RestHighLevelClient esClient, int threads) {
         super(esClient);
         bulkThreads = threads;
     }
 
-    public File2EsExecutor(@NotNull RestHighLevelClient esClient) {
+    public File2EsExecutor(RestHighLevelClient esClient) {
         this(esClient, 3);
     }
 
-    public <T extends BaseDocument> void execute(@NotNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends BaseDocument> void execute(File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         //检查文件和索引是否存在
         if (!config.getFile().exists()) {
             return;
@@ -142,7 +141,7 @@ public final class File2EsExecutor extends AbstractExecutor {
     }
 
     @SneakyThrows
-    private void publish(@NotNull Disruptor<StandardFileLine> disruptor, @NotNull File file, @NotNull Charset charset) {
+    private void publish(Disruptor<StandardFileLine> disruptor, File file, Charset charset) {
         AtomicInteger lineCount = new AtomicInteger();
         RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
         try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {

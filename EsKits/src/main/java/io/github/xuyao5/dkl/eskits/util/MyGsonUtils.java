@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.STD_DATETIME_FORMAT;
@@ -31,7 +30,7 @@ public final class MyGsonUtils {
                 .create();
     }
 
-    public static boolean isJsonString(@NotNull String json) {
+    public static boolean isJsonString(String json) {
         try {
             JsonElement jsonElement = JsonParser.parseString(json);
             return jsonElement.isJsonArray() || jsonElement.isJsonNull() || jsonElement.isJsonObject() || jsonElement.isJsonPrimitive();
@@ -40,15 +39,15 @@ public final class MyGsonUtils {
         }
     }
 
-    public static <T extends Serializable> String obj2Json(@NotNull T obj) {
+    public static <T extends Serializable> String obj2Json(T obj) {
         return GSON.toJson(obj);
     }
 
-    public static <T extends Serializable> T deserialize(@NotNull String obj, @NotNull TypeToken<?> typeToken) {
+    public static <T extends Serializable> T deserialize(String obj, TypeToken<?> typeToken) {
         return GSON.fromJson(GSON.toJson(obj), typeToken.getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NotNull String json, @NotNull TypeToken<?> typeToken) {
+    public static <T extends Serializable> T json2Obj(String json, TypeToken<?> typeToken) {
         return GSON.fromJson(json, typeToken.getType());
     }
 }

@@ -20,7 +20,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 
-import javax.validation.constraints.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.UnaryOperator;
 
@@ -38,17 +37,17 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
     private final int bulkThreads;
     private final int scrollSize;
 
-    public ModifyByScrollExecutor(@NotNull RestHighLevelClient esClient, int threads, int size) {
+    public ModifyByScrollExecutor(RestHighLevelClient esClient, int threads, int size) {
         super(esClient);
         bulkThreads = threads;
         scrollSize = size;
     }
 
-    public ModifyByScrollExecutor(@NotNull RestHighLevelClient esClient) {
+    public ModifyByScrollExecutor(RestHighLevelClient esClient) {
         this(esClient, 3, DEFAULT_SCROLL_SIZE);
     }
 
-    public <T extends BaseDocument> void upsertByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends BaseDocument> void upsertByScroll(ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -60,7 +59,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         });
     }
 
-    public <T extends BaseDocument> void deleteByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document) {
+    public <T extends BaseDocument> void deleteByScroll(ModifyByScrollConfig config, EventFactory<T> document) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -70,7 +69,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         });
     }
 
-    private void publish(@NotNull Disruptor<? extends BaseDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String index) {
+    private void publish(Disruptor<? extends BaseDocument> disruptor, QueryBuilder queryBuilder, String index) {
         RingBuffer<? extends BaseDocument> ringBuffer = disruptor.start();
         try {
             ScrollSupporter.getInstance().scroll(client, searchHits -> {

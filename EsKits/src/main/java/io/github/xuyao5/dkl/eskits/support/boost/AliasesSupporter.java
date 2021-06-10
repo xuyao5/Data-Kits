@@ -8,7 +8,6 @@ import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.Strings;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +26,7 @@ public final class AliasesSupporter {
         return AliasesSupporter.SingletonHolder.INSTANCE;
     }
 
-    public String[] migrate(@NotNull RestHighLevelClient client, @NotNull String alias, @NotNull String targetIndex) {
+    public String[] migrate(RestHighLevelClient client, String alias, String targetIndex) {
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (indexSupporter.exists(client, targetIndex)) {
             Set<String> indexSet = indexSupporter.getAlias(client, alias).getAliases().keySet();

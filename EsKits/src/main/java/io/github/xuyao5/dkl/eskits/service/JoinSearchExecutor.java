@@ -6,8 +6,6 @@ import io.github.xuyao5.dkl.eskits.support.batch.ScrollSupporter;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 
-import javax.validation.constraints.NotNull;
-
 import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_SIZE;
 
 /**
@@ -21,16 +19,16 @@ public final class JoinSearchExecutor extends AbstractExecutor {
 
     private final int scrollSize;
 
-    public JoinSearchExecutor(@NotNull RestHighLevelClient client, int size) {
+    public JoinSearchExecutor(RestHighLevelClient client, int size) {
         super(client);
         scrollSize = size;
     }
 
-    public JoinSearchExecutor(@NotNull RestHighLevelClient client) {
+    public JoinSearchExecutor(RestHighLevelClient client) {
         this(client, DEFAULT_SCROLL_SIZE);
     }
 
-    public void innerJoin(@NotNull JoinSearchConfig config) {
+    public void innerJoin(JoinSearchConfig config) {
         ScrollSupporter scrollSupporter = ScrollSupporter.getInstance();
         scrollSupporter.scroll(client, searchHits -> {
             System.out.println(searchHits.length);
