@@ -18,6 +18,8 @@ public class JoinSearchDemoJob implements Runnable {
 
     @Override
     public void run() {
-        new JoinSearchExecutor(esClient).innerJoin(JoinSearchConfig.of("FILE2ES_DISRUPTOR_LEFT", "FILE2ES_DISRUPTOR_RIGHT"));
+        new JoinSearchExecutor(esClient).innerJoin(JoinSearchConfig.of("FILE2ES_DISRUPTOR_LEFT", "FILE2ES_DISRUPTOR_RIGHT"), idList -> {
+            idList.forEach(System.out::println);
+        });
     }
 }
