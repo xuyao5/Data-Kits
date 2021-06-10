@@ -2,11 +2,11 @@ package io.github.xuyao5.dkl.eskits.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Locale;
 
@@ -28,25 +28,25 @@ public final class MyDateUtils extends DateFormatUtils {
         return new Date();
     }
 
-    public static String format2Date(@NotNull FastDateFormat format) {
+    public static String format2Date(@NonNull FastDateFormat format) {
         return format2Date(now(), format);
     }
 
-    public static String format2Date(@NotNull Date date, @NotNull FastDateFormat format) {
+    public static String format2Date(@NonNull Date date, @NonNull FastDateFormat format) {
         return format(date, format.getPattern(), Locale.ROOT);
     }
 
     @SneakyThrows
-    public static Date parse2Date(@NotNull FastDateFormat format) {
+    public static Date parse2Date(@NonNull FastDateFormat format) {
         return parse2Date(format2Date(format), format);
     }
 
     @SneakyThrows
-    public static Date parse2Date(@NotNull String date, @NotNull FastDateFormat format) {
+    public static Date parse2Date(@NonNull String date, @NonNull FastDateFormat format) {
         return parseDate(date, Locale.ROOT, format.getPattern());
     }
 
-    public static Date parse2Date(@NotNull long date) {
+    public static Date parse2Date(@NonNull long date) {
         return new Date(date);
     }
 }

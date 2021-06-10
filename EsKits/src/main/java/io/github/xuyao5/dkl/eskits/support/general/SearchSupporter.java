@@ -2,6 +2,7 @@ package io.github.xuyao5.dkl.eskits.support.general;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.MultiSearchRequest;
@@ -19,7 +20,6 @@ import org.elasticsearch.script.mustache.SearchTemplateRequest;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +43,7 @@ public final class SearchSupporter {
      * Search API
      */
     @SneakyThrows
-    public SearchResponse search(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, int from, int size, @NotNull String... indices) {
+    public SearchResponse search(@NonNull RestHighLevelClient client, @NonNull QueryBuilder query, int from, int size, @NonNull String... indices) {
         return client.search(new SearchRequest(indices).source(SearchSourceBuilder.searchSource().query(query).from(from).size(size)), DEFAULT);
     }
 
@@ -51,7 +51,7 @@ public final class SearchSupporter {
      * Multi-Search API
      */
     @SneakyThrows
-    public MultiSearchResponse multiSearch(@NotNull RestHighLevelClient client, @NotNull List<SearchRequest> searchRequests) {
+    public MultiSearchResponse multiSearch(@NonNull RestHighLevelClient client, @NonNull List<SearchRequest> searchRequests) {
         return client.msearch(searchRequests.stream().collect(MultiSearchRequest::new, MultiSearchRequest::add, (item1, item2) -> {
         }), DEFAULT);
     }
@@ -60,7 +60,7 @@ public final class SearchSupporter {
      * Search Template API
      */
     @SneakyThrows
-    public SearchTemplateResponse searchTemplate(@NotNull RestHighLevelClient client, @NotNull String code, @NotNull Map<String, Object> params, @NotNull String... indices) {
+    public SearchTemplateResponse searchTemplate(@NonNull RestHighLevelClient client, @NonNull String code, @NonNull Map<String, Object> params, @NonNull String... indices) {
         SearchTemplateRequest request = new SearchTemplateRequest();
         request.setRequest(new SearchRequest(indices));
         request.setScriptType(ScriptType.INLINE);
@@ -73,7 +73,7 @@ public final class SearchSupporter {
      * Multi Search Template API
      */
     @SneakyThrows
-    public MultiSearchTemplateResponse multiSearchTemplate(@NotNull RestHighLevelClient client, @NotNull List<SearchTemplateRequest> searchTemplateRequests) {
+    public MultiSearchTemplateResponse multiSearchTemplate(@NonNull RestHighLevelClient client, @NonNull List<SearchTemplateRequest> searchTemplateRequests) {
         return client.msearchTemplate(searchTemplateRequests.stream().collect(MultiSearchTemplateRequest::new, MultiSearchTemplateRequest::add, (item1, item2) -> {
         }), DEFAULT);
     }
@@ -82,7 +82,7 @@ public final class SearchSupporter {
      * Count API
      */
     @SneakyThrows
-    public CountResponse count(@NotNull RestHighLevelClient client, @NotNull QueryBuilder query, @NotNull String... indices) {
+    public CountResponse count(@NonNull RestHighLevelClient client, @NonNull QueryBuilder query, @NonNull String... indices) {
         return client.count(new CountRequest(indices).query(query), DEFAULT);
     }
 

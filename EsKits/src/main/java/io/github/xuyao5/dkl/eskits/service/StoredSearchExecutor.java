@@ -9,13 +9,13 @@ import io.github.xuyao5.dkl.eskits.support.general.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.SearchSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
     }
 
     //用存储在ES中的代码来搜索
-    public SearchTemplateResponse execute(@NotNull StoredSearchConfig config) {
+    public SearchTemplateResponse execute(@NonNull StoredSearchConfig config) {
         DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
         Map<String, Object> source = documentSupporter.getSource(client, SEARCH_STORED_ALIAS, config.getSearchName()).getSource();
         if ("DSL".equals(source.get("searchType"))) {

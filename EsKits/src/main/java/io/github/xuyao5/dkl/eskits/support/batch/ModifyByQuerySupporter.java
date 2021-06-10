@@ -2,6 +2,7 @@ package io.github.xuyao5.dkl.eskits.support.batch;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -12,7 +13,6 @@ import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
 
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
@@ -37,7 +37,7 @@ public final class ModifyByQuerySupporter {
      * Update By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse updateByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String code, @NotNull Map<String, Object> params, int scrollSize, @NotNull String... indices) {
+    public BulkByScrollResponse updateByQuery(@NonNull RestHighLevelClient client, @NonNull QueryBuilder queryBuilder, @NonNull String code, @NonNull Map<String, Object> params, int scrollSize, @NonNull String... indices) {
         UpdateByQueryRequest request = new UpdateByQueryRequest(indices)
                 .setQuery(queryBuilder)
                 .setBatchSize(scrollSize)
@@ -52,7 +52,7 @@ public final class ModifyByQuerySupporter {
      * Delete By Query API
      */
     @SneakyThrows
-    public BulkByScrollResponse deleteByQuery(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, int scrollSize, @NotNull String... indices) {
+    public BulkByScrollResponse deleteByQuery(@NonNull RestHighLevelClient client, @NonNull QueryBuilder queryBuilder, int scrollSize, @NonNull String... indices) {
         DeleteByQueryRequest request = new DeleteByQueryRequest(indices)
                 .setQuery(queryBuilder)
                 .setBatchSize(scrollSize)

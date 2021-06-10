@@ -2,14 +2,13 @@ package io.github.xuyao5.dkl.eskits.support.batch;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.ReindexRequest;
-
-import javax.validation.constraints.NotNull;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.AUTO_SLICES;
@@ -33,7 +32,7 @@ public final class ReindexSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull QueryBuilder queryBuilder, @NotNull String destinationIndex, int scrollSize, @NotNull String... sourceIndices) {
+    public BulkByScrollResponse reindex(@NonNull RestHighLevelClient client, @NonNull QueryBuilder queryBuilder, @NonNull String destinationIndex, int scrollSize, @NonNull String... sourceIndices) {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)
@@ -49,7 +48,7 @@ public final class ReindexSupporter {
      * Reindex API
      */
     @SneakyThrows
-    public BulkByScrollResponse reindex(@NotNull RestHighLevelClient client, @NotNull String destinationIndex, int scrollSize, @NotNull String... sourceIndices) {
+    public BulkByScrollResponse reindex(@NonNull RestHighLevelClient client, @NonNull String destinationIndex, int scrollSize, @NonNull String... sourceIndices) {
         ReindexRequest reindexRequest = new ReindexRequest()
                 .setSourceIndices(sourceIndices)
                 .setDestIndex(destinationIndex)

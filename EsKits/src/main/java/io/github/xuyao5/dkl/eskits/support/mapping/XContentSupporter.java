@@ -5,12 +5,12 @@ import io.github.xuyao5.dkl.eskits.schema.range.*;
 import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -37,7 +37,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    public XContentBuilder buildMapping(@NotNull Serializable obj) {
+    public XContentBuilder buildMapping(@NonNull Serializable obj) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {
@@ -89,7 +89,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    private void customized(@NotNull XContentBuilder builder, @NotNull Map<String, Type> declaredFieldsMap) {
+    private void customized(@NonNull XContentBuilder builder, @NonNull Map<String, Type> declaredFieldsMap) {
         for (Map.Entry<String, Type> entry : declaredFieldsMap.entrySet()) {
             builder.startObject(entry.getKey());
             {

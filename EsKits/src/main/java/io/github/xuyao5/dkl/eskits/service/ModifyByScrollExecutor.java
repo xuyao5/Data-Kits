@@ -14,13 +14,13 @@ import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ScrollSupporter;
 import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 
-import javax.validation.constraints.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.UnaryOperator;
 
@@ -38,17 +38,17 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
     private final int bulkThreads;
     private final int scrollSize;
 
-    public ModifyByScrollExecutor(@NotNull RestHighLevelClient esClient, int threads, int size) {
+    public ModifyByScrollExecutor(@NonNull RestHighLevelClient esClient, int threads, int size) {
         super(esClient);
         bulkThreads = threads;
         scrollSize = size;
     }
 
-    public ModifyByScrollExecutor(@NotNull RestHighLevelClient esClient) {
+    public ModifyByScrollExecutor(@NonNull RestHighLevelClient esClient) {
         this(esClient, 3, DEFAULT_SCROLL_SIZE);
     }
 
-    public <T extends BaseDocument> void upsertByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends BaseDocument> void upsertByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -60,7 +60,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         });
     }
 
-    public <T extends BaseDocument> void deleteByScroll(@NotNull ModifyByScrollConfig config, EventFactory<T> document) {
+    public <T extends BaseDocument> void deleteByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document) {
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
             final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
@@ -70,7 +70,7 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
         });
     }
 
-    private void publish(@NotNull Disruptor<? extends BaseDocument> disruptor, @NotNull QueryBuilder queryBuilder, @NotNull String index) {
+    private void publish(@NonNull Disruptor<? extends BaseDocument> disruptor, @NonNull QueryBuilder queryBuilder, @NonNull String index) {
         RingBuffer<? extends BaseDocument> ringBuffer = disruptor.start();
         try {
             ScrollSupporter.getInstance().scroll(client, searchHits -> {

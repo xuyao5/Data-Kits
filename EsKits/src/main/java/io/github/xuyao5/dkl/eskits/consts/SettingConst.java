@@ -1,9 +1,9 @@
 package io.github.xuyao5.dkl.eskits.consts;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -30,7 +30,7 @@ public enum SettingConst {
     @Getter
     private final String name;
 
-    public static Optional<SettingConst> getSettingByName(@NotNull String name) {
+    public static Optional<SettingConst> getSettingByName(@NonNull String name) {
         return Arrays.stream(SettingConst.values()).filter(settingConst -> settingConst.name.equalsIgnoreCase(name)).findAny();
     }
 }
