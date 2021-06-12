@@ -1,13 +1,14 @@
 package io.github.xuyao5.dkl.eskits.service;
 
-import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.Universal2EsConfig;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 
-import java.util.function.UnaryOperator;
+import java.io.Serializable;
+import java.util.function.Function;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -22,7 +23,7 @@ public final class Universal2EsExecutor extends AbstractExecutor {
         super(client);
     }
 
-    public <T> void execute(@NonNull Universal2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends Serializable, R extends BaseDocument> void execute(@NonNull Universal2EsConfig config, Function<T, R> operator) {
 
     }
 }
