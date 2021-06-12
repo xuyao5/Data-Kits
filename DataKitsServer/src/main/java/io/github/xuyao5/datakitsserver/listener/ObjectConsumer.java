@@ -10,8 +10,6 @@ public class ObjectConsumer implements RocketMQListener<Object> {
 
     @Override
     public void onMessage(Object message) {
-        // 重写消息处理方法
-        log.info("------- StringConsumer received:{} \n", message);
-        // TODO 对消息进行处理，比如写入数据
+        log.info("Consumer received:{}", message);
     }
 }
