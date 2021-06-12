@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
-import io.github.xuyao5.datakitsserver.vo.MyDocument;
+import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
@@ -41,11 +41,11 @@ public final class File2EsDemoJob implements Runnable {
         log.info("获取参数[{}]", config);
 
         //2.写入索引
-        new File2EsExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyDocument::of, myDocument -> {
+        new File2EsExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyFileDocument::of, myFileDocument -> {
             //自定义计算
-            myDocument.setDiscount(BigDecimal.TEN);
-            myDocument.setTags(MyDocument.NestedTags.of("YAO", true));
-            return myDocument;
+            myFileDocument.setDiscount(BigDecimal.TEN);
+            myFileDocument.setTags(MyFileDocument.NestedTags.of("YAO", true));
+            return myFileDocument;
         });
         log.info("文件[{}]写入索引[{}]完毕", config.getFile(), NEW_INDEX);
 

@@ -13,7 +13,7 @@ import java.util.Date;
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public final class MyDocument extends BaseDocument {
+public final class MyFileDocument extends BaseDocument {
 
     //UUID          CASH_AMOUNT          DESC          DATE_TIME_1          DATE_TIME_2
     @FileField("UUID")

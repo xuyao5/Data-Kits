@@ -9,5 +9,5 @@ import lombok.Data;
  * @implNote Message2EsConfig
  */
 @Data(staticConstructor = "of")
-public final class Message2EsConfig {
+public final class Universal2EsConfig {
 }
