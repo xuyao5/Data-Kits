@@ -22,6 +22,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAULT_SCROLL_SIZE;
@@ -68,6 +69,12 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
 
             publish(disruptor, config.getQueryBuilder(), config.getIndex());
         });
+    }
+
+    public <T extends BaseDocument> void computeByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, Consumer<T> consumer) {
+        final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> consumer.accept(standardDocument));
+        publish(disruptor, config.getQueryBuilder(), config.getIndex());
     }
 
     private void publish(@NonNull Disruptor<? extends BaseDocument> disruptor, @NonNull QueryBuilder queryBuilder, @NonNull String index) {
