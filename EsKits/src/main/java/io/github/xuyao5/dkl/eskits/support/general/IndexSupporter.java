@@ -29,17 +29,11 @@ import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.ShardsAcknowledgedResponse;
 import org.elasticsearch.client.indices.*;
-import org.elasticsearch.client.indices.rollover.RolloverRequest;
-import org.elasticsearch.client.indices.rollover.RolloverResponse;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.unit.ByteSizeUnit;
-import org.elasticsearch.common.unit.ByteSizeValue;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static io.github.xuyao5.dkl.eskits.consts.SettingConst.INDEX_NUMBER_OF_REPLICAS;
 import static io.github.xuyao5.dkl.eskits.consts.SettingConst.INDEX_NUMBER_OF_SHARDS;
@@ -133,17 +127,6 @@ public final class IndexSupporter {
     @SneakyThrows
     public ForceMergeResponse forcemerge(@NonNull RestHighLevelClient client, @NonNull String... indices) {
         return client.indices().forcemerge(new ForceMergeRequest(indices), DEFAULT);
-    }
-
-    /**
-     * Rollover Index API
-     */
-    @SneakyThrows
-    public RolloverResponse rollover(@NonNull RestHighLevelClient client, @NonNull String alias, @NonNull String newIndexName, @NonNull int duration, @NonNull long docsCondition, @NonNull long sizeCondition) {
-        return client.indices().rollover(new RolloverRequest(alias, newIndexName)
-                .addMaxIndexAgeCondition(new TimeValue(duration, TimeUnit.DAYS))
-                .addMaxIndexDocsCondition(docsCondition)
-                .addMaxIndexSizeCondition(new ByteSizeValue(sizeCondition, ByteSizeUnit.GB)), DEFAULT);
     }
 
     /**
