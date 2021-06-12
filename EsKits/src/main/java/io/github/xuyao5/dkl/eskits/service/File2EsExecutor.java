@@ -68,8 +68,10 @@ public final class File2EsExecutor extends AbstractExecutor {
 
         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
 
+        Class<? extends BaseDocument> docClass = document.newInstance().getClass();
+
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(document.newInstance());
+        XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
         boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
         if (!isIndexExist) {
             indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder);
@@ -77,7 +79,6 @@ public final class File2EsExecutor extends AbstractExecutor {
             indexSupporter.putMapping(client, xContentBuilder, config.getIndex());
         }
 
-        Class<? extends BaseDocument> docClass = document.newInstance().getClass();
         String[][] metadataArray = new String[1][];//元数据
         Map<String, Field> fieldMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
         Map<String, TypeToken<?>> typeTokenMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));

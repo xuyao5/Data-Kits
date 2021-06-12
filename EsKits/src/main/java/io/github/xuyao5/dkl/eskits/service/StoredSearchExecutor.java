@@ -57,7 +57,7 @@ public final class StoredSearchExecutor extends AbstractExecutor {
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (!indexSupporter.exists(client, SEARCH_STORED_INDEX)) {
             int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
-            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 2, XContentSupporter.getInstance().buildMapping(searchDocument));
+            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 2, XContentSupporter.getInstance().buildMapping(StandardSearchSourceDocument.class));
             AliasesSupporter.getInstance().migrate(client, SEARCH_STORED_ALIAS, SEARCH_STORED_INDEX);
         }
         DocumentSupporter.getInstance().index(client, SEARCH_STORED_ALIAS, DEFAULT_SEARCH, searchDocument);

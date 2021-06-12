@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -37,7 +36,7 @@ public final class XContentSupporter {
     }
 
     @SneakyThrows
-    public XContentBuilder buildMapping(@NonNull Serializable obj) {
+    public XContentBuilder buildMapping(@NonNull Class<?> clz) {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {
@@ -80,7 +79,7 @@ public final class XContentSupporter {
                 builder.endObject();
 
                 //定义继承自BaseDocument的自定义文档类型
-                customized(builder, MyFieldUtils.getDeclaredFieldsMap(obj));
+                customized(builder, MyFieldUtils.getDeclaredFieldsMap(clz));
             }
             builder.endObject();
         }

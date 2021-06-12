@@ -29,10 +29,6 @@ public final class MyFieldUtils extends FieldUtils {
         return getDeclaredFieldsMap(TypeToken.get(type).getRawType());
     }
 
-    public static <T> Map<String, Type> getDeclaredFieldsMap(@NonNull T obj) {
-        return getDeclaredFieldsMap(obj.getClass());
-    }
-
     public static boolean isSameType(@NonNull TypeToken<?> typeToken, @NonNull Type type) {
         return typeToken.getType().equals(type);
     }
