@@ -14,6 +14,21 @@
     <packaging>pom</packaging>
     <name>Data Kits</name>
     <description>Data Kits Project without Spring Boot</description>
+    <url>https://github.com/xuyao5/Data-Kits</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Yao.XU</name>
+            <email>xuyao5@gmail.com</email>
+            <organization>Ping An Bank</organization>
+            <organizationUrl>https://bank.pingan.com/</organizationUrl>
+        </developer>
+    </developers>
 
     <modules>
         <module>EsKitsLibrary</module>
