@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.xuyao5</groupId>
-        <artifactId>data-kits-library</artifactId>
+        <artifactId>data-kits</artifactId>
         <version>0.1</version>
     </parent>
     <artifactId>data-kits-server</artifactId>
     <packaging>jar</packaging>
-    <name>DataKits Server</name>
+    <name>Data Kits Server</name>
 
     <dependencies>
         <dependency>
