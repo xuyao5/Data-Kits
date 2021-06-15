@@ -56,10 +56,6 @@ public final class File2EsExecutor extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public File2EsExecutor(@NonNull RestHighLevelClient esClient) {
-        this(esClient, 3);
-    }
-
     public <T extends BaseDocument> void execute(@NonNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         //检查文件和索引是否存在
         if (!config.getFile().exists()) {
