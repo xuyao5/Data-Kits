@@ -31,9 +31,7 @@ public final class MySQL2EsExecutor extends AbstractExecutor {
                 EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
         );
         client.setEventDeserializer(eventDeserializer);
-        client.registerEventListener(event -> {
-
-        });
+        client.registerEventListener(event -> log.info("{}", event));
         client.connect();
     }
 }
