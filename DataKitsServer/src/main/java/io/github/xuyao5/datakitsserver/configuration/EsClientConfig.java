@@ -19,4 +19,16 @@ public final class EsClientConfig {
 
     @Value("${es.scroll.size}")
     private int esScrollSize;
+
+    @Value("${mysql.binlog.host}")
+    private String mysqlBinlogHost;
+
+    @Value("${mysql.binlog.port}")
+    private int mysqlBinlogPort;
+
+    @Value("${mysql.binlog.username}")
+    private String mysqlBinlogUsername;
+
+    @Value("${mysql.binlog.password}")
+    private String mysqlBinlogPassword;
 }
