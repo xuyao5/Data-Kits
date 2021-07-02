@@ -26,6 +26,9 @@ public final class EsClientConfig {
     @Value("${mysql.binlog.port}")
     private int mysqlBinlogPort;
 
+    @Value("${mysql.binlog.schema}")
+    private String schema;
+
     @Value("${mysql.binlog.username}")
     private String mysqlBinlogUsername;
 

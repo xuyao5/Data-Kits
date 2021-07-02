@@ -18,7 +18,7 @@ public class MySQL2EsDemoJob implements Runnable {
 
     @Override
     public void run() {
-        MySQL2EsExecutor mySQL2EsExecutor = new MySQL2EsExecutor(esClient, esClientConfig.getMysqlBinlogHost(), esClientConfig.getMysqlBinlogPort(), esClientConfig.getMysqlBinlogUsername(), esClientConfig.getMysqlBinlogPassword());
+        MySQL2EsExecutor mySQL2EsExecutor = new MySQL2EsExecutor(esClient, esClientConfig.getMysqlBinlogHost(), esClientConfig.getMysqlBinlogPort(), esClientConfig.getSchema(), esClientConfig.getMysqlBinlogUsername(), esClientConfig.getMysqlBinlogPassword());
         mySQL2EsExecutor.listen(MySQL2EsConfig.of());
     }
 }
