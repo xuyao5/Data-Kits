@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.helper.DisruptorHelper;
+import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.util.MyCompressUtils;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
@@ -53,15 +53,15 @@ public class SystemTest extends AbstractTest {
     }
 
     void disruptor() {
-        new DisruptorHelper<StandardFileLine>().<Integer, String>process(consumer -> {
+        new DisruptorBoost<StandardFileLine>().processTwoArg(consumer -> {
             for (int i = 0; i < 1000; i++) {
-                consumer.accept((myStandardFileLine, sequence, no, record) -> {
+                consumer.translate((myStandardFileLine, sequence, no, record) -> {
                     myStandardFileLine.setLineNo(no);
                     myStandardFileLine.setLineRecord(record);
-                });
+                }, 0, "");
             }
-        }, System.out::println, StandardFileLine::of, 0, "record", (myFileDocument, sequence, endOfBatch) -> {
-            //处理bulk写入
+        }, System.out::println, StandardFileLine::of, (mysStandardFileLine, sequence, endOfBatch) -> {
+            System.out.println(mysStandardFileLine);
         });
     }
 }
