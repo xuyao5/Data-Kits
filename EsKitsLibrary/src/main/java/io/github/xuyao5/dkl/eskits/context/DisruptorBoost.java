@@ -8,6 +8,7 @@ import io.github.xuyao5.dkl.eskits.context.disruptor.EventOneArg;
 import io.github.xuyao5.dkl.eskits.context.disruptor.EventThreeArg;
 import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
+import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +21,7 @@ import java.util.function.Consumer;
  * @implNote DisruptorHelper
  */
 @Slf4j
+@Builder(builderMethodName = "factory", buildMethodName = "create", toBuilder = true)
 public final class DisruptorBoost<T> {
 
     private final int BUFFER_SIZE;
