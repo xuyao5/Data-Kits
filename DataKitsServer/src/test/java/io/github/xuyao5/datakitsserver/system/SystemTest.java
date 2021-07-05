@@ -1,8 +1,6 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
-import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.util.MyCompressUtils;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import lombok.SneakyThrows;
@@ -50,18 +48,5 @@ public class SystemTest extends AbstractTest {
     @Test
     void compress() {
         MyFileUtils.getDecisionFiles("/Users/xuyao/Downloads", "^.*DISRUPTOR_10000W_T_00.txt$").forEach(MyCompressUtils::createTarGz);
-    }
-
-    void disruptor() {
-        new DisruptorBoost<StandardFileLine>().processTwoArg(consumer -> {
-            for (int i = 0; i < 1000; i++) {
-                consumer.translate((myStandardFileLine, sequence, no, record) -> {
-                    myStandardFileLine.setLineNo(no);
-                    myStandardFileLine.setLineRecord(record);
-                }, 0, "");
-            }
-        }, System.out::println, StandardFileLine::of, (mysStandardFileLine, sequence, endOfBatch) -> {
-            System.out.println(mysStandardFileLine);
-        });
     }
 }

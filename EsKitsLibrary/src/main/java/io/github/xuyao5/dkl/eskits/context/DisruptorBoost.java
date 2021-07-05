@@ -4,9 +4,7 @@ import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventOneArg;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventThreeArg;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
+import io.github.xuyao5.dkl.eskits.context.disruptor.*;
 import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.Builder;
 import lombok.NonNull;
@@ -17,21 +15,19 @@ import java.util.function.Consumer;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 4/07/21 20:33
- * @apiNote DisruptorHelper
- * @implNote DisruptorHelper
+ * @apiNote DisruptorBoost
+ * @implNote DisruptorBoost
  */
 @Slf4j
-@Builder(builderMethodName = "factory", buildMethodName = "create", toBuilder = true)
+@Builder(builderMethodName = "factory", buildMethodName = "create")
 public final class DisruptorBoost<T> {
 
-    private final int BUFFER_SIZE;
+    @Builder.Default
+    private final int bufferSize = 1 << 10;
 
-    public DisruptorBoost(int bufferSize) {
-        BUFFER_SIZE = bufferSize;
-    }
-
-    public DisruptorBoost() {
-        this(1 << 10);
+    @SafeVarargs
+    public final void processZeroArg(@NonNull Consumer<EventZeroArg<T>> eventOneArgConsumer, @NonNull Consumer<? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+        process(ringBuffer -> eventOneArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
     }
 
     @SafeVarargs
@@ -50,8 +46,13 @@ public final class DisruptorBoost<T> {
     }
 
     @SafeVarargs
+    public final void processVararg(@NonNull Consumer<EventVararg<T>> varargConsumer, @NonNull Consumer<? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+        process(ringBuffer -> varargConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
+    }
+
+    @SafeVarargs
     private final void process(Consumer<RingBuffer<T>> ringBufferConsumer, Consumer<? super T> errorConsumer, EventFactory<T> eventFactory, EventHandler<? super T>... handlers) {
-        Disruptor<T> disruptor = new Disruptor<>(eventFactory, BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        Disruptor<T> disruptor = new Disruptor<>(eventFactory, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
@@ -70,8 +71,11 @@ public final class DisruptorBoost<T> {
                 log.error("Exception during onShutdown()", throwable);
             }
         });
-        disruptor.start();
-        ringBufferConsumer.accept(disruptor.getRingBuffer());
-        disruptor.shutdown();
+        try {
+            disruptor.start();
+            ringBufferConsumer.accept(disruptor.getRingBuffer());
+        } finally {
+            disruptor.shutdown();
+        }
     }
 }

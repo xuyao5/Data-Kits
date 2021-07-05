@@ -1,15 +1,11 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import com.google.gson.reflect.TypeToken;
-import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
-import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.ProducerType;
-import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
+import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
@@ -26,9 +22,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.collect.List;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
-import java.io.File;
 import java.lang.reflect.Field;
-import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
@@ -79,79 +73,55 @@ public final class File2EsExecutor extends AbstractExecutor {
         Map<String, Field> fieldMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
         Map<String, TypeToken<?>> typeTokenMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
 
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
-            final Disruptor<StandardFileLine> disruptor = new Disruptor<>(StandardFileLine::of, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>factory().create().processTwoArg(consumer -> eventConsumer(config, consumer), standardFileLine -> errorConsumer(config, standardFileLine), StandardFileLine::of, (standardFileLine, sequence, endOfBatch) -> {
+            if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
+                return;
+            }
 
-            disruptor.handleEventsWith((standardFileLine, sequence, endOfBatch) -> {
-                if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
-                    return;
+            String[] recordArray = MyStringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
+
+            if (standardFileLine.getLineNo() == 1) {
+                metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
+            } else {
+                T standardDocument = document.newInstance();
+
+                for (int i = 0; i < metadataArray[0].length; i++) {
+                    Field field = fieldMap.get(metadataArray[0][i]);
+                    if (Objects.nonNull(field) && MyStringUtils.isNotBlank(recordArray[i])) {
+                        MyFieldUtils.writeField(field, standardDocument, MyGsonUtils.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
+                    }
                 }
 
-                String[] recordArray = MyStringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
+                standardDocument.setSerialNo(snowflake.nextId());
+                standardDocument.setDateTag(MyDateUtils.format2Date(STD_DATE_FORMAT));
+                standardDocument.setSourceTag(MyFilenameUtils.getBaseName(config.getFile().getName()));
+                standardDocument.setCreateDate(MyDateUtils.now());
+                standardDocument.setModifyDate(standardDocument.getCreateDate());
 
-                if (standardFileLine.getLineNo() == 1) {
-                    metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
+                if (!isIndexExist) {
+                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
                 } else {
-                    T standardDocument = document.newInstance();
-
-                    for (int i = 0; i < metadataArray[0].length; i++) {
-                        Field field = fieldMap.get(metadataArray[0][i]);
-                        if (Objects.nonNull(field) && MyStringUtils.isNotBlank(recordArray[i])) {
-                            MyFieldUtils.writeField(field, standardDocument, MyGsonUtils.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
-                        }
-                    }
-
-                    standardDocument.setSerialNo(snowflake.nextId());
-                    standardDocument.setDateTag(MyDateUtils.format2Date(STD_DATE_FORMAT));
-                    standardDocument.setSourceTag(MyFilenameUtils.getBaseName(config.getFile().getName()));
-                    standardDocument.setCreateDate(MyDateUtils.now());
-                    standardDocument.setModifyDate(standardDocument.getCreateDate());
-
-                    if (!isIndexExist) {
-                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
-                    } else {
-                        function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
-                    }
+                    function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
                 }
-            });
-
-            disruptor.setDefaultExceptionHandler(new ExceptionHandler<StandardFileLine>() {
-                @SneakyThrows
-                @Override
-                public void handleEventException(Throwable throwable, long l, StandardFileLine standardFileLine) {
-                    log.error(l + "|" + standardFileLine.toString(), throwable);
-                    MyFileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), List.of(standardFileLine.getLineRecord()), true);
-                }
-
-                @Override
-                public void handleOnStartException(Throwable throwable) {
-                    log.error("Exception during onStart()", throwable);
-                }
-
-                @Override
-                public void handleOnShutdownException(Throwable throwable) {
-                    log.error("Exception during onShutdown()", throwable);
-                }
-            });
-
-            publish(disruptor, config.getFile(), config.getCharset());
-        });
+            }
+        }));
     }
 
     @SneakyThrows
-    private void publish(@NonNull Disruptor<StandardFileLine> disruptor, @NonNull File file, @NonNull Charset charset) {
+    private void errorConsumer(File2EsConfig config, StandardFileLine standardFileLine) {
+        MyFileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), List.of(standardFileLine.getLineRecord()), true);
+    }
+
+    @SneakyThrows
+    private void eventConsumer(File2EsConfig config, EventTwoArg<StandardFileLine> consumer) {
         AtomicInteger lineCount = new AtomicInteger();
-        RingBuffer<StandardFileLine> ringBuffer = disruptor.start();
-        try (LineIterator lineIterator = MyFileUtils.lineIterator(file, charset.name())) {
+        try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
             while (lineIterator.hasNext()) {
-                ringBuffer.publishEvent((standardFileLine, sequence, lineNo, lineRecord) -> {
+                consumer.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
                     standardFileLine.setLineNo(lineNo);
                     standardFileLine.setLineRecord(lineRecord);
                 }, lineCount.incrementAndGet(), lineIterator.nextLine());
             }
-        } finally {
-            disruptor.shutdown();
-            log.info("File2Es读取【{}】共【{}】行记录完成", file.getCanonicalPath(), lineCount.get());
         }
     }
 }

@@ -1,14 +1,10 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import com.google.gson.reflect.TypeToken;
-import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
-import com.lmax.disruptor.IgnoreExceptionHandler;
-import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.ProducerType;
-import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
+import io.github.xuyao5.dkl.eskits.context.disruptor.EventOneArg;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
@@ -18,7 +14,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,51 +45,30 @@ public final class ModifyByScrollExecutor extends AbstractExecutor {
     }
 
     public <T extends BaseDocument> void upsertByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
-            final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-
-            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument))));
-
-            disruptor.setDefaultExceptionHandler(new IgnoreExceptionHandler());
-
-            publish(disruptor, config.getQueryBuilder(), config.getIndex());
-        });
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>factory().create().processOneArg(consumer -> eventConsumer(config, consumer), t -> log.error(t.toString()), document, (standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)))));
     }
 
     public <T extends BaseDocument> void deleteByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> {
-            final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-
-            disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id())));
-
-            publish(disruptor, config.getQueryBuilder(), config.getIndex());
-        });
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>factory().create().processOneArg(consumer -> eventConsumer(config, consumer), t -> log.error(t.toString()), document, (standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id()))));
     }
 
-    public <T extends BaseDocument> void computeByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, Consumer<T> consumer) {
-        final Disruptor<T> disruptor = new Disruptor<>(document, RING_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWith((standardDocument, sequence, endOfBatch) -> consumer.accept(standardDocument));
-        publish(disruptor, config.getQueryBuilder(), config.getIndex());
+    public <T extends BaseDocument> void computeByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, Consumer<T> compute) {
+        DisruptorBoost.<T>factory().create().processOneArg(consumer -> eventConsumer(config, consumer), t -> log.error(t.toString()), document, (standardDocument, sequence, endOfBatch) -> compute.accept(standardDocument));
     }
 
-    private void publish(@NonNull Disruptor<? extends BaseDocument> disruptor, @NonNull QueryBuilder queryBuilder, @NonNull String index) {
-        RingBuffer<? extends BaseDocument> ringBuffer = disruptor.start();
-        try {
-            ScrollSupporter.getInstance().scroll(client, searchHits -> {
-                for (SearchHit documentFields : searchHits) {
-                    ringBuffer.publishEvent((standardDocument, sequence, searchHit) -> {
-                        try {
-                            BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj(searchHit.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
-                            standardDocument.set_id(searchHit.getId());
-                            standardDocument.set_index(searchHit.getIndex());
-                        } catch (IllegalAccessException | InvocationTargetException ex) {
-                            log.error("StandardDocument类型转换错误", ex);
-                        }
-                    }, documentFields);
-                }
-            }, queryBuilder, scrollSize, index);
-        } finally {
-            disruptor.shutdown();
-        }
+    private void eventConsumer(ModifyByScrollConfig config, EventOneArg<? extends BaseDocument> consumer) {
+        ScrollSupporter.getInstance().scroll(client, searchHits -> {
+            for (SearchHit documentFields : searchHits) {
+                consumer.translate((standardDocument, sequence, searchHit) -> {
+                    try {
+                        BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj(searchHit.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
+                        standardDocument.set_id(searchHit.getId());
+                        standardDocument.set_index(searchHit.getIndex());
+                    } catch (IllegalAccessException | InvocationTargetException ex) {
+                        log.error("StandardDocument类型转换错误", ex);
+                    }
+                }, documentFields);
+            }
+        }, config.getQueryBuilder(), scrollSize, config.getIndex());
     }
 }
