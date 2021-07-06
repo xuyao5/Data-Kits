@@ -37,7 +37,7 @@ final class File2EsDemoJobTest extends AbstractTest {
         for (int y = 0; y < 1; y++) {
             String[] content = new String[10000];
             for (int i = 0; i < content.length; i++) {
-                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getFloat(), split, RandomStringUtils.randomAlphabetic(46), split, System.currentTimeMillis(), split, "2021-03-21" + MyStringUtils.SPACE + "07:08:09");
+                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getFloat(), split, RandomStringUtils.randomAlphabetic(80000), split, System.currentTimeMillis(), split, "2021-03-21" + MyStringUtils.SPACE + "07:08:09");
             }
             FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }
