@@ -5,10 +5,10 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.disruptor.*;
-import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.Consumer;
 
@@ -26,8 +26,8 @@ public final class DisruptorBoost<T> {
     private final int bufferSize = 1 << 10;
 
     @SafeVarargs
-    public final void processZeroArg(@NonNull Consumer<EventZeroArg<T>> eventOneArgConsumer, @NonNull Consumer<? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
-        process(ringBuffer -> eventOneArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
+    public final void processZeroArg(@NonNull Consumer<EventZeroArg<T>> eventZeroArgConsumer, @NonNull Consumer<? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+        process(ringBuffer -> eventZeroArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
     }
 
     @SafeVarargs
@@ -46,8 +46,8 @@ public final class DisruptorBoost<T> {
     }
 
     @SafeVarargs
-    public final void processVararg(@NonNull Consumer<EventVararg<T>> varargConsumer, @NonNull Consumer<? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
-        process(ringBuffer -> varargConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
+    public final void processVararg(@NonNull Consumer<EventVararg<T>> eventVarargConsumer, @NonNull Consumer<? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+        process(ringBuffer -> eventVarargConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
     }
 
     @SafeVarargs
@@ -57,7 +57,7 @@ public final class DisruptorBoost<T> {
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
-                log.error(MyStringUtils.join(sequence, '|', t), throwable);
+                log.error(StringUtils.join(sequence, '|', t), throwable);
                 errorConsumer.accept(t);
             }
 
