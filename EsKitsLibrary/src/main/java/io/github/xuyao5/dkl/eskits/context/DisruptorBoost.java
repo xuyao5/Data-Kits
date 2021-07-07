@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  * @implNote DisruptorBoost
  */
 @Slf4j
-@Builder(builderMethodName = "factory", buildMethodName = "create")
+@Builder(builderMethodName = "context", buildMethodName = "create")
 public final class DisruptorBoost<T> {
 
     @Builder.Default

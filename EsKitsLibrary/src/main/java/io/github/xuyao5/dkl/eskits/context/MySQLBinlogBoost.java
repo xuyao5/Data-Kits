@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * @implNote MySQLBinlogBoost
  */
 @Slf4j
-@Builder(builderMethodName = "factory", buildMethodName = "create")
+@Builder(builderMethodName = "context", buildMethodName = "create")
 public final class MySQLBinlogBoost {
 
     @Builder.Default
