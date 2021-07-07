@@ -1,6 +1,7 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
+import io.github.xuyao5.dkl.eskits.context.MySQLBinlogBoost;
 import io.github.xuyao5.dkl.eskits.util.MyCompressUtils;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import lombok.SneakyThrows;
@@ -48,5 +49,19 @@ public class SystemTest extends AbstractTest {
     @Test
     void compress() {
         MyFileUtils.getDecisionFiles("/Users/xuyao/Downloads", "^.*DISRUPTOR_10000W_T_00.txt$").forEach(MyCompressUtils::createTarGz);
+    }
+
+    @SneakyThrows
+    @Test
+    void binlog() {
+        MySQLBinlogBoost.context()
+                .hostname(esClientConfig.getMysqlBinlogHost())
+                .schema(esClientConfig.getSchema())
+                .port(esClientConfig.getMysqlBinlogPort())
+                .username(esClientConfig.getMysqlBinlogUsername())
+                .password(esClientConfig.getMysqlBinlogPassword())
+                .create()
+                .listen();
+        System.in.read();
     }
 }
