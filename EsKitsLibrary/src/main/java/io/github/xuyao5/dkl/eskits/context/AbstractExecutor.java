@@ -17,8 +17,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractExecutor {
 
-    protected static final int RING_SIZE = 1 << 10;
-
     protected final RestHighLevelClient client;
 
     protected final SnowflakeHelper snowflake = new SnowflakeHelper(MyIpAddressUtils.getIpAddressSum() % 32, MyIpAddressUtils.getIpAddressSum() % 32);
