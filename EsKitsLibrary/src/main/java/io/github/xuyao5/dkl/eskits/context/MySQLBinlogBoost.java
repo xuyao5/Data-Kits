@@ -1,41 +1,33 @@
-package io.github.xuyao5.dkl.eskits.service;
+package io.github.xuyao5.dkl.eskits.context;
 
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
 import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
-import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
+import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.RestHighLevelClient;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 16/06/21 23:31
- * @apiNote MySQL2EsExecutor
- * @implNote MySQL2EsExecutor
+ * @implSpec 7/07/21 22:44
+ * @apiNote MySQLBinlogBoost
+ * @implNote MySQLBinlogBoost
  */
 @Slf4j
-public final class MySQL2EsExecutor extends AbstractExecutor {
+@Builder(builderMethodName = "factory", buildMethodName = "create")
+public final class MySQLBinlogBoost {
+
+    @Builder.Default
+    private final int port = 3306;
 
     private final String hostname;
-    private final int port;
     private final String schema;
     private final String username;
     private final String password;
 
-    public MySQL2EsExecutor(@NonNull RestHighLevelClient client, @NonNull String hostname, int port, @NonNull String schema, @NonNull String username, @NonNull String password) {
-        super(client);
-        this.hostname = hostname;
-        this.port = port;
-        this.schema = schema;
-        this.username = username;
-        this.password = password;
-    }
-
     @SneakyThrows
-    public BinaryLogClientMXBean listen(@NonNull MySQL2EsConfig config) {
+    public BinaryLogClientMXBean listen() {
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG,
