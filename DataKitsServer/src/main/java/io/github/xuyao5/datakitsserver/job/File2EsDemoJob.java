@@ -2,7 +2,7 @@ package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
-import io.github.xuyao5.dkl.eskits.service.File2EsExecutor;
+import io.github.xuyao5.dkl.eskits.service.File2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
@@ -41,7 +41,7 @@ public final class File2EsDemoJob implements Runnable {
         log.info("获取参数[{}]", config);
 
         //2.写入索引
-        new File2EsExecutor(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyFileDocument::of, myFileDocument -> {
+        new File2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(config, MyFileDocument::of, myFileDocument -> {
             //自定义计算
             myFileDocument.setDiscount(BigDecimal.TEN);
             myFileDocument.setTags(MyFileDocument.NestedTags.of("YAO", true));

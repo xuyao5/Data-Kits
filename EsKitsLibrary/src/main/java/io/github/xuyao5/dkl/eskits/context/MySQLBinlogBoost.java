@@ -8,9 +8,6 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 7/07/21 22:44
@@ -29,12 +26,8 @@ public final class MySQLBinlogBoost {
     private final String username;
     private final String password;
 
-    public Future<BinaryLogClientMXBean> listen() {
-        return Executors.newSingleThreadExecutor().submit(this::call);
-    }
-
     @SneakyThrows
-    private BinaryLogClientMXBean call() {
+    public BinaryLogClientMXBean listen() {
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG,
@@ -81,12 +74,9 @@ public final class MySQLBinlogBoost {
     }
 
     @SneakyThrows
-    public void close(@NonNull Future<BinaryLogClientMXBean> beanFuture) {
-        if (beanFuture.isDone()) {
-            if (beanFuture.get().isConnected()) {
-                beanFuture.get().disconnect();
-            }
-            beanFuture.cancel(true);
+    public void close(@NonNull BinaryLogClientMXBean bean) {
+        if (bean.isConnected()) {
+            bean.disconnect();
         }
     }
 }

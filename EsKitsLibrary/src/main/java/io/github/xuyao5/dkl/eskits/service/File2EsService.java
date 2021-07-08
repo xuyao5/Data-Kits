@@ -37,15 +37,15 @@ import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.STD_DATE_FORMAT;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 10/10/20 15:41
- * @apiNote File2EsExecutor
- * @implNote File2EsExecutor
+ * @apiNote File2EsService
+ * @implNote File2EsService
  */
 @Slf4j
-public final class File2EsExecutor extends AbstractExecutor {
+public final class File2EsService extends AbstractExecutor {
 
     private final int bulkThreads;
 
-    public File2EsExecutor(@NonNull RestHighLevelClient esClient, int threads) {
+    public File2EsService(@NonNull RestHighLevelClient esClient, int threads) {
         super(esClient);
         bulkThreads = threads;
     }

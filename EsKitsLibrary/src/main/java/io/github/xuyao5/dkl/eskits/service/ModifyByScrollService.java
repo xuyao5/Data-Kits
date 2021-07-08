@@ -25,22 +25,22 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAUL
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 15/03/21 20:57
- * @apiNote ModifyByScrollExecutor
- * @implNote ModifyByScrollExecutor
+ * @apiNote ModifyByScrollService
+ * @implNote ModifyByScrollService
  */
 @Slf4j
-public final class ModifyByScrollExecutor extends AbstractExecutor {
+public final class ModifyByScrollService extends AbstractExecutor {
 
     private final int bulkThreads;
     private final int scrollSize;
 
-    public ModifyByScrollExecutor(@NonNull RestHighLevelClient esClient, int threads, int size) {
+    public ModifyByScrollService(@NonNull RestHighLevelClient esClient, int threads, int size) {
         super(esClient);
         bulkThreads = threads;
         scrollSize = size;
     }
 
-    public ModifyByScrollExecutor(@NonNull RestHighLevelClient esClient) {
+    public ModifyByScrollService(@NonNull RestHighLevelClient esClient) {
         this(esClient, 3, DEFAULT_SCROLL_SIZE);
     }
 

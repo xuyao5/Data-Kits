@@ -13,13 +13,13 @@ import java.util.function.Function;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 12/06/21 17:01
- * @apiNote Universal2EsExecutor
- * @implNote Universal2EsExecutor
+ * @apiNote Universal2EsService
+ * @implNote Universal2EsService
  */
 @Slf4j
-public final class Universal2EsExecutor extends AbstractExecutor {
+public final class Universal2EsService extends AbstractExecutor {
 
-    public Universal2EsExecutor(@NonNull RestHighLevelClient client) {
+    public Universal2EsService(@NonNull RestHighLevelClient client) {
         super(client);
     }
 

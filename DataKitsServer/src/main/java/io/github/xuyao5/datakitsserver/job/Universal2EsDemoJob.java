@@ -2,7 +2,7 @@ package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
 import io.github.xuyao5.datakitsserver.vo.MyApiDocument;
-import io.github.xuyao5.dkl.eskits.service.Universal2EsExecutor;
+import io.github.xuyao5.dkl.eskits.service.Universal2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.Universal2EsConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -23,7 +23,7 @@ public final class Universal2EsDemoJob implements Runnable {
     public void run() {
         Universal2EsConfig config = Universal2EsConfig.of();
 
-        new Universal2EsExecutor(esClient).execute(config, obj -> {
+        new Universal2EsService(esClient).execute(config, obj -> {
             log.info("对象：{}", obj);
             return MyApiDocument.of();
         });
