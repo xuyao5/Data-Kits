@@ -8,11 +8,13 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 7/07/21 22:44
- * @apiNote MySQLBinlogBoost
- * @implNote MySQLBinlogBoost
+ * @apiNote BinlogBoost
+ * @implNote BinlogBoost
  */
 @Slf4j
 @Builder(builderMethodName = "context", buildMethodName = "create")
@@ -25,7 +27,7 @@ public final class BinlogBoost {
     private final int port = 3306;
 
     @Builder.Default
-    private final long timeout = 1000;
+    private final long timeout = TimeUnit.SECONDS.toMillis(6);
 
     private final String schema;
     private final String username;
