@@ -1,7 +1,8 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.context.MySQLBinlogBoost;
+import io.github.xuyao5.dkl.eskits.listener.MySQLBinlogListener;
+import io.github.xuyao5.dkl.eskits.listener.config.MySQLBinlogConfig;
 import io.github.xuyao5.dkl.eskits.util.MyCompressUtils;
 import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
 import lombok.SneakyThrows;
@@ -54,14 +55,13 @@ public class SystemTest extends AbstractTest {
     @SneakyThrows
     @Test
     void binlog() {
-        MySQLBinlogBoost.context()
-                .hostname(esClientConfig.getMysqlBinlogHost())
-                .schema(esClientConfig.getSchema())
-                .port(esClientConfig.getMysqlBinlogPort())
-                .username(esClientConfig.getMysqlBinlogUsername())
-                .password(esClientConfig.getMysqlBinlogPassword())
-                .create()
-                .listen();
+        MySQLBinlogConfig config = MySQLBinlogConfig.of();
+        config.setHostname(esClientConfig.getMysqlBinlogHost());
+        config.setPort(esClientConfig.getMysqlBinlogPort());
+        config.setSchema(esClientConfig.getSchema());
+        config.setUsername(esClientConfig.getMysqlBinlogUsername());
+        config.setPassword(esClientConfig.getMysqlBinlogPassword());
+        new MySQLBinlogListener(esClient).listen(config);
         System.in.read();
     }
 }

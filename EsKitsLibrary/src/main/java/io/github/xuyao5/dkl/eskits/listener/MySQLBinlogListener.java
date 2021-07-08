@@ -1,12 +1,16 @@
 package io.github.xuyao5.dkl.eskits.listener;
 
+import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import io.github.xuyao5.dkl.eskits.context.MySQLBinlogBoost;
+import io.github.xuyao5.dkl.eskits.listener.config.MySQLBinlogConfig;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -15,7 +19,7 @@ import java.util.concurrent.Executors;
  * @implNote MySQLBinlogListener
  */
 @Slf4j
-public class MySQLBinlogListener extends AbstractExecutor {
+public final class MySQLBinlogListener extends AbstractExecutor {
 
     private final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
@@ -23,7 +27,14 @@ public class MySQLBinlogListener extends AbstractExecutor {
         super(client);
     }
 
-    public void listen() {
-
+    public Future<BinaryLogClientMXBean> listen(@NonNull MySQLBinlogConfig config) {
+        return EXECUTOR.submit(() -> MySQLBinlogBoost.context()
+                .hostname(config.getHostname())
+                .schema(config.getSchema())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword())
+                .create()
+                .listen());
     }
 }
