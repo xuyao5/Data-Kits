@@ -32,7 +32,7 @@ public final class StoredSearchService extends AbstractExecutor {
     private static final String SEARCH_STORED_ALIAS = "SEARCH-STORED";
     private static final String DEFAULT_SEARCH = "default-search";
 
-    public StoredSearchService(RestHighLevelClient client) {
+    public StoredSearchService(@NonNull RestHighLevelClient client) {
         super(client);
     }
 

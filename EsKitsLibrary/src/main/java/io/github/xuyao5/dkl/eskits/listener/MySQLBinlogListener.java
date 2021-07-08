@@ -1,6 +1,7 @@
 package io.github.xuyao5.dkl.eskits.listener;
 
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 
@@ -16,16 +17,10 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class MySQLBinlogListener extends AbstractExecutor {
 
-    private final ExecutorService executorService;
+    private final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
-    public MySQLBinlogListener(RestHighLevelClient client) {
+    public MySQLBinlogListener(@NonNull RestHighLevelClient client) {
         super(client);
-        executorService = Executors.newSingleThreadExecutor();
-    }
-
-    public MySQLBinlogListener(RestHighLevelClient client, int threads) {
-        super(client);
-        executorService = Executors.newFixedThreadPool(threads);
     }
 
     public void listen() {
