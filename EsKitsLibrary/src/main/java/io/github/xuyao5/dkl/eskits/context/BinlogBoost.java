@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Builder(builderMethodName = "context", buildMethodName = "create")
-public final class MySQLBinlogBoost {
+public final class BinlogBoost {
 
     @Builder.Default
     private final String hostname = "localhost";
