@@ -17,6 +17,7 @@ import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.collect.List;
@@ -109,13 +110,13 @@ public final class File2EsService extends AbstractExecutor {
 
     @SneakyThrows
     private void errorConsumer(File2EsConfig config, StandardFileLine standardFileLine) {
-        MyFileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), List.of(standardFileLine.getLineRecord()), true);
+        FileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), List.of(standardFileLine.getLineRecord()), true);
     }
 
     @SneakyThrows
     private void eventConsumer(File2EsConfig config, EventTwoArg<StandardFileLine> consumer) {
         AtomicInteger lineCount = new AtomicInteger();
-        try (LineIterator lineIterator = MyFileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
+        try (LineIterator lineIterator = FileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
             while (lineIterator.hasNext()) {
                 consumer.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
                     standardFileLine.setLineNo(lineNo);

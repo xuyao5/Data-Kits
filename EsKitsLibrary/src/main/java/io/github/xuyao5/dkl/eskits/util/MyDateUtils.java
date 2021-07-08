@@ -46,7 +46,7 @@ public final class MyDateUtils extends DateFormatUtils {
         return parseDate(date, Locale.ROOT, format.getPattern());
     }
 
-    public static Date parse2Date(@NonNull long date) {
+    public static Date parse2Date(long date) {
         return new Date(date);
     }
 }

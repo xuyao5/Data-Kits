@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.nio.file.DirectoryStream;
@@ -23,7 +22,7 @@ import java.util.stream.StreamSupport;
  * @implNote MyFileUtils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyFileUtils extends FileUtils {
+public final class MyFileUtils {
 
     @SneakyThrows
     public static List<File> getDecisionFiles(@NonNull String basePath, @NonNull String filenameRegex) {
