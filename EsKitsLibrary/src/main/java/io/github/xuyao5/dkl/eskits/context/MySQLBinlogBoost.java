@@ -19,9 +19,14 @@ import lombok.extern.slf4j.Slf4j;
 public final class MySQLBinlogBoost {
 
     @Builder.Default
+    private final String hostname = "localhost";
+
+    @Builder.Default
     private final int port = 3306;
 
-    private final String hostname;
+    @Builder.Default
+    private final long timeout = 1000;
+
     private final String schema;
     private final String username;
     private final String password;
@@ -69,7 +74,7 @@ public final class MySQLBinlogBoost {
             System.out.println("================================================================================================================");
 
         });
-        client.connect();
+        client.connect(timeout);
         return client;
     }
 
