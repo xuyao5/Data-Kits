@@ -34,22 +34,16 @@ public final class BinlogBoost {
     private final String password;
 
     @SneakyThrows
-    public BinaryLogClientMXBean listen() {
+    public BinaryLogClientMXBean open() {
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG,
                 EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
         );
-        // do not deserialize EXT_DELETE_ROWS event data, return it as a byte array
-//        eventDeserializer.setEventDataDeserializer(EventType.EXT_DELETE_ROWS, new ByteArrayEventDataDeserializer());
-        // skip EXT_WRITE_ROWS event data altogether
-//        eventDeserializer.setEventDataDeserializer(EventType.EXT_WRITE_ROWS, new NullEventDataDeserializer());
-        // use custom event data deserializer for EXT_DELETE_ROWS
-//        eventDeserializer.setEventDataDeserializer(EventType.EXT_DELETE_ROWS, byteArrayInputStream -> null);
-
-        BinaryLogClient client = new BinaryLogClient(hostname, port, schema, username, password);
+        final BinaryLogClient client = new BinaryLogClient(hostname, port, schema, username, password);
         client.setEventDeserializer(eventDeserializer);
         client.registerEventListener(event -> {
+
             System.out.println(event.toString());
             System.out.println("---------------------------------------");
 //            EventType eventType = event.getHeader().getEventType();
@@ -74,7 +68,6 @@ public final class BinlogBoost {
 //                System.out.println(tableName);
 //            }
             System.out.println("================================================================================================================");
-
         });
         client.connect(timeout);
         return client;

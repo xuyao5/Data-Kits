@@ -35,6 +35,6 @@ public final class MySQLBinlogListener extends AbstractExecutor {
                 .username(config.getUsername())
                 .password(config.getPassword())
                 .create()
-                .listen());
+                .open());
     }
 }
