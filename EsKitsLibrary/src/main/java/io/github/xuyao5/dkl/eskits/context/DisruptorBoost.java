@@ -6,7 +6,6 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.disruptor.*;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,27 +26,27 @@ public final class DisruptorBoost<T> {
     private final int bufferSize = 1 << 10;
 
     @SafeVarargs
-    public final void processZeroArg(@NonNull Consumer<EventZeroArg<T>> eventZeroArgConsumer, @NonNull BiConsumer<Long, ? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+    public final void processZeroArg(Consumer<EventZeroArg<T>> eventZeroArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventZeroArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
     }
 
     @SafeVarargs
-    public final void processOneArg(@NonNull Consumer<EventOneArg<T>> eventOneArgConsumer, @NonNull BiConsumer<Long, ? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+    public final void processOneArg(Consumer<EventOneArg<T>> eventOneArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventOneArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
     }
 
     @SafeVarargs
-    public final void processTwoArg(@NonNull Consumer<EventTwoArg<T>> eventTwoArgConsumer, @NonNull BiConsumer<Long, ? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+    public final void processTwoArg(Consumer<EventTwoArg<T>> eventTwoArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventTwoArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
     }
 
     @SafeVarargs
-    public final void processThreeArg(@NonNull Consumer<EventThreeArg<T>> eventThreeArgConsumer, @NonNull BiConsumer<Long, ? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+    public final void processThreeArg(Consumer<EventThreeArg<T>> eventThreeArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventThreeArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
     }
 
     @SafeVarargs
-    public final void processVararg(@NonNull Consumer<EventVararg<T>> eventVarargConsumer, @NonNull BiConsumer<Long, ? super T> errorConsumer, @NonNull EventFactory<T> eventFactory, @NonNull EventHandler<? super T>... handlers) {
+    public final void processVararg(Consumer<EventVararg<T>> eventVarargConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventVarargConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, handlers);
     }
 
