@@ -18,8 +18,8 @@ import java.util.stream.StreamSupport;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 31/05/21 22:38
- * @apiNote MyFileUtils
- * @implNote MyFileUtils
+ * @apiNote FileUtilsNZ
+ * @implNote FileUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileUtilsNZ {

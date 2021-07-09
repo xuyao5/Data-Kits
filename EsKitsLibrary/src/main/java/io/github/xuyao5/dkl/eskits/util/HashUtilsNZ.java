@@ -10,8 +10,8 @@ import java.util.Locale;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 4/06/21 19:24
- * @apiNote MyHashUtils
- * @implNote MyHashUtils
+ * @apiNote HashUtilsNZ
+ * @implNote HashUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HashUtilsNZ {

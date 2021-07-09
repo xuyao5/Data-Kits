@@ -15,8 +15,8 @@ import static org.apache.commons.lang3.time.DateUtils.parseDate;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 5/07/20 17:10
- * @apiNote MyDateUtils
- * @implNote MyDateUtils
+ * @apiNote DateUtilsNZ
+ * @implNote DateUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DateUtilsNZ {

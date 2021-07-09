@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 5/07/20 17:19
- * @apiNote MyStringUtils
- * @implNote MyStringUtils
+ * @apiNote StringUtilsNZ
+ * @implNote StringUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtilsNZ {

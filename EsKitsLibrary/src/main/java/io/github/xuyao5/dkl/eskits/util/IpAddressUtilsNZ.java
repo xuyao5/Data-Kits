@@ -10,8 +10,8 @@ import java.util.stream.IntStream;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 11/03/21 11:47
- * @apiNote MyIpAddressUtils
- * @implNote MyIpAddressUtils
+ * @apiNote IpAddressUtilsNZ
+ * @implNote IpAddressUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IpAddressUtilsNZ {

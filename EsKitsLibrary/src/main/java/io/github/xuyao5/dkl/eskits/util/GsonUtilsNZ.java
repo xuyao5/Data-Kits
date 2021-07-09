@@ -14,8 +14,8 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsNZ.STD_DATETIME_FORMAT;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 10/10/20 11:00
- * @apiNote MyGsonUtils
- * @implNote MyGsonUtils
+ * @apiNote GsonUtilsNZ
+ * @implNote GsonUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GsonUtilsNZ {
