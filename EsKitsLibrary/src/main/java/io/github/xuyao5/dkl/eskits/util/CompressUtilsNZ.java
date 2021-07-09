@@ -29,7 +29,7 @@ public final class CompressUtilsNZ {
     public static final String BAK_FILE_EXTENSION = ".bak";
 
     @SneakyThrows
-    public static void createTarGz(@NonNull File file) {
+    public static void createTarGz(@NonNull File file, boolean deleteFile) {
         try (TarArchiveOutputStream outputStream = (TarArchiveOutputStream) new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, new BufferedOutputStream(Files.newOutputStream(Paths.get(file + TAR_GZ_FILE_EXTENSION), StandardOpenOption.CREATE))))) {
             outputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
             outputStream.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
@@ -44,5 +44,12 @@ public final class CompressUtilsNZ {
             outputStream.closeArchiveEntry();
             outputStream.finish();
         }
+        if (deleteFile) {
+            file.deleteOnExit();
+        }
+    }
+
+    public static void createTarGz(@NonNull File file) {
+        createTarGz(file, false);
     }
 }
