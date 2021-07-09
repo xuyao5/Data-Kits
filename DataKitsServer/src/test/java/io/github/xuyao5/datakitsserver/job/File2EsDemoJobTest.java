@@ -1,11 +1,11 @@
 package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.util.MyRandomUtils;
-import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
+import io.github.xuyao5.dkl.eskits.util.RandomUtilsNZ;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Files;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Strings;
@@ -37,7 +37,7 @@ final class File2EsDemoJobTest extends AbstractTest {
         for (int y = 0; y < 1; y++) {
             String[] content = new String[10000];
             for (int i = 0; i < content.length; i++) {
-                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getFloat(), split, RandomStringUtils.randomAlphabetic(80000), split, System.currentTimeMillis(), split, "2021-03-21" + MyStringUtils.SPACE + "07:08:09");
+                content[i] = Strings.concat(snowflake.nextId(), split, RandomUtilsNZ.getFloat(), split, RandomStringUtils.randomAlphabetic(80000), split, System.currentTimeMillis(), split, "2021-03-21" + StringUtils.SPACE + "07:08:09");
             }
             FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }

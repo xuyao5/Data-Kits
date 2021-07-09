@@ -4,7 +4,6 @@ import com.google.gson.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
  * @implNote MyFieldUtils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyFieldUtils extends FieldUtils {
+public final class FieldUtilsNZ {
 
     public static Map<String, Type> getDeclaredFieldsMap(@NonNull Class<?> clz) {
         return Arrays.stream(clz.getDeclaredFields()).collect(Collectors.toConcurrentMap(Field::getName, Field::getGenericType));

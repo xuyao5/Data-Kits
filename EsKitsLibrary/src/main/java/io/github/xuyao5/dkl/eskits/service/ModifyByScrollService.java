@@ -9,7 +9,7 @@ import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ScrollSupporter;
-import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
+import io.github.xuyao5.dkl.eskits.util.GsonUtilsNZ;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -61,7 +61,7 @@ public final class ModifyByScrollService extends AbstractExecutor {
             for (SearchHit documentFields : searchHits) {
                 consumer.translate((standardDocument, sequence, searchHit) -> {
                     try {
-                        BeanUtils.copyProperties(standardDocument, MyGsonUtils.json2Obj(searchHit.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
+                        BeanUtils.copyProperties(standardDocument, GsonUtilsNZ.json2Obj(searchHit.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
                         standardDocument.set_id(searchHit.getId());
                         standardDocument.set_index(searchHit.getIndex());
                     } catch (IllegalAccessException | InvocationTargetException ex) {

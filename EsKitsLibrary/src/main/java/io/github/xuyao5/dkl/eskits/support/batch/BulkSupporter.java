@@ -1,6 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support.batch;
 
-import io.github.xuyao5.dkl.eskits.util.MyGsonUtils;
+import io.github.xuyao5.dkl.eskits.util.GsonUtilsNZ;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -41,11 +41,11 @@ public final class BulkSupporter {
     }
 
     public static IndexRequest buildIndexRequest(@NonNull String index, @NonNull String id, @NonNull Serializable obj) {
-        return new IndexRequest(index).id(id).source(MyGsonUtils.obj2Json(obj), XContentType.JSON);
+        return new IndexRequest(index).id(id).source(GsonUtilsNZ.obj2Json(obj), XContentType.JSON);
     }
 
     public static UpdateRequest buildUpdateRequest(@NonNull String index, @NonNull String id, @NonNull Serializable obj) {
-        return new UpdateRequest(index, id).doc(MyGsonUtils.obj2Json(obj), XContentType.JSON).docAsUpsert(true);
+        return new UpdateRequest(index, id).doc(GsonUtilsNZ.obj2Json(obj), XContentType.JSON).docAsUpsert(true);
     }
 
     public static DeleteRequest buildDeleteRequest(@NonNull String index, @NonNull String id) {

@@ -13,12 +13,16 @@ import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
-import io.github.xuyao5.dkl.eskits.util.*;
+import io.github.xuyao5.dkl.eskits.util.DateUtilsNZ;
+import io.github.xuyao5.dkl.eskits.util.GsonUtilsNZ;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.collect.List;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -33,7 +37,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.STD_DATE_FORMAT;
+import static io.github.xuyao5.dkl.eskits.util.DateUtilsNZ.STD_DATE_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -71,15 +75,15 @@ public final class File2EsService extends AbstractExecutor {
         }
 
         String[][] metadataArray = new String[1][];//元数据
-        Map<String, Field> fieldMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
-        Map<String, TypeToken<?>> typeTokenMap = MyFieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
+        Map<String, Field> fieldMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
+        Map<String, TypeToken<?>> typeTokenMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
 
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, (standardFileLine, sequence, endOfBatch) -> {
-            if (MyStringUtils.isBlank(standardFileLine.getLineRecord()) || MyStringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
+            if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                 return;
             }
 
-            String[] recordArray = MyStringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
+            String[] recordArray = StringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
@@ -88,15 +92,15 @@ public final class File2EsService extends AbstractExecutor {
 
                 for (int i = 0; i < metadataArray[0].length; i++) {
                     Field field = fieldMap.get(metadataArray[0][i]);
-                    if (Objects.nonNull(field) && MyStringUtils.isNotBlank(recordArray[i])) {
-                        MyFieldUtils.writeField(field, standardDocument, MyGsonUtils.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
+                    if (Objects.nonNull(field) && StringUtils.isNotBlank(recordArray[i])) {
+                        FieldUtils.writeField(field, standardDocument, GsonUtilsNZ.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
                     }
                 }
 
                 standardDocument.setSerialNo(snowflake.nextId());
-                standardDocument.setDateTag(MyDateUtils.format2Date(STD_DATE_FORMAT));
-                standardDocument.setSourceTag(MyFilenameUtils.getBaseName(config.getFile().getName()));
-                standardDocument.setCreateDate(MyDateUtils.now());
+                standardDocument.setDateTag(DateUtilsNZ.format2Date(STD_DATE_FORMAT));
+                standardDocument.setSourceTag(FilenameUtils.getBaseName(config.getFile().getName()));
+                standardDocument.setCreateDate(DateUtilsNZ.now());
                 standardDocument.setModifyDate(standardDocument.getCreateDate());
 
                 if (!isIndexExist) {

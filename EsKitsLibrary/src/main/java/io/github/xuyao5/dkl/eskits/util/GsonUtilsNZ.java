@@ -9,7 +9,7 @@ import lombok.NonNull;
 
 import java.io.Serializable;
 
-import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.STD_DATETIME_FORMAT;
+import static io.github.xuyao5.dkl.eskits.util.DateUtilsNZ.STD_DATETIME_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -18,7 +18,7 @@ import static io.github.xuyao5.dkl.eskits.util.MyDateUtils.STD_DATETIME_FORMAT;
  * @implNote MyGsonUtils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyGsonUtils {
+public final class GsonUtilsNZ {
 
     @Getter
     private static final Gson GSON;

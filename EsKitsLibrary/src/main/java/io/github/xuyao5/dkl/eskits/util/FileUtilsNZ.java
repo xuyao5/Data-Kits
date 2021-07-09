@@ -22,7 +22,7 @@ import java.util.stream.StreamSupport;
  * @implNote MyFileUtils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyFileUtils {
+public final class FileUtilsNZ {
 
     @SneakyThrows
     public static List<File> getDecisionFiles(@NonNull String basePath, @NonNull String filenameRegex) {

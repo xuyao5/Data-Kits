@@ -14,7 +14,7 @@ import java.util.Locale;
  * @implNote MyHashUtils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyHashUtils {
+public final class HashUtilsNZ {
 
     public static String md5(String[] recordArray) {
         return DigestUtils.md5Hex(Arrays.stream(recordArray).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString()).toUpperCase(Locale.ROOT);

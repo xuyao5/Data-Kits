@@ -2,7 +2,7 @@ package io.github.xuyao5.dkl.eskits.support.mapping;
 
 import com.google.gson.reflect.TypeToken;
 import io.github.xuyao5.dkl.eskits.schema.range.*;
-import io.github.xuyao5.dkl.eskits.util.MyFieldUtils;
+import io.github.xuyao5.dkl.eskits.util.FieldUtilsNZ;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -79,7 +79,7 @@ public final class XContentSupporter {
                 builder.endObject();
 
                 //定义继承自BaseDocument的自定义文档类型
-                customized(builder, MyFieldUtils.getDeclaredFieldsMap(clz));
+                customized(builder, FieldUtilsNZ.getDeclaredFieldsMap(clz));
             }
             builder.endObject();
         }
@@ -93,69 +93,69 @@ public final class XContentSupporter {
             builder.startObject(entry.getKey());
             {
                 Type type = entry.getValue();
-                if (String.class.equals(type) || String[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<String>>() {
+                if (String.class.equals(type) || String[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<String>>() {
                 }, type)) {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 512);
-                } else if (char.class.equals(type) || Character.class.equals(type) || char[].class.equals(type) || Character[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Character>>() {
+                } else if (char.class.equals(type) || Character.class.equals(type) || char[].class.equals(type) || Character[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Character>>() {
                 }, type)) {
                     builder.field("type", "keyword");
                     builder.field("ignore_above", 1);
-                } else if (long.class.equals(type) || Long.class.equals(type) || long[].class.equals(type) || Long[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Long>>() {
+                } else if (long.class.equals(type) || Long.class.equals(type) || long[].class.equals(type) || Long[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Long>>() {
                 }, type)) {
                     builder.field("type", "long");
-                } else if (int.class.equals(type) || Integer.class.equals(type) || int[].class.equals(type) || Integer[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Integer>>() {
+                } else if (int.class.equals(type) || Integer.class.equals(type) || int[].class.equals(type) || Integer[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Integer>>() {
                 }, type)) {
                     builder.field("type", "integer");
-                } else if (short.class.equals(type) || Short.class.equals(type) || short[].class.equals(type) || Short[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Short>>() {
+                } else if (short.class.equals(type) || Short.class.equals(type) || short[].class.equals(type) || Short[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Short>>() {
                 }, type)) {
                     builder.field("type", "short");
-                } else if (byte.class.equals(type) || Byte.class.equals(type) || byte[].class.equals(type) || Byte[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Byte>>() {
+                } else if (byte.class.equals(type) || Byte.class.equals(type) || byte[].class.equals(type) || Byte[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Byte>>() {
                 }, type)) {
                     builder.field("type", "byte");
-                } else if (double.class.equals(type) || Double.class.equals(type) || double[].class.equals(type) || Double[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Double>>() {
+                } else if (double.class.equals(type) || Double.class.equals(type) || double[].class.equals(type) || Double[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Double>>() {
                 }, type)) {
                     builder.field("type", "double");
-                } else if (float.class.equals(type) || Float.class.equals(type) || float[].class.equals(type) || Float[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Float>>() {
+                } else if (float.class.equals(type) || Float.class.equals(type) || float[].class.equals(type) || Float[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Float>>() {
                 }, type)) {
                     builder.field("type", "float");
-                } else if (boolean.class.equals(type) || Boolean.class.equals(type) || boolean[].class.equals(type) || Boolean[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Boolean>>() {
+                } else if (boolean.class.equals(type) || Boolean.class.equals(type) || boolean[].class.equals(type) || Boolean[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Boolean>>() {
                 }, type)) {
                     builder.field("type", "boolean");
-                } else if (Date.class.equals(type) || Date[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<Date>>() {
+                } else if (Date.class.equals(type) || Date[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<Date>>() {
                 }, type)) {
                     builder.field("type", "date");
                     builder.field("format", MAPPING_DATE_FORMAT.getName());
-                } else if (BigDecimal.class.equals(type) || BigDecimal[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<BigDecimal>>() {
+                } else if (BigDecimal.class.equals(type) || BigDecimal[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<BigDecimal>>() {
                 }, type)) {
                     builder.field("type", "scaled_float");
                     builder.field("scaling_factor", 100);
-                } else if (BigInteger.class.equals(type) || BigInteger[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<BigInteger>>() {
+                } else if (BigInteger.class.equals(type) || BigInteger[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<BigInteger>>() {
                 }, type)) {
                     builder.field("type", "unsigned_long");
-                } else if (InetAddress.class.equals(type) || InetAddress[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<InetAddress>>() {
+                } else if (InetAddress.class.equals(type) || InetAddress[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<InetAddress>>() {
                 }, type)) {
                     builder.field("type", "ip");
-                } else if (IntegerRange.class.equals(type) || IntegerRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<IntegerRange>>() {
+                } else if (IntegerRange.class.equals(type) || IntegerRange[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<IntegerRange>>() {
                 }, type)) {
                     builder.field("type", "integer_range");
-                } else if (LongRange.class.equals(type) || LongRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<LongRange>>() {
+                } else if (LongRange.class.equals(type) || LongRange[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<LongRange>>() {
                 }, type)) {
                     builder.field("type", "long_range");
-                } else if (FloatRange.class.equals(type) || FloatRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<FloatRange>>() {
+                } else if (FloatRange.class.equals(type) || FloatRange[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<FloatRange>>() {
                 }, type)) {
                     builder.field("type", "float_range");
-                } else if (DoubleRange.class.equals(type) || DoubleRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<DoubleRange>>() {
+                } else if (DoubleRange.class.equals(type) || DoubleRange[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<DoubleRange>>() {
                 }, type)) {
                     builder.field("type", "double_range");
-                } else if (DateRange.class.equals(type) || DateRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<DateRange>>() {
+                } else if (DateRange.class.equals(type) || DateRange[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<DateRange>>() {
                 }, type)) {
                     builder.field("type", "date_range");
-                } else if (IpRange.class.equals(type) || IpRange[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<IpRange>>() {
+                } else if (IpRange.class.equals(type) || IpRange[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<IpRange>>() {
                 }, type)) {
                     builder.field("type", "ip_range");
-                } else if (StringBuilder.class.equals(type) || StringBuilder[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<StringBuilder>>() {
-                }, type) || StringBuffer.class.equals(type) || StringBuffer[].class.equals(type) || MyFieldUtils.isSameType(new TypeToken<List<StringBuffer>>() {
+                } else if (StringBuilder.class.equals(type) || StringBuilder[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<StringBuilder>>() {
+                }, type) || StringBuffer.class.equals(type) || StringBuffer[].class.equals(type) || FieldUtilsNZ.isSameType(new TypeToken<List<StringBuffer>>() {
                 }, type)) {
                     builder.field("type", "text");
                     builder.startObject("fields");
@@ -173,7 +173,7 @@ public final class XContentSupporter {
                     builder.startObject("properties");
                     {
                         //递归调用
-                        customized(builder, MyFieldUtils.getDeclaredFieldsMap(type));
+                        customized(builder, FieldUtilsNZ.getDeclaredFieldsMap(type));
                     }
                     builder.endObject();
                 }

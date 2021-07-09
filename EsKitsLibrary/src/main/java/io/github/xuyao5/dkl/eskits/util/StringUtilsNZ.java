@@ -3,7 +3,6 @@ package io.github.xuyao5.dkl.eskits.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
  * @implNote MyStringUtils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyStringUtils extends StringUtils {
+public final class StringUtilsNZ {
 
     public static <T> String joining(@NonNull List<T> list, @NonNull CharSequence delimiter) {
         return list.stream().map(T::toString).collect(Collectors.joining(delimiter));
