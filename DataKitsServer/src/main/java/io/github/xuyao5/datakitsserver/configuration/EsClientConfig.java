@@ -20,6 +20,9 @@ public final class EsClientConfig {
     @Value("${es.scroll.size}")
     private int esScrollSize;
 
+    @Value("${es.index.replicas}")
+    private int esIndexReplicas;
+
     @Value("${mysql.binlog.host}")
     private String mysqlBinlogHost;
 

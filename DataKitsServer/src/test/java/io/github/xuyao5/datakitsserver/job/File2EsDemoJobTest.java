@@ -28,7 +28,7 @@ final class File2EsDemoJobTest extends AbstractTest {
     @SneakyThrows
     @Test
     void genTestData() {
-        String fileName = "/Users/xuyao/Downloads/DISRUPTOR_1W_T_00.txt";
+        String fileName = "/Users/xuyao/Downloads/DISRUPTOR_1W_T_20200710_00.txt";
 
         char split = 0x1E;
         File file = Files.newFile(fileName);
