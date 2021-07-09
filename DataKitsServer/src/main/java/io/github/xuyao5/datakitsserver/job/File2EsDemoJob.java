@@ -36,43 +36,41 @@ public final class File2EsDemoJob implements Runnable {
         final String ALIAS = "FILE2ES_DISRUPTOR";
         String basePath = "/Users/xuyao/Downloads";
         String filenameRegex = "^DISRUPTOR_1W_T_\\d{8}_\\d{2}.txt$";
-        FileUtilsNZ.getDecisionFiles(basePath, filenameRegex).stream()
-                .filter(file -> {
-                    //.log
-                    System.out.println(file);
-                    return true;
-                })
-                .forEach(file -> {
-                    //1.索引名称
-                    char splitChar = '_';
-                    String[] filenames = StringUtils.split(FilenameUtils.getBaseName(file.getName()), splitChar);
-                    String index = StringUtils.join(ALIAS.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
+        FileUtilsNZ.getDecisionFiles(basePath, filenameRegex, path -> {
+            //.log
+            System.out.println(path);
+            return true;
+        }).stream().forEach(file -> {
+            //1.索引名称
+            char splitChar = '_';
+            String[] filenames = StringUtils.split(FilenameUtils.getBaseName(file.getName()), splitChar);
+            String index = StringUtils.join(ALIAS.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
 
-                    //2.写入索引
-                    new File2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, myFileDocument -> {
-                        //自定义计算
-                        myFileDocument.setDiscount(BigDecimal.TEN);
-                        myFileDocument.setTags(MyFileDocument.NestedTags.of("YAO", true));
-                        return myFileDocument;
-                    });
-                    log.info("文件[{}]写入索引[{}]完毕", file, index);
+            //2.写入索引
+            new File2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, myFileDocument -> {
+                //自定义计算
+                myFileDocument.setDiscount(BigDecimal.TEN);
+                myFileDocument.setTags(MyFileDocument.NestedTags.of("YAO", true));
+                return myFileDocument;
+            });
+            log.info("文件[{}]写入索引[{}]完毕", file, index);
 
-                    //3.别名重定向
-                    String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, ALIAS, index);
-                    log.info("迁移别名[{}]到[{}]返回[{}]", ALIAS, index, indexArray);
+            //3.别名重定向
+            String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, ALIAS, index);
+            log.info("迁移别名[{}]到[{}]返回[{}]", ALIAS, index, indexArray);
 
-                    if (indexArray.length > 0) {
-                        //4.迁移老索引数据
-                        BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, QueryBuilders.matchAllQuery(), index, esClientConfig.getEsScrollSize(), indexArray);
-                        log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
+            if (indexArray.length > 0) {
+                //4.迁移老索引数据
+                BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, QueryBuilders.matchAllQuery(), index, esClientConfig.getEsScrollSize(), indexArray);
+                log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
 
-                        //5.关闭老索引
-                        boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
-                        log.info("关闭索引[{}]返回[{}]", indexArray, acknowledged);
-                    }
+                //5.关闭老索引
+                boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
+                log.info("关闭索引[{}]返回[{}]", indexArray, acknowledged);
+            }
 
-                    //6.升副本
-                    SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esClientConfig.getEsIndexReplicas());
-                });
+            //6.升副本
+            SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esClientConfig.getEsIndexReplicas());
+        });
     }
 }

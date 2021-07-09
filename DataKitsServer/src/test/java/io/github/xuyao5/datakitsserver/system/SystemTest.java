@@ -49,7 +49,7 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void compress() {
-        FileUtilsNZ.getDecisionFiles("/Users/xuyao/Downloads", "^.*DISRUPTOR_10000W_T_00.txt$").forEach(CompressUtilsNZ::createTarGz);
+        FileUtilsNZ.getDecisionFiles("/Users/xuyao/Downloads", "^.*DISRUPTOR_10000W_T_00.txt$", path -> true).forEach(CompressUtilsNZ::createTarGz);
     }
 
     @SneakyThrows
