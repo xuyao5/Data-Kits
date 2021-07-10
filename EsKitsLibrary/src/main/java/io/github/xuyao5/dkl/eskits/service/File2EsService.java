@@ -14,7 +14,7 @@ import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
-import io.github.xuyao5.dkl.eskits.util.GsonUtilsNZ;
+import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +93,7 @@ public final class File2EsService extends AbstractExecutor {
                 for (int i = 0; i < metadataArray[0].length; i++) {
                     Field field = fieldMap.get(metadataArray[0][i]);
                     if (Objects.nonNull(field) && StringUtils.isNotBlank(recordArray[i])) {
-                        FieldUtils.writeField(field, standardDocument, GsonUtilsNZ.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
+                        FieldUtils.writeField(field, standardDocument, GsonUtilsPlus.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
                     }
                 }
 

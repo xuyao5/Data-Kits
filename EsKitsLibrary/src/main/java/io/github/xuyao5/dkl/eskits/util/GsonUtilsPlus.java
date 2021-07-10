@@ -16,7 +16,7 @@ import java.io.Serializable;
  * @implNote GsonUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class GsonUtilsNZ {
+public final class GsonUtilsPlus {
 
     @Getter
     private static final Gson GSON;

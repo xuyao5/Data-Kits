@@ -1,6 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support.general;
 
-import io.github.xuyao5.dkl.eskits.util.GsonUtilsNZ;
+import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -46,7 +46,7 @@ public final class DocumentSupporter {
      */
     @SneakyThrows
     public IndexResponse index(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id, @NonNull Serializable obj) {
-        return client.index(new IndexRequest(index).id(id).source(GsonUtilsNZ.obj2Json(obj), XContentType.JSON), DEFAULT);
+        return client.index(new IndexRequest(index).id(id).source(GsonUtilsPlus.obj2Json(obj), XContentType.JSON), DEFAULT);
     }
 
     /**
@@ -95,7 +95,7 @@ public final class DocumentSupporter {
      */
     @SneakyThrows
     public UpdateResponse update(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id, @NonNull Serializable json) {
-        return client.update(new UpdateRequest(index, id).docAsUpsert(true).doc(GsonUtilsNZ.obj2Json(json), XContentType.JSON), DEFAULT);
+        return client.update(new UpdateRequest(index, id).docAsUpsert(true).doc(GsonUtilsPlus.obj2Json(json), XContentType.JSON), DEFAULT);
     }
 
     private static class SingletonHolder {
