@@ -3,8 +3,8 @@ package io.github.xuyao5.datakitsserver.system;
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.dkl.eskits.listener.MySQLBinlogListener;
 import io.github.xuyao5.dkl.eskits.listener.config.MySQLBinlogConfig;
-import io.github.xuyao5.dkl.eskits.util.CompressUtilsNZ;
-import io.github.xuyao5.dkl.eskits.util.FileUtilsNZ;
+import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
+import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.SneakyThrows;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -49,7 +49,7 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void compress() {
-        FileUtilsNZ.getDecisionFiles("/Users/xuyao/Downloads", "^.*DISRUPTOR_10000W_T_00.txt$", path -> true).forEach(CompressUtilsNZ::createTarGz);
+        FileUtilsPlus.getDecisionFiles("/Users/xuyao/Downloads", "^.*DISRUPTOR_10000W_T_00.txt$", path -> true).forEach(CompressUtilsPlus::createTarGz);
     }
 
     @SneakyThrows

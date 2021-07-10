@@ -12,7 +12,7 @@ import java.security.SecureRandom;
  * @implNote RandomUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RandomUtilsNZ {
+public final class RandomUtilsPlus {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 

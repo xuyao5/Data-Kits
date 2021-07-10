@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.time.DateUtils.parseDate;
  * @implNote DateUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DateUtilsNZ {
+public final class DateUtilsPlus {
 
     public static final FastDateFormat STD_DATETIME_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
     public static final FastDateFormat STD_DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd");

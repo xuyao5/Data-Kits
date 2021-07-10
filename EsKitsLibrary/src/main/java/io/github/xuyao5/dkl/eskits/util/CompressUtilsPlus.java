@@ -23,7 +23,7 @@ import java.nio.file.StandardOpenOption;
  * @implNote CompressUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CompressUtilsNZ {
+public final class CompressUtilsPlus {
 
     public static final String TAR_GZ_FILE_EXTENSION = ".tar.gz";
     public static final String BAK_FILE_EXTENSION = ".bak";

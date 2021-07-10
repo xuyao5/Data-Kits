@@ -13,7 +13,7 @@ import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
-import io.github.xuyao5.dkl.eskits.util.DateUtilsNZ;
+import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.GsonUtilsNZ;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -37,7 +37,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static io.github.xuyao5.dkl.eskits.util.DateUtilsNZ.STD_DATE_FORMAT;
+import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -98,9 +98,9 @@ public final class File2EsService extends AbstractExecutor {
                 }
 
                 standardDocument.setSerialNo(snowflake.nextId());
-                standardDocument.setDateTag(DateUtilsNZ.format2Date(STD_DATE_FORMAT));
+                standardDocument.setDateTag(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
                 standardDocument.setSourceTag(FilenameUtils.getBaseName(config.getFile().getName()));
-                standardDocument.setCreateDate(DateUtilsNZ.now());
+                standardDocument.setCreateDate(DateUtilsPlus.now());
                 standardDocument.setModifyDate(standardDocument.getCreateDate());
 
                 if (!isIndexExist) {

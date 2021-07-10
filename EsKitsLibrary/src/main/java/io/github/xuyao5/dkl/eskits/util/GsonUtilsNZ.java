@@ -9,8 +9,6 @@ import lombok.NonNull;
 
 import java.io.Serializable;
 
-import static io.github.xuyao5.dkl.eskits.util.DateUtilsNZ.STD_DATETIME_FORMAT;
-
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 10/10/20 11:00
@@ -27,7 +25,7 @@ public final class GsonUtilsNZ {
         GSON = new GsonBuilder()
                 .enableComplexMapKeySerialization()
                 .serializeSpecialFloatingPointValues()
-                .setDateFormat(STD_DATETIME_FORMAT.getPattern())
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
     }
 

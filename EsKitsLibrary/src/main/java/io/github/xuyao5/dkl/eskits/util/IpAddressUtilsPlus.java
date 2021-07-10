@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
  * @implNote IpAddressUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class IpAddressUtilsNZ {
+public final class IpAddressUtilsPlus {
 
     @SneakyThrows
     public static int getIpAddressSum() {

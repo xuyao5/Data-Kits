@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @implNote FieldUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class FieldUtilsNZ {
+public final class FieldUtilsPlus {
 
     public static Map<String, Type> getDeclaredFieldsMap(@NonNull Class<?> clz) {
         return Arrays.stream(clz.getDeclaredFields()).collect(Collectors.toConcurrentMap(Field::getName, Field::getGenericType));
