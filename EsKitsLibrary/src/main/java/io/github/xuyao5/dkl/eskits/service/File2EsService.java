@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -55,10 +56,10 @@ public final class File2EsService extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public <T extends BaseDocument> void execute(@NonNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends BaseDocument> long execute(@NonNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
         //检查文件和索引是否存在
         if (!config.getFile().exists()) {
-            return;
+            return -1;
         }
 
         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
@@ -78,6 +79,7 @@ public final class File2EsService extends AbstractExecutor {
         Map<String, Field> fieldMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
         Map<String, TypeToken<?>> typeTokenMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
 
+        final LongAdder count = new LongAdder();
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, (standardFileLine, sequence, endOfBatch) -> {
             if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                 return;
@@ -108,8 +110,11 @@ public final class File2EsService extends AbstractExecutor {
                 } else {
                     function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
                 }
+
+                count.increment();
             }
         }));
+        return count.longValue();
     }
 
     @SneakyThrows

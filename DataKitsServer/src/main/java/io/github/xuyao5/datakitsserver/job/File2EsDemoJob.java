@@ -8,6 +8,7 @@ import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
+import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -45,13 +46,13 @@ public final class File2EsDemoJob implements Runnable {
                     String index = StringUtils.join(ALIAS.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
 
                     //2.写入索引
-                    new File2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, myFileDocument -> {
+                    long count = new File2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, myFileDocument -> {
                         //自定义计算
                         myFileDocument.setDiscount(BigDecimal.TEN);
                         myFileDocument.setTags(MyFileDocument.NestedTags.of("YAO", true));
                         return myFileDocument;
                     });
-                    log.info("文件[{}]写入索引[{}]完毕", file, index);
+                    log.info("文件[{}]写入索引[{}]完毕,共处理{}条数据", file, index, count);
 
                     //3.别名重定向
                     String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, ALIAS, index);
@@ -69,6 +70,9 @@ public final class File2EsDemoJob implements Runnable {
 
                     //6.升副本
                     SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esClientConfig.getEsIndexReplicas());
+
+                    //7.压缩文件
+                    CompressUtilsPlus.createTarGz(file, false);
                 });
     }
 }
