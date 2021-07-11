@@ -43,9 +43,7 @@ public final class BinlogBoost {
         final BinaryLogClient client = new BinaryLogClient(hostname, port, schema, username, password);
         client.setEventDeserializer(eventDeserializer);
         client.registerEventListener(event -> {
-
             System.out.println(event.toString());
-            System.out.println("---------------------------------------");
 //            EventType eventType = event.getHeader().getEventType();
 //            if (EventType.isWrite(eventType)) {
 //                WriteRowsEventData writeRowsEventData = event.getData();
