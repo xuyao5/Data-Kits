@@ -26,9 +26,9 @@ import java.util.stream.StreamSupport;
 public final class FileUtilsPlus {
 
     @SneakyThrows
-    public static List<File> getDecisionFiles(@NonNull String basePath, @NonNull String filenameRegex, Predicate<? super Path> predicate) {
+    public static List<File> getDecisionFiles(@NonNull String basePath, @NonNull String filenameRegex, Predicate<? super Path> filter) {
         try (DirectoryStream<Path> dataFileStream = Files.newDirectoryStream(Paths.get(basePath), path -> Pattern.matches(filenameRegex, path.getFileName().toString()))) {
-            return StreamSupport.stream(dataFileStream.spliterator(), false).filter(predicate).map(Path::toFile).collect(Collectors.toList());
+            return StreamSupport.stream(dataFileStream.spliterator(), false).filter(filter).map(Path::toFile).collect(Collectors.toList());
         }
     }
 }
