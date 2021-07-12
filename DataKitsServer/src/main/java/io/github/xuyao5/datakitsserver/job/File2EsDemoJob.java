@@ -38,7 +38,7 @@ public final class File2EsDemoJob implements Runnable {
         final String ALIAS = "FILE2ES_DISRUPTOR";
         String basePath = "/Users/xuyao/Downloads";
         String filenameRegex = "^INT_DISRUPTOR_1W_T_\\d{8}_\\d{2}.txt$";
-        FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists()).stream()
+        FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists())
                 .forEach(file -> {
                     //1.索引名称
                     char splitChar = '_';
