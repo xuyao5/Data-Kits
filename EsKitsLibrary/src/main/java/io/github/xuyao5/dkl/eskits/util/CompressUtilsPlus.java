@@ -30,7 +30,7 @@ public final class CompressUtilsPlus {
     public static final String BAK_FILE_EXTENSION = ".bak";
 
     @SneakyThrows
-    public static void createTarGz(@NonNull File file, boolean deleteFile) {
+    public static boolean createTarGz(@NonNull File file, boolean deleteFile) {
         try (TarArchiveOutputStream outputStream = (TarArchiveOutputStream) new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, new BufferedOutputStream(Files.newOutputStream(Paths.get(FilenameUtils.removeExtension(file.toString()) + TAR_GZ_FILE_EXTENSION), StandardOpenOption.CREATE))))) {
             outputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
             outputStream.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
@@ -46,11 +46,12 @@ public final class CompressUtilsPlus {
             outputStream.finish();
         }
         if (deleteFile) {
-            file.delete();
+            return file.delete();
         }
+        return false;
     }
 
-    public static void createTarGz(@NonNull File file) {
-        createTarGz(file, false);
+    public static boolean createTarGz(@NonNull File file) {
+        return createTarGz(file, false);
     }
 }

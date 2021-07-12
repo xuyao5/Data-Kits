@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -17,7 +18,7 @@ public final class ResourceHelper {
 
     @SneakyThrows
     public String getResourceFile(@NonNull String name, Charset charset) {
-        return FileUtils.readFileToString(FileUtils.toFile(getClass().getResource(name)), charset);
+        return FileUtils.readFileToString(Objects.requireNonNull(FileUtils.toFile(getClass().getResource(name))), charset);
     }
 
     public String getResourceFile(@NonNull String name) {
