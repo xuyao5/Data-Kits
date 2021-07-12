@@ -46,7 +46,7 @@ public final class CompressUtilsPlus {
             outputStream.finish();
         }
         if (deleteFile) {
-            file.deleteOnExit();
+            file.delete();
         }
     }
 
