@@ -1,5 +1,3 @@
-# Data Kits SDK 使用手册
-
 # CC ES-Kits SDK 手册
 
 ## 1. 背景及目标
