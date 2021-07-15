@@ -35,8 +35,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 
 import java.util.List;
 
-import static io.github.xuyao5.dkl.eskits.consts.SettingConst.INDEX_NUMBER_OF_REPLICAS;
-import static io.github.xuyao5.dkl.eskits.consts.SettingConst.INDEX_NUMBER_OF_SHARDS;
+import static io.github.xuyao5.dkl.eskits.consts.SettingConst.*;
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 /**
@@ -62,6 +61,20 @@ public final class IndexSupporter {
                 .settings(Settings.builder()
                         .put(INDEX_NUMBER_OF_SHARDS.getName(), shards)
                         .put(INDEX_NUMBER_OF_REPLICAS.getName(), replicas))
+                .mapping(builder), DEFAULT);
+    }
+
+    /**
+     * Create Index API（with INDEX_SORT_FIELD & INDEX_SORT_ORDER）
+     */
+    @SneakyThrows
+    public CreateIndexResponse create(@NonNull RestHighLevelClient client, @NonNull String index, int shards, int replicas, @NonNull XContentBuilder builder, @NonNull String[] sortField, @NonNull String[] sortOrder) {
+        return client.indices().create(new CreateIndexRequest(index)
+                .settings(Settings.builder()
+                        .put(INDEX_NUMBER_OF_SHARDS.getName(), shards)
+                        .put(INDEX_NUMBER_OF_REPLICAS.getName(), replicas)
+                        .putList(INDEX_SORT_FIELD.getName(), sortField)
+                        .putList(INDEX_SORT_ORDER.getName(), sortOrder))
                 .mapping(builder), DEFAULT);
     }
 
