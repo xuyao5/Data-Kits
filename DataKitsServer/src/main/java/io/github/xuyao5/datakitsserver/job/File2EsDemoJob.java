@@ -20,8 +20,8 @@ import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.Locale;
+import java.util.function.UnaryOperator;
 
 @Slf4j
 @Component("file2EsDemoJob")
@@ -46,12 +46,7 @@ public final class File2EsDemoJob implements Runnable {
                     String index = StringUtils.join(ALIAS.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
 
                     //2.写入索引
-                    long count = new File2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, myFileDocument -> {
-                        //自定义计算
-                        myFileDocument.setDiscount(BigDecimal.TEN);
-                        myFileDocument.setTags(MyFileDocument.NestedTags.of("YAO", true));
-                        return myFileDocument;
-                    });
+                    long count = new File2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, UnaryOperator.identity());
                     log.info("文件[{}]写入索引[{}]完毕,共处理{}条数据", file, index, count);
 
                     //3.别名重定向

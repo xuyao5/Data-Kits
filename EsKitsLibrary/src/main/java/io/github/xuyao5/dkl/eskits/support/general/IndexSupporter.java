@@ -33,7 +33,9 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static io.github.xuyao5.dkl.eskits.consts.SettingConst.*;
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
@@ -68,13 +70,13 @@ public final class IndexSupporter {
      * Create Index API（with INDEX_SORT_FIELD & INDEX_SORT_ORDER）
      */
     @SneakyThrows
-    public CreateIndexResponse create(@NonNull RestHighLevelClient client, @NonNull String index, int shards, int replicas, @NonNull XContentBuilder builder, @NonNull String[] sortField, @NonNull String[] sortOrder) {
+    public CreateIndexResponse create(@NonNull RestHighLevelClient client, @NonNull String index, int shards, int replicas, @NonNull XContentBuilder builder, @NonNull Map<String, String> indexSorting) {
         return client.indices().create(new CreateIndexRequest(index)
                 .settings(Settings.builder()
                         .put(INDEX_NUMBER_OF_SHARDS.getName(), shards)
                         .put(INDEX_NUMBER_OF_REPLICAS.getName(), replicas)
-                        .putList(INDEX_SORT_FIELD.getName(), sortField)
-                        .putList(INDEX_SORT_ORDER.getName(), sortOrder))
+                        .putList(INDEX_SORT_FIELD.getName(), new ArrayList<>(indexSorting.keySet()))
+                        .putList(INDEX_SORT_ORDER.getName(), new ArrayList<>(indexSorting.values())))
                 .mapping(builder), DEFAULT);
     }
 

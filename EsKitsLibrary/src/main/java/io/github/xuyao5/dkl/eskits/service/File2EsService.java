@@ -29,9 +29,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
@@ -69,11 +67,6 @@ public final class File2EsService extends AbstractExecutor {
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
         boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
-        if (!isIndexExist) {
-            indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder);
-        } else {
-            indexSupporter.putMapping(client, xContentBuilder, config.getIndex());
-        }
 
         String[][] metadataArray = new String[1][];//元数据
         Map<String, Field> fieldMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
@@ -89,6 +82,24 @@ public final class File2EsService extends AbstractExecutor {
 
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
+
+                Map<Integer, Map.Entry<String, String>> indexSorting = new TreeMap<>();//有序
+                for (int i = 0; i < metadataArray[0].length; i++) {
+                    Field field = fieldMap.get(metadataArray[0][i]);
+                    FileField fileFieldAnnotation = field.getDeclaredAnnotation(FileField.class);
+                    if (fileFieldAnnotation.priority() > 0) {
+                        indexSorting.put(fileFieldAnnotation.priority(), new AbstractMap.SimpleEntry<>(field.getName(), fileFieldAnnotation.sortOrder().getOrder()));
+                    }
+                }
+                if (!isIndexExist) {
+                    if (!indexSorting.isEmpty()) {
+                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder, indexSorting.values().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> null, LinkedHashMap::new)));
+                    } else {
+                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder);
+                    }
+                } else {
+                    indexSupporter.putMapping(client, xContentBuilder, config.getIndex());
+                }
             } else {
                 T standardDocument = document.newInstance();
 
