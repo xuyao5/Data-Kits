@@ -21,11 +21,11 @@ import static io.github.xuyao5.dkl.eskits.context.annotation.FileField.SortType.
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FileField {
 
-    String value();
+    String column() default "";
 
     int priority() default 0;//优先级，0代表不参加排序
 
-    SortType sortOrder() default ASC;//排序顺序，默认为desc,可设置asc
+    SortType order() default ASC;//排序顺序，默认为desc,可设置asc
 
     @RequiredArgsConstructor
     enum SortType {

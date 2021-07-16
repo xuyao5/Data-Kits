@@ -24,7 +24,6 @@ import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.collect.List;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.lang.reflect.Field;
@@ -69,8 +68,8 @@ public final class File2EsService extends AbstractExecutor {
         boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
 
         String[][] metadataArray = new String[1][];//元数据
-        Map<String, Field> fieldMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
-        Map<String, TypeToken<?>> typeTokenMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
+        Map<String, Field> fieldMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
+        Map<String, TypeToken<?>> typeTokenMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
 
         final LongAdder count = new LongAdder();
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, (standardFileLine, sequence, endOfBatch) -> {
@@ -84,13 +83,13 @@ public final class File2EsService extends AbstractExecutor {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
 
                 Map<Integer, Map.Entry<String, String>> indexSorting = new TreeMap<>();//有序
-                for (int i = 0; i < metadataArray[0].length; i++) {
-                    Field field = fieldMap.get(metadataArray[0][i]);
+                fieldMap.values().forEach(field -> {
                     FileField fileFieldAnnotation = field.getDeclaredAnnotation(FileField.class);
                     if (fileFieldAnnotation.priority() > 0) {
-                        indexSorting.put(fileFieldAnnotation.priority(), new AbstractMap.SimpleEntry<>(field.getName(), fileFieldAnnotation.sortOrder().getOrder()));
+                        indexSorting.put(fileFieldAnnotation.priority(), new AbstractMap.SimpleEntry<>(field.getName(), fileFieldAnnotation.order().getOrder()));
                     }
-                }
+                });
+
                 if (!isIndexExist) {
                     if (!indexSorting.isEmpty()) {
                         indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder, indexSorting.values().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> null, LinkedHashMap::new)));
@@ -105,7 +104,8 @@ public final class File2EsService extends AbstractExecutor {
 
                 for (int i = 0; i < metadataArray[0].length; i++) {
                     Field field = fieldMap.get(metadataArray[0][i]);
-                    if (Objects.nonNull(field) && StringUtils.isNotBlank(recordArray[i])) {
+                    FileField fileFieldAnnotation = field.getDeclaredAnnotation(FileField.class);
+                    if (StringUtils.isNotEmpty(fileFieldAnnotation.column()) && StringUtils.isNotBlank(recordArray[i])) {
                         FieldUtils.writeField(field, standardDocument, GsonUtilsPlus.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
                     }
                 }
@@ -130,7 +130,7 @@ public final class File2EsService extends AbstractExecutor {
 
     @SneakyThrows
     private void errorConsumer(File2EsConfig config, StandardFileLine standardFileLine) {
-        FileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), List.of(standardFileLine.getLineRecord()), true);
+        FileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), Collections.singletonList(standardFileLine.getLineRecord()), true);
     }
 
     @SneakyThrows
