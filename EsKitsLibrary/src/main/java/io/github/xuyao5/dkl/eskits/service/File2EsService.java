@@ -59,17 +59,15 @@ public final class File2EsService extends AbstractExecutor {
             return -1;
         }
 
-        int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
-
-        Class<? extends BaseDocument> docClass = document.newInstance().getClass();
-
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
         boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
 
         String[][] metadataArray = new String[1][];//元数据
-        Map<String, Field> fieldMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
-        Map<String, TypeToken<?>> typeTokenMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
+        Class<? extends BaseDocument> docClass = document.newInstance().getClass();
+        XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
+        List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);
+        Map<String, Field> fieldMap = fieldsListWithAnnotation.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
+        Map<String, TypeToken<?>> typeTokenMap = fieldsListWithAnnotation.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
 
         final LongAdder count = new LongAdder();
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, (standardFileLine, sequence, endOfBatch) -> {
@@ -87,6 +85,7 @@ public final class File2EsService extends AbstractExecutor {
                         .collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).priority(), field -> new AbstractMap.SimpleEntry<>(field.getName(), field.getDeclaredAnnotation(FileField.class).order().getOrder()), (o, o2) -> null, TreeMap::new));
 
                 if (!isIndexExist) {
+                    int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
                     if (!indexSorting.isEmpty()) {
                         indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder, indexSorting.values().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> null, LinkedHashMap::new)));
                     } else {
