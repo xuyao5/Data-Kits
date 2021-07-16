@@ -69,8 +69,8 @@ public final class File2EsService extends AbstractExecutor {
         boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
 
         String[][] metadataArray = new String[1][];//元数据
-        Map<String, Field> fieldMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), Function.identity()));
-        Map<String, TypeToken<?>> typeTokenMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).value(), field -> TypeToken.get(field.getType())));
+        Map<String, Field> fieldMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
+        Map<String, TypeToken<?>> typeTokenMap = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class).stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
 
         final LongAdder count = new LongAdder();
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, (standardFileLine, sequence, endOfBatch) -> {
@@ -88,7 +88,7 @@ public final class File2EsService extends AbstractExecutor {
                     Field field = fieldMap.get(metadataArray[0][i]);
                     FileField fileFieldAnnotation = field.getDeclaredAnnotation(FileField.class);
                     if (fileFieldAnnotation.priority() > 0) {
-                        indexSorting.put(fileFieldAnnotation.priority(), new AbstractMap.SimpleEntry<>(field.getName(), fileFieldAnnotation.sortOrder().getOrder()));
+                        indexSorting.put(fileFieldAnnotation.priority(), new AbstractMap.SimpleEntry<>(field.getName(), fileFieldAnnotation.order().getOrder()));
                     }
                 }
                 if (!isIndexExist) {
@@ -105,7 +105,8 @@ public final class File2EsService extends AbstractExecutor {
 
                 for (int i = 0; i < metadataArray[0].length; i++) {
                     Field field = fieldMap.get(metadataArray[0][i]);
-                    if (Objects.nonNull(field) && StringUtils.isNotBlank(recordArray[i])) {
+                    FileField fileFieldAnnotation = field.getDeclaredAnnotation(FileField.class);
+                    if (StringUtils.isNotEmpty(fileFieldAnnotation.column()) && StringUtils.isNotBlank(recordArray[i])) {
                         FieldUtils.writeField(field, standardDocument, GsonUtilsPlus.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
                     }
                 }

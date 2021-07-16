@@ -19,19 +19,19 @@ import static io.github.xuyao5.dkl.eskits.context.annotation.FileField.SortType.
 public final class MyFileDocument extends BaseDocument {
 
     //UUID          CASH_AMOUNT          DESC          DATE_TIME_1          DATE_TIME_2
-    @FileField("UUID")
+    @FileField(column = "UUID")
     private String uuid;
 
-    @FileField("CASH_AMOUNT")
+    @FileField(column = "CASH_AMOUNT")
     private BigDecimal cashAmount;
 
-    @FileField(value = "DESC", priority = 1, sortOrder = DESC)
+    @FileField(column = "DESC", priority = 1, order = DESC)
     private String desc;
 
-    @FileField(value = "DATE_TIME_1", priority = 2, sortOrder = ASC)
+    @FileField(column = "DATE_TIME_1", priority = 2, order = ASC)
     private long dateTime1;
 
-    @FileField("DATE_TIME_2")
+    @FileField(column = "DATE_TIME_2")
     private Date dateTime2;
 
     private BigDecimal discount;
