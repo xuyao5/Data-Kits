@@ -82,13 +82,9 @@ public final class File2EsService extends AbstractExecutor {
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
 
-                Map<Integer, Map.Entry<String, String>> indexSorting = new TreeMap<>();//有序
-                fieldMap.values().forEach(field -> {
-                    FileField fileFieldAnnotation = field.getDeclaredAnnotation(FileField.class);
-                    if (fileFieldAnnotation.priority() > 0) {
-                        indexSorting.put(fileFieldAnnotation.priority(), new AbstractMap.SimpleEntry<>(field.getName(), fileFieldAnnotation.order().getOrder()));
-                    }
-                });
+                Map<Integer, Map.Entry<String, String>> indexSorting = fieldMap.values().stream()
+                        .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() > 0)
+                        .collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).priority(), field -> new AbstractMap.SimpleEntry<>(field.getName(), field.getDeclaredAnnotation(FileField.class).order().getOrder()), (o, o2) -> null, TreeMap::new));
 
                 if (!isIndexExist) {
                     if (!indexSorting.isEmpty()) {
