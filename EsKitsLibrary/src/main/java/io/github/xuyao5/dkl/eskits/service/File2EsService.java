@@ -101,8 +101,7 @@ public final class File2EsService extends AbstractExecutor {
 
                 for (int i = 0; i < metadataArray[0].length; i++) {
                     Field field = fieldMap.get(metadataArray[0][i]);
-                    FileField fileFieldAnnotation = field.getDeclaredAnnotation(FileField.class);
-                    if (StringUtils.isNotEmpty(fileFieldAnnotation.column()) && StringUtils.isNotBlank(recordArray[i])) {
+                    if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
                         FieldUtils.writeField(field, standardDocument, GsonUtilsPlus.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
                     }
                 }

@@ -35,7 +35,7 @@ public final class MyFileDocument extends BaseDocument {
     private Date dateTime2;
 
     @FileField(priority = 3, order = DESC)
-    private BigDecimal discount;
+    private int discount1;
 
     private int discount2;
 
