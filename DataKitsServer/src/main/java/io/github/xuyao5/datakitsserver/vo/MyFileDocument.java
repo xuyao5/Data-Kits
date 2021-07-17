@@ -37,6 +37,8 @@ public final class MyFileDocument extends BaseDocument {
     @FileField(priority = 3, order = DESC)
     private BigDecimal discount;
 
+    private int discount2;
+
 //    private NestedTags tags;//会导致Nested，则无法使用Index Sorting
 
     @Data(staticConstructor = "of")

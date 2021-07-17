@@ -54,21 +54,24 @@ public final class File2EsService extends AbstractExecutor {
     }
 
     public <T extends BaseDocument> long execute(@NonNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
-        //检查文件和索引是否存在
+        //检查文件是否存在
         if (!config.getFile().exists()) {
             return -1;
         }
 
+        //检查索引是否存在
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
+        final boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
 
-        String[][] metadataArray = new String[1][];//元数据
-        Class<? extends BaseDocument> docClass = document.newInstance().getClass();
-        XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
-        List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);
-        Map<String, Field> fieldMap = fieldsListWithAnnotation.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
-        Map<String, TypeToken<?>> typeTokenMap = fieldsListWithAnnotation.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
+        //预存必须数据
+        final String[][] metadataArray = new String[1][];//元数据
+        final Class<? extends BaseDocument> docClass = document.newInstance().getClass();
+        final XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
+        final List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);
+        final Map<String, Field> fieldMap = fieldsListWithAnnotation.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
+        final Map<String, TypeToken<?>> typeTokenMap = fieldsListWithAnnotation.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
 
+        //执行计数器
         final LongAdder count = new LongAdder();
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, (standardFileLine, sequence, endOfBatch) -> {
             if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
@@ -79,15 +82,14 @@ public final class File2EsService extends AbstractExecutor {
 
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
-
-                Map<Integer, Map.Entry<String, String>> indexSorting = fieldMap.values().stream()
-                        .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() > 0)
-                        .collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).priority(), field -> new AbstractMap.SimpleEntry<>(field.getName(), field.getDeclaredAnnotation(FileField.class).order().getOrder()), (o, o2) -> null, TreeMap::new));
-
                 if (!isIndexExist) {
+                    Map<String, String> indexSorting = fieldsListWithAnnotation.stream()
+                            .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() > 0)
+                            .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).priority()))
+                            .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o, o2) -> null, LinkedHashMap::new));
                     int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
                     if (!indexSorting.isEmpty()) {
-                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder, indexSorting.values().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> null, LinkedHashMap::new)));
+                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder, indexSorting);
                     } else {
                         indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder);
                     }
