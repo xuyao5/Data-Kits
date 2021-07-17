@@ -10,8 +10,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static io.github.xuyao5.dkl.eskits.context.annotation.FileField.SortType.ASC;
-import static io.github.xuyao5.dkl.eskits.context.annotation.FileField.SortType.DESC;
+import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
+import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
 
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)

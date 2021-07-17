@@ -9,13 +9,13 @@ import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 14/05/21 19:51
- * @apiNote FileField
- * @implNote FileField
+ * @apiNote TableField
+ * @implNote TableField
  */
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FileField {
+public @interface TableField {
 
     String column() default "";
 
