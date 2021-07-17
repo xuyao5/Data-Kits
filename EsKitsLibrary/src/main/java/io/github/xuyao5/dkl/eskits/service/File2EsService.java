@@ -66,10 +66,10 @@ public final class File2EsService extends AbstractExecutor {
         //预存必须数据
         final String[][] metadataArray = new String[1][];//元数据
         final Class<? extends BaseDocument> docClass = document.newInstance().getClass();
-        final XContentBuilder xContentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
-        final List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);
-        final Map<String, Field> fieldMap = fieldsListWithAnnotation.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
-        final Map<String, TypeToken<?>> typeTokenMap = fieldsListWithAnnotation.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
+        final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
+        final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);
+        final Map<String, Field> columnFieldMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
+        final Map<String, TypeToken<?>> columnTypeTokenMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
 
         //执行计数器
         final LongAdder count = new LongAdder();
@@ -83,26 +83,26 @@ public final class File2EsService extends AbstractExecutor {
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
                 if (!isIndexExist) {
-                    Map<String, String> indexSorting = fieldsListWithAnnotation.stream()
+                    Map<String, String> indexSorting = fieldsList.stream()
                             .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() > 0)
                             .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).priority()))
-                            .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o, o2) -> null, LinkedHashMap::new));
+                            .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
                     int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
                     if (!indexSorting.isEmpty()) {
-                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder, indexSorting);
+                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder, indexSorting);
                     } else {
-                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, xContentBuilder);
+                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder);
                     }
                 } else {
-                    indexSupporter.putMapping(client, xContentBuilder, config.getIndex());
+                    indexSupporter.putMapping(client, contentBuilder, config.getIndex());
                 }
             } else {
                 T standardDocument = document.newInstance();
 
                 for (int i = 0; i < metadataArray[0].length; i++) {
-                    Field field = fieldMap.get(metadataArray[0][i]);
+                    Field field = columnFieldMap.get(metadataArray[0][i]);
                     if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
-                        FieldUtils.writeField(field, standardDocument, GsonUtilsPlus.deserialize(recordArray[i], typeTokenMap.get(metadataArray[0][i])), true);
+                        FieldUtils.writeField(field, standardDocument, GsonUtilsPlus.deserialize(recordArray[i], columnTypeTokenMap.get(metadataArray[0][i])), true);
                     }
                 }
 
