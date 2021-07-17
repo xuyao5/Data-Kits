@@ -48,6 +48,10 @@ public final class BulkSupporter {
         return new UpdateRequest(index, id).doc(GsonUtilsPlus.obj2Json(obj), XContentType.JSON).docAsUpsert(true);
     }
 
+    public static UpdateRequest buildUpdateRequest(@NonNull String index, @NonNull String id, @NonNull Serializable docObj, @NonNull Serializable upsertObj) {
+        return new UpdateRequest(index, id).doc(GsonUtilsPlus.obj2Json(docObj), XContentType.JSON).upsert(GsonUtilsPlus.obj2Json(upsertObj), XContentType.JSON);
+    }
+
     public static DeleteRequest buildDeleteRequest(@NonNull String index, @NonNull String id) {
         return new DeleteRequest(index, id);
     }

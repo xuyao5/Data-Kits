@@ -18,6 +18,7 @@ import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
@@ -106,16 +107,20 @@ public final class File2EsService extends AbstractExecutor {
                     }
                 }
 
-                standardDocument.setSerialNo(snowflake.nextId());
                 standardDocument.setDateTag(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
                 standardDocument.setSourceTag(FilenameUtils.getBaseName(config.getFile().getName()));
-                standardDocument.setCreateDate(DateUtilsPlus.now());
-                standardDocument.setModifyDate(standardDocument.getCreateDate());
 
                 if (!isIndexExist) {
+                    standardDocument.setCreateDate(DateUtilsPlus.now());
+                    standardDocument.setSerialNo(snowflake.nextId());
                     function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
                 } else {
-                    function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
+                    T updatingDocument = document.newInstance();
+                    BeanUtils.copyProperties(updatingDocument, standardDocument);
+                    updatingDocument.setModifyDate(DateUtilsPlus.now());
+                    standardDocument.setCreateDate(DateUtilsPlus.now());
+                    standardDocument.setSerialNo(snowflake.nextId());
+                    function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(standardDocument)));
                 }
 
                 count.increment();

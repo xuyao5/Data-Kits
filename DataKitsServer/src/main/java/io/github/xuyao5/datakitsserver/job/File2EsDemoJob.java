@@ -8,7 +8,6 @@ import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
-import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -51,7 +50,7 @@ public final class File2EsDemoJob implements Runnable {
 
                     //3.别名重定向
                     String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, ALIAS, index);
-                    log.info("迁移别名[{}]到[{}]返回[{}]", ALIAS, index, indexArray);
+                    log.info("迁移别名[{}]到[{}]返回[{}]", ALIAS, index, indexArray.length > 0 ? indexArray : "无别名迁移");
 
                     if (indexArray.length > 0) {
                         //4.迁移老索引数据
@@ -64,10 +63,12 @@ public final class File2EsDemoJob implements Runnable {
                     }
 
                     //6.升副本
-                    SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esClientConfig.getEsIndexReplicas());
+                    boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esClientConfig.getEsIndexReplicas());
+                    log.info("升副本索引[{}]返回[{}]", index, isUpdateReplicasSuccess);
 
                     //7.压缩文件
-                    CompressUtilsPlus.createTarGz(file, false);
+//                    boolean isDelete = CompressUtilsPlus.createTarGz(file, false);
+//                    log.info("压缩文件[{}]是否删除[{}]", file, isDelete);
                 });
     }
 }
