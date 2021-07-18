@@ -74,7 +74,7 @@ public final class MySQLBinlogBoost {
             } else {
                 switch (eventType) {
                     case ROTATE:
-                        Consumer<RotateEventData> rotateEventConsumer = rotateEventData -> log.info("【ROTATE】binlogFilename={}, binlogPosition={}", rotateEventData.getBinlogFilename(), rotateEventData.getBinlogPosition());
+                        Consumer<RotateEventData> rotateEventConsumer = this::rotateEventHandler;
                         rotateEventConsumer.accept(event.getData());
                         break;
                     case FORMAT_DESCRIPTION:
@@ -111,5 +111,9 @@ public final class MySQLBinlogBoost {
         if (bean.isConnected()) {
             bean.disconnect();
         }
+    }
+
+    private void rotateEventHandler(RotateEventData rotateEventData) {
+        log.info("【ROTATE】binlogFilename={}, binlogPosition={}", rotateEventData.getBinlogFilename(), rotateEventData.getBinlogPosition());
     }
 }
