@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  */
 @Slf4j
 @Builder(builderMethodName = "context", buildMethodName = "create")
-public final class BinlogBoost {
+public final class MySQLBinlogBoost {
 
     @Builder.Default
     private final String hostname = "localhost";

@@ -2,7 +2,7 @@ package io.github.xuyao5.dkl.eskits.listener;
 
 import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.context.BinlogBoost;
+import io.github.xuyao5.dkl.eskits.context.MySQLBinlogBoost;
 import io.github.xuyao5.dkl.eskits.listener.config.MySQLBinlogConfig;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public final class MySQLBinlogListener extends AbstractExecutor {
     }
 
     public Future<BinaryLogClientMXBean> listen(@NonNull MySQLBinlogConfig config) {
-        return EXECUTOR.submit(() -> BinlogBoost.context()
+        return EXECUTOR.submit(() -> MySQLBinlogBoost.context()
                 .hostname(config.getHostname())
                 .schema(config.getSchema())
                 .port(config.getPort())
