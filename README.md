@@ -11,9 +11,25 @@
     <artifactId>es-kits-lib</artifactId>
     <version>0.2</version>
 </dependency>
+
 ```
 
 ### 1.2 Spring配置
+
+```Java
+
+@SpringBootApplication()
+@Import({})//注入@Configuration
+@EnableConfigurationProperties({EsClientConfig.class})//注入@ConfigurationProperties
+public class DataKitsConfiguration {
+
+    @Bean(destroyMethod = "close")
+    public RestHighLevelClient restHighLevelClient(@Value("${es.client.hosts}") String hosts, @Value("${es.client.username}") String username, @Value("${es.client.password}") String password) {
+        return new EsClient(new String[]{hosts}, username, password).getClient();
+    }
+}
+
+```
 
 ## 8. API概述
 
