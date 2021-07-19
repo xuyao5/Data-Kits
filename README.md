@@ -5,6 +5,7 @@
 ### 1.1 Maven配置
 
 ```XML
+
 <dependency>
     <groupId>io.github.xuyao5</groupId>
     <artifactId>es-kits-lib</artifactId>
