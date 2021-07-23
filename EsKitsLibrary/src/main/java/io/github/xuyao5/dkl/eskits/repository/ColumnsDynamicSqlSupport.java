@@ -79,9 +79,9 @@ public final class ColumnsDynamicSqlSupport {
 
         public final SqlColumn<String> tableSchema = column("TABLE_SCHEMA", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> tableName = column("\"TABLE_NAME\"", JDBCType.VARCHAR);
+        public final SqlColumn<String> tableName = column("`TABLE_NAME`", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> columnName = column("\"COLUMN_NAME\"", JDBCType.VARCHAR);
+        public final SqlColumn<String> columnName = column("`COLUMN_NAME`", JDBCType.VARCHAR);
 
         public final SqlColumn<Long> ordinalPosition = column("ORDINAL_POSITION", JDBCType.BIGINT);
 
@@ -99,15 +99,15 @@ public final class ColumnsDynamicSqlSupport {
 
         public final SqlColumn<Long> datetimePrecision = column("DATETIME_PRECISION", JDBCType.BIGINT);
 
-        public final SqlColumn<String> characterSetName = column("\"CHARACTER_SET_NAME\"", JDBCType.VARCHAR);
+        public final SqlColumn<String> characterSetName = column("`CHARACTER_SET_NAME`", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> collationName = column("\"COLLATION_NAME\"", JDBCType.VARCHAR);
+        public final SqlColumn<String> collationName = column("`COLLATION_NAME`", JDBCType.VARCHAR);
 
         public final SqlColumn<String> columnKey = column("COLUMN_KEY", JDBCType.VARCHAR);
 
         public final SqlColumn<String> extra = column("EXTRA", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> privileges = column("\"PRIVILEGES\"", JDBCType.VARCHAR);
+        public final SqlColumn<String> privileges = column("`PRIVILEGES`", JDBCType.VARCHAR);
 
         public final SqlColumn<String> columnComment = column("COLUMN_COMMENT", JDBCType.VARCHAR);
 

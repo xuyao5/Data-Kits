@@ -3,6 +3,8 @@
 <generatorConfiguration>
     <context id="Es-Kits-Library" targetRuntime="MyBatis3DynamicSql">
         <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
         <property name="javaFileEncoding" value="UTF-8"/>
 
         <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
