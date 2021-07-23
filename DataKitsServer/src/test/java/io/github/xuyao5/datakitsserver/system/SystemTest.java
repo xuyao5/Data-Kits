@@ -55,13 +55,7 @@ public class SystemTest extends AbstractTest {
     @SneakyThrows
     @Test
     void binlog() {
-        MySQLBinlogConfig config = MySQLBinlogConfig.of();
-        config.setHostname(esClientConfig.getMysqlBinlogHost());
-        config.setPort(esClientConfig.getMysqlBinlogPort());
-        config.setSchema(esClientConfig.getSchema());
-        config.setUsername(esClientConfig.getMysqlBinlogUsername());
-        config.setPassword(esClientConfig.getMysqlBinlogPassword());
-        new MySQLBinlogListener(esClient).listen(config);
+        new MySQLBinlogListener(esClient).listen(MySQLBinlogConfig.of());
         System.in.read();
     }
 }

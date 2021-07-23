@@ -22,19 +22,4 @@ public final class EsClientConfig {
 
     @Value("${es.index.replicas}")
     private int esIndexReplicas;
-
-    @Value("${mysql.binlog.host}")
-    private String mysqlBinlogHost;
-
-    @Value("${mysql.binlog.port}")
-    private int mysqlBinlogPort;
-
-    @Value("${mysql.binlog.schema}")
-    private String schema;
-
-    @Value("${mysql.binlog.username}")
-    private String mysqlBinlogUsername;
-
-    @Value("${mysql.binlog.password}")
-    private String mysqlBinlogPassword;
 }
