@@ -4,16 +4,28 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
 import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
+import io.github.xuyao5.dkl.eskits.repository.Columns;
+import io.github.xuyao5.dkl.eskits.repository.ColumnsMapper;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+
+import static io.github.xuyao5.dkl.eskits.repository.ColumnsDynamicSqlSupport.tableName;
+import static io.github.xuyao5.dkl.eskits.repository.ColumnsDynamicSqlSupport.tableSchema;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -24,6 +36,9 @@ import java.util.function.Consumer;
 @Slf4j
 @Builder(builderMethodName = "context", buildMethodName = "create")
 public final class MySQLBinlogBoost {
+
+    @Builder.Default
+    private final String driver = "com.mysql.jdbc.Driver";
 
     @Builder.Default
     private final String hostname = "localhost";
@@ -40,6 +55,19 @@ public final class MySQLBinlogBoost {
 
     @SneakyThrows
     public BinaryLogClientMXBean open() {
+        Properties properties = new Properties();
+        properties.setProperty("mybatis.mysql.driver", driver);
+        //jdbc:mysql://localhost:3306/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false
+        properties.setProperty("mybatis.mysql.url", StringUtils.join("jdbc:mysql://", hostname, ":", port, "/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false"));
+        properties.setProperty("mybatis.mysql.username", username);
+        properties.setProperty("mybatis.mysql.password", password);
+        final SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"), properties);
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            ColumnsMapper mapper = session.getMapper(ColumnsMapper.class);
+            List<Columns> information_schema = mapper.select(dsl -> dsl.where(tableSchema, isEqualTo("BinlogTest")).and(tableName, isEqualTo("MyTable")));
+            information_schema.forEach(System.out::println);
+        }
+
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
