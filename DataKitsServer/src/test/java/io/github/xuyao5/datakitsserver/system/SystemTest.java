@@ -1,5 +1,6 @@
 package io.github.xuyao5.datakitsserver.system;
 
+import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.dkl.eskits.service.MySQL2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
@@ -16,6 +17,8 @@ import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.Future;
 
 public class SystemTest extends AbstractTest {
 
@@ -55,7 +58,7 @@ public class SystemTest extends AbstractTest {
     @SneakyThrows
     @Test
     void binlog() {
-        new MySQL2EsService(esClient).listen(MySQL2EsConfig.of());
+        Future<BinaryLogClientMXBean> execute = new MySQL2EsService(esClient).execute(MySQL2EsConfig.of());
         System.in.read();
     }
 }

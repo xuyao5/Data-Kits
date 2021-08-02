@@ -27,7 +27,7 @@ public final class MySQL2EsService extends AbstractExecutor {
         super(client);
     }
 
-    public Future<BinaryLogClientMXBean> listen(@NonNull MySQL2EsConfig config) {
+    public Future<BinaryLogClientMXBean> execute(@NonNull MySQL2EsConfig config) {
         return EXECUTOR.submit(() -> MySQLBinlogBoost.context()
                 .hostname(config.getHostname())
                 .schema(config.getSchema())
