@@ -1,8 +1,8 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.listener.MySQLBinlogListener;
-import io.github.xuyao5.dkl.eskits.listener.config.MySQLBinlogConfig;
+import io.github.xuyao5.dkl.eskits.service.MySQL2EsService;
+import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.SneakyThrows;
@@ -55,7 +55,7 @@ public class SystemTest extends AbstractTest {
     @SneakyThrows
     @Test
     void binlog() {
-        new MySQLBinlogListener(esClient).listen(MySQLBinlogConfig.of());
+        new MySQL2EsService(esClient).listen(MySQL2EsConfig.of());
         System.in.read();
     }
 }
