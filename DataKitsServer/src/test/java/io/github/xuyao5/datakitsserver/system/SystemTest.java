@@ -1,9 +1,6 @@
 package io.github.xuyao5.datakitsserver.system;
 
-import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.service.MySQL2EsService;
-import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.SneakyThrows;
@@ -17,8 +14,6 @@ import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.Future;
 
 public class SystemTest extends AbstractTest {
 
@@ -53,12 +48,5 @@ public class SystemTest extends AbstractTest {
     @Test
     void compress() {
         FileUtilsPlus.getDecisionFiles("/Users/xuyao/Downloads", "^INT_DISRUPTOR_1W_T_20200710_00.txt$", path -> true).forEach(CompressUtilsPlus::createTarGz);
-    }
-
-    @SneakyThrows
-    @Test
-    void binlog() {
-        Future<BinaryLogClientMXBean> execute = new MySQL2EsService(esClient).execute(MySQL2EsConfig.of());
-        System.in.read();
     }
 }

@@ -21,14 +21,17 @@ import java.util.concurrent.Future;
 @Slf4j
 public final class MySQL2EsService extends AbstractExecutor {
 
-    private final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    private final ExecutorService executor;
+    private final int bulkThreads;
 
-    public MySQL2EsService(@NonNull RestHighLevelClient client) {
+    public MySQL2EsService(@NonNull RestHighLevelClient client, int threads) {
         super(client);
+        executor = Executors.newSingleThreadExecutor();
+        bulkThreads = threads;
     }
 
     public Future<BinaryLogClientMXBean> execute(@NonNull MySQL2EsConfig config) {
-        return EXECUTOR.submit(() -> MySQLBinlogBoost.context()
+        return executor.submit(() -> MySQLBinlogBoost.context()
                 .hostname(config.getHostname())
                 .schema(config.getSchema())
                 .port(config.getPort())

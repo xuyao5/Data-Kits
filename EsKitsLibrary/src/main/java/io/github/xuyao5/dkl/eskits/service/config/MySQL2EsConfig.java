@@ -11,10 +11,11 @@ import lombok.Data;
 @Data(staticConstructor = "of")
 public final class MySQL2EsConfig {
 
+    private final String schema;
+    private final String username;
+    private final String password;
+
     private String hostname;
     private int port;
     private long timeout;
-    private String schema;
-    private String username;
-    private String password;
 }
