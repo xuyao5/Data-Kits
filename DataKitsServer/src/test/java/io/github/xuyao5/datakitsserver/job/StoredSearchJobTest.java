@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
 
-final class StoredSearchDemoJobTest extends AbstractTest {
+final class StoredSearchJobTest extends AbstractTest {
 
     @Resource(name = "storedSearchDemoJob")
     private StoredSearchDemoJob storedSearchDemoJob;

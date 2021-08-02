@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
-final class File2EsDemoJobTest extends AbstractTest {
+final class File2EsJobTest extends AbstractTest {
 
     @Resource(name = "file2EsDemoJob")
     private File2EsDemoJob file2EsDemoJob;
