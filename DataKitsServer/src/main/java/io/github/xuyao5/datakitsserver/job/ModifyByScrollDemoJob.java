@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("modifyByScrollJob")
-public final class ModifyByScrollJob implements Runnable {
+public final class ModifyByScrollDemoJob implements Runnable {
 
     @Autowired
     protected RestHighLevelClient esClient;
