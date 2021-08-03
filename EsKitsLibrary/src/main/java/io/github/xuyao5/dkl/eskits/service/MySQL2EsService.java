@@ -32,12 +32,9 @@ public final class MySQL2EsService extends AbstractExecutor {
 
     public Future<BinaryLogClientMXBean> execute(@NonNull MySQL2EsConfig config) {
         return executor.submit(() -> MySQLBinlogBoost.context()
-                .hostname(config.getHostname())
-                .schema(config.getSchema())
-                .port(config.getPort())
                 .username(config.getUsername())
                 .password(config.getPassword())
                 .create()
-                .open());
+                .open(config.getSchema()));
     }
 }

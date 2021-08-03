@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -41,27 +40,21 @@ public final class MySQLBinlogBoost {
     private final String driver = "com.mysql.cj.jdbc.Driver";
 
     @Builder.Default
-    private final String hostname = "localhost";
+    private final String url = "jdbc:mysql://localhost:3306/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC";
 
-    @Builder.Default
-    private final int port = 3306;
-
-    @Builder.Default
-    private final long timeout = TimeUnit.SECONDS.toMillis(6);
-
-    private final String schema;
     private final String username;
     private final String password;
 
     @SneakyThrows
-    public BinaryLogClientMXBean open() {
+    public BinaryLogClientMXBean open(@NonNull String schema) {
         Properties properties = new Properties();
         properties.setProperty("mybatis.mysql.driver", driver);
-        //jdbc:mysql://localhost:3306/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
-        properties.setProperty("mybatis.mysql.url", StringUtils.join("jdbc:mysql://", hostname, ":", port, "/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC"));
+        properties.setProperty("mybatis.mysql.url", url);
         properties.setProperty("mybatis.mysql.username", username);
         properties.setProperty("mybatis.mysql.password", password);
         final SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"), properties);
+        String hostname = "";
+        int port = 3306;
         try (SqlSession session = sqlSessionFactory.openSession()) {
             ColumnsMapper mapper = session.getMapper(ColumnsMapper.class);
             List<Columns> information_schema = mapper.select(dsl -> dsl.where(tableSchema, isEqualTo("BinlogTest")).and(tableName, isEqualTo("MyTable")));
@@ -130,7 +123,7 @@ public final class MySQLBinlogBoost {
                 }
             }
         });
-        client.connect(timeout);
+        client.connect(TimeUnit.SECONDS.toMillis(6));
         return client;
     }
 
