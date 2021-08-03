@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.job;
 
-import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
+import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.dkl.eskits.service.StoredSearchService;
 import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -15,7 +15,7 @@ public final class StoredSearchDemoJob implements Runnable {
     protected RestHighLevelClient esClient;
 
     @Autowired
-    protected EsClientConfig esClientConfig;
+    protected EsKitsConfig esKitsConfig;
 
     @Override
     public void run() {

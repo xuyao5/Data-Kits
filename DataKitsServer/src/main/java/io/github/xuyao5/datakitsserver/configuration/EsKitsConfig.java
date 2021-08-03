@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Getter
 @ConfigurationProperties("es.client")
-public final class EsClientConfig {
+public final class EsKitsConfig {
 
     @Value("${es.bulk.threads}")
     private int esBulkThreads;

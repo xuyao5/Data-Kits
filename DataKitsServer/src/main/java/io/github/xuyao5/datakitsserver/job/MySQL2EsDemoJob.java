@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.job;
 
 import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
-import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
+import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.dkl.eskits.service.MySQL2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
 import lombok.SneakyThrows;
@@ -20,12 +20,12 @@ public final class MySQL2EsDemoJob implements Runnable {
     protected RestHighLevelClient esClient;
 
     @Autowired
-    protected EsClientConfig esClientConfig;
+    protected EsKitsConfig esKitsConfig;
 
     @SneakyThrows
     @Override
     public void run() {
-        Future<BinaryLogClientMXBean> execute = new MySQL2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of("BinlogTest", "root", "123456"));
+        Future<BinaryLogClientMXBean> execute = new MySQL2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of("BinlogTest", "root", "123456"));
         System.in.read();
     }
 }

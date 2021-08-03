@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.context;
 
 import io.github.xuyao5.datakitsserver.DataKitsApplication;
-import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
+import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
 import io.github.xuyao5.dkl.eskits.util.IpAddressUtilsPlus;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -17,5 +17,5 @@ public abstract class AbstractTest {
     protected RestHighLevelClient esClient;
 
     @Autowired
-    protected EsClientConfig esClientConfig;
+    protected EsKitsConfig esKitsConfig;
 }

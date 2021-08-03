@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.job;
 
-import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
+import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.service.ModifyByScrollService;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
@@ -17,7 +17,7 @@ public final class ModifyByScrollDemoJob implements Runnable {
     protected RestHighLevelClient esClient;
 
     @Autowired
-    protected EsClientConfig esClientConfig;
+    protected EsKitsConfig esKitsConfig;
 
     @Override
     public void run() {
@@ -25,7 +25,7 @@ public final class ModifyByScrollDemoJob implements Runnable {
 
         ModifyByScrollConfig modifyByScrollConfig = ModifyByScrollConfig.of(NEW_INDEX);
         modifyByScrollConfig.setQueryBuilder(QueryBuilders.matchAllQuery());
-        new ModifyByScrollService(esClient, esClientConfig.getEsBulkThreads(), esClientConfig.getEsScrollSize()).upsertByScroll(modifyByScrollConfig, MyFileDocument::of, myFileDocument -> {
+        new ModifyByScrollService(esClient, esKitsConfig.getEsBulkThreads(), esKitsConfig.getEsScrollSize()).upsertByScroll(modifyByScrollConfig, MyFileDocument::of, myFileDocument -> {
             myFileDocument.setModifyDate(DateUtilsPlus.now());
             return myFileDocument;
         });

@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.job;
 
-import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
+import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
@@ -30,7 +30,7 @@ public final class File2EsDemoJob implements Runnable {
     protected RestHighLevelClient esClient;
 
     @Autowired
-    protected EsClientConfig esClientConfig;
+    protected EsKitsConfig esKitsConfig;
 
     @Override
     public void run() {
@@ -45,7 +45,7 @@ public final class File2EsDemoJob implements Runnable {
                     String index = StringUtils.join(ALIAS.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
 
                     //2.写入索引
-                    long count = new File2EsService(esClient, esClientConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, UnaryOperator.identity());
+                    long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, UnaryOperator.identity());
                     log.info("文件[{}]写入索引[{}]完毕,共处理{}条数据", file, index, count);
 
                     //3.别名重定向
@@ -54,7 +54,7 @@ public final class File2EsDemoJob implements Runnable {
 
                     if (indexArray.length > 0) {
                         //4.迁移老索引数据
-                        BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, QueryBuilders.matchAllQuery(), index, esClientConfig.getEsScrollSize(), indexArray);
+                        BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, QueryBuilders.matchAllQuery(), index, esKitsConfig.getEsScrollSize(), indexArray);
                         log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
 
                         //5.关闭老索引
@@ -63,7 +63,7 @@ public final class File2EsDemoJob implements Runnable {
                     }
 
                     //6.升副本
-                    boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esClientConfig.getEsIndexReplicas());
+                    boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esKitsConfig.getEsIndexReplicas());
                     log.info("升副本索引[{}]返回[{}]", index, isUpdateReplicasSuccess);
 
                     //7.压缩文件
