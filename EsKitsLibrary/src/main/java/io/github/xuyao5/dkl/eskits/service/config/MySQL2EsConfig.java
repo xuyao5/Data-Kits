@@ -14,6 +14,7 @@ public final class MySQL2EsConfig {
     private final String schema;
     private final String username;
     private final String password;
+    private final String table;
 
     private String hostname;
     private int port;

@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -25,42 +26,54 @@ import java.util.function.Consumer;
 import static io.github.xuyao5.dkl.eskits.repository.ColumnsDynamicSqlSupport.tableName;
 import static io.github.xuyao5.dkl.eskits.repository.ColumnsDynamicSqlSupport.tableSchema;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 7/07/21 22:44
- * @apiNote BinlogBoost
- * @implNote BinlogBoost
+ * @apiNote MySQLBinlogBoost
+ * @implNote MySQLBinlogBoost
  */
 @Slf4j
 @Builder(builderMethodName = "context", buildMethodName = "create")
 public final class MySQLBinlogBoost {
 
     @Builder.Default
-    private final String driver = "com.mysql.cj.jdbc.Driver";
+    private String driver = "com.mysql.cj.jdbc.Driver";
 
     @Builder.Default
-    private final String url = "jdbc:mysql://localhost:3306/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC";
+    private String hostname = "localhost";
 
-    private final String username;
-    private final String password;
+    @Builder.Default
+    private int port = 3306;
+
+    private String username;
+    private String password;
 
     @SneakyThrows
-    public BinaryLogClientMXBean open(@NonNull String schema) {
+    private List<Columns> queryColumns(@NonNull String schema, @NonNull String... table) {
         Properties properties = new Properties();
+        switch (driver) {
+            case "com.mysql.cj.jdbc.Driver":
+                properties.setProperty("mybatis.mysql.url", StringUtils.join("jdbc:mysql://", hostname, ":", port, "/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC"));
+                break;
+            case "com.mysql.jdbc.Driver":
+                properties.setProperty("mybatis.mysql.url", StringUtils.join("jdbc:mysql://", hostname, ":", port, "/information_schema?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC"));
+                break;
+        }
         properties.setProperty("mybatis.mysql.driver", driver);
-        properties.setProperty("mybatis.mysql.url", url);
         properties.setProperty("mybatis.mysql.username", username);
         properties.setProperty("mybatis.mysql.password", password);
-        final SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"), properties);
-        String hostname = "";
-        int port = 3306;
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"), properties);
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            ColumnsMapper mapper = session.getMapper(ColumnsMapper.class);
-            List<Columns> information_schema = mapper.select(dsl -> dsl.where(tableSchema, isEqualTo("BinlogTest")).and(tableName, isEqualTo("MyTable")));
-            information_schema.forEach(System.out::println);
+            return session.getMapper(ColumnsMapper.class).select(dsl -> dsl.where(tableSchema, isEqualTo(schema)).and(tableName, isIn(table)));
         }
+    }
 
+    @SneakyThrows
+    public BinaryLogClientMXBean open(@NonNull String schema, @NonNull String... table) {
+        List<Columns> columns = queryColumns(schema, table);
+        columns.stream().findFirst();
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG

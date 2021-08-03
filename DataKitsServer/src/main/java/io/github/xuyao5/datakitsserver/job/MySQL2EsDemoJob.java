@@ -25,7 +25,7 @@ public final class MySQL2EsDemoJob implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        Future<BinaryLogClientMXBean> execute = new MySQL2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of("BinlogTest", "root", "123456"));
+        Future<BinaryLogClientMXBean> execute = new MySQL2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of("BinlogTest", "root", "123456", "MyTable"));
         System.in.read();
     }
 }
