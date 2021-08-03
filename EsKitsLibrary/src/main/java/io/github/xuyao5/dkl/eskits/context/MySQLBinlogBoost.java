@@ -57,8 +57,8 @@ public final class MySQLBinlogBoost {
     public BinaryLogClientMXBean open() {
         Properties properties = new Properties();
         properties.setProperty("mybatis.mysql.driver", driver);
-        //jdbc:mysql://localhost:3306/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false
-        properties.setProperty("mybatis.mysql.url", StringUtils.join("jdbc:mysql://", hostname, ":", port, "/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false"));
+        //jdbc:mysql://localhost:3306/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+        properties.setProperty("mybatis.mysql.url", StringUtils.join("jdbc:mysql://", hostname, ":", port, "/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC"));
         properties.setProperty("mybatis.mysql.username", username);
         properties.setProperty("mybatis.mysql.password", password);
         final SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"), properties);
