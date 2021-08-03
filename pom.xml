@@ -37,7 +37,6 @@
 
     <properties>
         <elasticsearch.version>7.10.2</elasticsearch.version>
-        <mysql.version>5.1.49</mysql.version>
     </properties>
 
     <dependencies>

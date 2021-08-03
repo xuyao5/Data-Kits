@@ -38,7 +38,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 public final class MySQLBinlogBoost {
 
     @Builder.Default
-    private final String driver = "com.mysql.jdbc.Driver";
+    private final String driver = "com.mysql.cj.jdbc.Driver";
 
     @Builder.Default
     private final String hostname = "localhost";
