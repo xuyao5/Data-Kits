@@ -4,8 +4,8 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
 import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
-import io.github.xuyao5.dkl.eskits.repository.Columns;
-import io.github.xuyao5.dkl.eskits.repository.ColumnsMapper;
+import io.github.xuyao5.dkl.eskits.repository.information_schema.Columns;
+import io.github.xuyao5.dkl.eskits.repository.information_schema.ColumnsMapper;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -23,8 +23,8 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import static io.github.xuyao5.dkl.eskits.repository.ColumnsDynamicSqlSupport.tableName;
-import static io.github.xuyao5.dkl.eskits.repository.ColumnsDynamicSqlSupport.tableSchema;
+import static io.github.xuyao5.dkl.eskits.repository.information_schema.ColumnsDynamicSqlSupport.tableName;
+import static io.github.xuyao5.dkl.eskits.repository.information_schema.ColumnsDynamicSqlSupport.tableSchema;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 
