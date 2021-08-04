@@ -47,11 +47,12 @@ public final class MySQLBinlogBoost {
     @Builder.Default
     private int port = 3306;
 
+    private String schema;
     private String username;
     private String password;
 
     @SneakyThrows
-    private List<Columns> queryColumns(@NonNull String schema, @NonNull String... table) {
+    private List<Columns> queryColumns(@NonNull String... tables) {
         Properties properties = new Properties();
         switch (driver) {
             case "com.mysql.cj.jdbc.Driver":
@@ -66,13 +67,13 @@ public final class MySQLBinlogBoost {
         properties.setProperty("mybatis.mysql.password", password);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"), properties);
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            return session.getMapper(ColumnsMapper.class).select(dsl -> dsl.where(tableSchema, isEqualTo(schema)).and(tableName, isIn(table)));
+            return session.getMapper(ColumnsMapper.class).select(dsl -> dsl.where(tableSchema, isEqualTo(schema)).and(tableName, isIn(tables)));
         }
     }
 
     @SneakyThrows
-    public BinaryLogClientMXBean open(@NonNull String schema, @NonNull String... table) {
-        List<Columns> columns = queryColumns(schema, table);
+    public BinaryLogClientMXBean open(@NonNull String... tables) {
+        List<Columns> columns = queryColumns(tables);
         columns.stream().findFirst();
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
@@ -120,7 +121,7 @@ public final class MySQLBinlogBoost {
                         queryEventConsumer.accept(event.getData());
                         break;
                     case TABLE_MAP:
-                        Consumer<TableMapEventData> tableMapEventConsumer = tableMapEventData -> log.info("【TABLE_MAP】tableId={}, database={}, table={}, columnTypes={}, columnMetadata={}, columnNullability={}, eventMetadata={}", tableMapEventData.getTableId(), tableMapEventData.getDatabase(), tableMapEventData.getTable(), tableMapEventData.getColumnTypes(), tableMapEventData.getColumnMetadata(), tableMapEventData.getColumnNullability(), tableMapEventData.getEventMetadata());
+                        Consumer<TableMapEventData> tableMapEventConsumer = tableMapEventData -> log.info("【TABLE_MAP】tableId={}, database={}, tables={}, columnTypes={}, columnMetadata={}, columnNullability={}, eventMetadata={}", tableMapEventData.getTableId(), tableMapEventData.getDatabase(), tableMapEventData.getTable(), tableMapEventData.getColumnTypes(), tableMapEventData.getColumnMetadata(), tableMapEventData.getColumnNullability(), tableMapEventData.getEventMetadata());
                         tableMapEventConsumer.accept(event.getData());
                         break;
                     case XID:
