@@ -1,7 +1,9 @@
 package io.github.xuyao5.datakitsserver.job;
 
+import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
+import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
@@ -20,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.UnaryOperator;
 
 @Slf4j
@@ -34,23 +38,35 @@ public final class File2EsDemoJob implements Runnable {
 
     @Override
     public void run() {
-        final String ALIAS = "FILE2ES_DISRUPTOR";
         String basePath = "/Users/xuyao/Downloads";
-        String filenameRegex = "^INT_DISRUPTOR_1W_T_\\d{8}_\\d{2}.txt$";
-        FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists())
+
+        Map<String, String> fileMap = new ConcurrentHashMap<>();
+        fileMap.put("FILE2ES_DISRUPTOR", "^INT_DISRUPTOR_1W_T_\\d{8}_\\d{2}.txt$");//可以从配置中读取
+
+        fileMap.forEach((alias, filenameRegex) -> FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists())
                 .forEach(file -> {
                     //1.索引名称
                     char splitChar = '_';
                     String[] filenames = StringUtils.split(FilenameUtils.getBaseName(file.getName()), splitChar);
-                    String index = StringUtils.join(ALIAS.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
+                    String index = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
 
                     //2.写入索引
-                    long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, UnaryOperator.identity());
+                    EventFactory<BaseDocument> documentEventFactory;
+                    switch (alias) {
+                        case "FILE2ES_DISRUPTOR":
+                            documentEventFactory = MyFileDocument::of;
+                            break;
+                        default:
+                            documentEventFactory = null;
+                            log.error("无法识别索引意图.");
+                            break;
+                    }
+                    long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), documentEventFactory, UnaryOperator.identity());
                     log.info("文件[{}]写入索引[{}]完毕,共处理{}条数据", file, index, count);
 
                     //3.别名重定向
-                    String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, ALIAS, index);
-                    log.info("迁移别名[{}]到[{}]返回[{}]", ALIAS, index, indexArray.length > 0 ? indexArray : "无别名迁移");
+                    String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, alias, index);
+                    log.info("迁移别名[{}]到[{}]返回[{}]", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
 
                     if (indexArray.length > 0) {
                         //4.迁移老索引数据
@@ -69,6 +85,6 @@ public final class File2EsDemoJob implements Runnable {
                     //7.压缩文件
 //                    boolean isDelete = CompressUtilsPlus.createTarGz(file, false);
 //                    log.info("压缩文件[{}]是否删除[{}]", file, isDelete);
-                });
+                }));
     }
 }
