@@ -36,6 +36,8 @@ public final class MySQL2EsService extends AbstractExecutor {
                 .username(config.getUsername())
                 .password(config.getPassword())
                 .create()
-                .open(config.getTable()));
+                .open(o -> {
+                    return o;
+                }, config.getTable()));
     }
 }

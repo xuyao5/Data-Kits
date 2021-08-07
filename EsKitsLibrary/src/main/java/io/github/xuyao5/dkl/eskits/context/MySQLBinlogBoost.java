@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -41,7 +42,7 @@ public final class MySQLBinlogBoost {
     private String password;
 
     @SneakyThrows
-    public BinaryLogClientMXBean open(@NonNull String... tables) {
+    public BinaryLogClientMXBean open(UnaryOperator<Object> operator, @NonNull String... tables) {
         InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
@@ -58,6 +59,7 @@ public final class MySQLBinlogBoost {
                 if (EventType.isWrite(eventType)) {
                     WriteRowsEventData data = event.getData();
                     List<Serializable[]> rows = data.getRows();
+                    operator.apply(rows);
                     rows.forEach(objs -> {
                         for (Serializable obj : objs) {
                             System.out.println(obj);
