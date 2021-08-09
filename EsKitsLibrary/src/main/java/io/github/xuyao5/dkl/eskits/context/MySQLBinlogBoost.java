@@ -12,10 +12,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
+import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -42,7 +46,10 @@ public final class MySQLBinlogBoost {
 
     @SneakyThrows
     public BinaryLogClientMXBean open(@NonNull String... tables) {
+        Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();
         InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
+        List<Columns> columns = informationSchemaDao.queryColumns(schema, tables);
+
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
@@ -52,15 +59,26 @@ public final class MySQLBinlogBoost {
         client.setEventDeserializer(eventDeserializer);
         client.registerEventListener(event -> {
             //遇到特殊事件需要获取一下
-            List<Columns> columns = informationSchemaDao.queryColumns(schema, tables);
             final EventType eventType = event.getHeader().getEventType();
             if (EventType.isRowMutation(eventType)) {
                 if (EventType.isWrite(eventType)) {
                     WriteRowsEventData data = event.getData();
+                    String table = tableMap.get(data.getTableId()).getTable();
+                    Map<Long, String> collect = columns.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
+
+                    BitSet includedColumns = data.getIncludedColumns();
+                    boolean b = includedColumns.get(0);
+                    boolean b1 = includedColumns.get(1);
+                    boolean b2 = includedColumns.get(2);
+                    boolean b3 = includedColumns.get(3);
+                    boolean b4 = includedColumns.get(4);
+
                     List<Serializable[]> rows = data.getRows();
                     rows.forEach(objs -> {
-                        for (Serializable obj : objs) {
-                            System.out.println(obj);
+                        for (int i = 0; i < objs.length; i++) {
+                            System.out.println(collect);
+                            String s = collect.get(i + 1L);
+                            log.warn("列{}插入数据{}", s, objs[i]);
                         }
                     });
                 }
@@ -91,7 +109,10 @@ public final class MySQLBinlogBoost {
                         queryEventConsumer.accept(event.getData());
                         break;
                     case TABLE_MAP:
-                        Consumer<TableMapEventData> tableMapEventConsumer = tableMapEventData -> log.info("【TABLE_MAP】tableId={}, database={}, tables={}, columnTypes={}, columnMetadata={}, columnNullability={}, eventMetadata={}", tableMapEventData.getTableId(), tableMapEventData.getDatabase(), tableMapEventData.getTable(), tableMapEventData.getColumnTypes(), tableMapEventData.getColumnMetadata(), tableMapEventData.getColumnNullability(), tableMapEventData.getEventMetadata());
+                        Consumer<TableMapEventData> tableMapEventConsumer = tableMapEventData -> {
+                            log.info("【TABLE_MAP】tableId={}, database={}, tables={}, columnTypes={}, columnMetadata={}, columnNullability={}, eventMetadata={}", tableMapEventData.getTableId(), tableMapEventData.getDatabase(), tableMapEventData.getTable(), tableMapEventData.getColumnTypes(), tableMapEventData.getColumnMetadata(), tableMapEventData.getColumnNullability(), tableMapEventData.getEventMetadata());
+                            tableMap.put(tableMapEventData.getTableId(), tableMapEventData);
+                        };
                         tableMapEventConsumer.accept(event.getData());
                         break;
                     case XID:
