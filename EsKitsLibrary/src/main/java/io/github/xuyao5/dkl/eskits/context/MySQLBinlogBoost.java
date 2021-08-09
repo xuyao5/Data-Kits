@@ -11,11 +11,8 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.Serializable;
-import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -47,8 +44,9 @@ public final class MySQLBinlogBoost {
     @SneakyThrows
     public BinaryLogClientMXBean open(@NonNull String... tables) {
         Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();
+
         InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
-        List<Columns> columns = informationSchemaDao.queryColumns(schema, tables);
+        List<Columns> columnsList = informationSchemaDao.queryColumns(schema, tables);
 
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
@@ -58,41 +56,35 @@ public final class MySQLBinlogBoost {
         final BinaryLogClient client = new BinaryLogClient(hostname, port, schema, username, password);
         client.setEventDeserializer(eventDeserializer);
         client.registerEventListener(event -> {
-            //遇到特殊事件需要获取一下
-            final EventType eventType = event.getHeader().getEventType();
+            EventType eventType = event.getHeader().getEventType();
             if (EventType.isRowMutation(eventType)) {
                 if (EventType.isWrite(eventType)) {
                     WriteRowsEventData data = event.getData();
                     String table = tableMap.get(data.getTableId()).getTable();
-                    Map<Long, String> collect = columns.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
+                    Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
 
-                    BitSet includedColumns = data.getIncludedColumns();
-                    boolean b = includedColumns.get(0);
-                    boolean b1 = includedColumns.get(1);
-                    boolean b2 = includedColumns.get(2);
-                    boolean b3 = includedColumns.get(3);
-                    boolean b4 = includedColumns.get(4);
-
-                    List<Serializable[]> rows = data.getRows();
-                    rows.forEach(objs -> {
+                    data.getRows().forEach(objs -> {
                         for (int i = 0; i < objs.length; i++) {
-                            System.out.println(collect);
-                            String s = collect.get(i + 1L);
-                            log.warn("列{}插入数据{}", s, objs[i]);
+                            String column = columnMap.get(i + 1L);
+                            log.warn("列{}插入数据{}", column, objs[i]);
                         }
                     });
                 }
 
                 if (EventType.isDelete(eventType)) {
                     DeleteRowsEventData data = event.getData();
-                    List<Serializable[]> rows = data.getRows();
-                    rows.forEach(System.out::println);
+                    String table = tableMap.get(data.getTableId()).getTable();
+                    Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
+
+                    data.getRows().forEach(System.out::println);
                 }
 
                 if (EventType.isUpdate(eventType)) {
                     UpdateRowsEventData data = event.getData();
-                    List<Entry<Serializable[], Serializable[]>> rows = data.getRows();
-                    rows.forEach(System.out::println);
+                    String table = tableMap.get(data.getTableId()).getTable();
+                    Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
+
+                    data.getRows().forEach(System.out::println);
                 }
             } else {
                 switch (eventType) {
