@@ -4,9 +4,11 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
 import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
+import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.repository.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.repository.information_schema.Columns;
+import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -53,11 +55,11 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    public BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs) {
+    public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> tableDocument) {
         Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();
 
         InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
-        List<Columns> columnsList = informationSchemaDao.queryColumns(schema, configs.getTables());
+        List<Columns> columnsList = informationSchemaDao.queryColumns(schema, tableDocument.keySet().toArray(new String[]{}));
 
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
@@ -74,6 +76,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                     String table = tableMap.get(data.getTableId()).getTable();
                     Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
 
+                    T document = tableDocument.get(table).newInstance();
                     data.getRows().forEach(objects -> {
                         for (int i = 0; i < objects.length; i++) {
                             String column = columnMap.get(i + 1L);

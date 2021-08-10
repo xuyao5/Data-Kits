@@ -10,6 +10,4 @@ import lombok.Data;
  */
 @Data(staticConstructor = "of")
 public final class MySQL2EsConfig {
-
-    private final String[] tables;
 }
