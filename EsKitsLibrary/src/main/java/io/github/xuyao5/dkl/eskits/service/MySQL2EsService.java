@@ -55,7 +55,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> tableDocument) {
+    public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> tableDocument, Consumer<T> writeConsumer) {
         Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();
 
         InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
@@ -77,12 +77,14 @@ public final class MySQL2EsService extends AbstractExecutor {
                     Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
 
                     T document = tableDocument.get(table).newInstance();
+                    //用FieldUtils.writeField写入
                     data.getRows().forEach(objects -> {
                         for (int i = 0; i < objects.length; i++) {
                             String column = columnMap.get(i + 1L);
                             log.warn("列{}插入数据{}", column, objects[i]);
                         }
                     });
+                    writeConsumer.accept(document);
                 }
 
                 if (EventType.isDelete(eventType)) {

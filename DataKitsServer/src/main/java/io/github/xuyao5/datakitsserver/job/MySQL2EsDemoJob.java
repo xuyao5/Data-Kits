@@ -28,7 +28,9 @@ public final class MySQL2EsDemoJob implements Runnable {
     @Override
     public void run() {
         Map<String, EventFactory<MyDbDocument>> tableDocument = Collections.singletonMap("MyTable", MyDbDocument::of);
-        new MySQL2EsService(esClient, "BinlogTest", "root", "123456", esKitsConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of(), tableDocument);
+        new MySQL2EsService(esClient, "BinlogTest", "root", "123456", esKitsConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of(), tableDocument, myDbDocument -> {
+            log.warn("获取到：{}", myDbDocument);
+        });
         System.in.read();
     }
 }
