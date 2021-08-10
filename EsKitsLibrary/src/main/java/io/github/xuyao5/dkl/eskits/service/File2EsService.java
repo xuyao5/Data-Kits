@@ -54,7 +54,7 @@ public final class File2EsService extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public <T extends BaseDocument> long execute(@NonNull File2EsConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+    public <T extends BaseDocument> long execute(@NonNull File2EsConfig config, EventFactory<T> documentFactory, UnaryOperator<T> operator) {
         //检查文件是否存在
         if (!config.getFile().exists()) {
             return -1;
@@ -66,7 +66,7 @@ public final class File2EsService extends AbstractExecutor {
 
         //预存必须数据
         final String[][] metadataArray = new String[1][];//元数据
-        final Class<? extends BaseDocument> docClass = document.newInstance().getClass();
+        final Class<? extends BaseDocument> docClass = documentFactory.newInstance().getClass();
         final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
         final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);
         final Map<String, Field> columnFieldMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
@@ -98,29 +98,29 @@ public final class File2EsService extends AbstractExecutor {
                     indexSupporter.putMapping(client, contentBuilder, config.getIndex());
                 }
             } else {
-                T standardDocument = document.newInstance();
+                T document = documentFactory.newInstance();
 
                 for (int i = 0; i < metadataArray[0].length; i++) {
                     Field field = columnFieldMap.get(metadataArray[0][i]);
                     if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
-                        FieldUtils.writeField(field, standardDocument, GsonUtilsPlus.deserialize(recordArray[i], columnTypeTokenMap.get(metadataArray[0][i])), true);
+                        FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnTypeTokenMap.get(metadataArray[0][i])), true);
                     }
                 }
 
-                standardDocument.setDateTag(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
-                standardDocument.setSourceTag(FilenameUtils.getBaseName(config.getFile().getName()));
+                document.setDateTag(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
+                document.setSourceTag(FilenameUtils.getBaseName(config.getFile().getName()));
 
                 if (!isIndexExist) {
-                    standardDocument.setCreateDate(DateUtilsPlus.now());
-                    standardDocument.setSerialNo(snowflake.nextId());
-                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(standardDocument)));
+                    document.setCreateDate(DateUtilsPlus.now());
+                    document.setSerialNo(snowflake.nextId());
+                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
                 } else {
-                    T updatingDocument = document.newInstance();
-                    BeanUtils.copyProperties(updatingDocument, standardDocument);
+                    T updatingDocument = documentFactory.newInstance();
+                    BeanUtils.copyProperties(updatingDocument, document);
                     updatingDocument.setModifyDate(DateUtilsPlus.now());
-                    standardDocument.setCreateDate(DateUtilsPlus.now());
-                    standardDocument.setSerialNo(snowflake.nextId());
-                    function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(standardDocument)));
+                    document.setCreateDate(DateUtilsPlus.now());
+                    document.setSerialNo(snowflake.nextId());
+                    function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
                 }
 
                 count.increment();
