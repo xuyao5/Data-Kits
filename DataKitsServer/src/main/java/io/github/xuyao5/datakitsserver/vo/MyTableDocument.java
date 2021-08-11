@@ -16,7 +16,7 @@ import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public final class MyDbDocument extends BaseDocument {
+public final class MyTableDocument extends BaseDocument {
 
     //UUID          CASH_AMOUNT          DESC          DATE_TIME_1          DATE_TIME_2
     @FileField(column = "UUID")

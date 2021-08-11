@@ -2,7 +2,7 @@ package io.github.xuyao5.datakitsserver.job;
 
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
-import io.github.xuyao5.datakitsserver.vo.MyDbDocument;
+import io.github.xuyao5.datakitsserver.vo.MyTableDocument;
 import io.github.xuyao5.dkl.eskits.service.MySQL2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
 import lombok.SneakyThrows;
@@ -27,9 +27,9 @@ public final class MySQL2EsDemoJob implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        Map<String, EventFactory<MyDbDocument>> tableDocument = Collections.singletonMap("MyTable", MyDbDocument::of);
-        new MySQL2EsService(esClient, "BinlogTest", "root", "123456", esKitsConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of(), tableDocument, myDbDocument -> {
-            log.warn("获取到：{}", myDbDocument);
+        Map<String, EventFactory<MyTableDocument>> tableDocument = Collections.singletonMap("MyTable", MyTableDocument::of);
+        new MySQL2EsService(esClient, "BinlogTest", "root", "123456", esKitsConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of(), tableDocument, myTableDocument -> {
+            log.warn("获取到：{}", myTableDocument);
         });
         System.in.read();
     }
