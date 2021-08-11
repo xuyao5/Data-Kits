@@ -6,15 +6,20 @@ import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
 import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
 import io.github.xuyao5.dkl.eskits.repository.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.repository.information_schema.Columns;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
+import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,7 +61,10 @@ public final class MySQL2EsService extends AbstractExecutor {
 
     @SneakyThrows
     public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> documentFactory, Consumer<T> writeConsumer) {
-        Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//元数据
+        final Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//元数据
+        final Map<String, Class<? extends BaseDocument>> docClassMap = documentFactory.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().newInstance().getClass()));//获取Document Class
+        final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
+        final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), TableField.class)));//获取被@TableField注解的成员
 
         InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
         List<Columns> columnsList = informationSchemaDao.queryColumns(schema, documentFactory.keySet().toArray(new String[]{}));
