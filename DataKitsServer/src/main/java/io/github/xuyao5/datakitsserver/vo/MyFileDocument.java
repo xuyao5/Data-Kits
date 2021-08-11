@@ -1,6 +1,7 @@
 package io.github.xuyao5.datakitsserver.vo;
 
 import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
+import io.github.xuyao5.dkl.eskits.context.annotation.FileName;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +17,7 @@ import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@FileName("^INT_DISRUPTOR_1W_T_\\d{8}_\\d{2}.txt$")
 public final class MyFileDocument extends BaseDocument {
 
     //UUID          CASH_AMOUNT          DESC          DATE_TIME_1          DATE_TIME_2
