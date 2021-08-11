@@ -66,11 +66,11 @@ public final class File2EsService extends AbstractExecutor {
 
         //预存必须数据
         final String[][] metadataArray = new String[1][];//元数据
-        final Class<? extends BaseDocument> docClass = documentFactory.newInstance().getClass();
-        final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);
-        final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);
-        final Map<String, Field> columnFieldMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));
-        final Map<String, TypeToken<?>> columnTypeTokenMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));
+        final Class<? extends BaseDocument> docClass = documentFactory.newInstance().getClass();//获取Document Class
+        final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);//根据Document Class生成ES的Mapping
+        final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);//获取被@FileField注解的成员
+        final Map<String, Field> columnFieldMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));//类型预存
+        final Map<String, TypeToken<?>> columnTypeTokenMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));//类型预存
 
         //执行计数器
         final LongAdder count = new LongAdder();

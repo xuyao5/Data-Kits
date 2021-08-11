@@ -55,11 +55,11 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> tableDocument, Consumer<T> writeConsumer) {
-        Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();
+    public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> documentFactory, Consumer<T> writeConsumer) {
+        Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//元数据
 
         InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
-        List<Columns> columnsList = informationSchemaDao.queryColumns(schema, tableDocument.keySet().toArray(new String[]{}));
+        List<Columns> columnsList = informationSchemaDao.queryColumns(schema, documentFactory.keySet().toArray(new String[]{}));
 
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
@@ -76,7 +76,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                     String table = tableMap.get(data.getTableId()).getTable();
                     Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
 
-                    T document = tableDocument.get(table).newInstance();
+                    T document = documentFactory.get(table).newInstance();
                     //用FieldUtils.writeField写入
                     data.getRows().forEach(objects -> {
                         for (int i = 0; i < objects.length; i++) {
