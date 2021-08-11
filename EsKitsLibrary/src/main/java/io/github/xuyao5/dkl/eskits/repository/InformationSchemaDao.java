@@ -31,7 +31,7 @@ public final class InformationSchemaDao {
     private final SqlSessionFactory sqlSessionFactory;
 
     @SneakyThrows
-    public InformationSchemaDao(@NonNull String driver, @NonNull String hostname, @NonNull int port, @NonNull String username, @NonNull String password) {
+    public InformationSchemaDao(@NonNull String driver, @NonNull String hostname, int port, @NonNull String username, @NonNull String password) {
         Properties properties = new Properties();
         switch (driver) {
             case "com.mysql.cj.jdbc.Driver":
