@@ -1,7 +1,6 @@
 package io.github.xuyao5.datakitsserver.vo;
 
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
-import io.github.xuyao5.dkl.eskits.context.annotation.TableName;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +14,6 @@ import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@TableName("MyTable")
 public final class MyTableDocument extends BaseDocument {
 
     @TableField(column = "amount")
