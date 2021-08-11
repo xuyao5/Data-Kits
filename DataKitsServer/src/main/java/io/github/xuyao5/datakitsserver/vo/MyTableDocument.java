@@ -1,14 +1,12 @@
 package io.github.xuyao5.datakitsserver.vo;
 
-import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
+import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
 import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
@@ -18,33 +16,33 @@ import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
 @ToString(callSuper = true)
 public final class MyTableDocument extends BaseDocument {
 
-    //UUID          CASH_AMOUNT          DESC          DATE_TIME_1          DATE_TIME_2
-    @FileField(column = "UUID")
-    private String uuid;
+    @TableField(column = "amount")
+    private BigDecimal amount;
 
-    @FileField(column = "CASH_AMOUNT")
-    private BigDecimal cashAmount;
-
-    @FileField(column = "DESC", priority = 1, order = DESC)
+    @TableField(column = "desc", priority = 1, order = DESC)
     private String desc;
 
-    @FileField(column = "DATE_TIME_1", priority = 2, order = ASC)
+    @TableField(column = "dateTime1", priority = 2, order = ASC)
     private long dateTime1;
 
-    @FileField(column = "DATE_TIME_2")
-    private Date dateTime2;
-
-    @FileField(priority = 3, order = DESC)
+    @TableField(priority = 3, order = DESC)
     private int discount1;
 
     private int discount2;
-
-//    private NestedTags tags;//会导致Nested，则无法使用Index Sorting
-
-    @Data(staticConstructor = "of")
-    public static class NestedTags implements Serializable {
-
-        private final String name;
-        private final boolean isSuccess;
-    }
 }
+/*
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `MyTable`;
+CREATE TABLE `MyTable` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `amount` decimal(5,2) DEFAULT NULL,
+  `desc` varchar(500) DEFAULT NULL,
+  `dateTime1` datetime DEFAULT NOW(),
+  `discount1` int(3) unsigned DEFAULT 100,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+SET FOREIGN_KEY_CHECKS = 1;
+ */
