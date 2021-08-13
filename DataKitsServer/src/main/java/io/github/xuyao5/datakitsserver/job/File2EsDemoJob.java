@@ -10,6 +10,7 @@ import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
+import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -43,48 +44,48 @@ public final class File2EsDemoJob implements Runnable {
         Map<String, String> fileMap = new ConcurrentHashMap<>();
         fileMap.put("FILE2ES_DISRUPTOR", "^INT_DISRUPTOR_1W_T_\\d{8}_\\d{2}.txt$");//可以从配置中读取
 
-        fileMap.forEach((alias, filenameRegex) -> FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists())
-                .forEach(file -> {
-                    //1.索引名称
-                    char splitChar = '_';
-                    String[] filenames = StringUtils.split(FilenameUtils.getBaseName(file.getName()), splitChar);
-                    String index = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
+        fileMap.forEach((alias, filenameRegex) -> FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists()).forEach(file -> {
+            //1.索引名称
+            char splitChar = '_';
+            String[] filenames = StringUtils.split(FilenameUtils.getBaseName(file.getName()), splitChar);
+            String index = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
+            log.info("根据文件名日期计算得到写入索引名:[{}]", index);
 
-                    //2.写入索引
-                    EventFactory<BaseDocument> documentEventFactory;
-                    switch (alias) {
-                        case "FILE2ES_DISRUPTOR":
-                            documentEventFactory = MyFileDocument::of;
-                            break;
-                        default:
-                            documentEventFactory = null;
-                            log.error("无法识别索引意图.");
-                            break;
-                    }
-                    long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), documentEventFactory, UnaryOperator.identity());
-                    log.info("文件[{}]写入索引[{}]完毕,共处理{}条数据", file, index, count);
+            //2.写入索引
+            EventFactory<BaseDocument> documentEventFactory;
+            switch (alias) {
+                case "FILE2ES_DISRUPTOR":
+                    documentEventFactory = MyFileDocument::of;
+                    break;
+                default:
+                    documentEventFactory = null;
+                    log.warn("无法识别索引意图，别名[{}]无法识别", alias);
+                    break;
+            }
+            long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), documentEventFactory, UnaryOperator.identity());
+            log.info("文件[{}]写入索引[{}]完毕,共处理{}条数据", file, index, count);
 
-                    //3.别名重定向
-                    String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, alias, index);
-                    log.info("迁移别名[{}]到[{}]返回[{}]", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
+            //3.别名重定向
+            String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, alias, index);
+            log.info("迁移别名[{}]到[{}]返回[{}]", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
 
-                    if (indexArray.length > 0) {
-                        //4.迁移老索引数据
-                        BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, QueryBuilders.matchAllQuery(), index, esKitsConfig.getEsScrollSize(), indexArray);
-                        log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
+            if (indexArray.length > 0) {
+                //4.迁移老索引数据
+                BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, QueryBuilders.matchAllQuery(), index, esKitsConfig.getEsScrollSize(), indexArray);
+                log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
 
-                        //5.关闭老索引
-                        boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
-                        log.info("关闭索引[{}]返回[{}]", indexArray, acknowledged);
-                    }
+                //5.关闭老索引
+                boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
+                log.info("关闭索引[{}]返回[{}]", indexArray, acknowledged);
+            }
 
-                    //6.升副本
-                    boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esKitsConfig.getEsIndexReplicas());
-                    log.info("升副本索引[{}]返回[{}]", index, isUpdateReplicasSuccess);
+            //6.升副本
+            boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esKitsConfig.getEsIndexReplicas());
+            log.info("升副本索引[{}]返回[{}]", index, isUpdateReplicasSuccess);
 
-                    //7.压缩文件
-//                    boolean isDelete = CompressUtilsPlus.createTarGz(file, false);
-//                    log.info("压缩文件[{}]是否删除[{}]", file, isDelete);
-                }));
+            //7.压缩文件
+            boolean isDelete = CompressUtilsPlus.createTarGz(file, false);
+            log.info("压缩文件[{}]是否删除[{}]", file, isDelete);
+        }));
     }
 }

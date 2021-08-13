@@ -55,8 +55,11 @@ public final class File2EsService extends AbstractExecutor {
     }
 
     public <T extends BaseDocument> long execute(@NonNull File2EsConfig config, EventFactory<T> documentFactory, UnaryOperator<T> operator) {
+        log.info("开始执行File2ES服务，，输入配置为:[{}]", config);
+
         //检查文件是否存在
         if (!config.getFile().exists()) {
+            log.warn("读取文件不存在，请检查文件获取方式，输入配置为:[{}]", config);
             return -1;
         }
 
@@ -83,12 +86,14 @@ public final class File2EsService extends AbstractExecutor {
 
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
+                log.info("获取索引是否存在标志为:[{}]，索引Mapping为:[{}]", isIndexExist, contentBuilder);
                 if (!isIndexExist) {
                     Map<String, String> indexSorting = fieldsList.stream()
                             .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() > 0)
                             .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).priority()))
                             .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
                     int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
+                    log.info("获取ES服务器数据节点数为:[{}]", numberOfDataNodes);
                     if (!indexSorting.isEmpty()) {
                         indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder, indexSorting);
                     } else {
