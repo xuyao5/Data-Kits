@@ -35,9 +35,8 @@ public final class CompressUtilsPlus {
             outputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
             outputStream.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_POSIX);
 
-            outputStream.putArchiveEntry(outputStream.createArchiveEntry(file, file.getName() + BAK_FILE_EXTENSION));
-
             if (file.isFile()) {
+                outputStream.putArchiveEntry(outputStream.createArchiveEntry(file, file.getName() + BAK_FILE_EXTENSION));
                 try (BufferedInputStream inputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
                     IOUtils.copy(inputStream, outputStream);
                 }
@@ -45,8 +44,12 @@ public final class CompressUtilsPlus {
             outputStream.closeArchiveEntry();
             outputStream.finish();
         }
-        if (deleteFile) {
-            return file.delete();
+        if (deleteFile && file.isFile()) {
+            boolean isDeleted = file.delete();
+            if (!isDeleted) {
+                file.deleteOnExit();
+            }
+            return isDeleted;
         }
         return false;
     }
