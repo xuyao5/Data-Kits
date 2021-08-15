@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <environments default="PRD">
+        <environment id="PRD">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${mybatis.mysql.driver}"/>
+                <property name="url" value="${mybatis.mysql.url}"/>
+                <property name="username" value="${mybatis.mysql.username}"/>
+                <property name="password" value="${mybatis.mysql.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper class="io.github.xuyao5.dkl.eskits.repository.information_schema.ColumnsMapper"/>
+    </mappers>
+</configuration>

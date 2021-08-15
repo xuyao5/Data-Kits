@@ -7,11 +7,11 @@ import javax.annotation.Resource;
 
 final class ModifyByScrollTest extends AbstractTest {
 
-    @Resource(name = "modifyByScrollJob")
-    private ModifyByScrollJob modifyByScrollJob;
+    @Resource(name = "modifyByScrollDemoJob")
+    private ModifyByScrollDemoJob modifyByScrollDemoJob;
 
     @Test
     void test() {
-        modifyByScrollJob.run();
+        modifyByScrollDemoJob.run();
     }
 }

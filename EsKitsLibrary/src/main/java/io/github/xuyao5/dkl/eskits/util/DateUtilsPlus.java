@@ -15,11 +15,11 @@ import static org.apache.commons.lang3.time.DateUtils.parseDate;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 5/07/20 17:10
- * @apiNote MyDateUtils
- * @implNote MyDateUtils
+ * @apiNote DateUtilsNZ
+ * @implNote DateUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyDateUtils extends DateFormatUtils {
+public final class DateUtilsPlus {
 
     public static final FastDateFormat STD_DATETIME_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
     public static final FastDateFormat STD_DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd");
@@ -33,7 +33,7 @@ public final class MyDateUtils extends DateFormatUtils {
     }
 
     public static String format2Date(@NonNull Date date, @NonNull FastDateFormat format) {
-        return format(date, format.getPattern(), Locale.ROOT);
+        return DateFormatUtils.format(date, format.getPattern(), Locale.ROOT);
     }
 
     @SneakyThrows
@@ -46,7 +46,7 @@ public final class MyDateUtils extends DateFormatUtils {
         return parseDate(date, Locale.ROOT, format.getPattern());
     }
 
-    public static Date parse2Date(@NonNull long date) {
+    public static Date parse2Date(long date) {
         return new Date(date);
     }
 }

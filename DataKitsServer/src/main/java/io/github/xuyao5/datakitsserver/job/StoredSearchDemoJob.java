@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.job;
 
-import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
-import io.github.xuyao5.dkl.eskits.service.StoredSearchExecutor;
+import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
+import io.github.xuyao5.dkl.eskits.service.StoredSearchService;
 import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
@@ -15,12 +15,11 @@ public final class StoredSearchDemoJob implements Runnable {
     protected RestHighLevelClient esClient;
 
     @Autowired
-    protected EsClientConfig esClientConfig;
+    protected EsKitsConfig esKitsConfig;
 
     @Override
     public void run() {
-        StoredSearchExecutor storedSearchExecutor = new StoredSearchExecutor(esClient);
-        SearchTemplateResponse execute = storedSearchExecutor.execute(StoredSearchConfig.of("default-search", "SEARCH-STORED"));
+        SearchTemplateResponse execute = new StoredSearchService(esClient).execute(StoredSearchConfig.of("default-search", "SEARCH-STORED"));
         System.out.println(execute);
     }
 }

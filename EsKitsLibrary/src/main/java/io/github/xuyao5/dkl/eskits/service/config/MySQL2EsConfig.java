@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 16/06/21 23:34
+ * @implSpec 25/02/21 16:36
  * @apiNote MySQL2EsConfig
  * @implNote MySQL2EsConfig
  */

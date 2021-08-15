@@ -10,30 +10,36 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
+import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
+
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public final class MyFileDocument extends BaseDocument {
 
     //UUID          CASH_AMOUNT          DESC          DATE_TIME_1          DATE_TIME_2
-    @FileField("UUID")
+    @FileField(column = "UUID")
     private String uuid;
 
-    @FileField("CASH_AMOUNT")
+    @FileField(column = "CASH_AMOUNT")
     private BigDecimal cashAmount;
 
-    @FileField("DESC")
+    @FileField(column = "DESC", priority = 1, order = DESC)
     private String desc;
 
-    @FileField("DATE_TIME_1")
+    @FileField(column = "DATE_TIME_1", priority = 2, order = ASC)
     private long dateTime1;
 
-    @FileField("DATE_TIME_2")
+    @FileField(column = "DATE_TIME_2")
     private Date dateTime2;
 
-    private BigDecimal discount;
+    @FileField(priority = 3, order = DESC)
+    private int discount1;
 
-    private NestedTags tags;
+    private int discount2;
+
+//    private NestedTags tags;//会导致Nested，则无法使用Index Sorting
 
     @Data(staticConstructor = "of")
     public static class NestedTags implements Serializable {

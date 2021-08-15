@@ -22,17 +22,17 @@ import java.util.Map;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 20/03/21 13:12
- * @apiNote StoredSearchExecutor
- * @implNote StoredSearchExecutor
+ * @apiNote StoredSearchService
+ * @implNote StoredSearchService
  */
 @Slf4j
-public final class StoredSearchExecutor extends AbstractExecutor {
+public final class StoredSearchService extends AbstractExecutor {
 
     private static final String SEARCH_STORED_INDEX = "search_stored_v1";
     private static final String SEARCH_STORED_ALIAS = "SEARCH-STORED";
     private static final String DEFAULT_SEARCH = "default-search";
 
-    public StoredSearchExecutor(RestHighLevelClient client) {
+    public StoredSearchService(@NonNull RestHighLevelClient client) {
         super(client);
     }
 

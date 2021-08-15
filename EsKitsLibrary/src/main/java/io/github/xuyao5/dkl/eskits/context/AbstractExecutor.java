@@ -1,7 +1,7 @@
 package io.github.xuyao5.dkl.eskits.context;
 
 import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
-import io.github.xuyao5.dkl.eskits.util.MyIpAddressUtils;
+import io.github.xuyao5.dkl.eskits.util.IpAddressUtilsPlus;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +17,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractExecutor {
 
-    protected static final int RING_SIZE = 1 << 10;
-
     protected final RestHighLevelClient client;
 
-    protected final SnowflakeHelper snowflake = new SnowflakeHelper(MyIpAddressUtils.getIpAddressSum() % 32, MyIpAddressUtils.getIpAddressSum() % 32);
+    protected final SnowflakeHelper snowflake = new SnowflakeHelper(IpAddressUtilsPlus.getIpAddressSum() % 32, IpAddressUtilsPlus.getIpAddressSum() % 32);
 }

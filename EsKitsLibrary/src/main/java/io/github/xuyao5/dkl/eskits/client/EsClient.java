@@ -2,6 +2,7 @@ package io.github.xuyao5.dkl.eskits.client;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -13,7 +14,6 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -22,8 +22,8 @@ import static org.elasticsearch.client.RestClientBuilder.*;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 1/05/20 22:45
- * @apiNote EsClientImpl
- * @implNote EsClientImpl
+ * @apiNote EsClient
+ * @implNote EsClient
  */
 @Slf4j
 public final class EsClient implements Closeable {
@@ -48,18 +48,15 @@ public final class EsClient implements Closeable {
                         .setSocketTimeout(DEFAULT_SOCKET_TIMEOUT_MILLIS * 360)));//30s*360=3h
     }
 
+    @SneakyThrows
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (Objects.nonNull(client)) {
             client.close();
         }
     }
 
     private HttpHost[] url2HttpHost(@NonNull String[] url) {
-        return Arrays.stream(url)
-                .filter(StringUtils::isNoneEmpty)
-                .map(HttpHost::create)
-                .distinct()
-                .toArray(HttpHost[]::new);
+        return Arrays.stream(url).filter(StringUtils::isNoneEmpty).map(HttpHost::create).distinct().toArray(HttpHost[]::new);
     }
 }

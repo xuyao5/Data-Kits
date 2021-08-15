@@ -1,11 +1,11 @@
 package io.github.xuyao5.datakitsserver.job;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.util.MyRandomUtils;
-import io.github.xuyao5.dkl.eskits.util.MyStringUtils;
+import io.github.xuyao5.dkl.eskits.util.RandomUtilsPlus;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Files;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Strings;
@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
-final class File2EsDemoJobTest extends AbstractTest {
+final class File2EsJobTest extends AbstractTest {
 
     @Resource(name = "file2EsDemoJob")
     private File2EsDemoJob file2EsDemoJob;
@@ -28,7 +28,7 @@ final class File2EsDemoJobTest extends AbstractTest {
     @SneakyThrows
     @Test
     void genTestData() {
-        String fileName = "/Users/xuyao/Downloads/DISRUPTOR_1W_T_00.txt";
+        String fileName = "/Users/xuyao/Downloads/DISRUPTOR_1W_T_20200710_00.txt";
 
         char split = 0x1E;
         File file = Files.newFile(fileName);
@@ -37,7 +37,7 @@ final class File2EsDemoJobTest extends AbstractTest {
         for (int y = 0; y < 1; y++) {
             String[] content = new String[10000];
             for (int i = 0; i < content.length; i++) {
-                content[i] = Strings.concat(snowflake.nextId(), split, MyRandomUtils.getFloat(), split, RandomStringUtils.randomAlphabetic(46), split, System.currentTimeMillis(), split, "2021-03-21" + MyStringUtils.SPACE + "07:08:09");
+                content[i] = Strings.concat(snowflake.nextId(), split, RandomUtilsPlus.getFloat(), split, RandomStringUtils.randomAlphabetic(80000), split, System.currentTimeMillis(), split, "2021-03-21" + StringUtils.SPACE + "07:08:09");
             }
             FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }

@@ -5,11 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
 
-final class MySQL2EsDemoJobTest extends AbstractTest {
+final class MySQL2EsJobTest extends AbstractTest {
 
     @Resource(name = "mySQL2EsDemoJob")
     private MySQL2EsDemoJob mySQL2EsDemoJob;
-
 
     @Test
     void test() {

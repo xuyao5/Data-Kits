@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver;
 
-import io.github.xuyao5.datakitsserver.configuration.EsClientConfig;
+import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.dkl.eskits.client.EsClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication()
 @Import({})//注入@Configuration
-@EnableConfigurationProperties({EsClientConfig.class})//注入@ConfigurationProperties
+@EnableConfigurationProperties({EsKitsConfig.class})//注入@ConfigurationProperties
 public class DataKitsApplication {
 
     public static void main(String[] args) {

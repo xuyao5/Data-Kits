@@ -8,11 +8,11 @@ import java.security.SecureRandom;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 11/03/21 11:47
- * @apiNote MyRandomUtils
- * @implNote MyRandomUtils
+ * @apiNote RandomUtilsNZ
+ * @implNote RandomUtilsNZ
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyRandomUtils {
+public final class RandomUtilsPlus {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 

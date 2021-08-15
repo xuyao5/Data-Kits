@@ -31,6 +31,6 @@ public enum SettingConst {
     private final String name;
 
     public static Optional<SettingConst> getSettingByName(@NonNull String name) {
-        return Arrays.stream(SettingConst.values()).filter(settingConst -> settingConst.name.equalsIgnoreCase(name)).findAny();
+        return Arrays.stream(SettingConst.values()).filter(settingConst -> settingConst.name.equalsIgnoreCase(name)).findFirst();
     }
 }

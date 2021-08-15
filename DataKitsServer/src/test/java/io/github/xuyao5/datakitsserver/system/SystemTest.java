@@ -1,8 +1,8 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.util.MyCompressUtils;
-import io.github.xuyao5.dkl.eskits.util.MyFileUtils;
+import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
+import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.SneakyThrows;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -47,6 +47,6 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void compress() {
-        MyFileUtils.getDecisionFiles("/Users/xuyao/Downloads", "^.*DISRUPTOR_10000W_T_00.txt$").forEach(MyCompressUtils::createTarGz);
+        FileUtilsPlus.getDecisionFiles("/Users/xuyao/Downloads", "^INT_DISRUPTOR_1W_T_20200710_00.txt$", path -> true).forEach(CompressUtilsPlus::createTarGz);
     }
 }
