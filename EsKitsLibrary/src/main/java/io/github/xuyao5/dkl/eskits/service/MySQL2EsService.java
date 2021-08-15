@@ -61,13 +61,13 @@ public final class MySQL2EsService extends AbstractExecutor {
 
     @SneakyThrows
     public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> documentFactory, Consumer<T> writeConsumer) {
-        final Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//元数据
+        InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
+        final List<Columns> columnsList = informationSchemaDao.queryColumns(schema, documentFactory.keySet().toArray(new String[]{}));
+
+        final Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//表元数据
         final Map<String, Class<? extends BaseDocument>> docClassMap = documentFactory.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().newInstance().getClass()));//获取Document Class
         final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
         final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), TableField.class)));//获取被@TableField注解的成员
-
-        InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
-        List<Columns> columnsList = informationSchemaDao.queryColumns(schema, documentFactory.keySet().toArray(new String[]{}));
 
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
