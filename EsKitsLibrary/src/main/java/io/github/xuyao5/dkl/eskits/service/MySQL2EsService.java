@@ -22,6 +22,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -59,15 +60,19 @@ public final class MySQL2EsService extends AbstractExecutor {
         this(client, "com.mysql.cj.jdbc.Driver", "localhost", 3306, schema, username, password, threads);
     }
 
+    private Map<String, Map<Long, String>> getTableColumnMap(@NonNull Set<String> tables) {
+        InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
+        List<Columns> columnsList = informationSchemaDao.queryColumns(schema, tables.toArray(new String[]{}));
+        return tables.stream().collect(Collectors.toMap(s -> s, table -> columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
+    }
+
     @SneakyThrows
     public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> documentFactory, Consumer<T> writeConsumer) {
-        InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
-        final List<Columns> columnsList = informationSchemaDao.queryColumns(schema, documentFactory.keySet().toArray(new String[]{}));
-
         final Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//表元数据
         final Map<String, Class<? extends BaseDocument>> docClassMap = documentFactory.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().newInstance().getClass()));//获取Document Class
         final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
         final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), TableField.class)));//获取被@TableField注解的成员
+        final Map<String, Map<Long, String>> tableColumnMap = getTableColumnMap(documentFactory.keySet());
 
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
@@ -82,13 +87,12 @@ public final class MySQL2EsService extends AbstractExecutor {
                 if (EventType.isWrite(eventType)) {
                     WriteRowsEventData data = event.getData();
                     String table = tableMap.get(data.getTableId()).getTable();
-                    Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
 
                     T document = documentFactory.get(table).newInstance();
                     //用FieldUtils.writeField写入
                     data.getRows().forEach(objects -> {
                         for (int i = 0; i < objects.length; i++) {
-                            String column = columnMap.get(i + 1L);
+                            String column = tableColumnMap.get(table).get(i + 1L);
                             log.warn("列{}插入数据{}", column, objects[i]);
                         }
                     });
@@ -98,11 +102,10 @@ public final class MySQL2EsService extends AbstractExecutor {
                 if (EventType.isDelete(eventType)) {
                     DeleteRowsEventData data = event.getData();
                     String table = tableMap.get(data.getTableId()).getTable();
-                    Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
 
                     data.getRows().forEach(objects -> {
                         for (int i = 0; i < objects.length; i++) {
-                            String column = columnMap.get(i + 1L);
+                            String column = tableColumnMap.get(table).get(i + 1L);
                             log.warn("列{}删除数据{}", column, objects[i]);
                         }
                     });
@@ -111,12 +114,11 @@ public final class MySQL2EsService extends AbstractExecutor {
                 if (EventType.isUpdate(eventType)) {
                     UpdateRowsEventData data = event.getData();
                     String table = tableMap.get(data.getTableId()).getTable();
-                    Map<Long, String> columnMap = columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName));
 
                     data.getRows().forEach(entry -> {
                         if (entry.getKey().length == entry.getValue().length) {
                             for (int i = 0; i < entry.getKey().length; i++) {
-                                String column = columnMap.get(i + 1L);
+                                String column = tableColumnMap.get(table).get(i + 1L);
                                 log.warn("列{}更新前数据{}", column, entry.getKey()[i]);
                                 log.warn("列{}更新后数据{}", column, entry.getValue()[i]);
                             }
