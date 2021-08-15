@@ -16,6 +16,9 @@ import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
 @ToString(callSuper = true)
 public final class MyTableDocument extends BaseDocument {
 
+    @TableField(column = "id")
+    private int id;
+
     @TableField(column = "amount")
     private BigDecimal amount;
 
@@ -25,7 +28,7 @@ public final class MyTableDocument extends BaseDocument {
     @TableField(column = "dateTime1", priority = 2, order = ASC)
     private long dateTime1;
 
-    @TableField(priority = 3, order = DESC)
+    @TableField(column = "discount1", priority = 3, order = DESC)
     private int discount1;
 
     private int discount2;

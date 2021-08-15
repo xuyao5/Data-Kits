@@ -4,6 +4,7 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
 import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
+import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
@@ -15,6 +16,7 @@ import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -22,10 +24,12 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -63,7 +67,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     private Map<String, Map<Long, String>> getTableColumnMap(@NonNull Set<String> tables) {
         InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
         List<Columns> columnsList = informationSchemaDao.queryColumns(schema, tables.toArray(new String[]{}));
-        return tables.stream().collect(Collectors.toMap(s -> s, table -> columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
+        return tables.stream().collect(Collectors.toMap(Function.identity(), table -> columnsList.stream().filter(col -> col.getTableName().equalsIgnoreCase(table)).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
     }
 
     @SneakyThrows
@@ -72,6 +76,8 @@ public final class MySQL2EsService extends AbstractExecutor {
         final Map<String, Class<? extends BaseDocument>> docClassMap = documentFactory.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().newInstance().getClass()));//获取Document Class
         final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
         final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), TableField.class)));//获取被@TableField注解的成员
+        final Map<String, Map<String, Field>> tableColumnFieldMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Function.identity()))));//类型预存
+        final Map<String, Map<String, TypeToken<?>>> tableColumnTypeTokenMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), field -> TypeToken.get(field.getType())))));//类型预存
         final Map<String, Map<Long, String>> tableColumnMap = getTableColumnMap(documentFactory.keySet());
 
         EventDeserializer eventDeserializer = new EventDeserializer();
@@ -89,11 +95,18 @@ public final class MySQL2EsService extends AbstractExecutor {
                     String table = tableMap.get(data.getTableId()).getTable();
 
                     T document = documentFactory.get(table).newInstance();
-                    //用FieldUtils.writeField写入
+
                     data.getRows().forEach(objects -> {
                         for (int i = 0; i < objects.length; i++) {
                             String column = tableColumnMap.get(table).get(i + 1L);
-                            log.warn("列{}插入数据{}", column, objects[i]);
+                            Field field = tableColumnFieldMap.get(table).get(column);
+                            if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(TableField.class).column()) && Objects.nonNull(objects[i])) {
+                                try {
+                                    FieldUtils.writeField(field, document, objects[i], true);
+                                } catch (IllegalAccessException ex) {
+                                    log.error("为用户对象赋值错误", ex);
+                                }
+                            }
                         }
                     });
                     writeConsumer.accept(document);
