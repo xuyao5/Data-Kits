@@ -12,25 +12,29 @@ import io.github.xuyao5.dkl.eskits.repository.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.repository.information_schema.Columns;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
+import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
+import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
+import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -71,7 +75,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig configs, @NonNull Map<String, EventFactory<T>> documentFactory, Consumer<T> writeConsumer) {
+    public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig config, @NonNull Map<String, EventFactory<T>> documentFactory, UnaryOperator<T> writeConsumer) {
         final Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//表元数据
         final Map<String, Class<? extends BaseDocument>> docClassMap = documentFactory.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().newInstance().getClass()));//获取Document Class
         final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
@@ -85,9 +89,9 @@ public final class MySQL2EsService extends AbstractExecutor {
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
 //                EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
         );
-        final BinaryLogClient client = new BinaryLogClient(hostname, port, schema, username, password);
-        client.setEventDeserializer(eventDeserializer);
-        client.registerEventListener(event -> {
+        final BinaryLogClient binaryLogClient = new BinaryLogClient(hostname, port, schema, username, password);
+        binaryLogClient.setEventDeserializer(eventDeserializer);
+        binaryLogClient.registerEventListener(event -> {
             EventType eventType = event.getHeader().getEventType();
             if (EventType.isRowMutation(eventType)) {
                 if (EventType.isWrite(eventType)) {
@@ -109,7 +113,29 @@ public final class MySQL2EsService extends AbstractExecutor {
                             }
                         }
                     });
-                    writeConsumer.accept(document);
+
+                    document.setDateTag(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
+                    document.setSourceTag(FilenameUtils.getBaseName(table));
+
+                    //检查索引是否存在
+                    IndexSupporter indexSupporter = IndexSupporter.getInstance();
+                    final boolean isIndexExist = indexSupporter.exists(client, table.toLowerCase(Locale.ROOT));
+                    if (!isIndexExist) {
+                        Map<String, String> indexSorting = fieldsListMap.get(table).stream()
+                                .filter(field -> field.getDeclaredAnnotation(TableField.class).priority() > 0)
+                                .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(TableField.class).priority()))
+                                .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(TableField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
+                        int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
+                        log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
+                        if (!indexSorting.isEmpty()) {
+                            indexSupporter.create(client, table.toLowerCase(Locale.ROOT), numberOfDataNodes, 0, contentBuilderMap.get(table), indexSorting);
+                        } else {
+                            indexSupporter.create(client, table.toLowerCase(Locale.ROOT), numberOfDataNodes, 0, contentBuilderMap.get(table));
+                        }
+                    } else {
+                        indexSupporter.putMapping(client, contentBuilderMap.get(table), table.toLowerCase(Locale.ROOT));
+                    }
+                    writeConsumer.apply(document);
                 }
 
                 if (EventType.isDelete(eventType)) {
@@ -172,8 +198,8 @@ public final class MySQL2EsService extends AbstractExecutor {
                 }
             }
         });
-        client.connect(TimeUnit.SECONDS.toMillis(6));
-        return client;
+        binaryLogClient.connect(TimeUnit.SECONDS.toMillis(6));
+        return binaryLogClient;
     }
 
     @SneakyThrows
