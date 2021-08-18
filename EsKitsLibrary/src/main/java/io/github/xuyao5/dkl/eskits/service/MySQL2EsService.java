@@ -8,9 +8,11 @@ import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
+import io.github.xuyao5.dkl.eskits.context.disruptor.EventThreeArg;
 import io.github.xuyao5.dkl.eskits.repository.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.repository.information_schema.Columns;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
+import io.github.xuyao5.dkl.eskits.schema.standard.StandardMySQLRow;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
@@ -25,10 +27,13 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -199,13 +204,35 @@ public final class MySQL2EsService extends AbstractExecutor {
             }
         });
         binaryLogClient.connect(TimeUnit.SECONDS.toMillis(6));
-        return binaryLogClient;
+        return null;
     }
 
     @SneakyThrows
-    public void close(@NonNull BinaryLogClientMXBean bean) {
-        if (bean.isConnected()) {
-            bean.disconnect();
+    private void eventConsumer(MySQL2EsConfig config, EventThreeArg<StandardMySQLRow> consumer) {
+        AtomicInteger rowCount = new AtomicInteger();
+        EventDeserializer eventDeserializer = new EventDeserializer();
+        eventDeserializer.setCompatibilityMode(
+                EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
+//                EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
+        );
+        BinaryLogClient binaryLogClient = new BinaryLogClient(hostname, port, schema, username, password);
+        binaryLogClient.setEventDeserializer(eventDeserializer);
+        binaryLogClient.registerEventListener(event -> {
+            EventHeader eventHeader = event.getHeader();
+            EventData eventData = event.getData();
+            consumer.translate((standardMySQLRow, sequence, count, header, data) -> {
+                standardMySQLRow.setRowNo(count);
+                standardMySQLRow.setEventHeader(header);
+                standardMySQLRow.setEventData(data);
+            }, rowCount.incrementAndGet(), eventHeader, eventData);
+        });
+        try {
+            binaryLogClient.connect(TimeUnit.SECONDS.toMillis(6));
+        } catch (IOException | TimeoutException ex) {
+            log.error(ex.getLocalizedMessage(), ex);
+            if (binaryLogClient.isConnected()) {
+                binaryLogClient.disconnect();
+            }
         }
     }
 
