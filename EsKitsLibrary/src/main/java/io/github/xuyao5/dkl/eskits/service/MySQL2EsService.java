@@ -3,17 +3,18 @@ package io.github.xuyao5.dkl.eskits.service;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
-import com.github.shyiko.mysql.binlog.jmx.BinaryLogClientMXBean;
 import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
+import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventThreeArg;
+import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
 import io.github.xuyao5.dkl.eskits.repository.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.repository.information_schema.Columns;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardMySQLRow;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
+import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.XContentSupporter;
@@ -34,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -80,7 +82,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    public <T extends BaseDocument> BinaryLogClientMXBean execute(@NonNull MySQL2EsConfig config, @NonNull Map<String, EventFactory<T>> documentFactory, UnaryOperator<T> writeConsumer) {
+    public <T extends BaseDocument> long execute(@NonNull MySQL2EsConfig config, @NonNull Map<String, EventFactory<T>> documentFactory, UnaryOperator<T> writeConsumer) {
         final Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//表元数据
         final Map<String, Class<? extends BaseDocument>> docClassMap = documentFactory.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().newInstance().getClass()));//获取Document Class
         final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
@@ -89,18 +91,14 @@ public final class MySQL2EsService extends AbstractExecutor {
         final Map<String, Map<String, TypeToken<?>>> tableColumnTypeTokenMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), field -> TypeToken.get(field.getType())))));//类型预存
         final Map<String, Map<Long, String>> tableColumnMap = getTableColumnMap(documentFactory.keySet());
 
-        EventDeserializer eventDeserializer = new EventDeserializer();
-        eventDeserializer.setCompatibilityMode(
-                EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
-//                EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
-        );
-        final BinaryLogClient binaryLogClient = new BinaryLogClient(hostname, port, schema, username, password);
-        binaryLogClient.setEventDeserializer(eventDeserializer);
-        binaryLogClient.registerEventListener(event -> {
-            EventType eventType = event.getHeader().getEventType();
+        //执行计数器
+        final LongAdder count = new LongAdder();
+        BulkSupporter.getInstance().bulk(client, bulkThreads, docWriteRequestBulkProcessorFunction -> DisruptorBoost.<StandardMySQLRow>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardMySQLRow) -> errorConsumer(config, standardMySQLRow), StandardMySQLRow::of, (standardMySQLRow, sequence, endOfBatch) -> {
+            EventHeaderV4 eventHeader = standardMySQLRow.getEvent().getHeader();
+            EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {
                 if (EventType.isWrite(eventType)) {
-                    WriteRowsEventData data = event.getData();
+                    WriteRowsEventData data = standardMySQLRow.getEvent().getData();
                     String table = tableMap.get(data.getTableId()).getTable();
 
                     T document = documentFactory.get(table).newInstance();
@@ -144,7 +142,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                 }
 
                 if (EventType.isDelete(eventType)) {
-                    DeleteRowsEventData data = event.getData();
+                    DeleteRowsEventData data = standardMySQLRow.getEvent().getData();
                     String table = tableMap.get(data.getTableId()).getTable();
 
                     data.getRows().forEach(objects -> {
@@ -156,7 +154,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                 }
 
                 if (EventType.isUpdate(eventType)) {
-                    UpdateRowsEventData data = event.getData();
+                    UpdateRowsEventData data = standardMySQLRow.getEvent().getData();
                     String table = tableMap.get(data.getTableId()).getTable();
 
                     data.getRows().forEach(entry -> {
@@ -173,42 +171,44 @@ public final class MySQL2EsService extends AbstractExecutor {
                 switch (eventType) {
                     case ROTATE:
                         Consumer<RotateEventData> rotateEventConsumer = this::rotateEventHandler;
-                        rotateEventConsumer.accept(event.getData());
+                        rotateEventConsumer.accept(standardMySQLRow.getEvent().getData());
                         break;
                     case FORMAT_DESCRIPTION:
                         Consumer<FormatDescriptionEventData> formatDescriptionEventConsumer = formatDescriptionEventData -> log.info("【FORMAT_DESCRIPTION】binlogVersion=[{}], serverVersion={}, headerLength={}, dataLength={}, checksumType={}", formatDescriptionEventData.getBinlogVersion(), formatDescriptionEventData.getServerVersion(), formatDescriptionEventData.getHeaderLength(), formatDescriptionEventData.getDataLength(), formatDescriptionEventData.getChecksumType());
-                        formatDescriptionEventConsumer.accept(event.getData());
+                        formatDescriptionEventConsumer.accept(standardMySQLRow.getEvent().getData());
                         break;
                     case QUERY:
                         Consumer<QueryEventData> queryEventConsumer = queryEventData -> log.info("【QUERY】threadId={},executionTime={}, errorCode={}, database={}, sql={}", queryEventData.getThreadId(), queryEventData.getExecutionTime(), queryEventData.getErrorCode(), queryEventData.getDatabase(), queryEventData.getSql());
-                        queryEventConsumer.accept(event.getData());
+                        queryEventConsumer.accept(standardMySQLRow.getEvent().getData());
                         break;
                     case TABLE_MAP:
                         Consumer<TableMapEventData> tableMapEventConsumer = tableMapEventData -> {
                             log.info("【TABLE_MAP】tableId={}, database={}, tables={}, columnTypes={}, columnMetadata={}, columnNullability={}, eventMetadata={}", tableMapEventData.getTableId(), tableMapEventData.getDatabase(), tableMapEventData.getTable(), tableMapEventData.getColumnTypes(), tableMapEventData.getColumnMetadata(), tableMapEventData.getColumnNullability(), tableMapEventData.getEventMetadata());
                             tableMap.put(tableMapEventData.getTableId(), tableMapEventData);
                         };
-                        tableMapEventConsumer.accept(event.getData());
+                        tableMapEventConsumer.accept(standardMySQLRow.getEvent().getData());
                         break;
                     case XID:
                         Consumer<XidEventData> xidEventConsumer = xidEventData -> log.info("【XID】xid={}", xidEventData.getXid());
-                        xidEventConsumer.accept(event.getData());
+                        xidEventConsumer.accept(standardMySQLRow.getEvent().getData());
                         break;
                     case ANONYMOUS_GTID:
-                        log.info("【ANONYMOUS_GTID】ANONYMOUS_GTID={}", event);
+                        log.info("【ANONYMOUS_GTID】ANONYMOUS_GTID={}", standardMySQLRow);
                         break;
                     default:
-                        log.warn("当前版本暂不支持本事件={}", event);
+                        log.warn("当前版本暂不支持本事件={}", standardMySQLRow);
                         break;
                 }
             }
-        });
-        binaryLogClient.connect(TimeUnit.SECONDS.toMillis(6));
-        return null;
+
+            count.increment();
+        }));
+
+        return count.longValue();
     }
 
     @SneakyThrows
-    private void eventConsumer(MySQL2EsConfig config, EventThreeArg<StandardMySQLRow> consumer) {
+    private void eventConsumer(MySQL2EsConfig config, EventTwoArg<StandardMySQLRow> consumer) {
         AtomicInteger rowCount = new AtomicInteger();
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
@@ -217,15 +217,10 @@ public final class MySQL2EsService extends AbstractExecutor {
         );
         BinaryLogClient binaryLogClient = new BinaryLogClient(hostname, port, schema, username, password);
         binaryLogClient.setEventDeserializer(eventDeserializer);
-        binaryLogClient.registerEventListener(event -> {
-            EventHeader eventHeader = event.getHeader();
-            EventData eventData = event.getData();
-            consumer.translate((standardMySQLRow, sequence, count, header, data) -> {
-                standardMySQLRow.setRowNo(count);
-                standardMySQLRow.setEventHeader(header);
-                standardMySQLRow.setEventData(data);
-            }, rowCount.incrementAndGet(), eventHeader, eventData);
-        });
+        binaryLogClient.registerEventListener(e -> consumer.translate((standardMySQLRow, sequence, count, event) -> {
+            standardMySQLRow.setRowNo(count);
+            standardMySQLRow.setEvent(event);
+        }, rowCount.incrementAndGet(), e));
         try {
             binaryLogClient.connect(TimeUnit.SECONDS.toMillis(6));
         } catch (IOException | TimeoutException ex) {
@@ -234,6 +229,10 @@ public final class MySQL2EsService extends AbstractExecutor {
                 binaryLogClient.disconnect();
             }
         }
+    }
+
+    private void errorConsumer(MySQL2EsConfig config, StandardMySQLRow standardMySQLRow) {
+
     }
 
     private void rotateEventHandler(RotateEventData rotateEventData) {

@@ -1,7 +1,6 @@
 package io.github.xuyao5.dkl.eskits.schema.standard;
 
-import com.github.shyiko.mysql.binlog.event.EventData;
-import com.github.shyiko.mysql.binlog.event.EventHeader;
+import com.github.shyiko.mysql.binlog.event.Event;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,6 +15,5 @@ import java.io.Serializable;
 public final class StandardMySQLRow implements Serializable {
 
     private int rowNo;
-    private EventHeader eventHeader;
-    private EventData eventData;
+    private Event event;
 }
