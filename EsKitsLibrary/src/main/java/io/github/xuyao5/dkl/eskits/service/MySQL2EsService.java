@@ -22,6 +22,7 @@ import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -30,6 +31,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -231,8 +233,9 @@ public final class MySQL2EsService extends AbstractExecutor {
         }
     }
 
+    @SneakyThrows
     private void errorConsumer(MySQL2EsConfig config, StandardMySQLRow standardMySQLRow) {
-
+        FileUtils.writeLines(Paths.get("MySQL2Es.error").toFile(), config.getCharset().name(), Collections.singletonList(standardMySQLRow), true);
     }
 
     private void rotateEventHandler(RotateEventData rotateEventData) {
