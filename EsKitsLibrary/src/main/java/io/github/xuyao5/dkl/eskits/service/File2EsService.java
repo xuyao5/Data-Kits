@@ -79,7 +79,7 @@ public final class File2EsService extends AbstractExecutor {
 
         //执行计数器
         final LongAdder count = new LongAdder();
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, (standardFileLine, sequence, endOfBatch) -> {
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, true, (standardFileLine, sequence, endOfBatch) -> {
             if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                 return;
             }

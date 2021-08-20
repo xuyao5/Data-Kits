@@ -95,7 +95,7 @@ public final class MySQL2EsService extends AbstractExecutor {
 
         //执行计数器
         final LongAdder count = new LongAdder();
-        BulkSupporter.getInstance().bulk(client, bulkThreads, docWriteRequestBulkProcessorFunction -> DisruptorBoost.<StandardMySQLRow>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardMySQLRow) -> errorConsumer(config, standardMySQLRow), StandardMySQLRow::of, (standardMySQLRow, sequence, endOfBatch) -> {
+        BulkSupporter.getInstance().bulk(client, bulkThreads, docWriteRequestBulkProcessorFunction -> DisruptorBoost.<StandardMySQLRow>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardMySQLRow) -> errorConsumer(config, standardMySQLRow), StandardMySQLRow::of, false, (standardMySQLRow, sequence, endOfBatch) -> {
             EventHeaderV4 eventHeader = standardMySQLRow.getEvent().getHeader();
             EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {
