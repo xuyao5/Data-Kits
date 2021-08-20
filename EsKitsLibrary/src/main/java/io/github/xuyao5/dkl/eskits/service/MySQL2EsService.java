@@ -219,10 +219,10 @@ public final class MySQL2EsService extends AbstractExecutor {
         );
         BinaryLogClient binaryLogClient = new BinaryLogClient(hostname, port, schema, username, password);
         binaryLogClient.setEventDeserializer(eventDeserializer);
-        binaryLogClient.registerEventListener(e -> consumer.translate((standardMySQLRow, sequence, count, event) -> {
+        binaryLogClient.registerEventListener(EVENT -> consumer.translate((standardMySQLRow, sequence, count, event) -> {
             standardMySQLRow.setRowNo(count);
             standardMySQLRow.setEvent(event);
-        }, rowCount.incrementAndGet(), e));
+        }, rowCount.incrementAndGet(), EVENT));
         try {
             binaryLogClient.connect(TimeUnit.SECONDS.toMillis(6));
         } catch (IOException | TimeoutException ex) {
