@@ -103,6 +103,7 @@ public final class File2EsService extends AbstractExecutor {
                     }
                 } else {
                     indexSupporter.putMapping(client, contentBuilder, config.getIndex());
+                    indexSupporter.open(client, config.getIndex());
                 }
             } else {
                 T document = documentFactory.newInstance();

@@ -24,7 +24,6 @@ import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
 import org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest;
 import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryRequest;
 import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
-import org.elasticsearch.action.support.IndicesOptions;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -95,14 +94,6 @@ public final class IndexSupporter {
     @SneakyThrows
     public boolean exists(@NonNull RestHighLevelClient client, @NonNull String... indices) {
         return client.indices().exists(new GetIndexRequest(indices), DEFAULT);
-    }
-
-    /**
-     * Index Exists API
-     */
-    @SneakyThrows
-    public boolean exists(@NonNull RestHighLevelClient client, @NonNull IndicesOptions indicesOptions, @NonNull String... indices) {
-        return client.indices().exists(new GetIndexRequest(indices).indicesOptions(indicesOptions), DEFAULT);
     }
 
     /**
