@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.xuyao5</groupId>
     <artifactId>data-kits</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <packaging>pom</packaging>
     <name>Data Kits</name>
     <description>Data Kits Project without Spring Boot</description>
