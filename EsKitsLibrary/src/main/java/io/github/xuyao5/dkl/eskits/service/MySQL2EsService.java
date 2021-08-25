@@ -56,7 +56,6 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
 @Slf4j
 public final class MySQL2EsService extends AbstractExecutor {
 
-//    private final int bulkThreads;
     private final String driver;
     private final String hostname;
     private final int port;
@@ -64,7 +63,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     private final String username;
     private final String password;
 
-    public MySQL2EsService(@NonNull RestHighLevelClient client, String driver, String hostname, int port, String schema, String username, String password, int threads) {
+    public MySQL2EsService(@NonNull RestHighLevelClient client, String driver, String hostname, int port, String schema, String username, String password) {
         super(client);
         this.driver = driver;
         this.hostname = hostname;
@@ -72,11 +71,6 @@ public final class MySQL2EsService extends AbstractExecutor {
         this.schema = schema;
         this.username = username;
         this.password = password;
-//        bulkThreads = threads;
-    }
-
-    public MySQL2EsService(@NonNull RestHighLevelClient client, String schema, String username, String password, int threads) {
-        this(client, "com.mysql.cj.jdbc.Driver", "localhost", 3306, schema, username, password, threads);
     }
 
     private Map<String, List<Columns>> getTableColumnsMap(@NonNull Set<String> tables) {
