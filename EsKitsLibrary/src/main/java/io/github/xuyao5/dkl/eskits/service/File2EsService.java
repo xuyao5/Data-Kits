@@ -121,14 +121,22 @@ public final class File2EsService extends AbstractExecutor {
                 if (!isIndexExist) {
                     document.setCreateDate(DateUtilsPlus.now());
                     document.setSerialNo(snowflake.nextId());
-                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
+                    if (config.getIdColumn() < 0) {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(document)));
+                    } else {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
+                    }
                 } else {
-                    T updatingDocument = documentFactory.newInstance();
-                    BeanUtils.copyProperties(updatingDocument, document);
-                    updatingDocument.setModifyDate(DateUtilsPlus.now());
-                    document.setCreateDate(DateUtilsPlus.now());
-                    document.setSerialNo(snowflake.nextId());
-                    function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
+                    if (config.getIdColumn() < 0) {
+                        log.warn("由于ID列号[{}]小于0，故无法识别记录的ID，更新操作将被跳过", config.getIdColumn());
+                    } else {
+                        T updatingDocument = documentFactory.newInstance();
+                        BeanUtils.copyProperties(updatingDocument, document);
+                        updatingDocument.setModifyDate(DateUtilsPlus.now());
+                        document.setCreateDate(DateUtilsPlus.now());
+                        document.setSerialNo(snowflake.nextId());
+                        function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
+                    }
                 }
 
                 count.increment();
