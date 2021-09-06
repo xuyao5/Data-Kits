@@ -15,14 +15,16 @@ import java.io.IOException;
 public final class HttpFsHelper {
 
     private final OkHttpClient httpClient;
+    private final String TOKEN;
 
-    public HttpFsHelper() {
+    public HttpFsHelper(String token) {
+        TOKEN = token;
         httpClient = new OkHttpClient();
     }
 
     public FileStatus getFileStatus(@NonNull String host, int port, @NonNull String path) {
         String url = String.format("http://%s:%d/webhdfs/v1/%s?op=GETFILESTATUS", host, port, path);
-        httpClient.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
+        httpClient.newCall(new Request.Builder().header("", TOKEN).url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -38,7 +40,7 @@ public final class HttpFsHelper {
 
     public FileStatuses listStatus(@NonNull String host, int port, @NonNull String path) {
         String url = String.format("http://%s:%d/webhdfs/v1/%s?op=LISTSTATUS", host, port, path);
-        httpClient.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
+        httpClient.newCall(new Request.Builder().header("", TOKEN).url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -54,7 +56,7 @@ public final class HttpFsHelper {
 
     public void openRead(@NonNull String host, int port, @NonNull String path) {
         String url = String.format("http://%s:%d/webhdfs/v1/%s?op=OPEN", host, port, path);
-        httpClient.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
+        httpClient.newCall(new Request.Builder().header("", TOKEN).url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -69,7 +71,7 @@ public final class HttpFsHelper {
 
     public void getHomeDirectory(@NonNull String host, int port) {
         String url = String.format("http://%s:%d/webhdfs/v1/?op=GETHOMEDIRECTORY", host, port);
-        httpClient.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
+        httpClient.newCall(new Request.Builder().header("", TOKEN).url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
