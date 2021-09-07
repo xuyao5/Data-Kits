@@ -1,10 +1,18 @@
 package io.github.xuyao5.dkl.eskits.helper;
 
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.Data;
 import lombok.NonNull;
-import okhttp3.*;
+import lombok.SneakyThrows;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -15,80 +23,68 @@ import java.io.IOException;
 public final class HttpFsHelper {
 
     private final OkHttpClient httpClient;
-    private final String TOKEN;
+    private final String host;
+    private final int port;
+    private final String user;
 
-    public HttpFsHelper(String token) {
-        TOKEN = token;
+    public HttpFsHelper(@NonNull String host, int port, @NonNull String user) {
+        this.host = host;
+        this.port = port;
+        this.user = user;
         httpClient = new OkHttpClient();
     }
 
-    public FileStatus getFileStatus(@NonNull String host, int port, @NonNull String path) {
-        String url = String.format("http://%s:%d/webhdfs/v1/%s?op=GETFILESTATUS", host, port, path);
-        httpClient.newCall(new Request.Builder().header("", TOKEN).url(url).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
+    @SneakyThrows
+    public HomeDirectory getHomeDirectory(@NonNull String token) {
+        String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
+        try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
             }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-
-            }
-        });
-        return FileStatus.of();
+        }
+        return HomeDirectory.of();
     }
 
-    public FileStatuses listStatus(@NonNull String host, int port, @NonNull String path) {
-        String url = String.format("http://%s:%d/webhdfs/v1/%s?op=LISTSTATUS", host, port, path);
-        httpClient.newCall(new Request.Builder().header("", TOKEN).url(url).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+    public HomeDirectory getHomeDirectory() {
+        return getHomeDirectory(StringUtils.EMPTY);
+    }
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-
-            }
-        });
+    @SneakyThrows
+    public FileStatuses listStatus(@NonNull String path, @NonNull String token) {
+        String url = String.format("http://localhost:14000/webhdfs/v1/user/root?user.name=root&op=LISTSTATUS", host, port, path);
+        try (Response response = httpClient.newCall(new Request.Builder().header("", token).url(url).build()).execute()) {
+        }
         return FileStatuses.of();
     }
 
-    public void openRead(@NonNull String host, int port, @NonNull String path) {
+    @SneakyThrows
+    public FileStatus getFileStatus(@NonNull String path, @NonNull String token) {
+        String url = String.format("http://%s:%d/webhdfs/v1/%s?op=GETFILESTATUS", host, port, path);
+        try (Response response = httpClient.newCall(new Request.Builder().header("", token).url(url).build()).execute()) {
+        }
+        return FileStatus.of();
+    }
+
+    @SneakyThrows
+    public void openRead(@NonNull String path, @NonNull String token) {
         String url = String.format("http://%s:%d/webhdfs/v1/%s?op=OPEN", host, port, path);
-        httpClient.newCall(new Request.Builder().header("", TOKEN).url(url).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-
-            }
-        });
+        try (Response response = httpClient.newCall(new Request.Builder().header("", token).url(url).build()).execute()) {
+        }
     }
 
-    public void getHomeDirectory(@NonNull String host, int port) {
-        String url = String.format("http://%s:%d/webhdfs/v1/?op=GETHOMEDIRECTORY", host, port);
-        httpClient.newCall(new Request.Builder().header("", TOKEN).url(url).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-
-            }
-        });
+    @Data(staticConstructor = "of")
+    public static class FileStatus implements Serializable {
     }
 
     @Data(staticConstructor = "of")
-    public static class FileStatus {
+    public static class FileStatuses implements Serializable {
     }
 
     @Data(staticConstructor = "of")
-    public static class FileStatuses {
+    public static class HomeDirectory implements Serializable {
+
+        @SerializedName(value = "Path", alternate = {"path"})
+        private String path;
     }
 }

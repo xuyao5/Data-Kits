@@ -1,6 +1,7 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
+import io.github.xuyao5.dkl.eskits.helper.HttpFsHelper;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.SneakyThrows;
@@ -48,5 +49,12 @@ public class SystemTest extends AbstractTest {
     @Test
     void compress() {
         FileUtilsPlus.getDecisionFiles("/Users/xuyao/Downloads", "^INT_DISRUPTOR_1W_T_20200710_00.txt$", path -> true).forEach(CompressUtilsPlus::createTarGz);
+    }
+
+    @Test
+    void httpFs() {
+        HttpFsHelper httpFsHelper = new HttpFsHelper("localhost", 14000, "root");
+        HttpFsHelper.HomeDirectory homeDirectory = httpFsHelper.getHomeDirectory();
+        System.out.println(homeDirectory.getPath());
     }
 }
