@@ -54,7 +54,7 @@ public class SystemTest extends AbstractTest {
     @Test
     void httpFs() {
         HttpFsHelper httpFsHelper = new HttpFsHelper("localhost", 14000, "root");
-        HttpFsHelper.HomeDirectory homeDirectory = httpFsHelper.getHomeDirectory();
-        System.out.println(homeDirectory.getPath());
+        HttpFsHelper.ListStatus fileStatuses = httpFsHelper.listStatus();
+        System.out.println(fileStatuses);
     }
 }

@@ -9,9 +9,9 @@ import lombok.SneakyThrows;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,6 +35,17 @@ public final class HttpFsHelper {
     }
 
     @SneakyThrows
+    public HomeDirectory getHomeDirectory() {
+        String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
+            }
+        }
+        return HomeDirectory.of();
+    }
+
+    @SneakyThrows
     public HomeDirectory getHomeDirectory(@NonNull String token) {
         String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
         try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
@@ -45,16 +56,26 @@ public final class HttpFsHelper {
         return HomeDirectory.of();
     }
 
-    public HomeDirectory getHomeDirectory() {
-        return getHomeDirectory(StringUtils.EMPTY);
+    @SneakyThrows
+    public ListStatus listStatus() {
+        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=LISTSTATUS", host, port, getHomeDirectory().getPath(), user);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ListStatus.class));
+            }
+        }
+        return ListStatus.of();
     }
 
     @SneakyThrows
-    public FileStatuses listStatus(@NonNull String path, @NonNull String token) {
-        String url = String.format("http://localhost:14000/webhdfs/v1/user/root?user.name=root&op=LISTSTATUS", host, port, path);
-        try (Response response = httpClient.newCall(new Request.Builder().header("", token).url(url).build()).execute()) {
+    public ListStatus listStatus(@NonNull String token) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=LISTSTATUS", host, port, getHomeDirectory(token).getPath(), user);
+        try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ListStatus.class));
+            }
         }
-        return FileStatuses.of();
+        return ListStatus.of();
     }
 
     @SneakyThrows
@@ -75,16 +96,56 @@ public final class HttpFsHelper {
 
     @Data(staticConstructor = "of")
     public static class FileStatus implements Serializable {
+
+        @SerializedName(value = "pathSuffix", alternate = {"PathSuffix"})
+        private String pathSuffix;
+
+        @SerializedName(value = "type", alternate = {"Type"})
+        private String type;
+
+        @SerializedName(value = "length", alternate = {"Length"})
+        private long length;
+
+        @SerializedName(value = "owner", alternate = {"Owner"})
+        private String owner;
+
+        @SerializedName(value = "group", alternate = {"Group"})
+        private String group;
+
+        @SerializedName(value = "permission", alternate = {"Permission"})
+        private String permission;
+
+        @SerializedName(value = "accessTime", alternate = {"AccessTime"})
+        private long accessTime;
+
+        @SerializedName(value = "modificationTime", alternate = {"ModificationTime"})
+        private long modificationTime;
+
+        @SerializedName(value = "blockSize", alternate = {"BlockSize"})
+        private long blockSize;
+
+        @SerializedName(value = "replication", alternate = {"Replication"})
+        private long replication;
     }
 
     @Data(staticConstructor = "of")
     public static class FileStatuses implements Serializable {
+
+        @SerializedName(value = "fileStatus", alternate = {"FileStatus"})
+        private List<FileStatus> fileStatusList;
+    }
+
+    @Data(staticConstructor = "of")
+    public static class ListStatus implements Serializable {
+
+        @SerializedName(value = "fileStatuses", alternate = {"FileStatuses"})
+        private FileStatuses fileStatuses;
     }
 
     @Data(staticConstructor = "of")
     public static class HomeDirectory implements Serializable {
 
-        @SerializedName(value = "Path", alternate = {"path"})
+        @SerializedName(value = "path", alternate = {"Path"})
         private String path;
     }
 }
