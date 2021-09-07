@@ -56,5 +56,6 @@ public class SystemTest extends AbstractTest {
         HttpFsHelper httpFsHelper = new HttpFsHelper("localhost", 14000, "root");
         System.out.println(httpFsHelper.listStatus());
         System.out.println(httpFsHelper.getContentSummary());
+        System.out.println(httpFsHelper.getFileStatus());
     }
 }

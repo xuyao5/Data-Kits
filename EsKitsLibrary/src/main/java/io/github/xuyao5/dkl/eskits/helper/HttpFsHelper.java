@@ -2,7 +2,7 @@ package io.github.xuyao5.dkl.eskits.helper;
 
 import com.google.gson.reflect.TypeToken;
 import io.github.xuyao5.dkl.eskits.schema.httpfs.ContentSummaries;
-import io.github.xuyao5.dkl.eskits.schema.httpfs.FileStatus;
+import io.github.xuyao5.dkl.eskits.schema.httpfs.FileStatuses2;
 import io.github.xuyao5.dkl.eskits.schema.httpfs.HomeDirectory;
 import io.github.xuyao5.dkl.eskits.schema.httpfs.ListStatus;
 import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
@@ -90,17 +90,31 @@ public final class HttpFsHelper {
     }
 
     @SneakyThrows
-    public FileStatus getFileStatus(@NonNull String path, @NonNull String token) {
-        String url = String.format("http://%s:%d/webhdfs/v1/%s?op=GETFILESTATUS", host, port, path);
-        try (Response response = httpClient.newCall(new Request.Builder().header("", token).url(url).build()).execute()) {
+    public ContentSummaries getContentSummary(@NonNull String token) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETCONTENTSUMMARY", host, port, getHomeDirectory().getPath(), user);
+        try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ContentSummaries.class));
+            }
         }
-        return FileStatus.of();
+        return ContentSummaries.of();
     }
 
     @SneakyThrows
-    public void openRead(@NonNull String path, @NonNull String token) {
-        String url = String.format("http://%s:%d/webhdfs/v1/%s?op=OPEN", host, port, path);
-        try (Response response = httpClient.newCall(new Request.Builder().header("", token).url(url).build()).execute()) {
+    public FileStatuses2 getFileStatus() {
+        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETFILESTATUS", host, port, getHomeDirectory().getPath(), user);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(FileStatuses2.class));
+            }
+        }
+        return FileStatuses2.of();
+    }
+
+    @SneakyThrows
+    public void open(@NonNull String path) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=OPEN", host, port, getHomeDirectory().getPath(), path);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
         }
     }
 }
