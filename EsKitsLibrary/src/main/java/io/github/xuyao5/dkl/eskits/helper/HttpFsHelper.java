@@ -8,8 +8,10 @@ import io.github.xuyao5.dkl.eskits.schema.httpfs.ListStatus;
 import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.util.Objects;
@@ -20,6 +22,7 @@ import java.util.Objects;
  * @apiNote HttpFsHelper
  * @implNote HttpFsHelper
  */
+@Slf4j
 public final class HttpFsHelper {
 
     private final OkHttpClient httpClient;
@@ -37,6 +40,7 @@ public final class HttpFsHelper {
     @SneakyThrows
     public void open(@NonNull String path) {
         String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=OPEN", host, port, getHomeDirectory().getPath(), path);
+        log.info("open方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
         }
     }
@@ -44,6 +48,7 @@ public final class HttpFsHelper {
     @SneakyThrows
     public FileStatuses2 getFileStatus() {
         String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETFILESTATUS", host, port, getHomeDirectory().getPath(), user);
+        log.info("getFileStatus方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
                 return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(FileStatuses2.class));
@@ -55,6 +60,7 @@ public final class HttpFsHelper {
     @SneakyThrows
     public ListStatus listStatus() {
         String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=LISTSTATUS", host, port, getHomeDirectory().getPath(), user);
+        log.info("listStatus方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
                 return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ListStatus.class));
@@ -64,9 +70,10 @@ public final class HttpFsHelper {
     }
 
     @SneakyThrows
-    public ListStatus listStatus(@NonNull String token) {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=LISTSTATUS", host, port, getHomeDirectory(token).getPath(), user);
-        try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
+    public ListStatus listStatus(@NonNull String path) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=LISTSTATUS", host, port, getHomeDirectory().getPath(), path, user);
+        log.info("listStatus方法url=[{}]", url);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
                 return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ListStatus.class));
             }
@@ -77,18 +84,8 @@ public final class HttpFsHelper {
     @SneakyThrows
     public ContentSummaries getContentSummary() {
         String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETCONTENTSUMMARY", host, port, getHomeDirectory().getPath(), user);
+        log.info("getContentSummary方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
-            if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ContentSummaries.class));
-            }
-        }
-        return ContentSummaries.of();
-    }
-
-    @SneakyThrows
-    public ContentSummaries getContentSummary(@NonNull String token) {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETCONTENTSUMMARY", host, port, getHomeDirectory().getPath(), user);
-        try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
                 return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ContentSummaries.class));
             }
@@ -102,18 +99,8 @@ public final class HttpFsHelper {
     @SneakyThrows
     public HomeDirectory getHomeDirectory() {
         String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
+        log.info("getHomeDirectory方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
-            if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
-            }
-        }
-        return HomeDirectory.of();
-    }
-
-    @SneakyThrows
-    public HomeDirectory getHomeDirectory(@NonNull String token) {
-        String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
-        try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
                 return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
             }
@@ -132,10 +119,11 @@ public final class HttpFsHelper {
 
     @SneakyThrows
     public void mkdirs(@NonNull String path) {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=MKDIRS&permission=777", host, port, getHomeDirectory().getPath(), path);
-        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=MKDIRS&permission=777", host, port, getHomeDirectory().getPath(), path, user);
+        log.info("mkdirs方法url=[{}]", url);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).put(RequestBody.create(null, new byte[]{})).build()).execute()) {
             System.out.println(response.code());
-            System.out.println(response.body());
+            System.out.println(response.body().string());
         }
     }
 
