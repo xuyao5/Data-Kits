@@ -15,6 +15,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -34,7 +35,12 @@ public final class HttpFsHelper {
         this.host = host;
         this.port = port;
         this.user = user;
-        httpClient = new OkHttpClient();
+        httpClient = new OkHttpClient().newBuilder()
+                .retryOnConnectionFailure(true)
+                .connectTimeout(1000, TimeUnit.SECONDS) //连接超时
+                .readTimeout(1000, TimeUnit.SECONDS) //读取超时
+                .writeTimeout(1000, TimeUnit.SECONDS) //写超时
+                .build();
     }
 
     @SneakyThrows
