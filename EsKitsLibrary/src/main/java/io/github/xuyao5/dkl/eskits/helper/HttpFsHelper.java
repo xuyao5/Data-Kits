@@ -35,25 +35,21 @@ public final class HttpFsHelper {
     }
 
     @SneakyThrows
-    public HomeDirectory getHomeDirectory() {
-        String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
+    public void open(@NonNull String path) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=OPEN", host, port, getHomeDirectory().getPath(), path);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
-            if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
-            }
         }
-        return HomeDirectory.of();
     }
 
     @SneakyThrows
-    public HomeDirectory getHomeDirectory(@NonNull String token) {
-        String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
-        try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
+    public FileStatuses2 getFileStatus() {
+        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETFILESTATUS", host, port, getHomeDirectory().getPath(), user);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(FileStatuses2.class));
             }
         }
-        return HomeDirectory.of();
+        return FileStatuses2.of();
     }
 
     @SneakyThrows
@@ -100,21 +96,79 @@ public final class HttpFsHelper {
         return ContentSummaries.of();
     }
 
-    @SneakyThrows
-    public FileStatuses2 getFileStatus() {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETFILESTATUS", host, port, getHomeDirectory().getPath(), user);
-        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
-            if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(FileStatuses2.class));
-            }
-        }
-        return FileStatuses2.of();
+    public void getFileChecksum() {
     }
 
     @SneakyThrows
-    public void open(@NonNull String path) {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=OPEN", host, port, getHomeDirectory().getPath(), path);
+    public HomeDirectory getHomeDirectory() {
+        String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
+            }
         }
+        return HomeDirectory.of();
+    }
+
+    @SneakyThrows
+    public HomeDirectory getHomeDirectory(@NonNull String token) {
+        String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
+        try (Response response = httpClient.newCall(new Request.Builder().header("token", token).url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
+            }
+        }
+        return HomeDirectory.of();
+    }
+
+    public void getDelegationToken() {
+    }
+
+    public void getDelegationTokens() {
+    }
+
+    public void create() {
+    }
+
+    @SneakyThrows
+    public void mkdirs(@NonNull String path) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=MKDIRS&permission=777", host, port, getHomeDirectory().getPath(), path);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
+            System.out.println(response.code());
+            System.out.println(response.body());
+        }
+    }
+
+    public void createSymlink() {
+    }
+
+    public void rename() {
+    }
+
+    public void setReplication() {
+    }
+
+    public void setOwner() {
+    }
+
+    public void setPermission() {
+    }
+
+    public void setTimes() {
+    }
+
+    public void renewDelegationToken() {
+    }
+
+    public void cancelDelegationToken() {
+    }
+
+    public void append() {
+    }
+
+    public void concat() {
+    }
+
+    public void delete() {
     }
 }
