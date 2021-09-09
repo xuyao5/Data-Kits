@@ -55,10 +55,10 @@ public class SystemTest extends AbstractTest {
     void httpFs() {
         HttpFsHelper httpFsHelper = new HttpFsHelper("localhost", 14000, "root");
 //        httpFsHelper.mkdirs("/dir1");
-        System.out.println(httpFsHelper.getHomeDirectory());
-        System.out.println(httpFsHelper.listStatus(""));
+        System.out.println(httpFsHelper.listStatus("/dir1"));
 //        System.out.println(httpFsHelper.getContentSummary());
 //        System.out.println(httpFsHelper.getFileStatus());
+//        httpFsHelper.create("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt");
 
     }
 }
