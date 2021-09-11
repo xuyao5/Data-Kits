@@ -125,7 +125,7 @@ public final class HttpFsHelper {
                     .addFormDataPart("file", "INT_DISRUPTOR_1K_T_20200711_00.txt",
                             RequestBody.create(MediaType.parse("multipart/form-data"), Paths.get("/Users/xuyao/Downloads/INT_DISRUPTOR_1K_T_20200711_00.txt").toFile()))
                     .build();
-            //curl -i -X PUT -T /Users/xuyao/Downloads/INT_DISRUPTOR_1K_T_20200711_00.txt "http://localhost:14000/webhdfs/v1/user/root/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt?op=CREATE&user.name=root&overwrite=true&data=true&permission=777" -H "Content-Type:application/octet-stream"
+            //curl -i -X PUT -T /Users/xuyao/Downloads/HttpFS.txt "http://localhost:14000/webhdfs/v1/user/root/dir1/HttpFS.txt?op=CREATE&user.name=root&overwrite=true&data=true&permission=777" -H "Content-Type:application/octet-stream"
             try (Response response2 = httpClient.newCall(new Request.Builder().url(location).put(requestBody).build()).execute()) {
                 System.out.println(response2.code());
                 System.out.println(response2.headers());

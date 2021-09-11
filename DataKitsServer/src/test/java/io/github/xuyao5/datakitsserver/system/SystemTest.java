@@ -59,7 +59,7 @@ public class SystemTest extends AbstractTest {
         System.out.println(httpFsHelper.getContentSummary("/dir1"));
         System.out.println(httpFsHelper.getFileStatus("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt"));
         System.out.println(httpFsHelper.getFileChecksum("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt"));
-        httpFsHelper.open("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt");
+        httpFsHelper.open("/dir1/HttpFS.txt");
 //        System.out.println(httpFsHelper.getContentSummary());
 //        System.out.println(httpFsHelper.getFileStatus());
 //        httpFsHelper.create("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt");
