@@ -1,10 +1,7 @@
 package io.github.xuyao5.dkl.eskits.helper;
 
 import com.google.gson.reflect.TypeToken;
-import io.github.xuyao5.dkl.eskits.schema.httpfs.ContentSummaries;
-import io.github.xuyao5.dkl.eskits.schema.httpfs.FileStatuses2;
-import io.github.xuyao5.dkl.eskits.schema.httpfs.HomeDirectory;
-import io.github.xuyao5.dkl.eskits.schema.httpfs.ListStatus;
+import io.github.xuyao5.dkl.eskits.schema.httpfs.*;
 import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -43,15 +40,16 @@ public final class HttpFsHelper {
 
     @SneakyThrows
     public void open(@NonNull String path) {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=OPEN", host, port, getHomeDirectory().getPath(), path);
+        String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=OPEN", host, port, getHomeDirectory().getPath(), path, user);
         log.info("open方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
+            System.out.println(response.body().string());
         }
     }
 
     @SneakyThrows
-    public FileStatuses2 getFileStatus() {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETFILESTATUS", host, port, getHomeDirectory().getPath(), user);
+    public FileStatuses2 getFileStatus(@NonNull String path) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=GETFILESTATUS", host, port, getHomeDirectory().getPath(), path, user);
         log.info("getFileStatus方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
@@ -59,18 +57,6 @@ public final class HttpFsHelper {
             }
         }
         return FileStatuses2.of();
-    }
-
-    @SneakyThrows
-    public ListStatus listStatus() {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=LISTSTATUS", host, port, getHomeDirectory().getPath(), user);
-        log.info("listStatus方法url=[{}]", url);
-        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
-            if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ListStatus.class));
-            }
-        }
-        return ListStatus.of();
     }
 
     @SneakyThrows
@@ -86,8 +72,8 @@ public final class HttpFsHelper {
     }
 
     @SneakyThrows
-    public ContentSummaries getContentSummary() {
-        String url = String.format("http://%s:%d/webhdfs/v1%s?user.name=%s&op=GETCONTENTSUMMARY", host, port, getHomeDirectory().getPath(), user);
+    public ContentSummaries getContentSummary(@NonNull String path) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=GETCONTENTSUMMARY", host, port, getHomeDirectory().getPath(), path, user);
         log.info("getContentSummary方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
@@ -97,7 +83,16 @@ public final class HttpFsHelper {
         return ContentSummaries.of();
     }
 
-    public void getFileChecksum() {
+    @SneakyThrows
+    public FileChecksumJson getFileChecksum(@NonNull String path) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=GETFILECHECKSUM", host, port, getHomeDirectory().getPath(), path, user);
+        log.info("getFileChecksum方法url=[{}]", url);
+        try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
+            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(FileChecksumJson.class));
+            }
+        }
+        return FileChecksumJson.of();
     }
 
     @SneakyThrows
