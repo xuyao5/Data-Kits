@@ -9,8 +9,8 @@ import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
 import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
-import io.github.xuyao5.dkl.eskits.repository.InformationSchemaDao;
-import io.github.xuyao5.dkl.eskits.repository.information_schema.Columns;
+import io.github.xuyao5.dkl.eskits.dao.information_schema.Columns;
+import io.github.xuyao5.dkl.eskits.repository.InformationSchemaRepo;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardMySQLRow;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
@@ -74,8 +74,8 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     private Map<String, List<Columns>> getTableColumnsMap(@NonNull Set<String> tables) {
-        InformationSchemaDao informationSchemaDao = new InformationSchemaDao(driver, hostname, port, username, password);
-        List<Columns> columnsList = informationSchemaDao.queryColumns(schema, tables.toArray(new String[]{}));
+        InformationSchemaRepo informationSchemaRepo = new InformationSchemaRepo(driver, hostname, port, username, password);
+        List<Columns> columnsList = informationSchemaRepo.queryColumns(schema, tables.toArray(new String[]{}));
         return tables.stream().collect(Collectors.toMap(Function.identity(), table -> columnsList.stream().filter(col -> col.getTableName().equals(table)).collect(Collectors.toList())));
     }
 

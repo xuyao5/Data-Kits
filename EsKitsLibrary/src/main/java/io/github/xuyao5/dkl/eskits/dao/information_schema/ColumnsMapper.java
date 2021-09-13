@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.repository.information_schema;
+package io.github.xuyao5.dkl.eskits.dao.information_schema;
 
 import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.ConstructorArgs;
@@ -16,7 +16,7 @@ import javax.annotation.Generated;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.xuyao5.dkl.eskits.repository.information_schema.ColumnsDynamicSqlSupport.*;
+import static io.github.xuyao5.dkl.eskits.dao.information_schema.ColumnsDynamicSqlSupport.*;
 
 @Mapper
 public interface ColumnsMapper {

@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.repository.information_schema;
+package io.github.xuyao5.dkl.eskits.dao.information_schema;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
