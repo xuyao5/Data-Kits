@@ -25,6 +25,7 @@ public final class HttpFsHelper {
     private final String host;
     private final int port;
     private final String user;
+    private final int pageSize = 64 * 1000;//64k是单次写入最佳数据量，硬盘以1000而不是1024计算
 
     public HttpFsHelper(@NonNull String host, int port, @NonNull String user) {
         this.host = host;
@@ -38,12 +39,32 @@ public final class HttpFsHelper {
                 .build();
     }
 
+    public int[] compute(int size) {
+        int i = size % pageSize;
+        int j = size / pageSize;
+        int[] array;
+        if (i == 0) {
+            array = new int[j];
+            for (int k = 0; k < j; k++) {
+                array[k] = pageSize;
+            }
+        } else {
+            array = new int[j + 1];
+            for (int k = 0; k < j; k++) {
+                array[k] = pageSize;
+            }
+            array[j] = i;
+        }
+        return array;
+    }
+
     @SneakyThrows
-    public void open(@NonNull String path) {
-        String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=OPEN", host, port, getHomeDirectory().getPath(), path, user);
+    public void open(@NonNull String path, int offset) {
+        String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=OPEN&offset=%d&length=%d", host, port, getHomeDirectory().getPath(), path, user, offset, pageSize);
         log.info("open方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
-            System.out.println(response.body().string());
+            System.out.println(response.headers());
+            System.out.println(response.body().string().length());
         }
     }
 

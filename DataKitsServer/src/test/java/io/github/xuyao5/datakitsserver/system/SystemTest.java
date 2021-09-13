@@ -55,14 +55,19 @@ public class SystemTest extends AbstractTest {
     void httpFs() {
         HttpFsHelper httpFsHelper = new HttpFsHelper("localhost", 14000, "root");
 //        httpFsHelper.mkdirs("/dir1");
-        System.out.println(httpFsHelper.listStatus("/dir1"));
-        System.out.println(httpFsHelper.getContentSummary("/dir1"));
-        System.out.println(httpFsHelper.getFileStatus("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt"));
-        System.out.println(httpFsHelper.getFileChecksum("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt"));
-        httpFsHelper.open("/dir1/HttpFS.txt");
+//        System.out.println(httpFsHelper.listStatus("/dir1"));
+//        System.out.println(httpFsHelper.getContentSummary("/dir1"));
+//        System.out.println(httpFsHelper.getFileStatus("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt"));
+//        System.out.println(httpFsHelper.getFileChecksum("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt"));
 //        System.out.println(httpFsHelper.getContentSummary());
 //        System.out.println(httpFsHelper.getFileStatus());
 //        httpFsHelper.create("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt");
+        int[] compute = httpFsHelper.compute(864682);
+        for (int i = 0; i < compute.length; i++) {
+            System.out.println(compute[i]);
+        }
+
+        httpFsHelper.open("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt", 0);
 
     }
 }
