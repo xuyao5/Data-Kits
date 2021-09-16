@@ -62,7 +62,7 @@ public class SystemTest extends AbstractTest {
 //        System.out.println(httpFsHelper.getContentSummary());
 //        System.out.println(httpFsHelper.getFileStatus());
 //        httpFsHelper.create("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt");
-        int[] compute = httpFsHelper.compute(864682);
+        int[] compute = httpFsHelper.compute(864682, 64000);
         for (int i = 0; i < compute.length; i++) {
             System.out.println(compute[i]);
         }
