@@ -27,7 +27,7 @@ public final class HttpFsHelper {
     private final String user;
 //    private final int pageSize = 64 * 1000;//64k是单次写入最佳数据量，硬盘以1000而不是1024计算
 
-    public HttpFsHelper(@NonNull String host, int port, @NonNull String user) {
+    private HttpFsHelper(@NonNull String host, int port, @NonNull String user) {
         this.host = host;
         this.port = port;
         this.user = user;

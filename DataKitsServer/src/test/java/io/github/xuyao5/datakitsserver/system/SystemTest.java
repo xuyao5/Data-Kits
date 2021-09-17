@@ -1,7 +1,6 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.helper.HttpFsHelper;
 import io.github.xuyao5.dkl.eskits.schema.cat.Indices4Cat;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
@@ -57,7 +56,7 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void httpFs() {
-        HttpFsHelper httpFsHelper = new HttpFsHelper("localhost", 14000, "root");
+//        HttpFsHelper httpFsHelper = new HttpFsHelper("localhost", 14000, "root");
 //        httpFsHelper.mkdirs("/dir1");
 //        System.out.println(httpFsHelper.listStatus("/dir1"));
 //        System.out.println(httpFsHelper.getContentSummary("/dir1"));
@@ -66,13 +65,12 @@ public class SystemTest extends AbstractTest {
 //        System.out.println(httpFsHelper.getContentSummary());
 //        System.out.println(httpFsHelper.getFileStatus());
 //        httpFsHelper.create("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt");
-        int[] compute = httpFsHelper.compute(864682, 64000);
-        for (int i = 0; i < compute.length; i++) {
-            System.out.println(compute[i]);
-        }
-
-        httpFsHelper.open("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt", 0);
-
+//        int[] compute = httpFsHelper.compute(864682, 64000);
+//        for (int i = 0; i < compute.length; i++) {
+//            System.out.println(compute[i]);
+//        }
+//
+//        httpFsHelper.open("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt", 0);
     }
 
     @SneakyThrows
