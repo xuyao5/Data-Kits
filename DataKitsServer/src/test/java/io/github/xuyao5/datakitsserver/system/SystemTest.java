@@ -76,7 +76,7 @@ public class SystemTest extends AbstractTest {
     @SneakyThrows
     @Test
     void catSupporter() {
-        List<Indices4Cat> catIndices = CatSupporter.getInstance().getCatIndices(esClient, "file2es_disruptor_20200711");
+        List<Indices4Cat> catIndices = CatSupporter.getInstance().getCatIndices(esClient, "file2es_disruptor_*");
         catIndices.forEach(System.out::println);
     }
 }
