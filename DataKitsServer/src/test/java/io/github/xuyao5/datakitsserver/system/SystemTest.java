@@ -2,6 +2,8 @@ package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.dkl.eskits.helper.HttpFsHelper;
+import io.github.xuyao5.dkl.eskits.schema.cat.Indices4Cat;
+import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.SneakyThrows;
@@ -15,6 +17,8 @@ import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class SystemTest extends AbstractTest {
 
@@ -69,5 +73,12 @@ public class SystemTest extends AbstractTest {
 
         httpFsHelper.open("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt", 0);
 
+    }
+
+    @SneakyThrows
+    @Test
+    void catSupporter() {
+        List<Indices4Cat> catIndices = CatSupporter.getInstance().getCatIndices(esClient, "file2es_disruptor_20200711");
+        catIndices.forEach(System.out::println);
     }
 }
