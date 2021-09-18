@@ -31,117 +31,118 @@ public final class CatSupporter {
         return CatSupporter.SingletonHolder.INSTANCE;
     }
 
-    public void getCatAllocation() {
+    public void getCatAllocation(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatShards() {
+    public void getCatShards(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatShards(@NonNull String index) {
+    public void getCatShards(@NonNull RestHighLevelClient client, @NonNull String index) {
     }
 
-    public void getCatMaster() {
+    public void getCatMaster(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatNodes() {
+    public void getCatNodes(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatTasks() {
+    public void getCatTasks(@NonNull RestHighLevelClient client) {
     }
 
     @SneakyThrows
-    public List<Indices4Cat> getCatIndices(@NonNull RestHighLevelClient client, String index) {
+    public List<Indices4Cat> getCatIndices(@NonNull RestHighLevelClient client) {
+        return getCat(client, "/_cat/indices?format=json", TypeToken.getParameterized(List.class, Indices4Cat.class));
+    }
+
+    public List<Indices4Cat> getCatIndices(@NonNull RestHighLevelClient client, @NonNull String index) {
         return getCat(client, String.format("/_cat/indices/%s?format=json", index), TypeToken.getParameterized(List.class, Indices4Cat.class));
     }
 
-    public void getCatIndices(@NonNull String index) {
+    public void getCatSegments(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatSegments() {
+    public void getCatSegments(@NonNull RestHighLevelClient client, @NonNull String index) {
     }
 
-    public void getCatSegments(@NonNull String index) {
+    public void getCatCount(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatCount() {
+    public void getCatCount(@NonNull RestHighLevelClient client, @NonNull String index) {
     }
 
-    public void getCatCount(@NonNull String index) {
+    public void getCatRecovery(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatRecovery() {
+    public void getCatRecovery(@NonNull RestHighLevelClient client, @NonNull String index) {
     }
 
-    public void getCatRecovery(@NonNull String index) {
+    public void getCatHealth(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatHealth() {
+    public void getCatPending_tasks(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatPending_tasks() {
+    public void getCatAliases(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatAliases() {
+    public void getCatAliases(@NonNull RestHighLevelClient client, @NonNull String alias) {
     }
 
-    public void getCatAliases(@NonNull String alias) {
+    public void getCatThread_pool(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatThread_pool() {
+    public void getCatThread_pool(@NonNull RestHighLevelClient client, @NonNull String thread_pools) {
     }
 
-    public void getCatThread_pool(@NonNull String thread_pools) {
+    public void getCatPlugins(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatPlugins() {
+    public void getCatFielddata(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatFielddata() {
+    public void getCatFielddata(@NonNull RestHighLevelClient client, @NonNull String fields) {
     }
 
-    public void getCatFielddata(@NonNull String fields) {
+    public void getCatNodeattrs(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatNodeattrs() {
+    public void getCatRepositories(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatRepositories() {
+    public void getCatSnapshots(@NonNull RestHighLevelClient client, @NonNull String repository) {
     }
 
-    public void getCatSnapshots(@NonNull String repository) {
+    public void getCatTemplates(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatTemplates() {
+    public void getCatMlAnomaly_detectors(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatMlAnomaly_detectors() {
+    public void getCatMlAnomaly_detectors(@NonNull RestHighLevelClient client, @NonNull String job_id) {
     }
 
-    public void getCatMlAnomaly_detectors(@NonNull String job_id) {
+    public void getCatMlTrained_models(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatMlTrained_models() {
+    public void getCatMlTrainedModels(@NonNull RestHighLevelClient client, @NonNull String model_id) {
     }
 
-    public void getCatMlTrainedModels(@NonNull String model_id) {
+    public void getCatMlDatafeeds(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatMlDatafeeds() {
+    public void getCatMlDatafeeds(@NonNull RestHighLevelClient client, @NonNull String datafeed_id) {
     }
 
-    public void getCatMlDatafeeds(@NonNull String datafeed_id) {
+    public void getCatMlDataFrameAnalytics(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatMlDataFrameAnalytics() {
+    public void getCatMlDataFrameAnalytics(@NonNull RestHighLevelClient client, @NonNull String id) {
     }
 
-    public void getCatMlDataFrameAnalytics(@NonNull String id) {
+    public void getCatTransforms(@NonNull RestHighLevelClient client) {
     }
 
-    public void getCatTransforms() {
-    }
-
-    public void getCatTransforms(@NonNull String transformId) {
+    public void getCatTransforms(@NonNull RestHighLevelClient client, @NonNull String transformId) {
     }
 
     @SneakyThrows

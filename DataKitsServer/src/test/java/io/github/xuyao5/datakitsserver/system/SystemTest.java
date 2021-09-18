@@ -6,6 +6,7 @@ import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+@Slf4j
 public class SystemTest extends AbstractTest {
 
     @SneakyThrows
@@ -76,7 +78,11 @@ public class SystemTest extends AbstractTest {
     @SneakyThrows
     @Test
     void catSupporter() {
-        List<Indices4Cat> catIndices = CatSupporter.getInstance().getCatIndices(esClient, "file2es_disruptor_*");
-        catIndices.forEach(System.out::println);
+        CatSupporter catSupporter = CatSupporter.getInstance();
+        System.out.println(catSupporter.getCatIndices(esClient));
+        List<Indices4Cat> catIndices = catSupporter.getCatIndices(esClient, "file2es_disruptor_*");
+        catIndices.forEach(indices4Cat -> {
+            log.warn("获取到索引[{}]状态为[{}]", indices4Cat.getIndex(), indices4Cat.getStatus());
+        });
     }
 }
