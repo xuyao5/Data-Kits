@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @implNote Indices4Cat
  */
 @Data(staticConstructor = "of")
-public class Indices4Cat implements Serializable {
+public final class Indices4Cat implements Serializable {
 
     @SerializedName(value = "health", alternate = {"HEALTH"})
     private String health;

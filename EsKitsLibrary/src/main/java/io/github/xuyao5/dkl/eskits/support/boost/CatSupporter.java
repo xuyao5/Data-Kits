@@ -2,7 +2,7 @@ package io.github.xuyao5.dkl.eskits.support.boost;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import io.github.xuyao5.dkl.eskits.schema.cat.Indices4Cat;
+import io.github.xuyao5.dkl.eskits.schema.cat.*;
 import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -31,22 +31,28 @@ public final class CatSupporter {
         return CatSupporter.SingletonHolder.INSTANCE;
     }
 
-    public void getCatAllocation(@NonNull RestHighLevelClient client) {
+    public List<Allocation4Cat> getCatAllocation(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatShards(@NonNull RestHighLevelClient client) {
+    public List<Shards4Cat> getCatShards(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatShards(@NonNull RestHighLevelClient client, @NonNull String index) {
+    public List<Shards4Cat> getCatShards(@NonNull RestHighLevelClient client, @NonNull String index) {
+        return null;
     }
 
-    public void getCatMaster(@NonNull RestHighLevelClient client) {
+    public List<Master4Cat> getCatMaster(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatNodes(@NonNull RestHighLevelClient client) {
+    public List<Nodes4Cat> getCatNodes(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatTasks(@NonNull RestHighLevelClient client) {
+    public List<Tasks4Cat> getCatTasks(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
     @SneakyThrows
@@ -58,91 +64,120 @@ public final class CatSupporter {
         return getCat(client, String.format("/_cat/indices/%s?format=json", index), TypeToken.getParameterized(List.class, Indices4Cat.class));
     }
 
-    public void getCatSegments(@NonNull RestHighLevelClient client) {
+    public List<Segments4Cat> getCatSegments(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatSegments(@NonNull RestHighLevelClient client, @NonNull String index) {
+    public List<Segments4Cat> getCatSegments(@NonNull RestHighLevelClient client, @NonNull String index) {
+        return null;
     }
 
-    public void getCatCount(@NonNull RestHighLevelClient client) {
+    public List<Count4Cat> getCatCount(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatCount(@NonNull RestHighLevelClient client, @NonNull String index) {
+    public List<Count4Cat> getCatCount(@NonNull RestHighLevelClient client, @NonNull String index) {
+        return null;
     }
 
-    public void getCatRecovery(@NonNull RestHighLevelClient client) {
+    public List<Recovery4Cat> getCatRecovery(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatRecovery(@NonNull RestHighLevelClient client, @NonNull String index) {
+    public List<Recovery4Cat> getCatRecovery(@NonNull RestHighLevelClient client, @NonNull String index) {
+        return null;
     }
 
-    public void getCatHealth(@NonNull RestHighLevelClient client) {
+    public List<Health4Cat> getCatHealth(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatPending_tasks(@NonNull RestHighLevelClient client) {
+    public List<PendingTasks4Cat> getCatPendingTasks(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatAliases(@NonNull RestHighLevelClient client) {
+    public List<Aliases4Cat> getCatAliases(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatAliases(@NonNull RestHighLevelClient client, @NonNull String alias) {
+    public List<Aliases4Cat> getCatAliases(@NonNull RestHighLevelClient client, @NonNull String alias) {
+        return null;
     }
 
-    public void getCatThread_pool(@NonNull RestHighLevelClient client) {
+    public List<ThreadPool4Cat> getCatThreadPool(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatThread_pool(@NonNull RestHighLevelClient client, @NonNull String thread_pools) {
+    public List<ThreadPool4Cat> getCatThreadPool(@NonNull RestHighLevelClient client, @NonNull String threadPools) {
+        return null;
     }
 
-    public void getCatPlugins(@NonNull RestHighLevelClient client) {
+    public List<Plugins4Cat> getCatPlugins(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatFielddata(@NonNull RestHighLevelClient client) {
+    public List<FieldData4Cat> getCatFieldData(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatFielddata(@NonNull RestHighLevelClient client, @NonNull String fields) {
+    public List<FieldData4Cat> getCatFieldData(@NonNull RestHighLevelClient client, @NonNull String fields) {
+        return null;
     }
 
-    public void getCatNodeattrs(@NonNull RestHighLevelClient client) {
+    public List<NodeAttrs4Cat> getCatNodeAttrs(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatRepositories(@NonNull RestHighLevelClient client) {
+    public List<Repositories4Cat> getCatRepositories(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatSnapshots(@NonNull RestHighLevelClient client, @NonNull String repository) {
+    public List<Snapshots4Cat> getCatSnapshots(@NonNull RestHighLevelClient client, @NonNull String repository) {
+        return null;
     }
 
-    public void getCatTemplates(@NonNull RestHighLevelClient client) {
+    public List<Templates4Cat> getCatTemplates(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatMlAnomaly_detectors(@NonNull RestHighLevelClient client) {
+    public List<MlAnomalyDetectors4Cat> getCatMlAnomalyDetectors(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatMlAnomaly_detectors(@NonNull RestHighLevelClient client, @NonNull String job_id) {
+    public List<MlAnomalyDetectors4Cat> getCatMlAnomalyDetectors(@NonNull RestHighLevelClient client, @NonNull String jobId) {
+        return null;
     }
 
-    public void getCatMlTrained_models(@NonNull RestHighLevelClient client) {
+    public List<MlTrainedModels4Cat> getCatMlTrainedModels(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatMlTrainedModels(@NonNull RestHighLevelClient client, @NonNull String model_id) {
+    public List<MlTrainedModels4Cat> getCatMlTrainedModels(@NonNull RestHighLevelClient client, @NonNull String modelId) {
+        return null;
     }
 
-    public void getCatMlDatafeeds(@NonNull RestHighLevelClient client) {
+    public List<MlDataFeeds4Cat> getCatMlDataFeeds(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatMlDatafeeds(@NonNull RestHighLevelClient client, @NonNull String datafeed_id) {
+    public List<MlDataFeeds4Cat> getCatMlDataFeeds(@NonNull RestHighLevelClient client, @NonNull String datafeedId) {
+        return null;
     }
 
-    public void getCatMlDataFrameAnalytics(@NonNull RestHighLevelClient client) {
+    public List<MlDataFrameAnalytics4Cat> getCatMlDataFrameAnalytics(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatMlDataFrameAnalytics(@NonNull RestHighLevelClient client, @NonNull String id) {
+    public List<MlDataFrameAnalytics4Cat> getCatMlDataFrameAnalytics(@NonNull RestHighLevelClient client, @NonNull String id) {
+        return null;
     }
 
-    public void getCatTransforms(@NonNull RestHighLevelClient client) {
+    public List<Transforms4Cat> getCatTransforms(@NonNull RestHighLevelClient client) {
+        return null;
     }
 
-    public void getCatTransforms(@NonNull RestHighLevelClient client, @NonNull String transformId) {
+    public List<Transforms4Cat> getCatTransforms(@NonNull RestHighLevelClient client, @NonNull String transformId) {
+        return null;
     }
 
     @SneakyThrows
