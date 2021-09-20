@@ -32,27 +32,27 @@ public final class CatSupporter {
     }
 
     public List<Allocation4Cat> getCatAllocation(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/allocation?format=json", TypeToken.getParameterized(List.class, Allocation4Cat.class));
     }
 
     public List<Shards4Cat> getCatShards(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/shards?format=json", TypeToken.getParameterized(List.class, Shards4Cat.class));
     }
 
     public List<Shards4Cat> getCatShards(@NonNull RestHighLevelClient client, @NonNull String index) {
-        return null;
+        return getCat(client, String.format("/_cat/shards/%s?format=json", index), TypeToken.getParameterized(List.class, Shards4Cat.class));
     }
 
     public List<Master4Cat> getCatMaster(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/master?format=json", TypeToken.getParameterized(List.class, Master4Cat.class));
     }
 
     public List<Nodes4Cat> getCatNodes(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/nodes?format=json", TypeToken.getParameterized(List.class, Nodes4Cat.class));
     }
 
     public List<Tasks4Cat> getCatTasks(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/tasks?format=json", TypeToken.getParameterized(List.class, Tasks4Cat.class));
     }
 
     @SneakyThrows
@@ -65,31 +65,31 @@ public final class CatSupporter {
     }
 
     public List<Segments4Cat> getCatSegments(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/segments?format=json", TypeToken.getParameterized(List.class, Segments4Cat.class));
     }
 
     public List<Segments4Cat> getCatSegments(@NonNull RestHighLevelClient client, @NonNull String index) {
-        return null;
+        return getCat(client, String.format("/_cat/segments/%s?format=json", index), TypeToken.getParameterized(List.class, Segments4Cat.class));
     }
 
     public List<Count4Cat> getCatCount(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/count?format=json", TypeToken.getParameterized(List.class, Count4Cat.class));
     }
 
     public List<Count4Cat> getCatCount(@NonNull RestHighLevelClient client, @NonNull String index) {
-        return null;
+        return getCat(client, String.format("/_cat/count/%s?format=json", index), TypeToken.getParameterized(List.class, Count4Cat.class));
     }
 
     public List<Recovery4Cat> getCatRecovery(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/recovery?format=json", TypeToken.getParameterized(List.class, Recovery4Cat.class));
     }
 
     public List<Recovery4Cat> getCatRecovery(@NonNull RestHighLevelClient client, @NonNull String index) {
-        return null;
+        return getCat(client, String.format("/_cat/recovery/%s?format=json", index), TypeToken.getParameterized(List.class, Recovery4Cat.class));
     }
 
     public List<Health4Cat> getCatHealth(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/health?format=json", TypeToken.getParameterized(List.class, Health4Cat.class));
     }
 
     public List<PendingTasks4Cat> getCatPendingTasks(@NonNull RestHighLevelClient client) {

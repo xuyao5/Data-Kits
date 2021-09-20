@@ -1,7 +1,6 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
-import io.github.xuyao5.dkl.eskits.schema.cat.Indices4Cat;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
@@ -17,8 +16,6 @@ import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 @Slf4j
 public class SystemTest extends AbstractTest {
@@ -79,10 +76,20 @@ public class SystemTest extends AbstractTest {
     @Test
     void catSupporter() {
         CatSupporter catSupporter = CatSupporter.getInstance();
+        System.out.println(catSupporter.getCatAllocation(esClient));
         System.out.println(catSupporter.getCatIndices(esClient));
-        List<Indices4Cat> catIndices = catSupporter.getCatIndices(esClient, "file2es_disruptor_*");
-        catIndices.forEach(indices4Cat -> {
-            log.warn("获取到索引[{}]状态为[{}]", indices4Cat.getIndex(), indices4Cat.getStatus());
-        });
+        System.out.println(catSupporter.getCatIndices(esClient, "file2es_disruptor_*"));
+        System.out.println(catSupporter.getCatShards(esClient));
+        System.out.println(catSupporter.getCatShards(esClient, "file2es_disruptor_*"));
+        System.out.println(catSupporter.getCatMaster(esClient));
+        System.out.println(catSupporter.getCatNodes(esClient));
+        System.out.println(catSupporter.getCatTasks(esClient));
+        System.out.println(catSupporter.getCatSegments(esClient));
+        System.out.println(catSupporter.getCatSegments(esClient, "file2es_disruptor_*"));
+        System.out.println(catSupporter.getCatCount(esClient));
+        System.out.println(catSupporter.getCatCount(esClient, "file2es_disruptor_*"));
+        System.out.println(catSupporter.getCatRecovery(esClient));
+        System.out.println(catSupporter.getCatRecovery(esClient, "file2es_disruptor_*"));
+        System.out.println(catSupporter.getCatHealth(esClient));
     }
 }
