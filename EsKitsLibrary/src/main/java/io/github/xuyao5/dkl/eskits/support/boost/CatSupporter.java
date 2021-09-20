@@ -93,51 +93,51 @@ public final class CatSupporter {
     }
 
     public List<PendingTasks4Cat> getCatPendingTasks(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/pending_tasks?format=json", TypeToken.getParameterized(List.class, PendingTasks4Cat.class));
     }
 
     public List<Aliases4Cat> getCatAliases(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/aliases?format=json", TypeToken.getParameterized(List.class, Aliases4Cat.class));
     }
 
     public List<Aliases4Cat> getCatAliases(@NonNull RestHighLevelClient client, @NonNull String alias) {
-        return null;
+        return getCat(client, String.format("/_cat/aliases/%s?format=json", alias), TypeToken.getParameterized(List.class, Aliases4Cat.class));
     }
 
     public List<ThreadPool4Cat> getCatThreadPool(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/thread_pool?format=json", TypeToken.getParameterized(List.class, ThreadPool4Cat.class));
     }
 
     public List<ThreadPool4Cat> getCatThreadPool(@NonNull RestHighLevelClient client, @NonNull String threadPools) {
-        return null;
+        return getCat(client, String.format("/_cat/thread_pool/%s?format=json", threadPools), TypeToken.getParameterized(List.class, ThreadPool4Cat.class));
     }
 
     public List<Plugins4Cat> getCatPlugins(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/plugins?format=json", TypeToken.getParameterized(List.class, Plugins4Cat.class));
     }
 
     public List<FieldData4Cat> getCatFieldData(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/fielddata?format=json", TypeToken.getParameterized(List.class, FieldData4Cat.class));
     }
 
     public List<FieldData4Cat> getCatFieldData(@NonNull RestHighLevelClient client, @NonNull String fields) {
-        return null;
+        return getCat(client, String.format("/_cat/fielddata/%s?format=json", fields), TypeToken.getParameterized(List.class, FieldData4Cat.class));
     }
 
     public List<NodeAttrs4Cat> getCatNodeAttrs(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/nodeattrs?format=json", TypeToken.getParameterized(List.class, NodeAttrs4Cat.class));
     }
 
     public List<Repositories4Cat> getCatRepositories(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/repositories?format=json", TypeToken.getParameterized(List.class, Repositories4Cat.class));
     }
 
     public List<Snapshots4Cat> getCatSnapshots(@NonNull RestHighLevelClient client, @NonNull String repository) {
-        return null;
+        return getCat(client, String.format("/_cat/repositories/%s?format=json", repository), TypeToken.getParameterized(List.class, Snapshots4Cat.class));
     }
 
     public List<Templates4Cat> getCatTemplates(@NonNull RestHighLevelClient client) {
-        return null;
+        return getCat(client, "/_cat/templates?format=json", TypeToken.getParameterized(List.class, Templates4Cat.class));
     }
 
     public List<MlAnomalyDetectors4Cat> getCatMlAnomalyDetectors(@NonNull RestHighLevelClient client) {
