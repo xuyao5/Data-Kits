@@ -8,8 +8,8 @@ import java.io.Serializable;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 18/09/21 18:53
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote Tasks4Cat
+ * @implNote Tasks4Cat
  */
 @Data(staticConstructor = "of")
 public final class Tasks4Cat implements Serializable {

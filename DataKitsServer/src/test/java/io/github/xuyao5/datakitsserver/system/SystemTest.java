@@ -77,25 +77,26 @@ public class SystemTest extends AbstractTest {
     void catSupporter() {
         CatSupporter catSupporter = CatSupporter.getInstance();
         System.out.println(catSupporter.getCatAllocation(esClient));
-        System.out.println(catSupporter.getCatIndices(esClient));
-        System.out.println(catSupporter.getCatIndices(esClient, "file2es_disruptor_*"));
         System.out.println(catSupporter.getCatShards(esClient));
         System.out.println(catSupporter.getCatShards(esClient, "file2es_disruptor_*"));
         System.out.println(catSupporter.getCatMaster(esClient));
         System.out.println(catSupporter.getCatNodes(esClient));
         System.out.println(catSupporter.getCatTasks(esClient));
+        System.out.println(catSupporter.getCatIndices(esClient));
+        System.out.println(catSupporter.getCatIndices(esClient, "file2es_disruptor_*"));
         System.out.println(catSupporter.getCatSegments(esClient));
         System.out.println(catSupporter.getCatSegments(esClient, "file2es_disruptor_*"));
-        System.out.println(catSupporter.getCatCount(esClient));
         System.out.println(catSupporter.getCatCount(esClient, "file2es_disruptor_*"));
-        System.out.println(catSupporter.getCatRecovery(esClient));
         System.out.println(catSupporter.getCatRecovery(esClient, "file2es_disruptor_*"));
         System.out.println(catSupporter.getCatHealth(esClient));
         System.out.println(catSupporter.getCatAliases(esClient));
         System.out.println(catSupporter.getCatAliases(esClient, "FILE2ES_DISRUPTOR"));
         System.out.println(catSupporter.getCatThreadPool(esClient));
         System.out.println(catSupporter.getCatThreadPool(esClient, "flush"));
+        System.out.println(catSupporter.getCatPlugins(esClient));
         System.out.println(catSupporter.getCatFieldData(esClient));
+        System.out.println(catSupporter.getCatFieldData(esClient, ""));
         System.out.println(catSupporter.getCatNodeAttrs(esClient));
+        System.out.println(catSupporter.getCatTemplates(esClient));
     }
 }

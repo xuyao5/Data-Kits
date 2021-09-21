@@ -8,8 +8,8 @@ import java.io.Serializable;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 18/09/21 22:00
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote ThreadPool4Cat
+ * @implNote ThreadPool4Cat
  */
 @Data(staticConstructor = "of")
 public final class ThreadPool4Cat implements Serializable {

@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.schema.cat;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -7,9 +8,18 @@ import java.io.Serializable;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 18/09/21 22:01
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote Plugins4Cat
+ * @implNote Plugins4Cat
  */
 @Data(staticConstructor = "of")
 public final class Plugins4Cat implements Serializable {
+
+    @SerializedName(value = "name", alternate = {"NAME"})
+    private String name;
+
+    @SerializedName(value = "component", alternate = {"COMPONENT"})
+    private String component;
+
+    @SerializedName(value = "version", alternate = {"VERSION"})
+    private String version;
 }

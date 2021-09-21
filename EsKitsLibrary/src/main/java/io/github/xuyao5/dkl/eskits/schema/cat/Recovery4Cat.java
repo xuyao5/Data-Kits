@@ -8,8 +8,8 @@ import java.io.Serializable;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 18/09/21 21:49
- * @apiNote TODO 这里输入文件说明
- * @implNote TODO 这里输入实现说明
+ * @apiNote Recovery4Cat
+ * @implNote Recovery4Cat
  */
 @Data(staticConstructor = "of")
 public final class Recovery4Cat implements Serializable {
@@ -17,8 +17,8 @@ public final class Recovery4Cat implements Serializable {
     @SerializedName(value = "index", alternate = {"INDEX"})
     private String index;
 
-    @SerializedName(value = "shards", alternate = {"SHARDS"})
-    private String shards;
+    @SerializedName(value = "shard", alternate = {"SHARD"})
+    private String shard;
 
     @SerializedName(value = "time", alternate = {"TIME"})
     private String time;
