@@ -92,10 +92,6 @@ public final class CatSupporter {
         return getCat(client, "/_cat/health?format=json", TypeToken.getParameterized(List.class, Health4Cat.class));
     }
 
-    public List<PendingTasks4Cat> getCatPendingTasks(@NonNull RestHighLevelClient client) {
-        return getCat(client, "/_cat/pending_tasks?format=json", TypeToken.getParameterized(List.class, PendingTasks4Cat.class));
-    }
-
     public List<Aliases4Cat> getCatAliases(@NonNull RestHighLevelClient client) {
         return getCat(client, "/_cat/aliases?format=json", TypeToken.getParameterized(List.class, Aliases4Cat.class));
     }
@@ -128,56 +124,8 @@ public final class CatSupporter {
         return getCat(client, "/_cat/nodeattrs?format=json", TypeToken.getParameterized(List.class, NodeAttrs4Cat.class));
     }
 
-    public List<Repositories4Cat> getCatRepositories(@NonNull RestHighLevelClient client) {
-        return getCat(client, "/_cat/repositories?format=json", TypeToken.getParameterized(List.class, Repositories4Cat.class));
-    }
-
-    public List<Snapshots4Cat> getCatSnapshots(@NonNull RestHighLevelClient client, @NonNull String repository) {
-        return getCat(client, String.format("/_cat/repositories/%s?format=json", repository), TypeToken.getParameterized(List.class, Snapshots4Cat.class));
-    }
-
     public List<Templates4Cat> getCatTemplates(@NonNull RestHighLevelClient client) {
         return getCat(client, "/_cat/templates?format=json", TypeToken.getParameterized(List.class, Templates4Cat.class));
-    }
-
-    public List<MlAnomalyDetectors4Cat> getCatMlAnomalyDetectors(@NonNull RestHighLevelClient client) {
-        return null;
-    }
-
-    public List<MlAnomalyDetectors4Cat> getCatMlAnomalyDetectors(@NonNull RestHighLevelClient client, @NonNull String jobId) {
-        return null;
-    }
-
-    public List<MlTrainedModels4Cat> getCatMlTrainedModels(@NonNull RestHighLevelClient client) {
-        return null;
-    }
-
-    public List<MlTrainedModels4Cat> getCatMlTrainedModels(@NonNull RestHighLevelClient client, @NonNull String modelId) {
-        return null;
-    }
-
-    public List<MlDataFeeds4Cat> getCatMlDataFeeds(@NonNull RestHighLevelClient client) {
-        return null;
-    }
-
-    public List<MlDataFeeds4Cat> getCatMlDataFeeds(@NonNull RestHighLevelClient client, @NonNull String datafeedId) {
-        return null;
-    }
-
-    public List<MlDataFrameAnalytics4Cat> getCatMlDataFrameAnalytics(@NonNull RestHighLevelClient client) {
-        return null;
-    }
-
-    public List<MlDataFrameAnalytics4Cat> getCatMlDataFrameAnalytics(@NonNull RestHighLevelClient client, @NonNull String id) {
-        return null;
-    }
-
-    public List<Transforms4Cat> getCatTransforms(@NonNull RestHighLevelClient client) {
-        return null;
-    }
-
-    public List<Transforms4Cat> getCatTransforms(@NonNull RestHighLevelClient client, @NonNull String transformId) {
-        return null;
     }
 
     @SneakyThrows
