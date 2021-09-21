@@ -1,7 +1,7 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.schema.standard.StandardSearchSourceDocument;
+import io.github.xuyao5.dkl.eskits.schema.standard.StandardSearchSource;
 import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
@@ -52,12 +52,12 @@ public final class StoredSearchService extends AbstractExecutor {
 
     public void initial() {
         String querySource = SearchSourceBuilder.searchSource().query(QueryBuilders.matchAllQuery()).from(0).size(1000).toString();
-        StandardSearchSourceDocument searchDocument = StandardSearchSourceDocument.of(new StringBuilder(querySource));
+        StandardSearchSource searchDocument = StandardSearchSource.of(new StringBuilder(querySource));
         searchDocument.setSearchDescription("搜索器示例");
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (!indexSupporter.exists(client, SEARCH_STORED_INDEX)) {
             int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
-            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 2, XContentSupporter.getInstance().buildMapping(StandardSearchSourceDocument.class));
+            indexSupporter.create(client, SEARCH_STORED_INDEX, numberOfDataNodes, 2, XContentSupporter.getInstance().buildMapping(StandardSearchSource.class));
             AliasesSupporter.getInstance().migrate(client, SEARCH_STORED_ALIAS, SEARCH_STORED_INDEX);
         }
         DocumentSupporter.getInstance().index(client, SEARCH_STORED_ALIAS, DEFAULT_SEARCH, searchDocument);
