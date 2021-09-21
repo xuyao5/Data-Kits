@@ -19,6 +19,8 @@ public @interface FileField {
 
     String column() default "";//列名
 
+    int position() default -1;//列号（首先判断column,如果column为空则取position，需要配合includeMetadataLine）
+
     int priority() default -1;//优先级，-1代表不参加排序
 
     SortType order() default ASC;//排序顺序，默认为asc,可设置desc
