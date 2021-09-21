@@ -91,7 +91,7 @@ public final class File2EsService extends AbstractExecutor {
                 log.info("索引Mapping为:[{}]", Strings.toString(contentBuilder));
                 if (!isIndexExist) {
                     Map<String, String> indexSorting = fieldsList.stream()
-                            .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() > 0)
+                            .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
                             .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).priority()))
                             .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
                     int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
