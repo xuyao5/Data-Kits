@@ -115,7 +115,7 @@ public final class File2EsService extends AbstractExecutor {
                             FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnTypeTokenMap.get(metadataArray[0][i])), true);
                         }
                     } else {
-                        log.error("列[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确", metadataArray[0][i]);
+                        log.error("列[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在", metadataArray[0][i]);
                     }
                 }
 
