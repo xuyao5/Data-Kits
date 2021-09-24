@@ -32,9 +32,9 @@
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <!--        <javaClientGenerator targetPackage="io.github.xuyao5.dkl.eskits.dao.information_schema" targetProject="src/main/java">
-                    <property name="enableSubPackages" value="true"/>
-                </javaClientGenerator>-->
+<!--        <javaClientGenerator targetPackage="io.github.xuyao5.dkl.eskits.dao.information_schema" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>-->
 
         <table tableName="COLUMNS"/>
     </context>
