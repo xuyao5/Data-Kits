@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.github.xuyao5</groupId>
         <artifactId>data-kits</artifactId>
-        <version>0.4</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>es-kits-lib</artifactId>
     <packaging>jar</packaging>
@@ -64,6 +64,11 @@
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <overwrite>true</overwrite>
+                    <includeCompileDependencies>true</includeCompileDependencies>
+                </configuration>
             </plugin>
         </plugins>
     </build>
