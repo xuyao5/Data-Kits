@@ -5,70 +5,49 @@ import java.io.Serializable;
 
 public class Columns implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private static final long serialVersionUID = 1L;
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String tableCatalog;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String tableSchema;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String tableName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long ordinalPosition;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String isNullable;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String dataType;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long characterMaximumLength;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long characterOctetLength;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long numericPrecision;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long numericScale;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long datetimePrecision;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String characterSetName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String collationName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnKey;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String extra;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String privileges;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnComment;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnDefault;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnType;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String generationExpression;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private static final long serialVersionUID = 1L;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Columns(String tableCatalog, String tableSchema, String tableName, String columnName, Long ordinalPosition, String isNullable, String dataType, Long characterMaximumLength, Long characterOctetLength, Long numericPrecision, Long numericScale, Long datetimePrecision, String characterSetName, String collationName, String columnKey, String extra, String privileges, String columnComment, String columnDefault, String columnType, String generationExpression) {
