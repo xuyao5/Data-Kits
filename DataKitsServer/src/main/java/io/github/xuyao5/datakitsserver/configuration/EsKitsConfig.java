@@ -22,4 +22,19 @@ public final class EsKitsConfig {
 
     @Value("${es.index.replicas}")
     private int esIndexReplicas;
+
+    @Value("${mysql.binlog.hostname}")
+    private String mysqlBinlogHostname;
+
+    @Value("${mysql.binlog.port}")
+    private int mysqlBinlogPort;
+
+    @Value("${mysql.binlog.schema}")
+    private String mysqlBinlogSchema;
+
+    @Value("${mysql.binlog.username}")
+    private String mysqlBinlogUsername;
+
+    @Value("${mysql.binlog.password}")
+    private String mysqlBinlogPassword;
 }

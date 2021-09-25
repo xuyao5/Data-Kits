@@ -28,7 +28,7 @@ public final class MySQL2EsDemoJob implements Runnable {
     @Override
     public void run() {
         Map<String, EventFactory<MyTableDocument>> tableDocument = Collections.singletonMap("MyTable", MyTableDocument::of);
-        long execute = new MySQL2EsService(esClient, "com.mysql.cj.jdbc.Driver", "localhost", 3306, "BinlogTest", "root", "123456").execute(MySQL2EsConfig.of(), tableDocument, myTableDocument -> {
+        long execute = new MySQL2EsService(esClient, esKitsConfig.getMysqlBinlogHostname(), esKitsConfig.getMysqlBinlogPort(), esKitsConfig.getMysqlBinlogSchema(), esKitsConfig.getMysqlBinlogUsername(), esKitsConfig.getMysqlBinlogPassword()).execute(MySQL2EsConfig.of(), tableDocument, myTableDocument -> {
             log.warn("获取到：{}", myTableDocument);
             return myTableDocument;
         });

@@ -9,8 +9,8 @@ import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
 import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
-import io.github.xuyao5.dkl.eskits.repository.entity.Columns;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
+import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardMySQLRow;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
@@ -55,16 +55,14 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
 @Slf4j
 public final class MySQL2EsService extends AbstractExecutor {
 
-    private final String driver;
     private final String hostname;
     private final int port;
     private final String schema;
     private final String username;
     private final String password;
 
-    public MySQL2EsService(@NonNull RestHighLevelClient client, String driver, String hostname, int port, String schema, String username, String password) {
+    public MySQL2EsService(@NonNull RestHighLevelClient client, String hostname, int port, String schema, String username, String password) {
         super(client);
-        this.driver = driver;
         this.hostname = hostname;
         this.port = port;
         this.schema = schema;
