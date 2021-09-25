@@ -1,12 +1,15 @@
 package io.github.xuyao5.dkl.eskits.repository.dao;
 
 import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.beanutils.RowSetDynaClass;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigInteger;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,8 +21,9 @@ import java.util.stream.Collectors;
  */
 public class InformationSchemaDao {
 
-    private static final String COLUMNS_QUERY = "SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,COLUMN_KEY,EXTRA FROM COLUMNS WHERE `TABLE_NAME`='%s'";
-
+    private static final String COLUMNS_QUERY = "SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,COLUMN_KEY,EXTRA FROM COLUMNS WHERE TABLE_NAME in (%s)";
+    private static final char APOSTROPHE = 39;//'
+    private static final char COMMA = 44;//,
     private final String url;
     private final String user;
     private final String password;
@@ -31,9 +35,10 @@ public class InformationSchemaDao {
     }
 
     @SneakyThrows
-    public void initial() {
-        try (ResultSet resultSet = DriverManager.getConnection(url, user, password).prepareStatement(String.format(COLUMNS_QUERY, "MyTable")).executeQuery()) {
-            List<Columns> collect = new RowSetDynaClass(resultSet).getRows().stream().map(dynaBean -> {
+    public List<Columns> queryColumns(@NonNull String... tables) {
+        String sql = String.format(COLUMNS_QUERY, StringUtils.join(Arrays.stream(tables).map(s -> StringUtils.wrap(s, APOSTROPHE)).toArray(String[]::new), COMMA));
+        try (ResultSet resultSet = DriverManager.getConnection(url, user, password).prepareStatement(sql).executeQuery()) {
+            return new RowSetDynaClass(resultSet).getRows().stream().map(dynaBean -> {
                 Columns columns = Columns.of();
                 columns.setTableSchema((String) dynaBean.get("table_schema"));
                 columns.setTableName((String) dynaBean.get("table_name"));
@@ -43,7 +48,6 @@ public class InformationSchemaDao {
                 columns.setExtra((String) dynaBean.get("extra"));
                 return columns;
             }).collect(Collectors.toList());
-            collect.forEach(System.out::println);
         }
     }
 }
