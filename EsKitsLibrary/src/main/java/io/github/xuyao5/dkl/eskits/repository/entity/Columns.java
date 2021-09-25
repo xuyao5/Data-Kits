@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.dao.information_schema.entity;
+package io.github.xuyao5.dkl.eskits.repository.entity;
 
 import lombok.Data;
 

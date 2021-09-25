@@ -9,7 +9,7 @@ import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
 import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
-import io.github.xuyao5.dkl.eskits.dao.information_schema.entity.Columns;
+import io.github.xuyao5.dkl.eskits.repository.entity.Columns;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardMySQLRow;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
