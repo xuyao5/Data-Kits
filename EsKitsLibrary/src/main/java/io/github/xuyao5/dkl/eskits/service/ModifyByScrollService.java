@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.service;
 
-import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
@@ -61,7 +60,7 @@ public final class ModifyByScrollService extends AbstractExecutor {
             for (SearchHit documentFields : searchHits) {
                 consumer.translate((standardDocument, sequence, searchHit) -> {
                     try {
-                        BeanUtils.copyProperties(standardDocument, GsonUtilsPlus.json2Obj(searchHit.getSourceAsString(), TypeToken.get(standardDocument.getClass())));
+                        BeanUtils.copyProperties(standardDocument, GsonUtilsPlus.json2Obj(searchHit.getSourceAsString(), standardDocument.getClass()));
                         standardDocument.set_id(searchHit.getId());
                         standardDocument.set_index(searchHit.getIndex());
                     } catch (IllegalAccessException | InvocationTargetException ex) {

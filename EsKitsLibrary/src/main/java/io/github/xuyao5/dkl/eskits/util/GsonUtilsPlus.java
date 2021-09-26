@@ -46,7 +46,7 @@ public final class GsonUtilsPlus {
         return GSON.fromJson(GSON.toJson(obj), typeToken.getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull TypeToken<T> typeToken) {
-        return GSON.fromJson(json, typeToken.getType());
+    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {
+        return GSON.fromJson(json, TypeToken.get(clz).getType());
     }
 }

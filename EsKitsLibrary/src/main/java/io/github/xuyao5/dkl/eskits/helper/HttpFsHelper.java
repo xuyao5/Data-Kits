@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.helper;
 
-import com.google.gson.reflect.TypeToken;
 import io.github.xuyao5.dkl.eskits.schema.httpfs.*;
 import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.NonNull;
@@ -64,7 +63,7 @@ public final class HttpFsHelper {
         log.info("getFileStatus方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(FileStatuses2.class));
+                return GsonUtilsPlus.json2Obj(response.body().string(), FileStatuses2.class);
             }
         }
         return FileStatuses2.of();
@@ -76,7 +75,7 @@ public final class HttpFsHelper {
         log.info("listStatus方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ListStatus.class));
+                return GsonUtilsPlus.json2Obj(response.body().string(), ListStatus.class);
             }
         }
         return ListStatus.of();
@@ -88,7 +87,7 @@ public final class HttpFsHelper {
         log.info("getContentSummary方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(ContentSummaries.class));
+                return GsonUtilsPlus.json2Obj(response.body().string(), ContentSummaries.class);
             }
         }
         return ContentSummaries.of();
@@ -100,7 +99,7 @@ public final class HttpFsHelper {
         log.info("getFileChecksum方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(FileChecksumJson.class));
+                return GsonUtilsPlus.json2Obj(response.body().string(), FileChecksumJson.class);
             }
         }
         return FileChecksumJson.of();
@@ -112,7 +111,7 @@ public final class HttpFsHelper {
         log.info("getHomeDirectory方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), TypeToken.get(HomeDirectory.class));
+                return GsonUtilsPlus.json2Obj(response.body().string(), HomeDirectory.class);
             }
         }
         return HomeDirectory.of();
