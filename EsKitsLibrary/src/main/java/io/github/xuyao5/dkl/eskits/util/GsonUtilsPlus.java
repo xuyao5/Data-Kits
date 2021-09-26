@@ -42,8 +42,8 @@ public final class GsonUtilsPlus {
         return GSON.toJson(obj);
     }
 
-    public static <T extends Serializable> T deserialize(@NonNull String obj, @NonNull TypeToken<?> typeToken) {
-        return GSON.fromJson(GSON.toJson(obj), typeToken.getType());
+    public static Serializable deserialize(@NonNull String obj, @NonNull Class<?> clz) {
+        return GSON.fromJson(GSON.toJson(obj), TypeToken.get(clz).getType());
     }
 
     public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {

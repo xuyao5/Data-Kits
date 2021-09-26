@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.service;
 
-import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
@@ -75,7 +74,7 @@ public final class File2EsService extends AbstractExecutor {
         final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);//根据Document Class生成ES的Mapping
         final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);//获取被@FileField注解的成员
         final Map<String, Field> columnFieldMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));//类型预存
-        final Map<String, TypeToken<?>> columnTypeTokenMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));//类型预存
+        final Map<String, Class<?>> columnClassMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Field::getType));//类型预存
 
         //执行计数器
         final LongAdder count = new LongAdder();
@@ -112,7 +111,7 @@ public final class File2EsService extends AbstractExecutor {
                     Field field = columnFieldMap.get(metadataArray[0][i]);
                     if (Objects.nonNull(field)) {
                         if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
-                            FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnTypeTokenMap.get(metadataArray[0][i])), true);
+                            FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnClassMap.get(metadataArray[0][i])), true);
                         }
                     } else {
                         log.error("列[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在", metadataArray[0][i]);
