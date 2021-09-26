@@ -58,39 +58,39 @@ public final class HttpFsHelper {
     }
 
     @SneakyThrows
-    public FileStatuses2 getFileStatus(@NonNull String path) {
+    public FileStatusJson getFileStatus(@NonNull String path) {
         String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=GETFILESTATUS", host, port, getHomeDirectory().getPath(), path, user);
         log.info("getFileStatus方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), FileStatuses2.class);
+                return GsonUtilsPlus.json2Obj(response.body().string(), FileStatusJson.class);
             }
         }
-        return FileStatuses2.of();
+        return FileStatusJson.of();
     }
 
     @SneakyThrows
-    public ListStatus listStatus(@NonNull String path) {
+    public FileStatusesJson listStatus(@NonNull String path) {
         String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=LISTSTATUS", host, port, getHomeDirectory().getPath(), path, user);
         log.info("listStatus方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), ListStatus.class);
+                return GsonUtilsPlus.json2Obj(response.body().string(), FileStatusesJson.class);
             }
         }
-        return ListStatus.of();
+        return FileStatusesJson.of();
     }
 
     @SneakyThrows
-    public ContentSummaries getContentSummary(@NonNull String path) {
+    public ContentSummaryJson getContentSummary(@NonNull String path) {
         String url = String.format("http://%s:%d/webhdfs/v1%s%s?user.name=%s&op=GETCONTENTSUMMARY", host, port, getHomeDirectory().getPath(), path, user);
         log.info("getContentSummary方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), ContentSummaries.class);
+                return GsonUtilsPlus.json2Obj(response.body().string(), ContentSummaryJson.class);
             }
         }
-        return ContentSummaries.of();
+        return ContentSummaryJson.of();
     }
 
     @SneakyThrows
@@ -106,15 +106,15 @@ public final class HttpFsHelper {
     }
 
     @SneakyThrows
-    public HomeDirectory getHomeDirectory() {
+    public HomeDirectoryJson getHomeDirectory() {
         String url = String.format("http://%s:%d/webhdfs/v1/?user.name=%s&op=GETHOMEDIRECTORY", host, port, user);
         log.info("getHomeDirectory方法url=[{}]", url);
         try (Response response = httpClient.newCall(new Request.Builder().url(url).build()).execute()) {
             if (response.isSuccessful() && Objects.nonNull(response.body())) {
-                return GsonUtilsPlus.json2Obj(response.body().string(), HomeDirectory.class);
+                return GsonUtilsPlus.json2Obj(response.body().string(), HomeDirectoryJson.class);
             }
         }
-        return HomeDirectory.of();
+        return HomeDirectoryJson.of();
     }
 
     public void getDelegationToken() {

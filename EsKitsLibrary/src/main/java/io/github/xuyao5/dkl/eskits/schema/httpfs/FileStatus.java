@@ -3,8 +3,6 @@ package io.github.xuyao5.dkl.eskits.schema.httpfs;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 7/09/21 23:44
@@ -12,7 +10,7 @@ import java.io.Serializable;
  * @implNote FileStatus
  */
 @Data(staticConstructor = "of")
-public final class FileStatus implements Serializable {
+public final class FileStatus {
 
     @SerializedName(value = "pathSuffix", alternate = {"PathSuffix"})
     private String pathSuffix;

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @implNote FileChecksumJson
  */
 @Data(staticConstructor = "of")
-public class FileChecksumJson implements Serializable {
+public final class FileChecksumJson implements Serializable {
 
     @SerializedName(value = "FileChecksum", alternate = "fileChecksum")
     private FileChecksum fileChecksum;

@@ -3,8 +3,6 @@ package io.github.xuyao5.dkl.eskits.schema.httpfs;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 7/09/21 23:49
@@ -12,7 +10,7 @@ import java.io.Serializable;
  * @implNote ContentSummary
  */
 @Data(staticConstructor = "of")
-public final class ContentSummary implements Serializable {
+public final class ContentSummary {
 
     @SerializedName(value = "directoryCount", alternate = {"DirectoryCount"})
     private long directoryCount;

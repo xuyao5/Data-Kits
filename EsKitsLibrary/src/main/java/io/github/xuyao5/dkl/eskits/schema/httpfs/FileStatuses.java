@@ -3,7 +3,6 @@ package io.github.xuyao5.dkl.eskits.schema.httpfs;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +12,7 @@ import java.util.List;
  * @implNote FileStatuses
  */
 @Data(staticConstructor = "of")
-public final class FileStatuses implements Serializable {
+public final class FileStatuses {
 
     @SerializedName(value = "fileStatus", alternate = {"FileStatus"})
     private List<FileStatus> fileStatusList;

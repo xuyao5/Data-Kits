@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @implNote FileStatuses
  */
 @Data(staticConstructor = "of")
-public final class FileStatuses2 implements Serializable {
+public final class FileStatusJson implements Serializable {
 
     @SerializedName(value = "fileStatus", alternate = {"FileStatus"})
     private FileStatus fileStatus;
