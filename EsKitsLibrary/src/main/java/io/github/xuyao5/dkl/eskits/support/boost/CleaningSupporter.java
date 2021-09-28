@@ -27,7 +27,7 @@ public final class CleaningSupporter {
         return CleaningSupporter.SingletonHolder.INSTANCE;
     }
 
-    public List<AcknowledgedResponse> deleteClosedIndex(@NonNull RestHighLevelClient client, @NonNull String index, Predicate<Indices4Cat> predicate) {
+    public List<AcknowledgedResponse> clearClosedIndex(@NonNull RestHighLevelClient client, @NonNull String index, Predicate<Indices4Cat> predicate) {
         return CatSupporter.getInstance().getCatIndices(client, index).stream()
                 .filter(indices4Cat -> predicate.test(indices4Cat) && "close".equals(indices4Cat.getStatus()))
                 .map(indices4Cat -> IndexSupporter.getInstance().delete(client, indices4Cat.getIndex()))

@@ -96,7 +96,7 @@ public final class File2EsDemoJob implements Runnable {
 
             //8.清理历史>7天
             String deleteIndex = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, "*");
-            CleaningSupporter.getInstance().deleteClosedIndex(esClient, deleteIndex, indices4Cat -> {
+            CleaningSupporter.getInstance().clearClosedIndex(esClient, deleteIndex, indices4Cat -> {
                 String[] indexNameArray = StringUtils.split(indices4Cat.getIndex(), splitChar);
                 int begin = Integer.parseInt(indexNameArray[indexNameArray.length - 1]);
                 int end = Integer.parseInt(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
