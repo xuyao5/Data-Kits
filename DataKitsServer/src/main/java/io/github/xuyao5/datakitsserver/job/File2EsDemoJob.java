@@ -8,7 +8,7 @@ import io.github.xuyao5.dkl.eskits.service.File2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
-import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
+import io.github.xuyao5.dkl.eskits.support.boost.CleaningSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
@@ -95,15 +95,13 @@ public final class File2EsDemoJob implements Runnable {
             log.info("压缩文件[{}]是否删除[{}]", file, isDelete);*/
 
             //8.清理历史>7天
-            String deleteIndexes = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, "*");
-            CatSupporter.getInstance().getCatIndices(esClient, deleteIndexes).stream()
-                    .filter(indices4Cat -> {
-                        String[] indexNameArray = StringUtils.split(indices4Cat.getIndex(), splitChar);
-                        int begin = Integer.parseInt(indexNameArray[indexNameArray.length - 1]);
-                        int end = Integer.parseInt(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
-                        return (end - begin) > 7 && "close".equals(indices4Cat.getStatus());
-                    })
-                    .forEach(indices4Cat -> IndexSupporter.getInstance().delete(esClient, indices4Cat.getIndex()));
+            String deleteIndex = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, "*");
+            CleaningSupporter.getInstance().deleteClosedIndex(esClient, deleteIndex, indices4Cat -> {
+                String[] indexNameArray = StringUtils.split(indices4Cat.getIndex(), splitChar);
+                int begin = Integer.parseInt(indexNameArray[indexNameArray.length - 1]);
+                int end = Integer.parseInt(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
+                return (end - begin) > 7;
+            }).forEach(response -> log.info("执行删除索引返回[{}]", response.isAcknowledged()));
         }));
     }
 }
