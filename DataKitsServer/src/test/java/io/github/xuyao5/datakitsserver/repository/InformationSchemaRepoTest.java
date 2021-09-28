@@ -1,8 +1,8 @@
 package io.github.xuyao5.datakitsserver.repository;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
+import io.github.xuyao5.dkl.eskits.dao.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.repository.InformationSchemaRepo;
-import io.github.xuyao5.dkl.eskits.repository.dao.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

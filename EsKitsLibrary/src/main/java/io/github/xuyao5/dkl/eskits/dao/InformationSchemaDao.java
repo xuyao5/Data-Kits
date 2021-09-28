@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.repository.dao;
+package io.github.xuyao5.dkl.eskits.dao;
 
 import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
 import lombok.NonNull;
