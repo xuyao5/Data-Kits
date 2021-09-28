@@ -4,7 +4,6 @@ import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
-import io.github.xuyao5.dkl.eskits.schema.cat.Indices4Cat;
 import io.github.xuyao5.dkl.eskits.service.File2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
@@ -24,7 +23,6 @@ import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,25 +66,29 @@ public final class File2EsDemoJob implements Runnable {
                     break;
             }
             long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), documentEventFactory, UnaryOperator.identity());
-            log.info("文件[{}]写入索引[{}]完毕,共处理{}条数据", file, index, count);
+            if (count < 1) {
+                log.warn("文件[{}]无数据写入索引[{}],请检查是否为空文件", file, index);
+            } else {
+                log.info("文件[{}]写入索引[{}]完毕,共处理{}条数据", file, index, count);
 
-            //3.别名重定向
-            String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, alias, index);
-            log.info("迁移别名[{}]到新索引[{}]原索引为{}", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
+                //3.别名重定向
+                String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, alias, index);
+                log.info("迁移别名[{}]到新索引[{}]原索引为{}", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
 
-            if (indexArray.length > 0) {
-                //4.迁移老索引数据，如果有rejected execution of coordinating operation reindex，调整ScrollSize
-                BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, QueryBuilders.matchAllQuery(), index, esKitsConfig.getEsScrollSize(), indexArray);
-                log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
+                if (indexArray.length > 0) {
+                    //4.迁移老索引数据，如果有rejected execution of coordinating operation reindex，调整ScrollSize
+                    BulkByScrollResponse reindex = ReindexSupporter.getInstance().reindex(esClient, QueryBuilders.matchAllQuery(), index, esKitsConfig.getEsScrollSize(), indexArray);
+                    log.info("迁移索引[{}]返回[{}]", indexArray, reindex);
 
-                //5.关闭老索引
-                boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
-                log.info("关闭索引[{}]返回[{}]", indexArray, acknowledged);
+                    //5.关闭老索引
+                    boolean acknowledged = IndexSupporter.getInstance().close(esClient, indexArray).isAcknowledged();
+                    log.info("关闭索引[{}]返回[{}]", indexArray, acknowledged);
+                }
+
+                //6.升副本
+                boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esKitsConfig.getEsIndexReplicas());
+                log.info("升副本索引[{}]返回[{}]", index, isUpdateReplicasSuccess);
             }
-
-            //6.升副本
-            boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esKitsConfig.getEsIndexReplicas());
-            log.info("升副本索引[{}]返回[{}]", index, isUpdateReplicasSuccess);
 
             //7.压缩文件
 /*            boolean isDelete = CompressUtilsPlus.createTarGz(file, false);
@@ -94,17 +96,14 @@ public final class File2EsDemoJob implements Runnable {
 
             //8.清理历史>7天
             String deleteIndexes = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, "*");
-            List<Indices4Cat> catIndices = CatSupporter.getInstance().getCatIndices(esClient, deleteIndexes);
-            catIndices.stream()
+            CatSupporter.getInstance().getCatIndices(esClient, deleteIndexes).stream()
                     .filter(indices4Cat -> {
                         String[] indexNameArray = StringUtils.split(indices4Cat.getIndex(), splitChar);
                         int begin = Integer.parseInt(indexNameArray[indexNameArray.length - 1]);
                         int end = Integer.parseInt(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
                         return (end - begin) > 7 && "close".equals(indices4Cat.getStatus());
                     })
-                    .forEach(indices4Cat -> {
-                        IndexSupporter.getInstance().delete(esClient, indices4Cat.getIndex());
-                    });
+                    .forEach(indices4Cat -> IndexSupporter.getInstance().delete(esClient, indices4Cat.getIndex()));
         }));
     }
 }
