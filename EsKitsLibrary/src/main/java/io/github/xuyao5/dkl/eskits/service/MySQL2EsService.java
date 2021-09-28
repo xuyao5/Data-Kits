@@ -3,12 +3,12 @@ package io.github.xuyao5.dkl.eskits.service;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
-import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
 import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
+import io.github.xuyao5.dkl.eskits.dao.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardMySQLRow;
@@ -60,21 +60,21 @@ public final class MySQL2EsService extends AbstractExecutor {
     private final String schema;
     private final String username;
     private final String password;
+    private final InformationSchemaDao informationSchemaDao;
 
-    public MySQL2EsService(@NonNull RestHighLevelClient client, String hostname, int port, String schema, String username, String password) {
+    public MySQL2EsService(@NonNull RestHighLevelClient client, @NonNull String hostname, int port, @NonNull String schema, @NonNull String username, @NonNull String password) {
         super(client);
         this.hostname = hostname;
         this.port = port;
         this.schema = schema;
         this.username = username;
         this.password = password;
+        informationSchemaDao = new InformationSchemaDao(hostname, port, username, password);
     }
 
     private Map<String, List<Columns>> getTableColumnsMap(@NonNull Set<String> tables) {
-        return null;
-       /* InformationSchemaRepo informationSchemaRepo = new InformationSchemaRepo(driver, hostname, port, username, password);
-        List<Columns> columnsList = informationSchemaRepo.queryColumns(schema, tables.toArray(new String[]{}));
-        return tables.stream().collect(Collectors.toMap(Function.identity(), table -> columnsList.stream().filter(col -> col.getTableName().equals(table)).collect(Collectors.toList())));*/
+        List<Columns> columnsList = informationSchemaDao.queryColumns(tables.toArray(new String[]{}));
+        return tables.stream().collect(Collectors.toMap(Function.identity(), table -> columnsList.stream().filter(col -> col.getTableName().equals(table)).collect(Collectors.toList())));
     }
 
     @SneakyThrows
@@ -84,10 +84,10 @@ public final class MySQL2EsService extends AbstractExecutor {
         final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
         final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), TableField.class)));//获取被@TableField注解的成员
         final Map<String, Map<String, Field>> tableColumnFieldMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Function.identity()))));//类型预存
-        final Map<String, Map<String, TypeToken<?>>> tableColumnTypeTokenMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), field -> TypeToken.get(field.getType())))));//类型预存
+        final Map<String, Map<String, Class<?>>> tableColumnClassMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Field::getType))));//类型预存
         final Map<String, List<Columns>> tableColumnsMap = getTableColumnsMap(documentFactory.keySet());
         final Map<String, Map<Long, String>> tableColumnMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
-        Map<String, Map<Long, String>> tablePrimaryMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().filter(columns -> columns.getColumnKey().equalsIgnoreCase("PRI")).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
+        final Map<String, Map<Long, String>> tablePrimaryMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().filter(columns -> columns.getColumnKey().equalsIgnoreCase("PRI")).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
 
         //执行计数器
         final LongAdder count = new LongAdder();
