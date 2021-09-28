@@ -88,6 +88,7 @@ public final class File2EsService extends AbstractExecutor {
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
                 log.info("索引Mapping为:[{}]", Strings.toString(contentBuilder));
+                log.info("文件元数据行为：[{}]", standardFileLine.getLineRecord());
                 if (!isIndexExist) {
                     Map<String, String> indexSorting = fieldsList.stream()
                             .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
@@ -114,7 +115,7 @@ public final class File2EsService extends AbstractExecutor {
                             FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnClassMap.get(metadataArray[0][i])), true);
                         }
                     } else {
-                        log.error("列[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在", metadataArray[0][i]);
+                        log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在", standardFileLine, metadataArray[0][i]);
                     }
                 }
 
