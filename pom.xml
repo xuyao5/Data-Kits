@@ -29,6 +29,9 @@
             <organizationUrl>https://bank.pingan.com/</organizationUrl>
         </developer>
     </developers>
+    <scm>
+        <url>https://github.com/xuyao5/Data-Kits</url>
+    </scm>
 
     <modules>
         <module>EsKitsLibrary</module>
