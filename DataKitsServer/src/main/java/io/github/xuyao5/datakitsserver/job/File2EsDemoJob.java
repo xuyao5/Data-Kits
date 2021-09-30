@@ -1,9 +1,7 @@
 package io.github.xuyao5.datakitsserver.job;
 
-import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
-import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
@@ -55,17 +53,7 @@ public final class File2EsDemoJob implements Runnable {
             log.info("根据文件名日期计算得到写入索引名:[{}]", index);
 
             //2.写入索引
-            EventFactory<BaseDocument> documentEventFactory;
-            switch (alias) {
-                case "FILE2ES_DISRUPTOR":
-                    documentEventFactory = MyFileDocument::of;
-                    break;
-                default:
-                    documentEventFactory = null;
-                    log.warn("无法识别索引意图，别名[{}]无法识别", alias);
-                    break;
-            }
-            long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), documentEventFactory, UnaryOperator.identity());
+            long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, UnaryOperator.identity());
             if (count < 1) {
                 log.warn("文件[{}]无数据写入索引[{}],请检查是否为空文件", file, index);
             } else {
@@ -73,7 +61,7 @@ public final class File2EsDemoJob implements Runnable {
 
                 //3.别名重定向
                 String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, alias, index);
-                log.info("迁移别名[{}]到新索引[{}]原索引为{}", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
+                log.info("迁移别名[{}]到新索引[{}]，原索引{}", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
 
                 if (indexArray.length > 0) {
                     //4.迁移老索引数据，如果有rejected execution of coordinating operation reindex，调整ScrollSize
@@ -87,7 +75,7 @@ public final class File2EsDemoJob implements Runnable {
 
                 //6.升副本
                 boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esKitsConfig.getEsIndexReplicas());
-                log.info("升副本索引[{}]返回[{}]", index, isUpdateReplicasSuccess);
+                log.info("索引[{}]升副本返回[{}]", index, isUpdateReplicasSuccess);
             }
 
             //7.压缩文件

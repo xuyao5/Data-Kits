@@ -93,7 +93,7 @@ public final class File2EsService extends AbstractExecutor {
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
                 log.info("索引Mapping:[{}]", Strings.toString(contentBuilder));
-                log.info("文件Metadata行：[{}]", standardFileLine.getLineRecord());
+                log.info("文件Metadata行：[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]));
                 if (!isIndexExist) {
                     Map<String, String> indexSorting = fieldsList.stream()
                             .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
