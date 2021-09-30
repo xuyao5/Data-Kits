@@ -59,8 +59,12 @@ public final class File2EsService extends AbstractExecutor {
 
         //检查文件是否存在
         if (!config.getFile().exists()) {
-            log.warn("读取文件不存在输入配置为:[{}]", config);
+            log.error("无法获取到文件请检查是否文件被意外删除，当前配置为:[{}]", config);
             return -1;
+        }
+
+        if (config.getIdColumn() < 0) {
+            log.warn("由于ID列被配置为[{}]，将无法用主键列更新索引", config.getIdColumn());
         }
 
         //检查索引是否存在
@@ -78,6 +82,7 @@ public final class File2EsService extends AbstractExecutor {
 
         //执行计数器
         final LongAdder count = new LongAdder();
+
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, true, (standardFileLine, sequence, endOfBatch) -> {
             if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                 return;
@@ -87,8 +92,8 @@ public final class File2EsService extends AbstractExecutor {
 
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
-                log.info("索引Mapping为:[{}]", Strings.toString(contentBuilder));
-                log.info("文件元数据行为：[{}]", standardFileLine.getLineRecord());
+                log.info("索引Mapping:[{}]", Strings.toString(contentBuilder));
+                log.info("文件Metadata行：[{}]", standardFileLine.getLineRecord());
                 if (!isIndexExist) {
                     Map<String, String> indexSorting = fieldsList.stream()
                             .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
