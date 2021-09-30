@@ -15,7 +15,6 @@ import java.util.Date;
 @Data
 public abstract class BaseDocument implements Serializable {
 
-    private transient String _index;
     private transient String _id;
 
     /*

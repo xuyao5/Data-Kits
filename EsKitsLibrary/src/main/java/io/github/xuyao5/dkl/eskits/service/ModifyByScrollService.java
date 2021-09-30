@@ -62,7 +62,6 @@ public final class ModifyByScrollService extends AbstractExecutor {
                     try {
                         BeanUtils.copyProperties(standardDocument, GsonUtilsPlus.json2Obj(searchHit.getSourceAsString(), standardDocument.getClass()));
                         standardDocument.set_id(searchHit.getId());
-                        standardDocument.set_index(searchHit.getIndex());
                     } catch (IllegalAccessException | InvocationTargetException ex) {
                         log.error("StandardDocument类型转换错误", ex);
                     }

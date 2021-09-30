@@ -16,8 +16,11 @@ import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
 @ToString(callSuper = true)
 public final class MyTableDocument extends BaseDocument {
 
-    @TableField(column = "id")
-    private int id;
+    @TableField(column = "id1")
+    private int id1;
+
+    @TableField(column = "id2")
+    private int id2;
 
     @TableField(column = "amount")
     private BigDecimal amount;
