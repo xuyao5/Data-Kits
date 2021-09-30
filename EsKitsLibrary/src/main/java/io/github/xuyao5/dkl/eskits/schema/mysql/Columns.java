@@ -4,8 +4,14 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author Thomas.XU(xuyao)
+ * @implSpec 30/09/21 10:44
+ * @apiNote information_schema
+ * @implNote Columns
+ */
 @Data(staticConstructor = "of")
-public class Columns implements Serializable {
+public final class Columns implements Serializable {
 
     private String tableSchema;
 
