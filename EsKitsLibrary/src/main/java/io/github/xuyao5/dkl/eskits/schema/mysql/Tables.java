@@ -12,4 +12,7 @@ import java.io.Serializable;
  */
 @Data(staticConstructor = "of")
 public final class Tables implements Serializable {
+
+    private String tableSchema;
+    private String tableName;
 }

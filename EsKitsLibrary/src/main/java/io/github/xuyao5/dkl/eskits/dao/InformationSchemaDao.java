@@ -1,6 +1,7 @@
 package io.github.xuyao5.dkl.eskits.dao;
 
 import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
+import io.github.xuyao5.dkl.eskits.schema.mysql.Tables;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,9 @@ public final class InformationSchemaDao {
     }
 
     @SneakyThrows
-    public List<Columns> queryColumns(@NonNull String... tables) {
+    public List<Columns> queryColumns(@NonNull String... table) {
         String COLUMNS_QUERY = "SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,COLUMN_KEY,EXTRA FROM COLUMNS WHERE TABLE_NAME in (%s)";
-        String sql = String.format(COLUMNS_QUERY, StringUtils.join(Arrays.stream(tables).map(s -> StringUtils.wrap(s, APOSTROPHE)).toArray(String[]::new), COMMA));
+        String sql = String.format(COLUMNS_QUERY, StringUtils.join(Arrays.stream(table).map(s -> StringUtils.wrap(s, APOSTROPHE)).toArray(String[]::new), COMMA));
         try (ResultSet resultSet = DriverManager.getConnection(url, username, password).prepareStatement(sql).executeQuery()) {
             return new RowSetDynaClass(resultSet).getRows().stream().map(dynaBean -> {
                 Columns columns = Columns.of();
@@ -51,6 +52,20 @@ public final class InformationSchemaDao {
                 columns.setColumnKey((String) dynaBean.get("column_key"));
                 columns.setExtra((String) dynaBean.get("extra"));
                 return columns;
+            }).collect(Collectors.toList());
+        }
+    }
+
+    @SneakyThrows
+    public List<Tables> queryTables(@NonNull String... table) {
+        String COLUMNS_QUERY = "SELECT TABLE_SCHEMA,TABLE_NAME FROM TABLES WHERE TABLE_NAME in (%s)";
+        String sql = String.format(COLUMNS_QUERY, StringUtils.join(Arrays.stream(table).map(s -> StringUtils.wrap(s, APOSTROPHE)).toArray(String[]::new), COMMA));
+        try (ResultSet resultSet = DriverManager.getConnection(url, username, password).prepareStatement(sql).executeQuery()) {
+            return new RowSetDynaClass(resultSet).getRows().stream().map(dynaBean -> {
+                Tables tables = Tables.of();
+                tables.setTableSchema((String) dynaBean.get("table_schema"));
+                tables.setTableName((String) dynaBean.get("table_name"));
+                return tables;
             }).collect(Collectors.toList());
         }
     }

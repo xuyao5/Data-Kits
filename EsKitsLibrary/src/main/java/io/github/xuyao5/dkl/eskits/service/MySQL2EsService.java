@@ -11,6 +11,7 @@ import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
 import io.github.xuyao5.dkl.eskits.dao.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
+import io.github.xuyao5.dkl.eskits.schema.mysql.Tables;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardMySQLRow;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
@@ -26,6 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
@@ -85,6 +87,7 @@ public final class MySQL2EsService extends AbstractExecutor {
         final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), TableField.class)));//获取被@TableField注解的成员
         final Map<String, Map<String, Field>> tableColumnFieldMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Function.identity()))));//类型预存
 //        final Map<String, Map<String, Class<?>>> tableColumnClassMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Field::getType))));//类型预存
+        final List<Tables> tablesList = informationSchemaDao.queryTables(documentFactory.keySet().toArray(new String[]{}));
         final Map<String, List<Columns>> tableColumnsMap = getTableColumnsMap(documentFactory.keySet());
         final Map<String, Map<Long, String>> tableColumnMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
         final Map<String, Map<Long, String>> tablePrimaryMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().filter(columns -> columns.getColumnKey().equalsIgnoreCase("PRI")).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
@@ -99,7 +102,10 @@ public final class MySQL2EsService extends AbstractExecutor {
                 if (EventType.isWrite(eventType)) {
                     WriteRowsEventData data = standardMySQLRow.getEvent().getData();
                     String table = tableMap.get(data.getTableId()).getTable();
-                    String index = table.toLowerCase(Locale.ROOT);
+
+                    String tableSchema = tablesList.stream().filter(tables -> table.equals(tables.getTableName())).findAny().map(Tables::getTableSchema).orElse("UNKNOWN_TABLE_SCHEMA");
+                    String alias = table.toUpperCase(Locale.ROOT);
+                    String index = StringUtils.join(tableSchema.toLowerCase(Locale.ROOT), '.', table.toLowerCase(Locale.ROOT));
                     T document = documentFactory.get(table).newInstance();
 
                     List<Serializable> pkList = new ArrayList<>();
@@ -135,6 +141,10 @@ public final class MySQL2EsService extends AbstractExecutor {
                         } else {
                             indexSupporter.create(client, index, numberOfDataNodes, 0, contentBuilderMap.get(table));
                         }
+                        //写别名
+
+                        List<IndicesAliasesRequest.AliasActions> aliasActionsList = Collections.singletonList(IndicesAliasesRequest.AliasActions.add().alias(alias).index(index));
+                        indexSupporter.updateAliases(client, aliasActionsList);
                     } else {
                         indexSupporter.putMapping(client, contentBuilderMap.get(table), index);
                     }
