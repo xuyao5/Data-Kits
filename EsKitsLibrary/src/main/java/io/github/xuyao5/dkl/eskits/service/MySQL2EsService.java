@@ -102,15 +102,16 @@ public final class MySQL2EsService extends AbstractExecutor {
             if (EventType.isRowMutation(eventType)) {
                 if (EventType.isWrite(eventType)) {
                     final WriteRowsEventData data = standardMySQLRow.getEvent().getData();
-                    String table = tableMap.get(data.getTableId()).getTable();
+                    final String table = tableMap.get(data.getTableId()).getTable();
+                    final String schema = tablesList.stream().filter(tables -> table.equals(tables.getTableName())).findAny().map(Tables::getTableSchema).orElse("UNKNOWN_TABLE_SCHEMA");
+                    final String alias = table.toUpperCase(Locale.ROOT);
+                    final String index = StringUtils.join(schema.toLowerCase(Locale.ROOT), '.', table.toLowerCase(Locale.ROOT));
+                    final List<Serializable[]> dataRows = data.getRows();
 
-                    String tableSchema = tablesList.stream().filter(tables -> table.equals(tables.getTableName())).findAny().map(Tables::getTableSchema).orElse("UNKNOWN_TABLE_SCHEMA");
-                    String alias = table.toUpperCase(Locale.ROOT);
-                    String index = StringUtils.join(tableSchema.toLowerCase(Locale.ROOT), '.', table.toLowerCase(Locale.ROOT));
                     T document = documentFactory.get(table).newInstance();
 
                     List<Serializable> pkList = new ArrayList<>();
-                    data.getRows().forEach(objectArray -> {
+                    dataRows.forEach(objectArray -> {
                         for (int i = 0; i < objectArray.length; i++) {
                             Field field = tableColumnFieldMap.get(table).get(tableColumnMap.get(table).get(i + 1L));
                             if (Objects.nonNull(field) && Objects.nonNull(objectArray[i])) {
