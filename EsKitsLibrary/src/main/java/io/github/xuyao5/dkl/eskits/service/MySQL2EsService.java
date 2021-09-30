@@ -94,6 +94,7 @@ public final class MySQL2EsService extends AbstractExecutor {
 
         //执行计数器
         final LongAdder count = new LongAdder();
+
         DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
         DisruptorBoost.<StandardMySQLRow>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardMySQLRow) -> errorConsumer(config, standardMySQLRow), StandardMySQLRow::of, false, (standardMySQLRow, sequence, endOfBatch) -> {
             EventHeaderV4 eventHeader = standardMySQLRow.getEvent().getHeader();
@@ -109,16 +110,15 @@ public final class MySQL2EsService extends AbstractExecutor {
                     T document = documentFactory.get(table).newInstance();
 
                     List<Serializable> pkList = new ArrayList<>();
-                    data.getRows().forEach(objects -> {
-                        for (int i = 0; i < objects.length; i++) {
-                            String column = tableColumnMap.get(table).get(i + 1L);
-                            Field field = tableColumnFieldMap.get(table).get(column);
-                            if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(TableField.class).column()) && Objects.nonNull(objects[i])) {
+                    data.getRows().forEach(objectArray -> {
+                        for (int i = 0; i < objectArray.length; i++) {
+                            Field field = tableColumnFieldMap.get(table).get(tableColumnMap.get(table).get(i + 1L));
+                            if (Objects.nonNull(field) && Objects.nonNull(objectArray[i])) {
                                 if (tablePrimaryMap.get(table).containsKey(i + 1L)) {
-                                    pkList.add(objects[i]);
+                                    pkList.add(objectArray[i]);
                                 }
                                 try {
-                                    FieldUtils.writeField(field, document, objects[i], true);
+                                    FieldUtils.writeField(field, document, objectArray[i], true);
                                 } catch (IllegalAccessException ex) {
                                     log.error("为用户对象赋值错误", ex);
                                 }
