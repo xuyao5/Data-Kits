@@ -131,9 +131,7 @@ public final class File2EsService extends AbstractExecutor {
                         function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
                     }
                 } else {
-                    if (config.getIdColumn() < 0) {
-                        log.warn("由于ID列号[{}]小于0，故无法识别记录的ID，更新操作将被跳过", config.getIdColumn());
-                    } else {
+                    if (config.getIdColumn() >= 0) {
                         T updatingDocument = documentFactory.newInstance();
                         BeanUtils.copyProperties(updatingDocument, document);
                         updatingDocument.setModifyDate(DateUtilsPlus.now());
