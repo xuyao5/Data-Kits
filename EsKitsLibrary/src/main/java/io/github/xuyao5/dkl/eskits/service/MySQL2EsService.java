@@ -101,7 +101,7 @@ public final class MySQL2EsService extends AbstractExecutor {
             EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {
                 if (EventType.isWrite(eventType)) {
-                    WriteRowsEventData data = standardMySQLRow.getEvent().getData();
+                    final WriteRowsEventData data = standardMySQLRow.getEvent().getData();
                     String table = tableMap.get(data.getTableId()).getTable();
 
                     String tableSchema = tablesList.stream().filter(tables -> table.equals(tables.getTableName())).findAny().map(Tables::getTableSchema).orElse("UNKNOWN_TABLE_SCHEMA");
