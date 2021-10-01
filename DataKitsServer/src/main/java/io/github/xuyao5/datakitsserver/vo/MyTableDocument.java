@@ -35,6 +35,9 @@ public final class MyTableDocument extends BaseDocument {
     private int discount1;
 
     private int discount2;
+
+    @TableField(column = "momo", priority = 3, order = DESC)
+    private String momo;
 }
 /*
 SET NAMES utf8mb4;

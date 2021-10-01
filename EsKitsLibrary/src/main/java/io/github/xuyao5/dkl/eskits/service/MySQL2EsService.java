@@ -105,17 +105,16 @@ public final class MySQL2EsService extends AbstractExecutor {
             EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {
                 if (EventType.isWrite(eventType)) {
-                    final WriteRowsEventData data = standardMySQLRow.getEvent().getData();
-                    final String table = tableMap.get(data.getTableId()).getTable();
+                    final WriteRowsEventData data = standardMySQLRow.getEvent().getData();//原始Data
+                    final String table = tableMap.get(data.getTableId()).getTable();//用tableId获取table
                     final String schema = tablesMap.get(table).getTableSchema();
                     final String alias = table.toUpperCase(Locale.ROOT);
                     final String index = StringUtils.join(schema.toLowerCase(Locale.ROOT), '.', table.toLowerCase(Locale.ROOT));
-                    final List<Serializable[]> dataRows = data.getRows();
 
                     T document = documentFactory.get(table).newInstance();
 
                     List<Serializable> pkList = new ArrayList<>();
-                    dataRows.forEach(objectArray -> {
+                    data.getRows().forEach(objectArray -> {
                         for (int i = 0; i < objectArray.length; i++) {
                             Field field = tableColumnFieldMap.get(table).get(tableColumnMap.get(table).get(i + 1L));
                             if (Objects.nonNull(field) && Objects.nonNull(objectArray[i])) {
