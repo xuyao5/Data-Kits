@@ -74,9 +74,13 @@ public final class MySQL2EsService extends AbstractExecutor {
         informationSchemaDao = new InformationSchemaDao(hostname, port, username, password);
     }
 
-    private Map<String, List<Columns>> getTableColumnsMap(@NonNull Set<String> tables) {
+    private Map<String, List<Columns>> getTableColumnsMapRepo(@NonNull Set<String> tables) {
         List<Columns> columnsList = informationSchemaDao.queryColumns(tables.toArray(new String[]{}));
         return tables.stream().collect(Collectors.toMap(Function.identity(), table -> columnsList.stream().filter(col -> col.getTableName().equals(table)).collect(Collectors.toList())));
+    }
+
+    private Map<String, Tables> getTablesMapRepo(@NonNull Set<String> tables) {
+        return informationSchemaDao.queryTables(tables.toArray(new String[]{})).stream().collect(Collectors.toMap(Tables::getTableName, Function.identity()));
     }
 
     @SneakyThrows
@@ -87,8 +91,8 @@ public final class MySQL2EsService extends AbstractExecutor {
         final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), TableField.class)));//获取被@TableField注解的成员
         final Map<String, Map<String, Field>> tableColumnFieldMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Function.identity()))));//类型预存
 //        final Map<String, Map<String, Class<?>>> tableColumnClassMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Field::getType))));//类型预存
-        final List<Tables> tablesList = informationSchemaDao.queryTables(documentFactory.keySet().toArray(new String[]{}));
-        final Map<String, List<Columns>> tableColumnsMap = getTableColumnsMap(documentFactory.keySet());
+        final Map<String, Tables> tablesMap = getTablesMapRepo(documentFactory.keySet());
+        final Map<String, List<Columns>> tableColumnsMap = getTableColumnsMapRepo(documentFactory.keySet());
         final Map<String, Map<Long, String>> tableColumnMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
         final Map<String, Map<Long, String>> tablePrimaryMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().filter(columns -> columns.getColumnKey().equalsIgnoreCase("PRI")).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
 
@@ -103,7 +107,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                 if (EventType.isWrite(eventType)) {
                     final WriteRowsEventData data = standardMySQLRow.getEvent().getData();
                     final String table = tableMap.get(data.getTableId()).getTable();
-                    final String schema = tablesList.stream().filter(tables -> table.equals(tables.getTableName())).findAny().map(Tables::getTableSchema).orElse("UNKNOWN_TABLE_SCHEMA");
+                    final String schema = tablesMap.get(table).getTableSchema();
                     final String alias = table.toUpperCase(Locale.ROOT);
                     final String index = StringUtils.join(schema.toLowerCase(Locale.ROOT), '.', table.toLowerCase(Locale.ROOT));
                     final List<Serializable[]> dataRows = data.getRows();
