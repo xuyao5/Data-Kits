@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.xuyao5</groupId>
     <artifactId>data-kits</artifactId>
-    <version>0.4</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>Data Kits</name>
     <description>Data Kits Project without Spring Boot</description>
@@ -39,6 +39,7 @@
     </modules>
 
     <properties>
+        <revision>0.4</revision>
         <elasticsearch.version>7.10.2</elasticsearch.version>
     </properties>
 
