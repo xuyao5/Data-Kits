@@ -97,7 +97,7 @@ public final class IndexSupporter {
      * Delete Index API
      *
      * @param client 客户端
-     * @param index 索引
+     * @param index  索引
      * @return 返回对象
      */
     @SneakyThrows
@@ -108,7 +108,7 @@ public final class IndexSupporter {
     /**
      * Index Exists API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -120,7 +120,7 @@ public final class IndexSupporter {
     /**
      * Open Index API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -132,7 +132,7 @@ public final class IndexSupporter {
     /**
      * Close Index API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -144,7 +144,7 @@ public final class IndexSupporter {
     /**
      * Refresh API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -156,7 +156,7 @@ public final class IndexSupporter {
     /**
      * Flush API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -168,7 +168,7 @@ public final class IndexSupporter {
     /**
      * Clear Cache API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -180,7 +180,7 @@ public final class IndexSupporter {
     /**
      * Force Merge API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -192,7 +192,7 @@ public final class IndexSupporter {
     /**
      * Put Mapping API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param builder 构建器
      * @param indices 索引(1或多个)
      * @return 返回对象
@@ -205,7 +205,7 @@ public final class IndexSupporter {
     /**
      * Get Mappings API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -217,7 +217,7 @@ public final class IndexSupporter {
     /**
      * Index Aliases API
      *
-     * @param client 客户端
+     * @param client           客户端
      * @param aliasActionsList 别名动作列表
      * @return 返回对象
      */
@@ -231,8 +231,8 @@ public final class IndexSupporter {
      * Delete Alias API
      *
      * @param client 客户端
-     * @param index 索引
-     * @param alias 别名
+     * @param index  索引
+     * @param alias  别名
      * @return 返回对象
      */
     @SneakyThrows
@@ -243,7 +243,7 @@ public final class IndexSupporter {
     /**
      * Exists Alias API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param aliases (1或多个)
      * @return 返回对象
      */
@@ -255,7 +255,7 @@ public final class IndexSupporter {
     /**
      * Get Alias API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param aliases (1或多个)
      * @return 返回对象
      */
@@ -267,9 +267,9 @@ public final class IndexSupporter {
     /**
      * Update Indices Settings API
      *
-     * @param client 客户端
+     * @param client   客户端
      * @param settings 设置集
-     * @param indices 索引(1或多个)
+     * @param indices  索引(1或多个)
      * @return 返回对象
      */
     @SneakyThrows
@@ -280,7 +280,7 @@ public final class IndexSupporter {
     /**
      * Get Settings API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -292,8 +292,8 @@ public final class IndexSupporter {
     /**
      * Put Template API
      *
-     * @param client 客户端
-     * @param templateName 模版名
+     * @param client        客户端
+     * @param templateName  模版名
      * @param indexPatterns 索引模式
      * @return 返回对象
      */
@@ -305,7 +305,7 @@ public final class IndexSupporter {
     /**
      * Validate Query API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param builder 构建器
      * @param indices 索引(1或多个)
      * @return 返回对象
@@ -318,7 +318,7 @@ public final class IndexSupporter {
     /**
      * Get Templates API
      *
-     * @param client 客户端
+     * @param client        客户端
      * @param templateNames 模版名(1或多个)
      * @return 返回对象
      */
@@ -330,7 +330,7 @@ public final class IndexSupporter {
     /**
      * Templates Exist API
      *
-     * @param client 客户端
+     * @param client        客户端
      * @param templateNames 模版名(1或多个)
      * @return 返回对象
      */
@@ -342,7 +342,7 @@ public final class IndexSupporter {
     /**
      * Get Index API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -354,7 +354,7 @@ public final class IndexSupporter {
     /**
      * Freeze Index API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -366,7 +366,7 @@ public final class IndexSupporter {
     /**
      * Unfreeze Index API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -378,7 +378,7 @@ public final class IndexSupporter {
     /**
      * Delete Template API
      *
-     * @param client 客户端
+     * @param client       客户端
      * @param templateName 模版名
      * @return 返回对象
      */
@@ -390,7 +390,7 @@ public final class IndexSupporter {
     /**
      * Reload Search Analyzers API
      *
-     * @param client 客户端
+     * @param client  客户端
      * @param indices 索引(1或多个)
      * @return 返回对象
      */

@@ -57,8 +57,8 @@ public final class DocumentSupporter {
      * Get API
      *
      * @param client 客户端
-     * @param index 索引
-     * @param id 主键
+     * @param index  索引
+     * @param id     主键
      * @return 返回对象
      */
     @SneakyThrows
@@ -70,7 +70,7 @@ public final class DocumentSupporter {
      * Multi-Get API
      *
      * @param client 客户端
-     * @param items 请求
+     * @param items  请求
      * @return 返回对象
      */
     @SneakyThrows
@@ -83,8 +83,8 @@ public final class DocumentSupporter {
      * Get Source API
      *
      * @param client 客户端
-     * @param index 索引
-     * @param id 主键
+     * @param index  索引
+     * @param id     主键
      * @return 返回对象
      */
     @SneakyThrows
@@ -96,8 +96,8 @@ public final class DocumentSupporter {
      * Exists API
      *
      * @param client 客户端
-     * @param index 索引
-     * @param id 主键
+     * @param index  索引
+     * @param id     主键
      * @return 返回对象
      */
     @SneakyThrows
@@ -109,8 +109,8 @@ public final class DocumentSupporter {
      * Delete API
      *
      * @param client 客户端
-     * @param index 索引
-     * @param id 主键
+     * @param index  索引
+     * @param id     主键
      * @return 返回对象
      */
     @SneakyThrows
@@ -122,9 +122,9 @@ public final class DocumentSupporter {
      * Update API
      *
      * @param client 客户端
-     * @param index 索引
-     * @param id 主键
-     * @param obj 对象
+     * @param index  索引
+     * @param id     主键
+     * @param obj    对象
      * @return 返回对象
      */
     @SneakyThrows
@@ -135,10 +135,10 @@ public final class DocumentSupporter {
     /**
      * Update API
      *
-     * @param client 客户端
-     * @param index 索引
-     * @param id 主键
-     * @param docObj 新建对象
+     * @param client    客户端
+     * @param index     索引
+     * @param id        主键
+     * @param docObj    新建对象
      * @param upsertObj 更新对象
      * @return 返回对象
      */

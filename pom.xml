@@ -98,7 +98,6 @@
                         <flattenMode>oss</flattenMode>
                     </configuration>
                     <executions>
-                        <!-- enable flattening -->
                         <execution>
                             <id>flatten</id>
                             <phase>process-resources</phase>
@@ -106,7 +105,6 @@
                                 <goal>flatten</goal>
                             </goals>
                         </execution>
-                        <!-- ensure proper cleanup -->
                         <execution>
                             <id>flatten.clean</id>
                             <phase>clean</phase>

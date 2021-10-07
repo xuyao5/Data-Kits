@@ -55,7 +55,7 @@ public final class SearchSupporter {
     /**
      * Multi-Search API
      *
-     * @param client 客户端
+     * @param client         客户端
      * @param searchRequests 查询请求
      * @return 返回对象
      */
@@ -68,9 +68,9 @@ public final class SearchSupporter {
     /**
      * Search Template API
      *
-     * @param client 客户端
-     * @param code 脚本代码
-     * @param params 代码参数
+     * @param client  客户端
+     * @param code    脚本代码
+     * @param params  代码参数
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
@@ -87,7 +87,7 @@ public final class SearchSupporter {
     /**
      * Multi Search Template API
      *
-     * @param client 客户端
+     * @param client                 客户端
      * @param searchTemplateRequests 搜索模版请求(1或多个)
      * @return 返回对象
      */
@@ -100,8 +100,8 @@ public final class SearchSupporter {
     /**
      * Count API
      *
-     * @param client 客户端
-     * @param query 查询语句
+     * @param client  客户端
+     * @param query   查询语句
      * @param indices 索引(1或多个)
      * @return 返回对象
      */
