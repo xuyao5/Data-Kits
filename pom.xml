@@ -13,8 +13,8 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <name>Data Kits</name>
-    <description>Data Kits Project without Spring Boot</description>
-    <url>https://github.com/xuyao5/Data-Kits</url>
+    <description>Data Kits Family Member</description>
+    <url>https://github.com/xuyao5</url>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -25,7 +25,6 @@
         <developer>
             <name>Yao.XU</name>
             <email>xuyao5@gmail.com</email>
-            <organization>Ping An Bank</organization>
             <organizationUrl>https://bank.pingan.com/</organizationUrl>
         </developer>
     </developers>
