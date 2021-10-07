@@ -39,7 +39,7 @@
     </modules>
 
     <properties>
-        <revision>0.4</revision>
+        <revision>0.5</revision>
         <elasticsearch.version>7.10.2</elasticsearch.version>
         <maven.test.skip>true</maven.test.skip>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
@@ -131,7 +131,7 @@
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>1.6.8</version>
-                    <extensions>true</extensions>
+                    <!--                    <extensions>true</extensions>-->
                     <configuration>
                         <serverId>ossrh</serverId>
                         <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
