@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 18/09/21 21:49
- * @apiNote Recovery4Cat
- * @implNote Recovery4Cat
+ * @version 18/09/21 21:49
  */
 @Data(staticConstructor = "of")
 public final class Recovery4Cat implements Serializable {

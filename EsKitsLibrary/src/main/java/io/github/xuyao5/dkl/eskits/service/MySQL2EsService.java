@@ -50,9 +50,7 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 8/07/21 11:59
- * @apiNote MySQL2EsService
- * @implNote MySQL2EsService
+ * @version 8/07/21 11:59
  */
 @Slf4j
 public final class MySQL2EsService extends AbstractExecutor {

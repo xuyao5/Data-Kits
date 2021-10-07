@@ -8,9 +8,7 @@ import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 14/05/21 19:51
- * @apiNote FileField
- * @implNote FileField
+ * @version 14/05/21 19:51
  */
 @Documented
 @Target(ElementType.FIELD)

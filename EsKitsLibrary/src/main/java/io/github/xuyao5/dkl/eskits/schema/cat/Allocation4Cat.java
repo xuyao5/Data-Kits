@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 18/09/21 18:48
- * @apiNote Allocation4Cat
- * @implNote Allocation4Cat
+ * @version 18/09/21 18:48
  */
 @Data(staticConstructor = "of")
 public final class Allocation4Cat implements Serializable {

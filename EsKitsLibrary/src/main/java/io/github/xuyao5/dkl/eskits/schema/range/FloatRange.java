@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 13/03/21 18:42
- * @apiNote FloatRange
- * @implNote FloatRange
+ * @version 13/03/21 18:42
  */
 @Data(staticConstructor = "of")
 public final class FloatRange implements Serializable {

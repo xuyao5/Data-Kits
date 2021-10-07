@@ -18,9 +18,7 @@ import java.util.List;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 16/09/21 23:24
- * @apiNote CatSupporter
- * @implNote CatSupporter
+ * @version 16/09/21 23:24
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

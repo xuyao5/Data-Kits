@@ -28,9 +28,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 14/02/21 08:13
- * @apiNote BulkSupporter
- * @implNote BulkSupporter
+ * @version 14/02/21 08:13
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -62,6 +60,10 @@ public final class BulkSupporter {
 
     /**
      * Bulk Processor
+     *
+     * @param client   客户端
+     * @param threads  线程数
+     * @param consumer 消费者实现
      */
     @SneakyThrows
     public void bulk(@NonNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
@@ -96,6 +98,10 @@ public final class BulkSupporter {
 
     /**
      * Bulk API
+     *
+     * @param client   客户端
+     * @param requests 请求
+     * @return BulkResponse
      */
     @SneakyThrows
     public BulkResponse bulk(@NonNull RestHighLevelClient client, @NonNull List<DocWriteRequest<?>> requests) {

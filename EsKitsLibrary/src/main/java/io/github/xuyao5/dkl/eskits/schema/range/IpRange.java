@@ -7,9 +7,7 @@ import java.net.InetAddress;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 13/03/21 18:43
- * @apiNote IpRange
- * @implNote IpRange
+ * @version 13/03/21 18:43
  */
 @Data(staticConstructor = "of")
 public final class IpRange implements Serializable {

@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 13/03/21 18:41
- * @apiNote IntegerRange
- * @implNote IntegerRange
+ * @version 13/03/21 18:41
  */
 @Data(staticConstructor = "of")
 public final class IntegerRange implements Serializable {

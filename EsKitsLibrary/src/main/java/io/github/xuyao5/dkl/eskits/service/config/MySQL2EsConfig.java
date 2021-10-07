@@ -9,9 +9,7 @@ import java.util.Map;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 25/02/21 16:36
- * @apiNote MySQL2EsConfig
- * @implNote MySQL2EsConfig
+ * @version 25/02/21 16:36
  */
 @Data(staticConstructor = "of")
 public final class MySQL2EsConfig {

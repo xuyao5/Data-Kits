@@ -9,9 +9,7 @@ import java.util.Optional;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 19/03/21 21:54
- * @apiNote SettingKeyword
- * @implNote SettingKeyword
+ * @version 19/03/21 21:54
  */
 @RequiredArgsConstructor
 public enum SettingKeyword {

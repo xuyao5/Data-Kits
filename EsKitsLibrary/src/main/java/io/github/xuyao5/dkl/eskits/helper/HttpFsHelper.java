@@ -13,9 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 2/09/21 12:38
- * @apiNote HttpFsHelper
- * @implNote HttpFsHelper
+ * @version 2/09/21 12:38
  */
 @Slf4j
 public final class HttpFsHelper {

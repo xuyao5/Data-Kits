@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 16/09/21 23:57
- * @apiNote Indices4Cat
- * @implNote Indices4Cat
+ * @version 16/09/21 23:57
  */
 @Data(staticConstructor = "of")
 public final class Indices4Cat implements Serializable {

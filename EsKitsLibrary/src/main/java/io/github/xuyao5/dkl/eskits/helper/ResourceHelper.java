@@ -10,9 +10,7 @@ import java.util.Objects;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 21/06/21 23:23
- * @apiNote ResourceHelper
- * @implNote ResourceHelper
+ * @version 21/06/21 23:23
  */
 public final class ResourceHelper {
 

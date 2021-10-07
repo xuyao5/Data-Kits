@@ -29,9 +29,7 @@ import static org.elasticsearch.search.fetch.subphase.FetchSourceContext.DO_NOT_
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 1/05/20 22:49
- * @apiNote DocumentSupporter
- * @implNote DocumentSupporter
+ * @version 1/05/20 22:49
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -43,6 +41,12 @@ public final class DocumentSupporter {
 
     /**
      * Index API
+     *
+     * @param client 客户端
+     * @param index  索引
+     * @param id     主键
+     * @param obj    对象
+     * @return 返回对象
      */
     @SneakyThrows
     public IndexResponse index(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id, @NonNull Serializable obj) {
@@ -51,6 +55,11 @@ public final class DocumentSupporter {
 
     /**
      * Get API
+     *
+     * @param client 客户端
+     * @param index 索引
+     * @param id 主键
+     * @return 返回对象
      */
     @SneakyThrows
     public GetResponse get(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id) {
@@ -59,6 +68,10 @@ public final class DocumentSupporter {
 
     /**
      * Multi-Get API
+     *
+     * @param client 客户端
+     * @param items 请求
+     * @return 返回对象
      */
     @SneakyThrows
     public MultiGetResponse multiGet(@NonNull RestHighLevelClient client, @NonNull List<MultiGetRequest.Item> items) {
@@ -68,6 +81,11 @@ public final class DocumentSupporter {
 
     /**
      * Get Source API
+     *
+     * @param client 客户端
+     * @param index 索引
+     * @param id 主键
+     * @return 返回对象
      */
     @SneakyThrows
     public GetSourceResponse getSource(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id) {
@@ -76,6 +94,11 @@ public final class DocumentSupporter {
 
     /**
      * Exists API
+     *
+     * @param client 客户端
+     * @param index 索引
+     * @param id 主键
+     * @return 返回对象
      */
     @SneakyThrows
     public boolean exists(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id) {
@@ -84,6 +107,11 @@ public final class DocumentSupporter {
 
     /**
      * Delete API
+     *
+     * @param client 客户端
+     * @param index 索引
+     * @param id 主键
+     * @return 返回对象
      */
     @SneakyThrows
     public DeleteResponse delete(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id) {
@@ -92,6 +120,12 @@ public final class DocumentSupporter {
 
     /**
      * Update API
+     *
+     * @param client 客户端
+     * @param index 索引
+     * @param id 主键
+     * @param obj 对象
+     * @return 返回对象
      */
     @SneakyThrows
     public UpdateResponse update(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id, @NonNull Serializable obj) {
@@ -100,6 +134,13 @@ public final class DocumentSupporter {
 
     /**
      * Update API
+     *
+     * @param client 客户端
+     * @param index 索引
+     * @param id 主键
+     * @param docObj 新建对象
+     * @param upsertObj 更新对象
+     * @return 返回对象
      */
     @SneakyThrows
     public UpdateResponse update(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String id, @NonNull Serializable docObj, @NonNull Serializable upsertObj) {

@@ -16,9 +16,7 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAUL
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 19/02/21 22:05
- * @apiNote ReindexSupporter
- * @implNote ReindexSupporter
+ * @version 19/02/21 22:05
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -30,6 +28,13 @@ public final class ReindexSupporter {
 
     /**
      * Reindex API
+     *
+     * @param client           客户端
+     * @param queryBuilder     查询构建器
+     * @param destinationIndex 目标索引
+     * @param scrollSize       批量数
+     * @param sourceIndices    源索引
+     * @return BulkByScrollResponse
      */
     @SneakyThrows
     public BulkByScrollResponse reindex(@NonNull RestHighLevelClient client, @NonNull QueryBuilder queryBuilder, @NonNull String destinationIndex, int scrollSize, @NonNull String... sourceIndices) {
@@ -46,6 +51,12 @@ public final class ReindexSupporter {
 
     /**
      * Reindex API
+     *
+     * @param client           客户端
+     * @param destinationIndex 目标索引
+     * @param scrollSize       批量数
+     * @param sourceIndices    源索引
+     * @return BulkByScrollResponse
      */
     @SneakyThrows
     public BulkByScrollResponse reindex(@NonNull RestHighLevelClient client, @NonNull String destinationIndex, int scrollSize, @NonNull String... sourceIndices) {

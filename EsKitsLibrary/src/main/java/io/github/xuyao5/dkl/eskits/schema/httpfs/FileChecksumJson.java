@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 11/09/21 19:15
- * @apiNote FileChecksumJson
- * @implNote FileChecksumJson
+ * @version 11/09/21 19:15
  */
 @Data(staticConstructor = "of")
 public final class FileChecksumJson implements Serializable {

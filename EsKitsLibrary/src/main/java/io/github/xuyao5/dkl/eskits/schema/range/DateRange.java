@@ -7,9 +7,7 @@ import java.util.Date;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 13/03/21 18:42
- * @apiNote DateRange
- * @implNote DateRange
+ * @version 13/03/21 18:42
  */
 @Data(staticConstructor = "of")
 public final class DateRange implements Serializable {

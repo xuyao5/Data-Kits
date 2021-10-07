@@ -18,9 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 25/09/21 09:59
- * @apiNote InformationSchemaDao
- * @implNote InformationSchemaDao
+ * @version 25/09/21 09:59
  */
 @Slf4j
 public final class InformationSchemaDao {

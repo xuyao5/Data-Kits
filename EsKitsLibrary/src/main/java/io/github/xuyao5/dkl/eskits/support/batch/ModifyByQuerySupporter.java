@@ -21,9 +21,7 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAUL
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 19/02/21 21:34
- * @apiNote ModifyByQuery
- * @implNote ModifyByQuery
+ * @version 19/02/21 21:34
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -35,6 +33,14 @@ public final class ModifyByQuerySupporter {
 
     /**
      * Update By Query API
+     *
+     * @param client       客户端
+     * @param queryBuilder 查询构建器
+     * @param code         查询代码
+     * @param params       代码参数
+     * @param scrollSize   批量数
+     * @param indices      索引(1或多个)
+     * @return BulkByScrollResponse
      */
     @SneakyThrows
     public BulkByScrollResponse updateByQuery(@NonNull RestHighLevelClient client, @NonNull QueryBuilder queryBuilder, @NonNull String code, @NonNull Map<String, Object> params, int scrollSize, @NonNull String... indices) {
@@ -50,6 +56,12 @@ public final class ModifyByQuerySupporter {
 
     /**
      * Delete By Query API
+     *
+     * @param client       客户端
+     * @param queryBuilder 查询构建器
+     * @param scrollSize   批量数
+     * @param indices      索引(1或多个)
+     * @return BulkByScrollResponse
      */
     @SneakyThrows
     public BulkByScrollResponse deleteByQuery(@NonNull RestHighLevelClient client, @NonNull QueryBuilder queryBuilder, int scrollSize, @NonNull String... indices) {

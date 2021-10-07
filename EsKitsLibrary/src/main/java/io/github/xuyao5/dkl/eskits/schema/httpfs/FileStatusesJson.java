@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 7/09/21 23:46
- * @apiNote FileStatusesJson
- * @implNote FileStatusesJson
+ * @version 7/09/21 23:46
  */
 @Data(staticConstructor = "of")
 public final class FileStatusesJson implements Serializable {

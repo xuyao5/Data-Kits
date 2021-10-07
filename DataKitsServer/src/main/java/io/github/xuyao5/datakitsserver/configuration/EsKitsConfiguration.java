@@ -8,9 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 22/09/21 22:12
- * @apiNote EsKitsConfiguration
- * @implNote EsKitsConfiguration
+ * @version 22/09/21 22:12
  */
 @Configuration
 public class EsKitsConfiguration {

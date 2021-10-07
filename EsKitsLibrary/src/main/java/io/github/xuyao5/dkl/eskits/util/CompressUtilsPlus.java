@@ -19,9 +19,7 @@ import java.nio.file.StandardOpenOption;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 1/06/21 21:00
- * @apiNote CompressUtilsNZ
- * @implNote CompressUtilsNZ
+ * @version 1/06/21 21:00
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CompressUtilsPlus {

@@ -13,9 +13,7 @@ import java.lang.reflect.Type;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 10/10/20 11:00
- * @apiNote GsonUtilsNZ
- * @implNote GsonUtilsNZ
+ * @version 10/10/20 11:00
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GsonUtilsPlus {

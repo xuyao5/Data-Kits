@@ -5,9 +5,7 @@ import lombok.NonNull;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 5/07/21 00:52
- * @apiNote EventZeroArg
- * @implNote EventZeroArg
+ * @version 5/07/21 00:52
  */
 @FunctionalInterface
 public interface EventZeroArg<E> {

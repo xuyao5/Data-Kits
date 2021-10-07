@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 18/09/21 22:00
- * @apiNote ThreadPool4Cat
- * @implNote ThreadPool4Cat
+ * @version 18/09/21 22:00
  */
 @Data(staticConstructor = "of")
 public final class ThreadPool4Cat implements Serializable {

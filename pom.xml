@@ -42,7 +42,6 @@
         <revision>0.5</revision>
         <elasticsearch.version>7.10.2</elasticsearch.version>
         <maven.test.skip>true</maven.test.skip>
-        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     </properties>
 
     <dependencies>

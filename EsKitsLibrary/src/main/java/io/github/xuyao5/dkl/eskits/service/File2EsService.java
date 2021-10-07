@@ -40,9 +40,7 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 10/10/20 15:41
- * @apiNote File2EsService
- * @implNote File2EsService
+ * @version 10/10/20 15:41
  */
 @Slf4j
 public final class File2EsService extends AbstractExecutor {

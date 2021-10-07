@@ -4,9 +4,7 @@ import lombok.Data;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 28/03/21 21:44
- * @apiNote StoredSearchConfig
- * @implNote StoredSearchConfig
+ * @version 28/03/21 21:44
  */
 @Data(staticConstructor = "of")
 public final class StoredSearchConfig {

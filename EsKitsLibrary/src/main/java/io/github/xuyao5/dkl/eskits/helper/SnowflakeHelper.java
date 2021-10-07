@@ -2,9 +2,7 @@ package io.github.xuyao5.dkl.eskits.helper;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 5/07/20 18:55
- * @apiNote SnowflakeHelper
- * @implNote SnowflakeHelper
+ * @version 5/07/20 18:55
  */
 public final class SnowflakeHelper {
     /**

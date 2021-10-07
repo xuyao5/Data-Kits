@@ -5,9 +5,7 @@ import lombok.Data;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 7/09/21 23:44
- * @apiNote FileStatus
- * @implNote FileStatus
+ * @version 7/09/21 23:44
  */
 @Data(staticConstructor = "of")
 public final class FileStatus {

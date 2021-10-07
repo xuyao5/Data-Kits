@@ -20,9 +20,7 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAUL
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 19/02/21 18:46
- * @apiNote ScrollSupporter
- * @implNote ScrollSupporter
+ * @version 19/02/21 18:46
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,6 +32,12 @@ public final class ScrollSupporter {
 
     /**
      * Search Scroll API
+     *
+     * @param client       客户端
+     * @param consumer     消费者实现
+     * @param queryBuilder 查询构建器
+     * @param scrollSize   批量数
+     * @param indices      索引(1或多个)
      */
     @SneakyThrows
     public void scroll(@NonNull RestHighLevelClient client, Consumer<SearchHit[]> consumer, @NonNull QueryBuilder queryBuilder, int scrollSize, @NonNull String... indices) {

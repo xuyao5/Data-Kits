@@ -23,9 +23,7 @@ import static io.github.xuyao5.dkl.eskits.consts.SettingKeyword.MAPPING_DATE_FOR
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 13/03/21 17:33
- * @apiNote XContentSupporter
- * @implNote XContentSupporter
+ * @version 13/03/21 17:33
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
