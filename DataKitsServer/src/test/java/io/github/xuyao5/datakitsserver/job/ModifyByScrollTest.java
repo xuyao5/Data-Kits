@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 final class ModifyByScrollTest extends AbstractTest {
 
-    @Resource(name = "modifyByScrollDemoJob")
+    @Resource(name = "modifyByScrollJob")
     private ModifyByScrollDemoJob modifyByScrollDemoJob;
 
     @Test

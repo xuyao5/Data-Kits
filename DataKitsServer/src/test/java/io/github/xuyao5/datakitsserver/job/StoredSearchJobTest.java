@@ -8,7 +8,7 @@ import javax.annotation.Resource;
 
 final class StoredSearchJobTest extends AbstractTest {
 
-    @Resource(name = "storedSearchDemoJob")
+    @Resource(name = "storedSearchJob")
     private StoredSearchDemoJob storedSearchDemoJob;
 
     @Test

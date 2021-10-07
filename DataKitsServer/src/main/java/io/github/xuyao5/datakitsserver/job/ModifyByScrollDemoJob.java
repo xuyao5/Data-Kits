@@ -21,7 +21,7 @@ public final class ModifyByScrollDemoJob implements Runnable {
 
     @Override
     public void run() {
-        final String NEW_INDEX = "file2es_disruptor_100w_";
+        final String NEW_INDEX = "FILE2ES_DISRUPTOR";
 
         ModifyByScrollConfig modifyByScrollConfig = ModifyByScrollConfig.of(NEW_INDEX);
         modifyByScrollConfig.setQueryBuilder(QueryBuilders.matchAllQuery());
