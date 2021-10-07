@@ -13,7 +13,6 @@
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
         <plugin type="org.mybatis.generator.plugins.VirtualPrimaryKeyPlugin"/>
-        <plugin type="org.mybatis.generator.plugins.dsql.ReadOnlyPlugin"/>
 
         <commentGenerator>
             <property name="suppressAllComments" value="true"/>
@@ -26,16 +25,16 @@
                         password="123456">
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="io.github.xuyao5.dkl.eskits.repository.information_schema" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="io.github.xuyao5.dkl.eskits.schema.mysql" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
-            <property name="immutable" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <javaClientGenerator targetPackage="io.github.xuyao5.dkl.eskits.repository.information_schema" targetProject="src/main/java">
-            <property name="enableSubPackages" value="true"/>
-        </javaClientGenerator>
+        <!--        <javaClientGenerator targetPackage="io.github.xuyao5.dkl.eskits.dao.information_schema" targetProject="src/main/java">
+                    <property name="enableSubPackages" value="true"/>
+                </javaClientGenerator>-->
 
         <table tableName="COLUMNS"/>
+        <table tableName="TABLES"/>
     </context>
 </generatorConfiguration>

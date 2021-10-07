@@ -1,103 +1,68 @@
-package io.github.xuyao5.dkl.eskits.repository.information_schema;
+package io.github.xuyao5.dkl.eskits.schema.mysql;
 
 import javax.annotation.Generated;
 import java.io.Serializable;
 
 public class Columns implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private static final long serialVersionUID = 1L;
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String tableCatalog;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String tableSchema;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String tableName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long ordinalPosition;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String isNullable;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String dataType;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long characterMaximumLength;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long characterOctetLength;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long numericPrecision;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long numericScale;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long datetimePrecision;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String characterSetName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String collationName;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnKey;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String extra;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String privileges;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnComment;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnDefault;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String columnType;
-
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String generationExpression;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private static final long serialVersionUID = 1L;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Columns(String tableCatalog, String tableSchema, String tableName, String columnName, Long ordinalPosition, String isNullable, String dataType, Long characterMaximumLength, Long characterOctetLength, Long numericPrecision, Long numericScale, Long datetimePrecision, String characterSetName, String collationName, String columnKey, String extra, String privileges, String columnComment, String columnDefault, String columnType, String generationExpression) {
-        this.tableCatalog = tableCatalog;
-        this.tableSchema = tableSchema;
-        this.tableName = tableName;
-        this.columnName = columnName;
-        this.ordinalPosition = ordinalPosition;
-        this.isNullable = isNullable;
-        this.dataType = dataType;
-        this.characterMaximumLength = characterMaximumLength;
-        this.characterOctetLength = characterOctetLength;
-        this.numericPrecision = numericPrecision;
-        this.numericScale = numericScale;
-        this.datetimePrecision = datetimePrecision;
-        this.characterSetName = characterSetName;
-        this.collationName = collationName;
-        this.columnKey = columnKey;
-        this.extra = extra;
-        this.privileges = privileges;
-        this.columnComment = columnComment;
-        this.columnDefault = columnDefault;
-        this.columnType = columnType;
-        this.generationExpression = generationExpression;
+    public String getTableCatalog() {
+        return tableCatalog;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getTableCatalog() {
-        return tableCatalog;
+    public void setTableCatalog(String tableCatalog) {
+        this.tableCatalog = tableCatalog == null ? null : tableCatalog.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withTableCatalog(String tableCatalog) {
+        this.setTableCatalog(tableCatalog);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -106,8 +71,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTableSchema(String tableSchema) {
+        this.tableSchema = tableSchema == null ? null : tableSchema.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withTableSchema(String tableSchema) {
+        this.setTableSchema(tableSchema);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getTableName() {
         return tableName;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTableName(String tableName) {
+        this.tableName = tableName == null ? null : tableName.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withTableName(String tableName) {
+        this.setTableName(tableName);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -116,8 +103,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setColumnName(String columnName) {
+        this.columnName = columnName == null ? null : columnName.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withColumnName(String columnName) {
+        this.setColumnName(columnName);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getOrdinalPosition() {
         return ordinalPosition;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setOrdinalPosition(Long ordinalPosition) {
+        this.ordinalPosition = ordinalPosition;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withOrdinalPosition(Long ordinalPosition) {
+        this.setOrdinalPosition(ordinalPosition);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -126,8 +135,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setIsNullable(String isNullable) {
+        this.isNullable = isNullable == null ? null : isNullable.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withIsNullable(String isNullable) {
+        this.setIsNullable(isNullable);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getDataType() {
         return dataType;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setDataType(String dataType) {
+        this.dataType = dataType == null ? null : dataType.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withDataType(String dataType) {
+        this.setDataType(dataType);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -136,8 +167,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCharacterMaximumLength(Long characterMaximumLength) {
+        this.characterMaximumLength = characterMaximumLength;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withCharacterMaximumLength(Long characterMaximumLength) {
+        this.setCharacterMaximumLength(characterMaximumLength);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getCharacterOctetLength() {
         return characterOctetLength;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCharacterOctetLength(Long characterOctetLength) {
+        this.characterOctetLength = characterOctetLength;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withCharacterOctetLength(Long characterOctetLength) {
+        this.setCharacterOctetLength(characterOctetLength);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -146,8 +199,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setNumericPrecision(Long numericPrecision) {
+        this.numericPrecision = numericPrecision;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withNumericPrecision(Long numericPrecision) {
+        this.setNumericPrecision(numericPrecision);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getNumericScale() {
         return numericScale;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setNumericScale(Long numericScale) {
+        this.numericScale = numericScale;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withNumericScale(Long numericScale) {
+        this.setNumericScale(numericScale);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -156,8 +231,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setDatetimePrecision(Long datetimePrecision) {
+        this.datetimePrecision = datetimePrecision;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withDatetimePrecision(Long datetimePrecision) {
+        this.setDatetimePrecision(datetimePrecision);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getCharacterSetName() {
         return characterSetName;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCharacterSetName(String characterSetName) {
+        this.characterSetName = characterSetName == null ? null : characterSetName.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withCharacterSetName(String characterSetName) {
+        this.setCharacterSetName(characterSetName);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -166,8 +263,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCollationName(String collationName) {
+        this.collationName = collationName == null ? null : collationName.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withCollationName(String collationName) {
+        this.setCollationName(collationName);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getColumnKey() {
         return columnKey;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setColumnKey(String columnKey) {
+        this.columnKey = columnKey == null ? null : columnKey.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withColumnKey(String columnKey) {
+        this.setColumnKey(columnKey);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -176,8 +295,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setExtra(String extra) {
+        this.extra = extra == null ? null : extra.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withExtra(String extra) {
+        this.setExtra(extra);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getPrivileges() {
         return privileges;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setPrivileges(String privileges) {
+        this.privileges = privileges == null ? null : privileges.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withPrivileges(String privileges) {
+        this.setPrivileges(privileges);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -186,8 +327,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setColumnComment(String columnComment) {
+        this.columnComment = columnComment == null ? null : columnComment.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withColumnComment(String columnComment) {
+        this.setColumnComment(columnComment);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getColumnDefault() {
         return columnDefault;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setColumnDefault(String columnDefault) {
+        this.columnDefault = columnDefault == null ? null : columnDefault.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withColumnDefault(String columnDefault) {
+        this.setColumnDefault(columnDefault);
+        return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -196,8 +359,30 @@ public class Columns implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setColumnType(String columnType) {
+        this.columnType = columnType == null ? null : columnType.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withColumnType(String columnType) {
+        this.setColumnType(columnType);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getGenerationExpression() {
         return generationExpression;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setGenerationExpression(String generationExpression) {
+        this.generationExpression = generationExpression == null ? null : generationExpression.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Columns withGenerationExpression(String generationExpression) {
+        this.setGenerationExpression(generationExpression);
+        return this;
     }
 
     @Override

@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.xuyao5.dkl.eskits.consts.SettingConst.*;
+import static io.github.xuyao5.dkl.eskits.consts.SettingKeyword.*;
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 /**

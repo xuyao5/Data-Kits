@@ -2,12 +2,14 @@ package io.github.xuyao5.dkl.eskits.util;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -42,11 +44,23 @@ public final class GsonUtilsPlus {
         return GSON.toJson(obj);
     }
 
-    public static <T extends Serializable> T deserialize(@NonNull String obj, @NonNull TypeToken<?> typeToken) {
-        return GSON.fromJson(GSON.toJson(obj), typeToken.getType());
+    public static Serializable deserialize(@NonNull String obj, @NonNull Class<?> clz) {
+        return GSON.fromJson(GSON.toJson(obj), TypeToken.get(clz).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull TypeToken<?> typeToken) {
-        return GSON.fromJson(json, typeToken.getType());
+    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {
+        return GSON.fromJson(json, TypeToken.get(clz).getType());
+    }
+
+    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull Type rawType, @NonNull Type... typeArguments) {
+        return GSON.fromJson(json, TypeToken.getParameterized(rawType, typeArguments).getType());
+    }
+
+    public static <T extends Serializable> T json2Obj(@NonNull JsonReader reader, @NonNull Class<T> clz) {
+        return GSON.fromJson(reader, TypeToken.get(clz).getType());
+    }
+
+    public static <T extends Serializable> T json2Obj(@NonNull JsonReader reader, @NonNull Type rawType, @NonNull Type... typeArguments) {
+        return GSON.fromJson(reader, TypeToken.getParameterized(rawType, typeArguments).getType());
     }
 }

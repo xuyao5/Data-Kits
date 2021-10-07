@@ -66,26 +66,26 @@ public final class BulkSupporter {
     @SneakyThrows
     public void bulk(@NonNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
         try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
-                new BulkProcessor.Listener() {
-                    @Override
-                    public void beforeBulk(long executionId, BulkRequest request) {
-                        log.info("Executing bulk [{}] with {} requests", executionId, request.numberOfActions());
-                    }
+                        new BulkProcessor.Listener() {
+                            @Override
+                            public void beforeBulk(long executionId, BulkRequest request) {
+                                log.info("Executing bulk [{}] with {} requests", executionId, request.numberOfActions());
+                            }
 
-                    @Override
-                    public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-                        if (response.hasFailures()) {
-                            log.warn("Bulk [{}] executed with {}", executionId, response.buildFailureMessage());
-                        } else {
-                            log.info("Bulk [{}] completed in {} seconds", executionId, response.getTook().getMillis() / 1000);
-                        }
-                    }
+                            @Override
+                            public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+                                if (response.hasFailures()) {
+                                    log.warn("Bulk [{}] executed with {}", executionId, response.buildFailureMessage());
+                                } else {
+                                    log.info("Bulk [{}] completed in {} seconds", executionId, response.getTook().getMillis() / 1000);
+                                }
+                            }
 
-                    @Override
-                    public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
-                        log.error("Failed to execute bulk", failure);
-                    }
-                }).setBulkActions(-1)
+                            @Override
+                            public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+                                log.error("Failed to execute bulk", failure);
+                            }
+                        }).setBulkActions(-1)
                 .setBulkSize(new ByteSizeValue(12, ByteSizeUnit.MB))
                 .setConcurrentRequests(threads - 1)
                 .build()) {

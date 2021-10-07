@@ -36,7 +36,7 @@ public final class EsClient implements Closeable {
     }
 
     private RestHighLevelClient getRestHighLevelClient(@NonNull HttpHost[] hosts, @NonNull String username, @NonNull String password) {
-        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
         return new RestHighLevelClient(RestClient.builder(hosts)
                 .setHttpClientConfigCallback(builder -> builder

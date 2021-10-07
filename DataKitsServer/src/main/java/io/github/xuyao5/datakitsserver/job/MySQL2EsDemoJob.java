@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 @Slf4j
 @Component("mySQL2EsDemoJob")
@@ -28,10 +29,7 @@ public final class MySQL2EsDemoJob implements Runnable {
     @Override
     public void run() {
         Map<String, EventFactory<MyTableDocument>> tableDocument = Collections.singletonMap("MyTable", MyTableDocument::of);
-        long execute = new MySQL2EsService(esClient, "BinlogTest", "root", "123456", esKitsConfig.getEsBulkThreads()).execute(MySQL2EsConfig.of(), tableDocument, myTableDocument -> {
-            log.warn("获取到：{}", myTableDocument);
-            return myTableDocument;
-        });
+        long execute = new MySQL2EsService(esClient, esKitsConfig.getMysqlBinlogHostname(), esKitsConfig.getMysqlBinlogPort(), esKitsConfig.getMysqlBinlogSchema(), esKitsConfig.getMysqlBinlogUsername(), esKitsConfig.getMysqlBinlogPassword()).execute(MySQL2EsConfig.of(), tableDocument, UnaryOperator.identity());
         log.info("共计算[{}]条数据", execute);
         System.in.read();
     }

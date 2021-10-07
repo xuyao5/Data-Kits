@@ -1,6 +1,5 @@
 package io.github.xuyao5.dkl.eskits.service;
 
-import com.google.gson.reflect.TypeToken;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
@@ -60,8 +59,12 @@ public final class File2EsService extends AbstractExecutor {
 
         //检查文件是否存在
         if (!config.getFile().exists()) {
-            log.warn("读取文件不存在输入配置为:[{}]", config);
+            log.error("无法获取到文件请检查是否文件被意外删除，当前配置为:[{}]", config);
             return -1;
+        }
+
+        if (config.getIdColumn() < 0) {
+            log.warn("由于ID列被配置为[{}]，将无法用主键列更新索引", config.getIdColumn());
         }
 
         //检查索引是否存在
@@ -75,10 +78,11 @@ public final class File2EsService extends AbstractExecutor {
         final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);//根据Document Class生成ES的Mapping
         final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);//获取被@FileField注解的成员
         final Map<String, Field> columnFieldMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));//类型预存
-        final Map<String, TypeToken<?>> columnTypeTokenMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), field -> TypeToken.get(field.getType())));//类型预存
+        final Map<String, Class<?>> columnClassMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Field::getType));//类型预存
 
         //执行计数器
         final LongAdder count = new LongAdder();
+
         BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, true, (standardFileLine, sequence, endOfBatch) -> {
             if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                 return;
@@ -88,10 +92,11 @@ public final class File2EsService extends AbstractExecutor {
 
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
-                log.info("索引Mapping为:[{}]", Strings.toString(contentBuilder));
+                log.info("索引Mapping:[{}]", Strings.toString(contentBuilder));
+                log.info("文件Metadata行：[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]));
                 if (!isIndexExist) {
                     Map<String, String> indexSorting = fieldsList.stream()
-                            .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() > 0)
+                            .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
                             .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).priority()))
                             .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
                     int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
@@ -110,8 +115,12 @@ public final class File2EsService extends AbstractExecutor {
 
                 for (int i = 0; i < metadataArray[0].length; i++) {
                     Field field = columnFieldMap.get(metadataArray[0][i]);
-                    if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
-                        FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnTypeTokenMap.get(metadataArray[0][i])), true);
+                    if (Objects.nonNull(field)) {
+                        if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
+                            FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnClassMap.get(metadataArray[0][i])), true);
+                        }
+                    } else {
+                        log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在", standardFileLine, metadataArray[0][i]);
                     }
                 }
 
@@ -121,14 +130,20 @@ public final class File2EsService extends AbstractExecutor {
                 if (!isIndexExist) {
                     document.setCreateDate(DateUtilsPlus.now());
                     document.setSerialNo(snowflake.nextId());
-                    function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
+                    if (config.getIdColumn() < 0) {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(document)));
+                    } else {
+                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
+                    }
                 } else {
-                    T updatingDocument = documentFactory.newInstance();
-                    BeanUtils.copyProperties(updatingDocument, document);
-                    updatingDocument.setModifyDate(DateUtilsPlus.now());
-                    document.setCreateDate(DateUtilsPlus.now());
-                    document.setSerialNo(snowflake.nextId());
-                    function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
+                    if (config.getIdColumn() >= 0) {
+                        T updatingDocument = documentFactory.newInstance();
+                        BeanUtils.copyProperties(updatingDocument, document);
+                        updatingDocument.setModifyDate(DateUtilsPlus.now());
+                        document.setCreateDate(DateUtilsPlus.now());
+                        document.setSerialNo(snowflake.nextId());
+                        function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
+                    }
                 }
 
                 count.increment();

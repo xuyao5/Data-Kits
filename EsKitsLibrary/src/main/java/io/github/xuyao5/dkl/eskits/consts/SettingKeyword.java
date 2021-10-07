@@ -10,11 +10,11 @@ import java.util.Optional;
 /**
  * @author Thomas.XU(xuyao)
  * @implSpec 19/03/21 21:54
- * @apiNote SettingConst
- * @implNote SettingConst
+ * @apiNote SettingKeyword
+ * @implNote SettingKeyword
  */
 @RequiredArgsConstructor
-public enum SettingConst {
+public enum SettingKeyword {
 
     INDEX_NUMBER_OF_SHARDS("index.number_of_shards"),
     INDEX_NUMBER_OF_REPLICAS("index.number_of_replicas"),
@@ -30,7 +30,7 @@ public enum SettingConst {
     @Getter
     private final String name;
 
-    public static Optional<SettingConst> getSettingByName(@NonNull String name) {
-        return Arrays.stream(SettingConst.values()).filter(settingConst -> settingConst.name.equalsIgnoreCase(name)).findFirst();
+    public static Optional<SettingKeyword> getSettingByKeyword(@NonNull String keyword) {
+        return Arrays.stream(SettingKeyword.values()).filter(settingKeyword -> settingKeyword.name.equalsIgnoreCase(keyword)).findFirst();
     }
 }
