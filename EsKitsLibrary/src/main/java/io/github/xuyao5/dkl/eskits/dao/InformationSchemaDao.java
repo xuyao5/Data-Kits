@@ -44,7 +44,7 @@ public final class InformationSchemaDao {
         String sql = String.format(COLUMNS_QUERY, StringUtils.join(Arrays.stream(table).map(s -> StringUtils.wrap(s, APOSTROPHE)).toArray(String[]::new), COMMA));
         try (ResultSet resultSet = DriverManager.getConnection(url, username, password).prepareStatement(sql).executeQuery()) {
             return new RowSetDynaClass(resultSet).getRows().stream().map(dynaBean -> {
-                Columns columns = Columns.of();
+                Columns columns = new Columns();
                 columns.setTableSchema((String) dynaBean.get("table_schema"));
                 columns.setTableName((String) dynaBean.get("table_name"));
                 columns.setColumnName((String) dynaBean.get("column_name"));
@@ -62,7 +62,7 @@ public final class InformationSchemaDao {
         String sql = String.format(COLUMNS_QUERY, StringUtils.join(Arrays.stream(table).map(s -> StringUtils.wrap(s, APOSTROPHE)).toArray(String[]::new), COMMA));
         try (ResultSet resultSet = DriverManager.getConnection(url, username, password).prepareStatement(sql).executeQuery()) {
             return new RowSetDynaClass(resultSet).getRows().stream().map(dynaBean -> {
-                Tables tables = Tables.of();
+                Tables tables = new Tables();
                 tables.setTableSchema((String) dynaBean.get("table_schema"));
                 tables.setTableName((String) dynaBean.get("table_name"));
                 return tables;
