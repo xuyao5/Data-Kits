@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.xuyao5.dkl.eskits.consts.SettingKeyword.MAPPING_DATE_FORMAT;
+import static io.github.xuyao5.dkl.eskits.consts.SettingKeywordConst.MAPPING_DATE_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)

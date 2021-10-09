@@ -1,10 +1,10 @@
 package io.github.xuyao5.dkl.eskits.context.annotation;
 
-import io.github.xuyao5.dkl.eskits.consts.SortType;
+import io.github.xuyao5.dkl.eskits.consts.SortTypeConst;
 
 import java.lang.annotation.*;
 
-import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
+import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.ASC;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -19,5 +19,5 @@ public @interface TableField {
 
     int priority() default 0;//优先级，0代表不参加排序
 
-    SortType order() default ASC;//排序顺序，默认为asc,可设置desc
+    SortTypeConst order() default ASC;//排序顺序，默认为asc,可设置desc
 }

@@ -8,8 +8,8 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 
-import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
-import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
+import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.ASC;
+import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.DESC;
 
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)

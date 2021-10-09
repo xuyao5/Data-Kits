@@ -12,7 +12,7 @@ import java.util.Optional;
  * @version 19/03/21 21:54
  */
 @RequiredArgsConstructor
-public enum SettingKeyword {
+public enum SettingKeywordConst {
 
     INDEX_NUMBER_OF_SHARDS("index.number_of_shards"),
     INDEX_NUMBER_OF_REPLICAS("index.number_of_replicas"),
@@ -28,7 +28,7 @@ public enum SettingKeyword {
     @Getter
     private final String name;
 
-    public static Optional<SettingKeyword> getSettingByKeyword(@NonNull String keyword) {
-        return Arrays.stream(SettingKeyword.values()).filter(settingKeyword -> settingKeyword.name.equalsIgnoreCase(keyword)).findFirst();
+    public static Optional<SettingKeywordConst> getSettingByKeyword(@NonNull String keyword) {
+        return Arrays.stream(SettingKeywordConst.values()).filter(settingKeyword -> settingKeyword.name.equalsIgnoreCase(keyword)).findFirst();
     }
 }
