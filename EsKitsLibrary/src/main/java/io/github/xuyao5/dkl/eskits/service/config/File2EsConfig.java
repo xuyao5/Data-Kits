@@ -21,4 +21,6 @@ public final class File2EsConfig {
     private char recordSeparator = 0x1E;
     private String fileComments = "#";
     private boolean includeMetadataLine = true;
+
+    private int priShards = -1;
 }
