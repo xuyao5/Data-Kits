@@ -25,20 +25,20 @@ public final class Indices4Cat implements Serializable {
     private String uuid;
 
     @SerializedName(value = "pri", alternate = {"PRI"})
-    private String pri;
+    private int pri;
 
     @SerializedName(value = "rep", alternate = {"REP"})
-    private String rep;
+    private int rep;
 
     @SerializedName(value = "docs.count", alternate = {"DOCS.COUNT"})
-    private String docsCount;
+    private long docsCount;
 
     @SerializedName(value = "docs.deleted", alternate = {"DOCS.DELETED"})
-    private String docsDeleted;
+    private long docsDeleted;
 
     @SerializedName(value = "store.size", alternate = {"STORE.SIZE"})
-    private String storeSize;
+    private long storeSize;
 
     @SerializedName(value = "pri.store.size", alternate = {"PRI.STORE.SIZE"})
-    private String priStoreSize;
+    private long priStoreSize;
 }

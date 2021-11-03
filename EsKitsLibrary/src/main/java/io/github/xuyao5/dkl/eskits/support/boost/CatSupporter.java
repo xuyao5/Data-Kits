@@ -53,11 +53,11 @@ public final class CatSupporter {
     }
 
     public List<Indices4Cat> getCatIndices(@NonNull RestHighLevelClient client) {
-        return GsonUtilsPlus.json2Obj(getJsonReader(client, "/_cat/indices?format=json"), List.class, Indices4Cat.class);
+        return GsonUtilsPlus.json2Obj(getJsonReader(client, "/_cat/indices?format=json&bytes=b"), List.class, Indices4Cat.class);
     }
 
     public List<Indices4Cat> getCatIndices(@NonNull RestHighLevelClient client, @NonNull String index) {
-        return GsonUtilsPlus.json2Obj(getJsonReader(client, String.format("/_cat/indices/%s?format=json", index)), List.class, Indices4Cat.class);
+        return GsonUtilsPlus.json2Obj(getJsonReader(client, String.format("/_cat/indices/%s?format=json&bytes=b", index)), List.class, Indices4Cat.class);
     }
 
     public List<Segments4Cat> getCatSegments(@NonNull RestHighLevelClient client) {
