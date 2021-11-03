@@ -6,6 +6,7 @@ import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.elasticsearch.common.geo.GeoPoint;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -46,6 +47,8 @@ public final class MyFileDocument extends BaseDocument {
 
     @SerializedName(value = "discount2", alternate = {"Discount2"})
     private int discount2;
+
+    private GeoPoint geoPoint;
 
 //    private NestedTags tags;//会导致Nested，则无法使用Index Sorting
 

@@ -1,13 +1,14 @@
 package io.github.xuyao5.dkl.eskits.support.mapping;
 
 import com.google.gson.reflect.TypeToken;
-import io.github.xuyao5.dkl.eskits.schema.range.*;
 import io.github.xuyao5.dkl.eskits.util.FieldUtilsPlus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.document.*;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -121,7 +122,7 @@ public final class XContentSupporter {
                     builder.field("type", "unsigned_long");
                 } else if (InetAddress.class.equals(type) || InetAddress[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, InetAddress.class), type)) {
                     builder.field("type", "ip");
-                } else if (IntegerRange.class.equals(type) || IntegerRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, IntegerRange.class), type)) {
+                } else if (IntRange.class.equals(type) || IntRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, IntRange.class), type)) {
                     builder.field("type", "integer_range");
                 } else if (LongRange.class.equals(type) || LongRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, LongRange.class), type)) {
                     builder.field("type", "long_range");
@@ -129,10 +130,12 @@ public final class XContentSupporter {
                     builder.field("type", "float_range");
                 } else if (DoubleRange.class.equals(type) || DoubleRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, DoubleRange.class), type)) {
                     builder.field("type", "double_range");
-                } else if (DateRange.class.equals(type) || DateRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, DateRange.class), type)) {
+                } else if (BinaryRange.class.equals(type) || BinaryRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, BinaryRange.class), type)) {
                     builder.field("type", "date_range");
-                } else if (IpRange.class.equals(type) || IpRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, IpRange.class), type)) {
+                } else if (InetAddressRange.class.equals(type) || InetAddressRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, InetAddressRange.class), type)) {
                     builder.field("type", "ip_range");
+                } else if (GeoPoint.class.equals(type) || GeoPoint[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, GeoPoint.class), type)) {
+                    builder.field("type", "geo_point");
                 } else if (StringBuilder.class.equals(type) || StringBuilder[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, StringBuilder.class), type) || StringBuffer.class.equals(type) || StringBuffer[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, StringBuffer.class), type)) {
                     builder.field("type", "text");
                     builder.startObject("fields");

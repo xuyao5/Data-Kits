@@ -1,13 +1,14 @@
 package io.github.xuyao5.datakitsserver.vo;
 
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
-import io.github.xuyao5.dkl.eskits.schema.range.DateRange;
-import io.github.xuyao5.dkl.eskits.schema.range.DoubleRange;
-import io.github.xuyao5.dkl.eskits.schema.range.IpRange;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.lucene.document.BinaryRange;
+import org.apache.lucene.document.DoubleRange;
+import org.apache.lucene.document.InetAddressRange;
+import org.elasticsearch.common.geo.GeoPoint;
 
 import java.util.List;
 
@@ -54,11 +55,13 @@ public final class AllTypeDocument extends BaseDocument {
     private Double[] douArray;
     private List<Double> doubleList;
 
-    private DateRange dateRange;
+    private BinaryRange dateRange;
     private DoubleRange doubleRange;
-    private IpRange ipRange;
+    private InetAddressRange ipRange;
     private StringBuilder stringBuilder;
     private StringBuffer stringBuffer;
+
+    private GeoPoint geoPoint;
 
     private StandardFileLine tags;
 }
