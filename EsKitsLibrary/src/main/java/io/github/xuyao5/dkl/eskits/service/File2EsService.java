@@ -56,7 +56,7 @@ public final class File2EsService extends AbstractExecutor {
         log.info("File2ES服务输入配置为:[{}]", config);
 
         //检查文件是否存在
-        if (!config.getFile().exists()) {
+        if (!config.getFile().exists() || !config.getFile().isFile()) {
             log.error("无法获取到文件请检查是否文件被意外删除，当前配置为:[{}]", config);
             return -1;
         }
