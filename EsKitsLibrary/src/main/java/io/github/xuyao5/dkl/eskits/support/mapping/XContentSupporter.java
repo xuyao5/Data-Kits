@@ -93,51 +93,93 @@ public final class XContentSupporter {
             {
                 Type type = entry.getValue();
                 if (String.class.equals(type) || String[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, String.class), type)) {
-                    builder.field("type", "keyword");
-                    builder.field("ignore_above", 512);
+                    {
+                        builder.field("type", "keyword");
+                        builder.field("ignore_above", 512);
+                    }
                 } else if (char.class.equals(type) || Character.class.equals(type) || char[].class.equals(type) || Character[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Character.class), type)) {
-                    builder.field("type", "keyword");
-                    builder.field("ignore_above", 1);
+                    {
+                        builder.field("type", "keyword");
+                        builder.field("ignore_above", 1);
+                    }
                 } else if (long.class.equals(type) || Long.class.equals(type) || long[].class.equals(type) || Long[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Long.class), type)) {
-                    builder.field("type", "long");
+                    {
+                        builder.field("type", "long");
+                    }
                 } else if (int.class.equals(type) || Integer.class.equals(type) || int[].class.equals(type) || Integer[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Integer.class), type)) {
-                    builder.field("type", "integer");
+                    {
+                        builder.field("type", "integer");
+                    }
                 } else if (short.class.equals(type) || Short.class.equals(type) || short[].class.equals(type) || Short[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Short.class), type)) {
-                    builder.field("type", "short");
+                    {
+                        builder.field("type", "short");
+                    }
                 } else if (byte.class.equals(type) || Byte.class.equals(type) || byte[].class.equals(type) || Byte[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Byte.class), type)) {
-                    builder.field("type", "byte");
+                    {
+                        builder.field("type", "byte");
+                    }
                 } else if (double.class.equals(type) || Double.class.equals(type) || double[].class.equals(type) || Double[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Double.class), type)) {
-                    builder.field("type", "double");
+                    {
+                        builder.field("type", "double");
+                    }
                 } else if (float.class.equals(type) || Float.class.equals(type) || float[].class.equals(type) || Float[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Float.class), type)) {
-                    builder.field("type", "float");
+                    {
+                        builder.field("type", "float");
+                    }
                 } else if (boolean.class.equals(type) || Boolean.class.equals(type) || boolean[].class.equals(type) || Boolean[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Boolean.class), type)) {
-                    builder.field("type", "boolean");
+                    {
+                        builder.field("type", "boolean");
+                    }
                 } else if (Date.class.equals(type) || Date[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, Date.class), type)) {
-                    builder.field("type", "date");
-                    builder.field("format", MAPPING_DATE_FORMAT.getName());
+                    {
+                        builder.field("type", "date");
+                        builder.field("format", MAPPING_DATE_FORMAT.getName());
+                    }
                 } else if (BigDecimal.class.equals(type) || BigDecimal[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, BigDecimal.class), type)) {
-                    builder.field("type", "scaled_float");
-                    builder.field("scaling_factor", 100);
+                    {
+                        builder.field("type", "scaled_float");
+                        builder.field("scaling_factor", 100);
+                    }
                 } else if (BigInteger.class.equals(type) || BigInteger[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, BigInteger.class), type)) {
-                    builder.field("type", "unsigned_long");
+                    {
+                        builder.field("type", "unsigned_long");
+                    }
                 } else if (InetAddress.class.equals(type) || InetAddress[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, InetAddress.class), type)) {
-                    builder.field("type", "ip");
+                    {
+                        builder.field("type", "ip");
+                    }
                 } else if (IntRange.class.equals(type) || IntRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, IntRange.class), type)) {
-                    builder.field("type", "integer_range");
+                    {
+                        builder.field("type", "integer_range");
+                    }
                 } else if (LongRange.class.equals(type) || LongRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, LongRange.class), type)) {
-                    builder.field("type", "long_range");
+                    {
+                        builder.field("type", "long_range");
+                    }
                 } else if (FloatRange.class.equals(type) || FloatRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, FloatRange.class), type)) {
-                    builder.field("type", "float_range");
+                    {
+                        builder.field("type", "float_range");
+                    }
                 } else if (DoubleRange.class.equals(type) || DoubleRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, DoubleRange.class), type)) {
-                    builder.field("type", "double_range");
+                    {
+                        builder.field("type", "double_range");
+                    }
                 } else if (BinaryRange.class.equals(type) || BinaryRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, BinaryRange.class), type)) {
-                    builder.field("type", "date_range");
+                    {
+                        builder.field("type", "date_range");
+                    }
                 } else if (InetAddressRange.class.equals(type) || InetAddressRange[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, InetAddressRange.class), type)) {
-                    builder.field("type", "ip_range");
+                    {
+                        builder.field("type", "ip_range");
+                    }
                 } else if (GeoPoint.class.equals(type) || GeoPoint[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, GeoPoint.class), type)) {
-                    builder.field("type", "geo_point");
+                    {
+                        builder.field("type", "geo_point");
+                    }
                 } else if (StringBuilder.class.equals(type) || StringBuilder[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, StringBuilder.class), type) || StringBuffer.class.equals(type) || StringBuffer[].class.equals(type) || FieldUtilsPlus.isSameType(TypeToken.getParameterized(List.class, StringBuffer.class), type)) {
-                    builder.field("type", "text");
+                    {
+                        builder.field("type", "text");
+                    }
                     builder.startObject("fields");
                     {
                         builder.startObject("keyword");
@@ -149,7 +191,9 @@ public final class XContentSupporter {
                     }
                     builder.endObject();
                 } else {
-                    builder.field("type", "nested");
+                    {
+                        builder.field("type", "nested");
+                    }
                     builder.startObject("properties");
                     {
                         //递归调用
