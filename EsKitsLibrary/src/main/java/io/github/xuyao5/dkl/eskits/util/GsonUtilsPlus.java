@@ -75,9 +75,7 @@ public final class GsonUtilsPlus {
 
         @Override
         public GeoPoint read(JsonReader jsonReader) throws IOException {
-            String geo = jsonReader.nextString();
-            GeoPoint geoPoint = new GeoPoint(geo);
-            return geoPoint;
+            return new GeoPoint(jsonReader.nextString());
         }
     }
 }
