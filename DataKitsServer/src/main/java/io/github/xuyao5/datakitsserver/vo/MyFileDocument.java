@@ -48,7 +48,9 @@ public final class MyFileDocument extends BaseDocument {
     @SerializedName(value = "discount2", alternate = {"Discount2"})
     private int discount2;
 
-    private GeoPoint geoPoint;
+    @SerializedName(value = "position", alternate = {"Position"})
+    @FileField(column = "GEO")
+    private GeoPoint position;
 
 //    private NestedTags tags;//会导致Nested，则无法使用Index Sorting
 
