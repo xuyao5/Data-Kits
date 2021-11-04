@@ -42,7 +42,7 @@ public final class GsonUtilsPlus {
         return GSON.toJson(obj);
     }
 
-    public static Serializable deserialize(@NonNull String obj, @NonNull Class<?> clz) {
+    public static Object deserialize(@NonNull String obj, @NonNull Class<?> clz) {
         return GSON.fromJson(GSON.toJson(obj), TypeToken.get(clz).getType());
     }
 
