@@ -7,6 +7,9 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Locale;
 
@@ -46,5 +49,9 @@ public final class DateUtilsPlus {
 
     public static Date parse2Date(long date) {
         return new Date(date);
+    }
+
+    public static long daysBetween(String dateTag) {
+        return ChronoUnit.DAYS.between(LocalDate.parse(dateTag, DateTimeFormatter.BASIC_ISO_DATE), LocalDate.now());
     }
 }
