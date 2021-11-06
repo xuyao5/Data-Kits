@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.elasticsearch.common.geo.GeoPoint;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -26,6 +27,7 @@ public final class GsonUtilsPlus {
                 .enableComplexMapKeySerialization()
                 .serializeSpecialFloatingPointValues()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .registerTypeAdapter(GeoPoint.class, new GeoPointJsonDeserializer())
                 .create();
     }
 
@@ -60,5 +62,16 @@ public final class GsonUtilsPlus {
 
     public static <T extends Serializable> T json2Obj(@NonNull JsonReader reader, @NonNull Type rawType, @NonNull Type... typeArguments) {
         return GSON.fromJson(reader, TypeToken.getParameterized(rawType, typeArguments).getType());
+    }
+
+    static class GeoPointJsonDeserializer implements JsonDeserializer<GeoPoint> {
+
+        @Override
+        public GeoPoint deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            if (GeoPoint.class.equals(type)) {
+                return new GeoPoint(jsonElement.getAsString());
+            }
+            return new GeoPoint();
+        }
     }
 }

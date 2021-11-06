@@ -1,8 +1,6 @@
 package io.github.xuyao5.datakitsserver.vo;
 
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import io.github.xuyao5.dkl.eskits.adapter.GeoPointTypeAdapter;
 import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import lombok.Data;
@@ -20,7 +18,6 @@ import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.DESC;
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@JsonAdapter(GeoPointTypeAdapter.class)
 public final class MyFileDocument extends BaseDocument {
 
     //UUID          CASH_AMOUNT          DESC          DATE_TIME_1          DATE_TIME_2
