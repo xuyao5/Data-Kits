@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Component;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.UnaryOperator;
 
 @Slf4j
 @Component("file2EsDemoJob")
@@ -51,7 +51,10 @@ public final class File2EsDemoJob implements Runnable {
             log.info("根据文件名日期计算得到写入索引名:[{}]", index);
 
             //2.写入索引
-            long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, UnaryOperator.identity());
+            long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, document -> {
+                document.setLocation(new GeoPoint(-41.288837561602826, 174.77854717629864));
+                return document;
+            });
             if (count < 1) {
                 log.warn("文件[{}]无数据写入索引[{}],请检查是否为空文件", file, index);
             } else {

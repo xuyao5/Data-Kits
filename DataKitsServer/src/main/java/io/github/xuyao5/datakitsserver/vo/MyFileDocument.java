@@ -52,6 +52,9 @@ public final class MyFileDocument extends BaseDocument {
     @FileField(column = "GEO")
     private GeoPoint position;
 
+    @SerializedName(value = "location", alternate = {"Location"})
+    private GeoPoint location;//大多数场景可以不需要@FileField转换，通过内建的计算引擎直接new一个GeoPoint
+
 //    private NestedTags tags;//会导致Nested，则无法使用Index Sorting
 
     @Data(staticConstructor = "of")

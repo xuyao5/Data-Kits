@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 
 import java.io.Serializable;
@@ -68,8 +69,28 @@ public final class GsonUtilsPlus {
 
         @Override
         public GeoPoint deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-            if (GeoPoint.class.equals(type)) {
-                return new GeoPoint(jsonElement.getAsString());
+            if (GeoPoint.class.equals(type)) {//这个仅仅是防御性编程
+                if (jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString() && StringUtils.isNotBlank(jsonElement.getAsString())) {
+                    return new GeoPoint(jsonElement.getAsString());
+                } else if (jsonElement.isJsonArray() && jsonElement.getAsJsonArray().size() == 2) {
+                    JsonElement longitude = jsonElement.getAsJsonArray().get(0);
+                    JsonElement latitude = jsonElement.getAsJsonArray().get(1);
+                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber()
+                            && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
+                        return new GeoPoint(latitude.getAsDouble(), longitude.getAsDouble());
+                    }
+                } else if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().has("lat") && jsonElement.getAsJsonObject().has("lon")) {
+                    JsonElement longitude = jsonElement.getAsJsonObject().get("lon");
+                    JsonElement latitude = jsonElement.getAsJsonObject().get("lat");
+                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber()
+                            && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
+                        return new GeoPoint(latitude.getAsDouble(), longitude.getAsDouble());
+                    }
+                } else if (jsonElement.isJsonNull()) {
+                    return new GeoPoint();
+                } else {
+                    return new GeoPoint();
+                }
             }
             return new GeoPoint();
         }
