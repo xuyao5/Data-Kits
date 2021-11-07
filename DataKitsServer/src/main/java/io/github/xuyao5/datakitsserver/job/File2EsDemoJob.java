@@ -51,7 +51,9 @@ public final class File2EsDemoJob implements Runnable {
             log.info("根据文件名日期计算得到写入索引名:[{}]", index);
 
             //2.写入索引
-            long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(File2EsConfig.of(file, index), MyFileDocument::of, document -> {
+            File2EsConfig file2EsConfig = File2EsConfig.of(file, index);
+            file2EsConfig.setPriShards(1);
+            long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(file2EsConfig, MyFileDocument::of, document -> {
                 document.setLocation(new GeoPoint(-41.288837561602826, 174.77854717629864));
                 return document;
             });
