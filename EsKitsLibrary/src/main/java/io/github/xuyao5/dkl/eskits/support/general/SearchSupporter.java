@@ -19,6 +19,7 @@ import org.elasticsearch.script.mustache.MultiSearchTemplateResponse;
 import org.elasticsearch.script.mustache.SearchTemplateRequest;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,11 @@ public final class SearchSupporter {
     @SneakyThrows
     public SearchResponse search(@NonNull RestHighLevelClient client, @NonNull QueryBuilder query, int from, int size, @NonNull String... indices) {
         return client.search(new SearchRequest(indices).source(SearchSourceBuilder.searchSource().query(query).from(from).size(size)), DEFAULT);
+    }
+
+    @SneakyThrows
+    public SearchResponse search(@NonNull RestHighLevelClient client, @NonNull QueryBuilder query, @NonNull SortBuilder<?> sort, int from, int size, @NonNull String... indices) {
+        return client.search(new SearchRequest(indices).source(SearchSourceBuilder.searchSource().query(query).from(from).size(size).sort(sort)), DEFAULT);
     }
 
     /**
