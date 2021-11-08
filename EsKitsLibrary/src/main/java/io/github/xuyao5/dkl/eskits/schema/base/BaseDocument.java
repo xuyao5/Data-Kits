@@ -8,9 +8,7 @@ import java.util.Date;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 25/02/21 17:12
- * @apiNote StandardDocument
- * @implNote StandardDocument
+ * @version 25/02/21 17:12
  */
 @Data
 public abstract class BaseDocument implements Serializable {

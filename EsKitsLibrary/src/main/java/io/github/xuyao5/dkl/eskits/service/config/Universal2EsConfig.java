@@ -4,9 +4,7 @@ import lombok.Data;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 12/06/21 17:03
- * @apiNote Message2EsConfig
- * @implNote Message2EsConfig
+ * @version 12/06/21 17:03
  */
 @Data(staticConstructor = "of")
 public final class Universal2EsConfig {

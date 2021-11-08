@@ -5,9 +5,7 @@ import lombok.NonNull;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 5/07/21 00:52
- * @apiNote EventVararg
- * @implNote EventVararg
+ * @version 5/07/21 00:52
  */
 @FunctionalInterface
 public interface EventVararg<E> {

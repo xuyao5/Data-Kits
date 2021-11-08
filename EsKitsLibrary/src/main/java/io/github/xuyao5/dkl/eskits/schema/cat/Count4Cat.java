@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 18/09/21 21:48
- * @apiNote Count4Cat
- * @implNote Count4Cat
+ * @version 18/09/21 21:48
  */
 @Data(staticConstructor = "of")
 public final class Count4Cat implements Serializable {

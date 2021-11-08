@@ -9,19 +9,17 @@ import java.util.Optional;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 17/07/21 22:15
- * @apiNote SortType
- * @implNote SortType
+ * @version 17/07/21 22:15
  */
 @RequiredArgsConstructor
-public enum SortType {
+public enum SortTypeConst {
 
     ASC("asc"), DESC("desc");
 
     @Getter
     private final String order;
 
-    public static Optional<SortType> getSortType(@NonNull String order) {
-        return Arrays.stream(SortType.values()).filter(sortType -> sortType.order.equalsIgnoreCase(order)).findFirst();
+    public static Optional<SortTypeConst> getSortType(@NonNull String order) {
+        return Arrays.stream(SortTypeConst.values()).filter(sortType -> sortType.order.equalsIgnoreCase(order)).findFirst();
     }
 }

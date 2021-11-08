@@ -5,9 +5,7 @@ import lombok.Data;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 7/09/21 23:49
- * @apiNote ContentSummary
- * @implNote ContentSummary
+ * @version 7/09/21 23:49
  */
 @Data(staticConstructor = "of")
 public final class ContentSummary {

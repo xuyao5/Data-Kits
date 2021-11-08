@@ -21,9 +21,7 @@ import java.util.Map;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 20/03/21 13:12
- * @apiNote StoredSearchService
- * @implNote StoredSearchService
+ * @version 20/03/21 13:12
  */
 @Slf4j
 public final class StoredSearchService extends AbstractExecutor {

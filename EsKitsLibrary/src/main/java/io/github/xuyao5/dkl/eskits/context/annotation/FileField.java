@@ -1,16 +1,14 @@
 package io.github.xuyao5.dkl.eskits.context.annotation;
 
-import io.github.xuyao5.dkl.eskits.consts.SortType;
+import io.github.xuyao5.dkl.eskits.consts.SortTypeConst;
 
 import java.lang.annotation.*;
 
-import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
+import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.ASC;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 14/05/21 19:51
- * @apiNote FileField
- * @implNote FileField
+ * @version 14/05/21 19:51
  */
 @Documented
 @Target(ElementType.FIELD)
@@ -23,5 +21,5 @@ public @interface FileField {
 
     int priority() default -1;//优先级，-1代表不参加排序
 
-    SortType order() default ASC;//排序顺序，默认为asc,可设置desc
+    SortTypeConst order() default ASC;//排序顺序，默认为asc,可设置desc
 }

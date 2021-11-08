@@ -5,9 +5,7 @@ import lombok.Data;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 11/09/21 19:11
- * @apiNote FileChecksum
- * @implNote FileChecksum
+ * @version 11/09/21 19:11
  */
 @Data(staticConstructor = "of")
 public final class FileChecksum {

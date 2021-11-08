@@ -9,9 +9,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 12/01/21 18:28
- * @apiNote AbstractSupporter
- * @implNote AbstractSupporter
+ * @version 12/01/21 18:28
  */
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)

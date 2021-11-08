@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 18/09/21 18:50
- * @apiNote Shards4Cat
- * @implNote Shards4Cat
+ * @version 18/09/21 18:50
  */
 @Data(staticConstructor = "of")
 public final class Shards4Cat implements Serializable {

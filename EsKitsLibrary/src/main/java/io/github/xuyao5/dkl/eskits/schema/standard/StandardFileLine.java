@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 24/02/21 22:46
- * @apiNote StandardFileLine
- * @implNote StandardFileLine
+ * @version 24/02/21 22:46
  */
 @Data(staticConstructor = "of")
 public final class StandardFileLine implements Serializable {

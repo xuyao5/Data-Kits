@@ -8,13 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.settings.Settings;
 
-import static io.github.xuyao5.dkl.eskits.consts.SettingKeyword.INDEX_NUMBER_OF_REPLICAS;
+import static io.github.xuyao5.dkl.eskits.consts.SettingKeywordConst.INDEX_NUMBER_OF_REPLICAS;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 18/03/21 21:57
- * @apiNote SettingsSupporter
- * @implNote SettingsSupporter
+ * @version 18/03/21 21:57
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

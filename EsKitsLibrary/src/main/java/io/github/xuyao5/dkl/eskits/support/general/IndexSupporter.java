@@ -37,14 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.xuyao5.dkl.eskits.consts.SettingKeyword.*;
+import static io.github.xuyao5.dkl.eskits.consts.SettingKeywordConst.*;
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 1/05/20 22:48
- * @apiNote IndexSupporter
- * @implNote IndexSupporter
+ * @version 1/05/20 22:48
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -56,6 +54,13 @@ public final class IndexSupporter {
 
     /**
      * Create Index API
+     *
+     * @param client   客户端
+     * @param index    索引
+     * @param shards   分片数
+     * @param replicas 副本数
+     * @param builder  构建器
+     * @return 返回对象
      */
     @SneakyThrows
     public CreateIndexResponse create(@NonNull RestHighLevelClient client, @NonNull String index, int shards, int replicas, @NonNull XContentBuilder builder) {
@@ -67,7 +72,15 @@ public final class IndexSupporter {
     }
 
     /**
-     * Create Index API（with INDEX_SORT_FIELD & INDEX_SORT_ORDER）
+     * Create Index API
+     *
+     * @param client       客户端
+     * @param index        索引
+     * @param shards       分片数
+     * @param replicas     副本数
+     * @param builder      构建器
+     * @param indexSorting 索引排序
+     * @return 返回对象
      */
     @SneakyThrows
     public CreateIndexResponse create(@NonNull RestHighLevelClient client, @NonNull String index, int shards, int replicas, @NonNull XContentBuilder builder, @NonNull Map<String, String> indexSorting) {
@@ -82,6 +95,10 @@ public final class IndexSupporter {
 
     /**
      * Delete Index API
+     *
+     * @param client 客户端
+     * @param index  索引
+     * @return 返回对象
      */
     @SneakyThrows
     public AcknowledgedResponse delete(@NonNull RestHighLevelClient client, @NonNull String... index) {
@@ -90,6 +107,10 @@ public final class IndexSupporter {
 
     /**
      * Index Exists API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public boolean exists(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -98,6 +119,10 @@ public final class IndexSupporter {
 
     /**
      * Open Index API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public OpenIndexResponse open(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -106,6 +131,10 @@ public final class IndexSupporter {
 
     /**
      * Close Index API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public AcknowledgedResponse close(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -114,6 +143,10 @@ public final class IndexSupporter {
 
     /**
      * Refresh API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public RefreshResponse refresh(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -122,6 +155,10 @@ public final class IndexSupporter {
 
     /**
      * Flush API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public FlushResponse flush(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -130,6 +167,10 @@ public final class IndexSupporter {
 
     /**
      * Clear Cache API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public ClearIndicesCacheResponse clearCache(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -138,6 +179,10 @@ public final class IndexSupporter {
 
     /**
      * Force Merge API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public ForceMergeResponse forcemerge(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -146,6 +191,11 @@ public final class IndexSupporter {
 
     /**
      * Put Mapping API
+     *
+     * @param client  客户端
+     * @param builder 构建器
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public boolean putMapping(@NonNull RestHighLevelClient client, @NonNull XContentBuilder builder, @NonNull String... indices) {
@@ -154,6 +204,10 @@ public final class IndexSupporter {
 
     /**
      * Get Mappings API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public GetMappingsResponse getMapping(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -162,6 +216,10 @@ public final class IndexSupporter {
 
     /**
      * Index Aliases API
+     *
+     * @param client           客户端
+     * @param aliasActionsList 别名动作列表
+     * @return 返回对象
      */
     @SneakyThrows
     public AcknowledgedResponse updateAliases(@NonNull RestHighLevelClient client, @NonNull List<IndicesAliasesRequest.AliasActions> aliasActionsList) {
@@ -171,6 +229,11 @@ public final class IndexSupporter {
 
     /**
      * Delete Alias API
+     *
+     * @param client 客户端
+     * @param index  索引
+     * @param alias  别名
+     * @return 返回对象
      */
     @SneakyThrows
     public org.elasticsearch.client.core.AcknowledgedResponse deleteAlias(@NonNull RestHighLevelClient client, @NonNull String index, @NonNull String alias) {
@@ -179,6 +242,10 @@ public final class IndexSupporter {
 
     /**
      * Exists Alias API
+     *
+     * @param client  客户端
+     * @param aliases (1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public boolean existsAlias(@NonNull RestHighLevelClient client, @NonNull String... aliases) {
@@ -187,6 +254,10 @@ public final class IndexSupporter {
 
     /**
      * Get Alias API
+     *
+     * @param client  客户端
+     * @param aliases (1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public GetAliasesResponse getAlias(@NonNull RestHighLevelClient client, @NonNull String... aliases) {
@@ -195,6 +266,11 @@ public final class IndexSupporter {
 
     /**
      * Update Indices Settings API
+     *
+     * @param client   客户端
+     * @param settings 设置集
+     * @param indices  索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public AcknowledgedResponse putSettings(@NonNull RestHighLevelClient client, @NonNull Settings settings, @NonNull String... indices) {
@@ -203,6 +279,10 @@ public final class IndexSupporter {
 
     /**
      * Get Settings API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public GetSettingsResponse getSettings(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -211,6 +291,11 @@ public final class IndexSupporter {
 
     /**
      * Put Template API
+     *
+     * @param client        客户端
+     * @param templateName  模版名
+     * @param indexPatterns 索引模式
+     * @return 返回对象
      */
     @SneakyThrows
     public AcknowledgedResponse putTemplate(@NonNull RestHighLevelClient client, @NonNull String templateName, @NonNull List<String> indexPatterns) {
@@ -219,6 +304,11 @@ public final class IndexSupporter {
 
     /**
      * Validate Query API
+     *
+     * @param client  客户端
+     * @param builder 构建器
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public ValidateQueryResponse validateQuery(@NonNull RestHighLevelClient client, @NonNull QueryBuilder builder, @NonNull String... indices) {
@@ -227,6 +317,10 @@ public final class IndexSupporter {
 
     /**
      * Get Templates API
+     *
+     * @param client        客户端
+     * @param templateNames 模版名(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public GetIndexTemplatesResponse getIndexTemplate(@NonNull RestHighLevelClient client, @NonNull String... templateNames) {
@@ -235,6 +329,10 @@ public final class IndexSupporter {
 
     /**
      * Templates Exist API
+     *
+     * @param client        客户端
+     * @param templateNames 模版名(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public boolean existsTemplate(@NonNull RestHighLevelClient client, @NonNull String... templateNames) {
@@ -243,6 +341,10 @@ public final class IndexSupporter {
 
     /**
      * Get Index API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public GetIndexResponse get(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -251,6 +353,10 @@ public final class IndexSupporter {
 
     /**
      * Freeze Index API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public ShardsAcknowledgedResponse freeze(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -259,6 +365,10 @@ public final class IndexSupporter {
 
     /**
      * Unfreeze Index API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public ShardsAcknowledgedResponse unfreeze(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -267,6 +377,10 @@ public final class IndexSupporter {
 
     /**
      * Delete Template API
+     *
+     * @param client       客户端
+     * @param templateName 模版名
+     * @return 返回对象
      */
     @SneakyThrows
     public AcknowledgedResponse deleteTemplate(@NonNull RestHighLevelClient client, @NonNull String templateName) {
@@ -275,6 +389,10 @@ public final class IndexSupporter {
 
     /**
      * Reload Search Analyzers API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public ReloadAnalyzersResponse reloadAnalyzers(@NonNull RestHighLevelClient client, @NonNull String... indices) {

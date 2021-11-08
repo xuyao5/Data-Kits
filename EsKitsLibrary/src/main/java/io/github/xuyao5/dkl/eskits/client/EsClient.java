@@ -21,9 +21,7 @@ import static org.elasticsearch.client.RestClientBuilder.*;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 1/05/20 22:45
- * @apiNote EsClient
- * @implNote EsClient
+ * @version 1/05/20 22:45
  */
 @Slf4j
 public final class EsClient implements Closeable {

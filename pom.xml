@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.5</version>
+        <version>2.5.6</version>
         <relativePath/>
     </parent>
     <groupId>io.github.xuyao5</groupId>
@@ -13,7 +13,7 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <name>Data Kits</name>
-    <description>Data Kits Project without Spring Boot</description>
+    <description>Data Kits Family Member</description>
     <url>https://github.com/xuyao5/Data-Kits</url>
     <licenses>
         <license>
@@ -25,8 +25,6 @@
         <developer>
             <name>Yao.XU</name>
             <email>xuyao5@gmail.com</email>
-            <organization>Ping An Bank</organization>
-            <organizationUrl>https://bank.pingan.com/</organizationUrl>
         </developer>
     </developers>
     <scm>
@@ -39,10 +37,9 @@
     </modules>
 
     <properties>
-        <revision>0.4</revision>
+        <revision>0.6</revision>
         <elasticsearch.version>7.10.2</elasticsearch.version>
         <maven.test.skip>true</maven.test.skip>
-        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     </properties>
 
     <dependencies>
@@ -83,7 +80,7 @@
             <dependency>
                 <groupId>com.zendesk</groupId>
                 <artifactId>mysql-binlog-connector-java</artifactId>
-                <version>0.25.3</version>
+                <version>0.25.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -99,7 +96,6 @@
                         <flattenMode>oss</flattenMode>
                     </configuration>
                     <executions>
-                        <!-- enable flattening -->
                         <execution>
                             <id>flatten</id>
                             <phase>process-resources</phase>
@@ -107,7 +103,6 @@
                                 <goal>flatten</goal>
                             </goals>
                         </execution>
-                        <!-- ensure proper cleanup -->
                         <execution>
                             <id>flatten.clean</id>
                             <phase>clean</phase>

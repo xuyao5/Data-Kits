@@ -7,9 +7,7 @@ import java.security.SecureRandom;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 11/03/21 11:47
- * @apiNote RandomUtilsNZ
- * @implNote RandomUtilsNZ
+ * @version 11/03/21 11:47
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RandomUtilsPlus {

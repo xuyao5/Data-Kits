@@ -23,9 +23,7 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAUL
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 15/03/21 20:57
- * @apiNote ModifyByScrollService
- * @implNote ModifyByScrollService
+ * @version 15/03/21 20:57
  */
 @Slf4j
 public final class ModifyByScrollService extends AbstractExecutor {

@@ -8,9 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 25/02/21 16:36
- * @apiNote File2EsConfig
- * @implNote File2EsConfig
+ * @version 25/02/21 16:36
  */
 @Data(staticConstructor = "of")
 public final class File2EsConfig {
@@ -23,4 +21,6 @@ public final class File2EsConfig {
     private char recordSeparator = 0x1E;
     private String fileComments = "#";
     private boolean includeMetadataLine = true;
+
+    private int priShards = -1;
 }

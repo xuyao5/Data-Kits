@@ -5,9 +5,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 16/03/21 02:52
- * @apiNote ModifyByScrollConfig
- * @implNote ModifyByScrollConfig
+ * @version 16/03/21 02:52
  */
 @Data(staticConstructor = "of")
 public final class ModifyByScrollConfig {

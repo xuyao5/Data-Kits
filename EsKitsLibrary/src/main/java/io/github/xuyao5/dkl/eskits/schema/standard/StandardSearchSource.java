@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 20/03/21 20:47
- * @apiNote StandardSearchSource
- * @implNote StandardSearchSource
+ * @version 20/03/21 20:47
  */
 @Data(staticConstructor = "of")
 public final class StandardSearchSource implements Serializable {

@@ -40,9 +40,7 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 10/10/20 15:41
- * @apiNote File2EsService
- * @implNote File2EsService
+ * @version 10/10/20 15:41
  */
 @Slf4j
 public final class File2EsService extends AbstractExecutor {
@@ -58,7 +56,7 @@ public final class File2EsService extends AbstractExecutor {
         log.info("File2ES服务输入配置为:[{}]", config);
 
         //检查文件是否存在
-        if (!config.getFile().exists()) {
+        if (!config.getFile().exists() || !config.getFile().isFile()) {
             log.error("无法获取到文件请检查是否文件被意外删除，当前配置为:[{}]", config);
             return -1;
         }
@@ -99,7 +97,7 @@ public final class File2EsService extends AbstractExecutor {
                             .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
                             .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).priority()))
                             .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
-                    int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
+                    int numberOfDataNodes = config.getPriShards() > 0 ? config.getPriShards() : ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();//自动计算主分片
                     log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
                     if (!indexSorting.isEmpty()) {
                         indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder, indexSorting);

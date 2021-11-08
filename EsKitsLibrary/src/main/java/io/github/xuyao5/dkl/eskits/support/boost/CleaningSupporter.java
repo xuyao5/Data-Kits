@@ -15,9 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 28/09/21 19:56
- * @apiNote CleaningSupporter
- * @implNote CleaningSupporter
+ * @version 28/09/21 19:56
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

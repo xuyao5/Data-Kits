@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 18/09/21 21:50
- * @apiNote Health4Cat
- * @implNote Health4Cat
+ * @version 18/09/21 21:50
  */
 @Data(staticConstructor = "of")
 public final class Health4Cat implements Serializable {

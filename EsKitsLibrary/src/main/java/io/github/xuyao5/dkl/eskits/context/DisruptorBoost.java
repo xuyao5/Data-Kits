@@ -14,9 +14,7 @@ import java.util.function.Consumer;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 4/07/21 20:33
- * @apiNote DisruptorBoost
- * @implNote DisruptorBoost
+ * @version 4/07/21 20:33
  */
 @Slf4j
 @Builder(builderMethodName = "context", buildMethodName = "create")

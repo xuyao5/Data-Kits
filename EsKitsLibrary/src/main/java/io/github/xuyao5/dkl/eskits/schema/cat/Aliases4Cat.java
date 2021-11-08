@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 18/09/21 21:58
- * @apiNote Aliases4Cat
- * @implNote Aliases4Cat
+ * @version 18/09/21 21:58
  */
 @Data(staticConstructor = "of")
 public final class Aliases4Cat implements Serializable {

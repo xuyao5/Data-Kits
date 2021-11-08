@@ -6,13 +6,14 @@ import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.elasticsearch.common.geo.GeoPoint;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static io.github.xuyao5.dkl.eskits.consts.SortType.ASC;
-import static io.github.xuyao5.dkl.eskits.consts.SortType.DESC;
+import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.ASC;
+import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.DESC;
 
 @Data(staticConstructor = "of")
 @EqualsAndHashCode(callSuper = true)
@@ -46,6 +47,13 @@ public final class MyFileDocument extends BaseDocument {
 
     @SerializedName(value = "discount2", alternate = {"Discount2"})
     private int discount2;
+
+    @SerializedName(value = "position", alternate = {"Position"})
+    @FileField(column = "GEO")
+    private GeoPoint position;
+
+    @SerializedName(value = "location", alternate = {"Location"})
+    private GeoPoint location;//大多数场景可以不需要@FileField转换，通过内建的计算引擎直接new一个GeoPoint
 
 //    private NestedTags tags;//会导致Nested，则无法使用Index Sorting
 

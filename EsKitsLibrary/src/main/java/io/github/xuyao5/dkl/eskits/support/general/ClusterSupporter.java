@@ -17,9 +17,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 /**
  * @author Thomas.XU(xuyao)
- * @implSpec 10/03/21 14:05
- * @apiNote ClusterSupporter
- * @implNote ClusterSupporter
+ * @version 10/03/21 14:05
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -31,6 +29,9 @@ public final class ClusterSupporter {
 
     /**
      * Cluster Get Settings API
+     *
+     * @param client 客户端
+     * @return 返回对象
      */
     @SneakyThrows
     public ClusterGetSettingsResponse getSettings(@NonNull RestHighLevelClient client) {
@@ -39,6 +40,10 @@ public final class ClusterSupporter {
 
     /**
      * Cluster Health API
+     *
+     * @param client  客户端
+     * @param indices 索引(1或多个)
+     * @return 返回对象
      */
     @SneakyThrows
     public ClusterHealthResponse health(@NonNull RestHighLevelClient client, @NonNull String... indices) {
@@ -47,6 +52,9 @@ public final class ClusterSupporter {
 
     /**
      * Remote Cluster Info API
+     *
+     * @param client 客户端
+     * @return 返回对象
      */
     @SneakyThrows
     public RemoteInfoResponse remoteInfo(@NonNull RestHighLevelClient client) {
