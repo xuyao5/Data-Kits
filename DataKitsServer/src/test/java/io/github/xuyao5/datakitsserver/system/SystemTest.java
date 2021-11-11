@@ -1,9 +1,12 @@
 package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
+import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
+import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
+import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.join.ScoreMode;
@@ -17,6 +20,9 @@ import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
+
+import java.io.Serializable;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class SystemTest extends AbstractTest {
@@ -101,5 +107,16 @@ public class SystemTest extends AbstractTest {
 //        System.out.println(catSupporter.getCatFieldData(esClient, ""));
 //        System.out.println(catSupporter.getCatNodeAttrs(esClient));
 //        System.out.println(catSupporter.getCatTemplates(esClient));
+    }
+
+    @Test
+    void gsonTest() {
+        MyFileDocument document = MyFileDocument.of();
+        document.setDateTime2(DateUtilsPlus.now());
+        String json = GsonUtilsPlus.obj2Json(document);
+        System.out.println(json);
+        System.out.println(GsonUtilsPlus.isJsonString(json));
+        Serializable serializable = GsonUtilsPlus.json2Obj(json, ConcurrentHashMap.class);
+        System.out.println(serializable);
     }
 }
