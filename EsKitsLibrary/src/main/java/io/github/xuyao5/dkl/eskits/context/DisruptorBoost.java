@@ -4,6 +4,7 @@ import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
+import io.github.xuyao5.dkl.eskits.context.clearing.ClearingEventHandler;
 import io.github.xuyao5.dkl.eskits.context.disruptor.*;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,7 @@ public final class DisruptorBoost<T> {
     @SafeVarargs
     private final void process(Consumer<RingBuffer<T>> ringBufferConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         Disruptor<T> disruptor = new Disruptor<>(eventFactory, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWith(handlers);
+        disruptor.handleEventsWith(handlers).then(new ClearingEventHandler());
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
