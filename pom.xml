@@ -38,7 +38,7 @@
 
     <properties>
         <revision>0.6</revision>
-        <elasticsearch.version>7.16.2</elasticsearch.version>
+        <elasticsearch.version>7.10.2</elasticsearch.version>
         <maven.test.skip>true</maven.test.skip>
     </properties>
 
