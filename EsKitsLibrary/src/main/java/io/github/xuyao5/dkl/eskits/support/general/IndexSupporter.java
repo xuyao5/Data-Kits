@@ -30,8 +30,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.ShardsAcknowledgedResponse;
 import org.elasticsearch.client.indices.*;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.xcontent.XContentBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
