@@ -4,7 +4,6 @@ import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import io.github.xuyao5.dkl.eskits.context.clearing.ClearingEventHandler;
 import io.github.xuyao5.dkl.eskits.context.disruptor.*;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
