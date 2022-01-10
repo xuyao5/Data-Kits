@@ -27,6 +27,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.*;
@@ -150,9 +151,12 @@ public final class File2EsService extends AbstractExecutor {
         return count.longValue();
     }
 
-    @SneakyThrows
     private void errorConsumer(File2EsConfig config, StandardFileLine standardFileLine) {
-        FileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), Collections.singletonList(standardFileLine.getLineRecord()), true);
+        try {
+            FileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), Collections.singletonList(standardFileLine.getLineRecord()), true);
+        } catch (IOException ex) {
+            log.error("保存错误数据发生异常", ex);
+        }
     }
 
     @SneakyThrows
