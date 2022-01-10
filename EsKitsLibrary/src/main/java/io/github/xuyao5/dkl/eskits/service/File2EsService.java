@@ -27,10 +27,11 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -150,14 +151,17 @@ public final class File2EsService extends AbstractExecutor {
         return count.longValue();
     }
 
-    @SneakyThrows
     private void errorConsumer(File2EsConfig config, StandardFileLine standardFileLine) {
-        FileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), Collections.singletonList(standardFileLine.getLineRecord()), true);
+        try {
+            FileUtils.writeLines(Paths.get(config.getFile().getCanonicalPath() + ".error").toFile(), config.getCharset().name(), Collections.singletonList(standardFileLine.getLineRecord()), true);
+        } catch (IOException ex) {
+            log.error("保存错误数据发生异常", ex);
+        }
     }
 
     @SneakyThrows
     private void eventConsumer(File2EsConfig config, EventTwoArg<StandardFileLine> consumer) {
-        AtomicInteger lineCount = new AtomicInteger();
+        AtomicLong lineCount = new AtomicLong();
         try (LineIterator lineIterator = FileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
             while (lineIterator.hasNext()) {
                 consumer.translate((standardFileLine, sequence, lineNo, lineRecord) -> {

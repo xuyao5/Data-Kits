@@ -41,7 +41,7 @@ public final class File2EsDemoJob implements Runnable {
         String basePath = "/Users/xuyao/Downloads";
 
         Map<String, String> fileMap = new ConcurrentHashMap<>();
-        fileMap.put("FILE2ES_DISRUPTOR", "^INT_DISRUPTOR_1K_T_\\d{8}_\\d{2}.txt$");//可以从配置中读取
+        fileMap.put("FILE2ES_DISRUPTOR", "^INT_DISRUPTOR_100w_T_\\d{8}_\\d{2}.txt$");//可以从配置中读取
 
         fileMap.forEach((alias, filenameRegex) -> FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists()).forEach(file -> {
             //1.索引名称
