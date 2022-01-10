@@ -30,7 +30,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -157,7 +157,7 @@ public final class File2EsService extends AbstractExecutor {
 
     @SneakyThrows
     private void eventConsumer(File2EsConfig config, EventTwoArg<StandardFileLine> consumer) {
-        AtomicInteger lineCount = new AtomicInteger();
+        AtomicLong lineCount = new AtomicLong();
         try (LineIterator lineIterator = FileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
             while (lineIterator.hasNext()) {
                 consumer.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
