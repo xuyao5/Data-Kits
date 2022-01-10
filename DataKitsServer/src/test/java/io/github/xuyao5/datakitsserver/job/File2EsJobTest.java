@@ -28,13 +28,13 @@ final class File2EsJobTest extends AbstractTest {
     @SneakyThrows
     @Test
     void genTestData() {
-        String fileName = "/Users/xuyao/Downloads/INT_DISRUPTOR_1K_T_20211103_00.txt";
+        String fileName = "/Users/xuyao/Downloads/INT_DISRUPTOR_100w_T_20211103_00.txt";
 
         char split = 0x1E;
         File file = Files.newFile(fileName);
 
         FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(Strings.concat("UUID", split, "CASH_AMOUNT", split, "DESC", split, "DATE_TIME_1", split, "DATE_TIME_2", split, "GEO")), true);
-        for (int y = 0; y < 1; y++) {
+        for (int y = 0; y < 1000; y++) {
             String[] content = new String[1000];
             for (int i = 0; i < content.length; i++) {
                 content[i] = Strings.concat(snowflake.nextId(), split, RandomUtilsPlus.getFloat(), split, RandomStringUtils.randomAlphabetic(800), split, System.currentTimeMillis(), split, "2021-03-21" + StringUtils.SPACE + "07:08:09", split, "-36.856548404328464, 174.76484348757847");
@@ -42,6 +42,6 @@ final class File2EsJobTest extends AbstractTest {
             FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }
 
-        Files.newFile("/Users/xuyao/Downloads/P_DISRUPTOR_1K_T_20211103_00.log");
+        Files.newFile("/Users/xuyao/Downloads/P_DISRUPTOR_100w_T_20211103_00.log");
     }
 }
