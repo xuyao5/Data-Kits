@@ -14,8 +14,6 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.ByteSizeUnit;
-import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.Serializable;
@@ -67,30 +65,26 @@ public final class BulkSupporter {
      */
     @SneakyThrows
     public void bulk(@NonNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
-        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener),
-                        new BulkProcessor.Listener() {
-                            @Override
-                            public void beforeBulk(long executionId, BulkRequest request) {
-                                log.info("Executing bulk [{}] with {} requests", executionId, request.numberOfActions());
-                            }
+        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener), new BulkProcessor.Listener() {
+            @Override
+            public void beforeBulk(long executionId, BulkRequest request) {
+                log.info("Executing bulk [{}] with {} requests", executionId, request.numberOfActions());
+            }
 
-                            @Override
-                            public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-                                if (response.hasFailures()) {
-                                    log.warn("Bulk [{}] executed with {}", executionId, response.buildFailureMessage());
-                                } else {
-                                    log.info("Bulk [{}] completed in {} seconds", executionId, response.getTook().getMillis() / 1000);
-                                }
-                            }
+            @Override
+            public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+                if (response.hasFailures()) {
+                    log.warn("Bulk [{}] executed with {}", executionId, response.buildFailureMessage());
+                } else {
+                    log.info("Bulk [{}] completed in {} seconds", executionId, response.getTook().getMillis() / 1000);
+                }
+            }
 
-                            @Override
-                            public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
-                                log.error("Failed to execute bulk", failure);
-                            }
-                        }).setBulkActions(-1)
-                .setBulkSize(new ByteSizeValue(12, ByteSizeUnit.MB))
-                .setConcurrentRequests(threads - 1)
-                .build()) {
+            @Override
+            public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+                log.error("Failed to execute bulk", failure);
+            }
+        }).setBulkActions(-1).setConcurrentRequests(threads - 1).build()) {
             consumer.accept(bulkProcessor::add);
             log.info("BulkProcessor awaitClose is {}", bulkProcessor.awaitClose(6, TimeUnit.MINUTES));
         }

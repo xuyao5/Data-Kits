@@ -51,7 +51,7 @@ public final class DisruptorBoost<T> {
     @SafeVarargs
     private final void process(Consumer<RingBuffer<T>> ringBufferConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         Disruptor<T> disruptor = new Disruptor<>(eventFactory, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWith(handlers).then((t, sequence, endOfBatch) -> t = null);
+        disruptor.handleEventsWith(handlers);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
