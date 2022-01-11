@@ -90,7 +90,7 @@ public final class File2EsService extends AbstractExecutor {
             String[] recordArray = StringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
             if (standardFileLine.getLineNo() == 1) {
-                metadataArray[0] = Arrays.stream(recordArray).toArray(String[]::new);
+                metadataArray[0] = recordArray;
                 log.info("索引Mapping:[{}]", Strings.toString(contentBuilder));
                 log.info("文件Metadata行：[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]));
                 if (!isIndexExist) {
