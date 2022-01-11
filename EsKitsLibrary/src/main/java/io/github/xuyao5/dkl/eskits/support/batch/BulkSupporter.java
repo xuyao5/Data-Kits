@@ -14,8 +14,6 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.ByteSizeUnit;
-import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.Serializable;
@@ -87,8 +85,7 @@ public final class BulkSupporter {
                             public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
                                 log.error("Failed to execute bulk", failure);
                             }
-                        }).setBulkActions(-1)
-                .setBulkSize(new ByteSizeValue(12, ByteSizeUnit.MB))
+                        })
                 .setConcurrentRequests(threads - 1)
                 .build()) {
             consumer.accept(bulkProcessor::add);
