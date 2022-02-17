@@ -91,6 +91,16 @@ public final class BulkSupporter {
     }
 
     /**
+     * Bulk Processor
+     *
+     * @param bulkProcessor 自定义处理器
+     * @param consumer      消费者实现
+     */
+    public void bulk(@NonNull BulkProcessor bulkProcessor, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+        consumer.accept(bulkProcessor::add);
+    }
+
+    /**
      * Bulk API
      *
      * @param client   客户端
