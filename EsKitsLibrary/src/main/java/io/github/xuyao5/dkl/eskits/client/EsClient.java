@@ -31,13 +31,13 @@ import static org.elasticsearch.client.RestClientBuilder.*;
 public final class EsClient implements Closeable {
 
     @Getter
-    private final RestHighLevelClient client;
+    private final RestHighLevelClient restHighLevelClient;
 
     @Getter
     private final ElasticsearchClient elasticsearchClient;
 
     public EsClient(@NonNull String[] clientUrls, @NonNull String clientUsername, @NonNull String clientPassword) {
-        client = new RestHighLevelClient(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword));
+        restHighLevelClient = new RestHighLevelClient(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword));
         elasticsearchClient = new ElasticsearchClient(new RestClientTransport(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword).build(), new JacksonJsonpMapper()));
     }
 
@@ -50,8 +50,8 @@ public final class EsClient implements Closeable {
     @SneakyThrows
     @Override
     public void close() {
-        if (Objects.nonNull(client)) {
-            client.close();
+        if (Objects.nonNull(restHighLevelClient)) {
+            restHighLevelClient.close();
         }
     }
 
