@@ -1,5 +1,8 @@
 package io.github.xuyao5.dkl.eskits.client;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.transport.rest_client.RestClientTransport;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -11,6 +14,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.Closeable;
@@ -29,21 +33,18 @@ public final class EsClient implements Closeable {
     @Getter
     private final RestHighLevelClient client;
 
+    @Getter
+    private final ElasticsearchClient elasticsearchClient;
+
     public EsClient(@NonNull String[] clientUrls, @NonNull String clientUsername, @NonNull String clientPassword) {
-        client = getRestHighLevelClient(url2HttpHost(clientUrls), clientUsername, clientPassword);
+        client = new RestHighLevelClient(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword));
+        elasticsearchClient = new ElasticsearchClient(new RestClientTransport(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword).build(), new JacksonJsonpMapper()));
     }
 
-    private RestHighLevelClient getRestHighLevelClient(@NonNull HttpHost[] hosts, @NonNull String username, @NonNull String password) {
+    private RestClientBuilder getRestClientBuilder(@NonNull HttpHost[] hosts, @NonNull String username, @NonNull String password) {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-        return new RestHighLevelClient(RestClient.builder(hosts)
-                .setHttpClientConfigCallback(builder -> builder
-                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * 360)//10*360
-                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * 360)//30*360
-                        .setDefaultCredentialsProvider(credentialsProvider))
-                .setRequestConfigCallback(builder -> builder
-                        .setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS * 360)//1s*360=6min
-                        .setSocketTimeout(DEFAULT_SOCKET_TIMEOUT_MILLIS * 360)));//30s*360=3h
+        return RestClient.builder(hosts).setHttpClientConfigCallback(builder -> builder.setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE * 360).setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL * 360).setDefaultCredentialsProvider(credentialsProvider)).setRequestConfigCallback(builder -> builder.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS * 360).setSocketTimeout(DEFAULT_SOCKET_TIMEOUT_MILLIS * 360));
     }
 
     @SneakyThrows
