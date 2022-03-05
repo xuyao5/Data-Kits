@@ -56,6 +56,29 @@ public final class BulkSupporter {
         return new DeleteRequest(index, id);
     }
 
+    public static BulkProcessor buildBulkProcessor(@NonNull RestHighLevelClient client, int threads) {
+        return BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener), new BulkProcessor.Listener() {
+            @Override
+            public void beforeBulk(long executionId, BulkRequest request) {
+                log.info("Executing bulk [{}] with {} requests", executionId, request.numberOfActions());
+            }
+
+            @Override
+            public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+                if (response.hasFailures()) {
+                    log.warn("Bulk [{}] executed with {}", executionId, response.buildFailureMessage());
+                } else {
+                    log.info("Bulk [{}] completed in {} seconds", executionId, response.getTook().getMillis() / 1000);
+                }
+            }
+
+            @Override
+            public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+                log.error("Failed to execute bulk", failure);
+            }
+        }, "default-bulk-processor").setConcurrentRequests(threads - 1).build();
+    }
+
     /**
      * Bulk Processor
      *
