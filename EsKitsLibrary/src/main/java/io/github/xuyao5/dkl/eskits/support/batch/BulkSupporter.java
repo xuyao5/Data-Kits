@@ -107,7 +107,7 @@ public final class BulkSupporter {
             public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
                 log.error("Failed to execute bulk", failure);
             }
-        }).setConcurrentRequests(threads - 1).build()) {
+        }, "default-bulk-processor").setConcurrentRequests(threads - 1).build()) {
             consumer.accept(bulkProcessor::add);
             log.info("BulkProcessor awaitClose is {}", bulkProcessor.awaitClose(6, TimeUnit.MINUTES));
         }
