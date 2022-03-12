@@ -120,7 +120,7 @@
                 <plugin>
                     <groupId>org.mybatis.generator</groupId>
                     <artifactId>mybatis-generator-maven-plugin</artifactId>
-                    <version>1.4.0</version>
+                    <version>1.4.1</version>
                     <configuration>
                         <configurationFile>${basedir}/src/test/resources/generatorConfig.xml</configurationFile>
                         <overwrite>true</overwrite>
