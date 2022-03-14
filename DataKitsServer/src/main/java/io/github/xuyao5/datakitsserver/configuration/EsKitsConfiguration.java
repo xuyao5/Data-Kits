@@ -29,6 +29,6 @@ public class EsKitsConfiguration {
 
     @Bean(destroyMethod = "close")
     public BulkProcessor bulkProcessor(@Autowired RestHighLevelClient restHighLevelClient, @Value("${es.bulk.threads}") int threads) {
-        return BulkSupporter.buildBulkProcessor(restHighLevelClient, threads);
+        return BulkSupporter.buildBulkProcessor(restHighLevelClient, "my-bulk-processor", threads);
     }
 }
