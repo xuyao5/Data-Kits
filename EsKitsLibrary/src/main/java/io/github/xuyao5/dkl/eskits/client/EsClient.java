@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.client;
 
+import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
@@ -34,11 +35,19 @@ public final class EsClient implements Closeable {
     private final RestHighLevelClient restHighLevelClient;
 
     @Getter
+    private final RestClientTransport restClientTransport;
+
+    @Getter
     private final ElasticsearchClient elasticsearchClient;
+
+    @Getter
+    private final ElasticsearchAsyncClient elasticsearchAsyncClient;
 
     public EsClient(@NonNull String[] clientUrls, @NonNull String clientUsername, @NonNull String clientPassword) {
         restHighLevelClient = new RestHighLevelClient(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword));
-        elasticsearchClient = new ElasticsearchClient(new RestClientTransport(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword).build(), new JacksonJsonpMapper()));
+        restClientTransport = new RestClientTransport(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword).build(), new JacksonJsonpMapper());
+        elasticsearchClient = new ElasticsearchClient(restClientTransport);
+        elasticsearchAsyncClient = new ElasticsearchAsyncClient(restClientTransport);
     }
 
     private RestClientBuilder getRestClientBuilder(@NonNull HttpHost[] hosts, @NonNull String username, @NonNull String password) {
