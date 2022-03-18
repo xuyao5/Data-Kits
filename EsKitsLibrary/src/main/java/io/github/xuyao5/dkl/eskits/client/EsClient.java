@@ -35,9 +35,6 @@ public final class EsClient implements Closeable {
     private final RestHighLevelClient restHighLevelClient;
 
     @Getter
-    private final RestClientTransport restClientTransport;
-
-    @Getter
     private final ElasticsearchClient elasticsearchClient;
 
     @Getter
@@ -45,9 +42,9 @@ public final class EsClient implements Closeable {
 
     public EsClient(@NonNull String[] clientUrls, @NonNull String clientUsername, @NonNull String clientPassword) {
         restHighLevelClient = new RestHighLevelClient(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword));
-        restClientTransport = new RestClientTransport(getRestClientBuilder(url2HttpHost(clientUrls), clientUsername, clientPassword).build(), new JacksonJsonpMapper());
-        elasticsearchClient = new ElasticsearchClient(restClientTransport);
-        elasticsearchAsyncClient = new ElasticsearchAsyncClient(restClientTransport);
+        RestClientTransport transport = new RestClientTransport(restHighLevelClient.getLowLevelClient(), new JacksonJsonpMapper());
+        elasticsearchClient = new ElasticsearchClient(transport);
+        elasticsearchAsyncClient = new ElasticsearchAsyncClient(transport);
     }
 
     private RestClientBuilder getRestClientBuilder(@NonNull HttpHost[] hosts, @NonNull String username, @NonNull String password) {
