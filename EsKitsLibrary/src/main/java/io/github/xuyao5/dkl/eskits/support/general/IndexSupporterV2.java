@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support.general;
 
+import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import lombok.AccessLevel;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -22,6 +25,17 @@ public final class IndexSupporterV2 {
 
     @SneakyThrows
     public CreateIndexResponse create(@NonNull ElasticsearchClient client, @NonNull String index) {
+        return client.indices()
+                .create(createIndexBuilder -> createIndexBuilder
+                        .index(index)
+                        .aliases("foo", aliasBuilder -> aliasBuilder
+                                .isWriteIndex(true)
+                        )
+                );
+    }
+
+    @SneakyThrows
+    public CompletableFuture<CreateIndexResponse> create(@NonNull ElasticsearchAsyncClient client, @NonNull String index) {
         return client.indices()
                 .create(createIndexBuilder -> createIndexBuilder
                         .index(index)
