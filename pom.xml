@@ -39,7 +39,8 @@
     <properties>
         <revision>0.10</revision>
         <maven.test.skip>true</maven.test.skip>
-        <elasticsearch.version>7.16.3</elasticsearch.version>
+        <elasticsearch.version>7.16.2</elasticsearch.version>
+        <jakarta-json.version>2.0.1</jakarta-json.version>
     </properties>
 
     <dependencies>
@@ -60,7 +61,7 @@
             <dependency>
                 <groupId>co.elastic.clients</groupId>
                 <artifactId>elasticsearch-java</artifactId>
-                <version>8.1.0</version>
+                <version>7.16.3</version>
             </dependency>
             <dependency>
                 <groupId>com.lmax</groupId>
