@@ -91,8 +91,7 @@ public final class File2EsService extends AbstractExecutor {
 
             if (standardFileLine.getLineNo() == 1) {
                 metadataArray[0] = recordArray;
-                log.info("索引Mapping:[{}]", Strings.toString(contentBuilder));
-                log.info("文件Metadata行：[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]));
+                log.info("文件Metadata行：[{}],索引Mapping:[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]), Strings.toString(contentBuilder));
                 if (!isIndexExist) {
                     Map<String, String> indexSorting = fieldsList.stream()
                             .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
@@ -119,7 +118,7 @@ public final class File2EsService extends AbstractExecutor {
                             FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnClassMap.get(metadataArray[0][i])), true);
                         }
                     } else {
-                        log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在", standardFileLine, metadataArray[0][i]);
+                        log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在,注:带有BOM的txt/csv文件也会引起此问题", standardFileLine, metadataArray[0][i]);
                     }
                 }
 
