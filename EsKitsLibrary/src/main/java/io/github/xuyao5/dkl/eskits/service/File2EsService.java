@@ -147,6 +147,8 @@ public final class File2EsService extends AbstractExecutor {
                 count.increment();
             }
         }));
+
+        contentBuilder.close();
         return count.longValue();
     }
 
