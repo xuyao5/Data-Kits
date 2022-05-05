@@ -63,7 +63,7 @@ public final class File2EsService extends AbstractExecutor {
         }
 
         if (config.getIdColumn() < 0) {
-            log.warn("由于ID列被配置为[{}]，将无法用主键列更新索引", config.getIdColumn());
+            log.warn("由于ID列号被配置为[{}]，系统将自动分配doc_id，此操作将导致无法用主键列更新索引", config.getIdColumn());
         }
 
         //检查索引是否存在
