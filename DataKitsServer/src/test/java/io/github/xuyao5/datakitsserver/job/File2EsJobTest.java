@@ -28,20 +28,20 @@ final class File2EsJobTest extends AbstractTest {
     @SneakyThrows
     @Test
     void genTestData() {
-        String fileName = "/Users/xuyao/Downloads/INT_DISRUPTOR_3000w_T_20220414_00.txt";
+        String fileName = "/Users/xuyao/Downloads/INT_DISRUPTOR_1w_T_20220519_00.txt";
 
         char split = 0x1E;
         File file = Files.newFile(fileName);
 
-        FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(Strings.concat("UUID", split, "CASH_AMOUNT", split, "DESC", split, "DATE_TIME_1", split, "DATE_TIME_2", split, "GEO")), true);
-        for (int y = 0; y < 3000; y++) {
+        FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(Strings.concat("UUID", split, "CASH_AMOUNT", split, "DESC1", split, "DESC2", split, "DATE_TIME_1", split, "DATE_TIME_2", split, "GEO")), true);
+        for (int y = 0; y < 1; y++) {
             String[] content = new String[10000];
             for (int i = 0; i < content.length; i++) {
-                content[i] = Strings.concat(snowflake.nextId(), split, RandomUtilsPlus.getFloat(), split, RandomStringUtils.randomAlphabetic(10), split, System.currentTimeMillis(), split, "2021-03-21" + StringUtils.SPACE + "07:08:09", split, "-36.856548404328464, 174.76484348757847");
+                content[i] = Strings.concat(snowflake.nextId(), split, RandomUtilsPlus.getFloat(), split, RandomStringUtils.randomAlphabetic(3), split, RandomStringUtils.randomAlphabetic(10), split, System.currentTimeMillis(), split, "2021-03-21" + StringUtils.SPACE + "07:08:09", split, "-36.856548404328464, 174.76484348757847");
             }
             FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), Lists.list(content), true);
         }
 
-        Files.newFile("/Users/xuyao/Downloads/P_DISRUPTOR_3000w_T_20220414_00.log");
+        Files.newFile("/Users/xuyao/Downloads/P_DISRUPTOR_1w_T_20220519_00.log");
     }
 }

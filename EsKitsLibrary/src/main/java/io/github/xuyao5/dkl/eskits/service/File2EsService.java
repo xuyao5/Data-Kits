@@ -94,8 +94,8 @@ public final class File2EsService extends AbstractExecutor {
                 log.info("文件Metadata行：[{}],索引Mapping:[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]), Strings.toString(contentBuilder));
                 if (!isIndexExist) {
                     Map<String, String> indexSorting = fieldsList.stream()
-                            .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
-                            .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).priority()))
+                            .filter(field -> field.getDeclaredAnnotation(FileField.class).sortPriority() >= 0)
+                            .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).sortPriority()))
                             .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
                     int numberOfDataNodes = config.getPriShards() > 0 ? config.getPriShards() : ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();//自动计算主分片
                     log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
