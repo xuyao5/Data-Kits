@@ -98,7 +98,7 @@ public final class MySQL2EsService extends AbstractExecutor {
         final LongAdder count = new LongAdder();
 
         DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
-        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArgEvent(StandardMySQLRow::of, translator -> eventConsumer(config, translator), (sequence, standardMySQLRow) -> errorConsumer(config, standardMySQLRow), false, (standardMySQLRow, sequence, endOfBatch) -> {
+        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArgEvent(StandardMySQLRow::of, translator -> eventConsumer(config, translator), (standardMySQLRow, sequence) -> errorConsumer(config, standardMySQLRow), false, (standardMySQLRow, sequence, endOfBatch) -> {
             EventHeaderV4 eventHeader = standardMySQLRow.getEvent().getHeader();
             EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {
