@@ -8,7 +8,7 @@ import lombok.NonNull;
  * @version 5/07/21 00:52
  */
 @FunctionalInterface
-public interface EventZeroArg<E> {
+public interface ZeroArgEvent<E> {
 
     void translate(@NonNull EventTranslator<E> translator);
 }

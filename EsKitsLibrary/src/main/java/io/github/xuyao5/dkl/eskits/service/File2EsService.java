@@ -4,7 +4,7 @@ import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
+import io.github.xuyao5.dkl.eskits.context.disruptor.TwoArgEvent;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
@@ -161,7 +161,7 @@ public final class File2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    private void eventConsumer(File2EsConfig config, EventTwoArg<StandardFileLine> consumer) {
+    private void eventConsumer(File2EsConfig config, TwoArgEvent<StandardFileLine> consumer) {
         AtomicLong lineCount = new AtomicLong();
         try (LineIterator lineIterator = FileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
             while (lineIterator.hasNext()) {

@@ -7,7 +7,7 @@ import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
+import io.github.xuyao5.dkl.eskits.context.disruptor.TwoArgEvent;
 import io.github.xuyao5.dkl.eskits.dao.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
@@ -235,7 +235,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    private void eventConsumer(MySQL2EsConfig config, EventTwoArg<StandardMySQLRow> consumer) {
+    private void eventConsumer(MySQL2EsConfig config, TwoArgEvent<StandardMySQLRow> consumer) {
         AtomicInteger rowCount = new AtomicInteger();
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(

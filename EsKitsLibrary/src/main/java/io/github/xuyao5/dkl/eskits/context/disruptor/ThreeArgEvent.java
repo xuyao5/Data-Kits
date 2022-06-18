@@ -8,7 +8,7 @@ import lombok.NonNull;
  * @version 5/07/21 00:52
  */
 @FunctionalInterface
-public interface EventThreeArg<E> {
+public interface ThreeArgEvent<E> {
 
     <A, B, C> void translate(@NonNull EventTranslatorThreeArg<E, A, B, C> translator, @NonNull A arg0, @NonNull B arg1, @NonNull C arg2);
 }

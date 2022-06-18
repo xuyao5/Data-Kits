@@ -24,27 +24,27 @@ public final class DisruptorBoost<T> {
     private int bufferSize = 1_024;
 
     @SafeVarargs
-    public final void processZeroArgEvent(Consumer<EventZeroArg<T>> eventZeroArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+    public final void processZeroArgEvent(Consumer<ZeroArgEvent<T>> eventZeroArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventZeroArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    public final void processOneArgEvent(Consumer<EventOneArg<T>> eventOneArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+    public final void processOneArgEvent(Consumer<OneArgEvent<T>> eventOneArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventOneArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    public final void processTwoArgEvent(Consumer<EventTwoArg<T>> eventTwoArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+    public final void processTwoArgEvent(Consumer<TwoArgEvent<T>> eventTwoArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventTwoArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    public final void processThreeArgEvent(Consumer<EventThreeArg<T>> eventThreeArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+    public final void processThreeArgEvent(Consumer<ThreeArgEvent<T>> eventThreeArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventThreeArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    public final void processVarargEvent(Consumer<EventVararg<T>> eventVarargConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+    public final void processVarargEvent(Consumer<VarargEvent<T>> eventVarargConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         process(ringBuffer -> eventVarargConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
     }
 
