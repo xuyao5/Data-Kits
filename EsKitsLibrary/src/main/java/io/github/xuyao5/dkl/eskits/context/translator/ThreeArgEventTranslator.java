@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.context.event;
+package io.github.xuyao5.dkl.eskits.context.translator;
 
 import com.lmax.disruptor.EventTranslatorThreeArg;
 import lombok.NonNull;
@@ -8,7 +8,7 @@ import lombok.NonNull;
  * @version 5/07/21 00:52
  */
 @FunctionalInterface
-public interface ThreeArgEvent<E> {
+public interface ThreeArgEventTranslator<E> {
 
     <A, B, C> void translate(@NonNull EventTranslatorThreeArg<E, A, B, C> translator, @NonNull A arg0, @NonNull B arg1, @NonNull C arg2);
 }

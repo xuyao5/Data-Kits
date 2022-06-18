@@ -3,7 +3,7 @@ package io.github.xuyao5.dkl.eskits.service;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
-import io.github.xuyao5.dkl.eskits.context.event.OneArgEvent;
+import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
@@ -53,7 +53,7 @@ public final class ModifyByScrollService extends AbstractExecutor {
         DisruptorBoost.<T>context().create().processOneArgEvent(document, consumer -> eventConsumer(config, consumer), (sequence, t) -> log.error(t.toString()), true, (standardDocument, sequence, endOfBatch) -> compute.accept(standardDocument));
     }
 
-    private void eventConsumer(ModifyByScrollConfig config, OneArgEvent<? extends BaseDocument> event) {
+    private void eventConsumer(ModifyByScrollConfig config, OneArgEventTranslator<? extends BaseDocument> event) {
         ScrollSupporter.getInstance().scroll(client, searchHits -> {
             for (SearchHit documentFields : searchHits) {
                 event.translate((standardDocument, sequence, searchHit) -> {

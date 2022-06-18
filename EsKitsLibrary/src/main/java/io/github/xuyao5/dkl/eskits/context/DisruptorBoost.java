@@ -4,9 +4,9 @@ import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import io.github.xuyao5.dkl.eskits.context.event.*;
 import io.github.xuyao5.dkl.eskits.context.handler.EventExceptionHandler;
 import io.github.xuyao5.dkl.eskits.context.producer.EventProducer;
+import io.github.xuyao5.dkl.eskits.context.translator.*;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,23 +24,23 @@ public final class DisruptorBoost<T> {
     @Builder.Default
     private int bufferSize = 1_024 * 4;
 
-    public void processZeroArgEvent(EventFactory<T> eventFactory, Consumer<ZeroArgEvent<T>> eventZeroArgConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
+    public void processZeroArgEvent(EventFactory<T> eventFactory, Consumer<ZeroArgEventTranslator<T>> eventZeroArgConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
         process(eventFactory, ringBuffer -> eventZeroArgConsumer.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
-    public void processOneArgEvent(EventFactory<T> eventFactory, Consumer<OneArgEvent<T>> eventOneArgConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
+    public void processOneArgEvent(EventFactory<T> eventFactory, Consumer<OneArgEventTranslator<T>> eventOneArgConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
         process(eventFactory, ringBuffer -> eventOneArgConsumer.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
-    public void processTwoArgEvent(EventFactory<T> eventFactory, Consumer<TwoArgEvent<T>> eventTwoArgConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
+    public void processTwoArgEvent(EventFactory<T> eventFactory, Consumer<TwoArgEventTranslator<T>> eventTwoArgConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
         process(eventFactory, ringBuffer -> eventTwoArgConsumer.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
-    public void processThreeArgEvent(EventFactory<T> eventFactory, Consumer<ThreeArgEvent<T>> eventThreeArgConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
+    public void processThreeArgEvent(EventFactory<T> eventFactory, Consumer<ThreeArgEventTranslator<T>> eventThreeArgConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
         process(eventFactory, ringBuffer -> eventThreeArgConsumer.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
-    public void processVarargEvent(EventFactory<T> eventFactory, Consumer<VarargEvent<T>> eventVarargConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
+    public void processVarargEvent(EventFactory<T> eventFactory, Consumer<VarargEventTranslator<T>> eventVarargConsumer, EventExceptionHandler<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T> handlers) {
         process(eventFactory, ringBuffer -> eventVarargConsumer.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
