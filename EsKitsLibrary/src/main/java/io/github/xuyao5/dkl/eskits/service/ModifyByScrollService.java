@@ -53,10 +53,10 @@ public final class ModifyByScrollService extends AbstractExecutor {
         DisruptorBoost.<T>context().create().processOneArgEvent(consumer -> eventConsumer(config, consumer), (sequence, t) -> log.error(t.toString()), document, true, (standardDocument, sequence, endOfBatch) -> compute.accept(standardDocument));
     }
 
-    private void eventConsumer(ModifyByScrollConfig config, OneArgEvent<? extends BaseDocument> consumer) {
+    private void eventConsumer(ModifyByScrollConfig config, OneArgEvent<? extends BaseDocument> event) {
         ScrollSupporter.getInstance().scroll(client, searchHits -> {
             for (SearchHit documentFields : searchHits) {
-                consumer.translate((standardDocument, sequence, searchHit) -> {
+                event.translate((standardDocument, sequence, searchHit) -> {
                     try {
                         BeanUtils.copyProperties(standardDocument, GsonUtilsPlus.json2Obj(searchHit.getSourceAsString(), standardDocument.getClass()));
                         standardDocument.set_id(searchHit.getId());

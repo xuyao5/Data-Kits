@@ -161,11 +161,11 @@ public final class File2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    private void eventConsumer(File2EsConfig config, TwoArgEvent<StandardFileLine> consumer) {
+    private void eventConsumer(File2EsConfig config, TwoArgEvent<StandardFileLine> event) {
         AtomicLong lineCount = new AtomicLong();
         try (LineIterator lineIterator = FileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
             while (lineIterator.hasNext()) {
-                consumer.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
+                event.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
                     standardFileLine.setLineNo(lineNo);
                     standardFileLine.setLineRecord(lineRecord);
                 }, lineCount.incrementAndGet(), lineIterator.nextLine());
