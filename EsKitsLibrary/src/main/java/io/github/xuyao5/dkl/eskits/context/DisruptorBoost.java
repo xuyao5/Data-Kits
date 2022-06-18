@@ -6,6 +6,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.event.*;
 import io.github.xuyao5.dkl.eskits.context.handler.EventExceptionHandler;
+import io.github.xuyao5.dkl.eskits.context.producer.EventProducer;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
