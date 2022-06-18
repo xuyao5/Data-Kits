@@ -23,23 +23,28 @@ public final class DisruptorBoost<T> {
     @Builder.Default
     private int bufferSize = 1_024 * 4;
 
-    public void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
+    @SafeVarargs
+    public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
-    public void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
+    @SafeVarargs
+    public final void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
-    public void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
+    @SafeVarargs
+    public final void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
-    public void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
+    @SafeVarargs
+    public final void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
-    public void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
+    @SafeVarargs
+    public final void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, new AggregateEventHandler<>(handlers));
     }
 
