@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 public final class DisruptorBoost<T> {
 
     @Builder.Default
-    private int bufferSize = 1_024;
+    private int bufferSize = 1_024 * 4;
 
     @SafeVarargs
     public final void processZeroArgEvent(Consumer<ZeroArgEvent<T>> eventZeroArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
