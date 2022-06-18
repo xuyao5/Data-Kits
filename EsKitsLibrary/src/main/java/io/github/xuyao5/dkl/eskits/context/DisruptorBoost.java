@@ -8,11 +8,11 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.event.*;
+import io.github.xuyao5.dkl.eskits.context.handler.EventExceptionHandler;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -27,39 +27,39 @@ public final class DisruptorBoost<T> {
     private int bufferSize = 1_024 * 4;
 
     @SafeVarargs
-    public final void processZeroArgEvent(Consumer<ZeroArgEvent<T>> eventZeroArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
-        process(ringBuffer -> eventZeroArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
+    public final void processZeroArgEvent(Consumer<ZeroArgEvent<T>> eventZeroArgConsumer, EventExceptionHandler<T> exceptionHandler, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+        process(ringBuffer -> eventZeroArgConsumer.accept(ringBuffer::publishEvent), exceptionHandler, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    public final void processOneArgEvent(Consumer<OneArgEvent<T>> eventOneArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
-        process(ringBuffer -> eventOneArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
+    public final void processOneArgEvent(Consumer<OneArgEvent<T>> eventOneArgConsumer, EventExceptionHandler<T> exceptionHandler, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+        process(ringBuffer -> eventOneArgConsumer.accept(ringBuffer::publishEvent), exceptionHandler, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    public final void processTwoArgEvent(Consumer<TwoArgEvent<T>> eventTwoArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
-        process(ringBuffer -> eventTwoArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
+    public final void processTwoArgEvent(Consumer<TwoArgEvent<T>> eventTwoArgConsumer, EventExceptionHandler<T> exceptionHandler, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+        process(ringBuffer -> eventTwoArgConsumer.accept(ringBuffer::publishEvent), exceptionHandler, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    public final void processThreeArgEvent(Consumer<ThreeArgEvent<T>> eventThreeArgConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
-        process(ringBuffer -> eventThreeArgConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
+    public final void processThreeArgEvent(Consumer<ThreeArgEvent<T>> eventThreeArgConsumer, EventExceptionHandler<T> exceptionHandler, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+        process(ringBuffer -> eventThreeArgConsumer.accept(ringBuffer::publishEvent), exceptionHandler, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    public final void processVarargEvent(Consumer<VarargEvent<T>> eventVarargConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
-        process(ringBuffer -> eventVarargConsumer.accept(ringBuffer::publishEvent), errorConsumer, eventFactory, isShutdownFinally, handlers);
+    public final void processVarargEvent(Consumer<VarargEvent<T>> eventVarargConsumer, EventExceptionHandler<T> exceptionHandler, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+        process(ringBuffer -> eventVarargConsumer.accept(ringBuffer::publishEvent), exceptionHandler, eventFactory, isShutdownFinally, handlers);
     }
 
     @SafeVarargs
-    private final void process(EventProducer<T> eventProducer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+    private final void process(EventProducer<T> eventProducer, EventExceptionHandler<T> exceptionHandler, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         Disruptor<T> disruptor = new Disruptor<>(eventFactory, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers).then((t, sequence, endOfBatch) -> t = null);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
                 log.error(StringUtils.join(sequence, '|', t), throwable);
-                errorConsumer.accept(sequence, t);
+                exceptionHandler.handle(sequence, t);
             }
 
             @Override
