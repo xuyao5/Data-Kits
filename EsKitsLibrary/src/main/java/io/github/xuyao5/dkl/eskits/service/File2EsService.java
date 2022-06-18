@@ -82,7 +82,7 @@ public final class File2EsService extends AbstractExecutor {
         //执行计数器
         final LongAdder count = new LongAdder();
 
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArgEvent(StandardFileLine::of, consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), true, (standardFileLine, sequence, endOfBatch) -> {
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArgEvent(StandardFileLine::of, translator -> eventConsumer(config, translator), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), true, (standardFileLine, sequence, endOfBatch) -> {
             if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
                 return;
             }
@@ -161,11 +161,11 @@ public final class File2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    private void eventConsumer(File2EsConfig config, TwoArgEventTranslator<StandardFileLine> event) {
+    private void eventConsumer(File2EsConfig config, TwoArgEventTranslator<StandardFileLine> translator) {
         AtomicLong lineCount = new AtomicLong();
         try (LineIterator lineIterator = FileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
             while (lineIterator.hasNext()) {
-                event.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
+                translator.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
                     standardFileLine.setLineNo(lineNo);
                     standardFileLine.setLineRecord(lineRecord);
                 }, lineCount.incrementAndGet(), lineIterator.nextLine());

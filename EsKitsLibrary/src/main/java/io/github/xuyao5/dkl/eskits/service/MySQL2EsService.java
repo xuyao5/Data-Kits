@@ -98,7 +98,7 @@ public final class MySQL2EsService extends AbstractExecutor {
         final LongAdder count = new LongAdder();
 
         DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
-        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArgEvent(StandardMySQLRow::of, consumer -> eventConsumer(config, consumer), (sequence, standardMySQLRow) -> errorConsumer(config, standardMySQLRow), false, (standardMySQLRow, sequence, endOfBatch) -> {
+        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArgEvent(StandardMySQLRow::of, translator -> eventConsumer(config, translator), (sequence, standardMySQLRow) -> errorConsumer(config, standardMySQLRow), false, (standardMySQLRow, sequence, endOfBatch) -> {
             EventHeaderV4 eventHeader = standardMySQLRow.getEvent().getHeader();
             EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {
@@ -235,7 +235,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    private void eventConsumer(MySQL2EsConfig config, TwoArgEventTranslator<StandardMySQLRow> consumer) {
+    private void eventConsumer(MySQL2EsConfig config, TwoArgEventTranslator<StandardMySQLRow> translator) {
         AtomicInteger rowCount = new AtomicInteger();
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
@@ -245,7 +245,7 @@ public final class MySQL2EsService extends AbstractExecutor {
         );
         BinaryLogClient binaryLogClient = new BinaryLogClient(hostname, port, schema, username, password);
         binaryLogClient.setEventDeserializer(eventDeserializer);
-        binaryLogClient.registerEventListener(EVENT -> consumer.translate((standardMySQLRow, sequence, count, event) -> {
+        binaryLogClient.registerEventListener(EVENT -> translator.translate((standardMySQLRow, sequence, count, event) -> {
             standardMySQLRow.setRowNo(count);
             standardMySQLRow.setEvent(event);
         }, rowCount.incrementAndGet(), EVENT));
