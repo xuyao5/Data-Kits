@@ -4,7 +4,7 @@ import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
-import io.github.xuyao5.dkl.eskits.context.disruptor.TwoArgEvent;
+import io.github.xuyao5.dkl.eskits.context.event.TwoArgEvent;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;

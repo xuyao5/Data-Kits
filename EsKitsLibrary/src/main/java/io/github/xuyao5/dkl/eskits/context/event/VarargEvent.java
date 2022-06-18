@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.context.disruptor;
+package io.github.xuyao5.dkl.eskits.context.event;
 
 import com.lmax.disruptor.EventTranslatorVararg;
 import lombok.NonNull;

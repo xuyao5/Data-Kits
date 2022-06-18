@@ -3,7 +3,7 @@ package io.github.xuyao5.dkl.eskits.service;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
-import io.github.xuyao5.dkl.eskits.context.disruptor.OneArgEvent;
+import io.github.xuyao5.dkl.eskits.context.event.OneArgEvent;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
