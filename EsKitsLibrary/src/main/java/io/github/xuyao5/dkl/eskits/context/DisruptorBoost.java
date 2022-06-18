@@ -1,6 +1,9 @@
 package io.github.xuyao5.dkl.eskits.context;
 
-import com.lmax.disruptor.*;
+import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.EventHandler;
+import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
@@ -49,7 +52,7 @@ public final class DisruptorBoost<T> {
     }
 
     @SafeVarargs
-    private final void process(Consumer<RingBuffer<T>> ringBufferConsumer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
+    private final void process(EventProducer<T> eventProducer, BiConsumer<Long, ? super T> errorConsumer, EventFactory<T> eventFactory, boolean isShutdownFinally, EventHandler<? super T>... handlers) {
         Disruptor<T> disruptor = new Disruptor<>(eventFactory, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers).then((t, sequence, endOfBatch) -> t = null);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
@@ -71,7 +74,7 @@ public final class DisruptorBoost<T> {
         });
         try {
             disruptor.start();
-            ringBufferConsumer.accept(disruptor.getRingBuffer());
+            eventProducer.produce(disruptor.getRingBuffer());
         } finally {
             if (isShutdownFinally) {
                 disruptor.shutdown();
