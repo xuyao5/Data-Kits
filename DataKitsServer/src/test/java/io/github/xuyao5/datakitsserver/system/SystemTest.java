@@ -2,6 +2,9 @@ package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
+import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
+import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
+import io.github.xuyao5.dkl.eskits.service.handler.File2EsEventHandler;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
@@ -28,33 +31,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SystemTest extends AbstractTest {
 
     @SneakyThrows
-    @Test
-    void testQueryBuilder() {
-        SortBuilder scriptSortBuilder = SortBuilders.scriptSort(new Script("Math.random()"), ScriptSortBuilder.ScriptSortType.NUMBER).order(SortOrder.DESC);
-        System.out.println(scriptSortBuilder);
-
-        QueryBuilder nestedQueryBuilder = QueryBuilders.nestedQuery("myPath", QueryBuilders.boolQuery()
-                .filter(QueryBuilders.prefixQuery("scc", "11"))
-                .filter(QueryBuilders.prefixQuery("scc", "92"))
-                .filter(QueryBuilders.prefixQuery("scc", "20"))
-                .filter(QueryBuilders.prefixQuery("scc", "23"))
-                .filter(QueryBuilders.rangeQuery("age").from(20).to(65))
-                .filter(QueryBuilders.termsQuery("org", "1", "2")), ScoreMode.None);
-        System.out.println(nestedQueryBuilder);
-
-        QueryBuilder geoQueryBuilder = QueryBuilders.boolQuery()
-                .must(QueryBuilders.matchAllQuery())
-                .filter(QueryBuilders.geoBoundingBoxQuery("location")
-                        .setCorners(10, 12, 8, 16)
-                        .type(GeoExecType.INDEXED));
-        System.out.println(geoQueryBuilder);
-
-        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
-                .query(QueryBuilders.matchAllQuery())
-                .from(0)
-                .size(1000)
-                .sort(SortBuilders.fieldSort("id").order(SortOrder.ASC));
-        System.out.println(searchSourceBuilder);
+    public static void main(String[] args) {
+        DisruptorBoost.<StandardFileLine>context().create().processZeroArgEvent(StandardFileLine::of, translator -> {
+            for (int i = 0; i < 50; i++) {
+                translator.translate((standardFileLine, l) -> {
+                    standardFileLine.setLineNo(System.currentTimeMillis());
+                    standardFileLine.setLineRecord(DateUtilsPlus.now().toString());
+                });
+            }
+        }, (standardFileLine, value) -> {
+        }, true, new File2EsEventHandler(10));
     }
 
     @Test
@@ -118,5 +104,21 @@ public class SystemTest extends AbstractTest {
         System.out.println(GsonUtilsPlus.isJsonString(json));
         Serializable serializable = GsonUtilsPlus.json2Obj(json, ConcurrentHashMap.class);
         System.out.println(serializable);
+    }
+
+    @SneakyThrows
+    @Test
+    void testQueryBuilder() {
+        SortBuilder scriptSortBuilder = SortBuilders.scriptSort(new Script("Math.random()"), ScriptSortBuilder.ScriptSortType.NUMBER).order(SortOrder.DESC);
+        System.out.println(scriptSortBuilder);
+
+        QueryBuilder nestedQueryBuilder = QueryBuilders.nestedQuery("myPath", QueryBuilders.boolQuery().filter(QueryBuilders.prefixQuery("scc", "11")).filter(QueryBuilders.prefixQuery("scc", "92")).filter(QueryBuilders.prefixQuery("scc", "20")).filter(QueryBuilders.prefixQuery("scc", "23")).filter(QueryBuilders.rangeQuery("age").from(20).to(65)).filter(QueryBuilders.termsQuery("org", "1", "2")), ScoreMode.None);
+        System.out.println(nestedQueryBuilder);
+
+        QueryBuilder geoQueryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchAllQuery()).filter(QueryBuilders.geoBoundingBoxQuery("location").setCorners(10, 12, 8, 16).type(GeoExecType.INDEXED));
+        System.out.println(geoQueryBuilder);
+
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.matchAllQuery()).from(0).size(1000).sort(SortBuilders.fieldSort("id").order(SortOrder.ASC));
+        System.out.println(searchSourceBuilder);
     }
 }
