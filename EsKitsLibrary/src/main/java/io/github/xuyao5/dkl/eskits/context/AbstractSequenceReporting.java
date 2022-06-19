@@ -10,7 +10,7 @@ import java.util.List;
  * @author Thomas.XU(xuyao)
  * @version 18/06/22 21:32
  */
-public abstract class SequenceReportingHandler<T> implements SequenceReportingEventHandler<T> {
+public abstract class AbstractSequenceReporting<T> implements SequenceReportingEventHandler<T> {
 
     private final int PROGRESS_THRESHOLD;
 
@@ -22,7 +22,7 @@ public abstract class SequenceReportingHandler<T> implements SequenceReportingEv
 
     protected abstract void processEvent(List<T> list) throws Exception;
 
-    public SequenceReportingHandler(int limit) {
+    protected AbstractSequenceReporting(int limit) {
         PROGRESS_THRESHOLD = limit;
         list = new ArrayList<>(PROGRESS_THRESHOLD);
         batchRemaining = PROGRESS_THRESHOLD;

@@ -30,17 +30,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class SystemTest extends AbstractTest {
 
-    @SneakyThrows
-    public static void main(String[] args) {
+    @Test
+    void eventTest() {
         DisruptorBoost.<StandardFileLine>context().create().processZeroArgEvent(StandardFileLine::of, translator -> {
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 100000; i++) {
                 translator.translate((standardFileLine, l) -> {
                     standardFileLine.setLineNo(System.currentTimeMillis());
                     standardFileLine.setLineRecord(DateUtilsPlus.now().toString());
                 });
             }
         }, (standardFileLine, value) -> {
-        }, true, new File2EsEventHandler(10));
+        }, true, new File2EsEventHandler(1000));
     }
 
     @Test
