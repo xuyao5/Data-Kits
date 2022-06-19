@@ -3,17 +3,22 @@ package io.github.xuyao5.dkl.eskits.context;
 import com.lmax.disruptor.LifecycleAware;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceReportingEventHandler;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Thomas.XU(xuyao)
  * @version 18/06/22 21:32
  */
+@Slf4j
 public abstract class AbstractSequenceReporting<T> implements SequenceReportingEventHandler<T>, LifecycleAware {
 
-    private final int PROGRESS_THRESHOLD;
+    private final int THRESHOLD;
+
+    private final AtomicLong COUNTER;
 
     private List<T> list;
 
@@ -24,7 +29,8 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
     protected abstract void processEvent(List<T> list) throws Exception;
 
     protected AbstractSequenceReporting(int limit) {
-        PROGRESS_THRESHOLD = limit;
+        THRESHOLD = limit;
+        COUNTER = new AtomicLong();
     }
 
     @Override
@@ -44,6 +50,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
         if (isBatch) {
             try {
                 processEvent(list);
+                log.info("Process {}@{} current/total[{}/{}]", getClass().getSimpleName(), Thread.currentThread().getId(), list.size(), COUNTER.addAndGet(list.size()));
             } finally {
                 if (!list.isEmpty()) {
                     list.clear();
@@ -51,17 +58,19 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
             }
         }
 
-        batchRemaining = isBatch ? PROGRESS_THRESHOLD : batchRemaining;
+        batchRemaining = isBatch ? THRESHOLD : batchRemaining;
     }
 
     @Override
     public void onStart() {
-        list = new ArrayList<>(PROGRESS_THRESHOLD);
-        batchRemaining = PROGRESS_THRESHOLD;
+        list = new ArrayList<>(THRESHOLD);
+        batchRemaining = THRESHOLD;
+        log.info("Start {}@{}, THRESHOLD [{}]", getClass().getSimpleName(), Thread.currentThread().getId(), THRESHOLD);
     }
 
     @Override
     public void onShutdown() {
         list = null;
+        log.info("Shutdown {}@{}, total [{}]", getClass().getSimpleName(), Thread.currentThread().getId(), COUNTER.get());
     }
 }

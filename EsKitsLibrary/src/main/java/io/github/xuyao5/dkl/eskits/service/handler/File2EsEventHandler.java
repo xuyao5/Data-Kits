@@ -3,9 +3,7 @@ package io.github.xuyao5.dkl.eskits.service.handler;
 import io.github.xuyao5.dkl.eskits.context.AbstractSequenceReporting;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,6 +20,6 @@ public class File2EsEventHandler extends AbstractSequenceReporting<StandardFileL
     @Override
     protected void processEvent(List<StandardFileLine> list) {
         Thread.sleep(100);
-        System.out.println(StringUtils.joinWith("|", list.size(), Arrays.toString(list.toArray())));
+//        System.out.println(StringUtils.joinWith("|", list.size(), Arrays.toString(list.toArray())));
     }
 }
