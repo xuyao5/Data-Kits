@@ -33,14 +33,14 @@ public class SystemTest extends AbstractTest {
     @Test
     void eventTest() {
         DisruptorBoost.<StandardFileLine>context().create().processZeroArgEvent(StandardFileLine::of, translator -> {
-            for (int i = 0; i < 100000; i++) {
+            for (int i = 0; i < 50; i++) {
                 translator.translate((standardFileLine, l) -> {
                     standardFileLine.setLineNo(System.currentTimeMillis());
                     standardFileLine.setLineRecord(DateUtilsPlus.now().toString());
                 });
             }
         }, (standardFileLine, value) -> {
-        }, true, new File2EsEventHandler(1000));
+        }, true, new File2EsEventHandler(20));
     }
 
     @Test

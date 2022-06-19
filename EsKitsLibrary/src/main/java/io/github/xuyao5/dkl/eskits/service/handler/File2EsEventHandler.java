@@ -21,6 +21,7 @@ public class File2EsEventHandler extends AbstractSequenceReporting<StandardFileL
     @SneakyThrows
     @Override
     protected void processEvent(List<StandardFileLine> list) {
+        Thread.sleep(100);
         System.out.println(StringUtils.joinWith("|", list.size(), Arrays.toString(list.toArray())));
     }
 }

@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.context;
 
+import com.lmax.disruptor.LifecycleAware;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceReportingEventHandler;
 
@@ -10,11 +11,11 @@ import java.util.List;
  * @author Thomas.XU(xuyao)
  * @version 18/06/22 21:32
  */
-public abstract class AbstractSequenceReporting<T> implements SequenceReportingEventHandler<T> {
+public abstract class AbstractSequenceReporting<T> implements SequenceReportingEventHandler<T>, LifecycleAware {
 
     private final int PROGRESS_THRESHOLD;
 
-    private final List<T> list;
+    private List<T> list;
 
     private int batchRemaining;
 
@@ -24,8 +25,6 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
 
     protected AbstractSequenceReporting(int limit) {
         PROGRESS_THRESHOLD = limit;
-        list = new ArrayList<>(PROGRESS_THRESHOLD);
-        batchRemaining = PROGRESS_THRESHOLD;
     }
 
     @Override
@@ -46,10 +45,23 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
             try {
                 processEvent(list);
             } finally {
-                list.clear();
+                if (!list.isEmpty()) {
+                    list.clear();
+                }
             }
         }
 
         batchRemaining = isBatch ? PROGRESS_THRESHOLD : batchRemaining;
+    }
+
+    @Override
+    public void onStart() {
+        list = new ArrayList<>(PROGRESS_THRESHOLD);
+        batchRemaining = PROGRESS_THRESHOLD;
+    }
+
+    @Override
+    public void onShutdown() {
+        list = null;
     }
 }
