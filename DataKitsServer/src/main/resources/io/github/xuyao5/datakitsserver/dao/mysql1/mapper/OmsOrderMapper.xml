@@ -26,20 +26,17 @@
     where ID = #{id,jdbcType=BIGINT}
     and APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
   </delete>
-  <insert id="insert" parameterType="io.github.xuyao5.datakitsserver.dao.mysql1.model.OmsOrder">
-    insert into OMS_ORDER (ID, APPLY_DATE, CUST_NO,
-    ORDER_ID, LINE_NO, LINE_RECORD,
-    CREATE_DATE, UPDATE_DATE)
-    values (#{id,jdbcType=BIGINT}, #{applyDate,jdbcType=TIMESTAMP}, #{custNo,jdbcType=VARCHAR},
-    #{orderId,jdbcType=VARCHAR}, #{lineNo,jdbcType=INTEGER}, #{lineRecord,jdbcType=VARCHAR},
-    #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
+  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.mysql1.model.OmsOrder" useGeneratedKeys="true">
+    insert into OMS_ORDER (APPLY_DATE, CUST_NO, ORDER_ID,
+    LINE_NO, LINE_RECORD, CREATE_DATE,
+    UPDATE_DATE)
+    values (#{applyDate,jdbcType=TIMESTAMP}, #{custNo,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},
+    #{lineNo,jdbcType=INTEGER}, #{lineRecord,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+    #{updateDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="io.github.xuyao5.datakitsserver.dao.mysql1.model.OmsOrder">
+  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.mysql1.model.OmsOrder" useGeneratedKeys="true">
     insert into OMS_ORDER
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        ID,
-      </if>
       <if test="applyDate != null">
         APPLY_DATE,
       </if>
@@ -63,9 +60,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="applyDate != null">
         #{applyDate,jdbcType=TIMESTAMP},
       </if>

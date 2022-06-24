@@ -38,6 +38,8 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="OMS_ORDER" enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"/>
+        <table tableName="OMS_ORDER" enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false">
+            <generatedKey column="ID" sqlStatement="JDBC"/>
+        </table>
     </context>
 </generatorConfiguration>
