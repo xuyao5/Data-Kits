@@ -32,12 +32,12 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void eventTest() {
-        DisruptorBoost.<StandardFileLine>context().create().processZeroArgEvent(StandardFileLine::of, translator -> {
+        DisruptorBoost.<StandardFileLine>context().create().processOneArgEvent(StandardFileLine::of, translator -> {
             for (int i = 0; i < 50; i++) {
-                translator.translate((standardFileLine, l) -> {
+                translator.translate((standardFileLine, sequence, count) -> {
                     standardFileLine.setLineNo(System.currentTimeMillis());
                     standardFileLine.setLineRecord(DateUtilsPlus.now().toString());
-                });
+                }, i);
             }
         }, (standardFileLine, value) -> {
         }, true, new File2EsEventHandler(20));
@@ -46,25 +46,6 @@ public class SystemTest extends AbstractTest {
     @Test
     void compress() {
         FileUtilsPlus.getDecisionFiles("/Users/xuyao/Downloads", "^INT_DISRUPTOR_1W_T_20200710_00.txt$", path -> true).forEach(CompressUtilsPlus::createTarGz);
-    }
-
-    @Test
-    void httpFs() {
-//        HttpFsHelper httpFsHelper = new HttpFsHelper("localhost", 14000, "root");
-//        httpFsHelper.mkdirs("/dir1");
-//        System.out.println(httpFsHelper.listStatus("/dir1"));
-//        System.out.println(httpFsHelper.getContentSummary("/dir1"));
-//        System.out.println(httpFsHelper.getFileStatus("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt"));
-//        System.out.println(httpFsHelper.getFileChecksum("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt"));
-//        System.out.println(httpFsHelper.getContentSummary());
-//        System.out.println(httpFsHelper.getFileStatus());
-//        httpFsHelper.create("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt");
-//        int[] compute = httpFsHelper.compute(864682, 64000);
-//        for (int i = 0; i < compute.length; i++) {
-//            System.out.println(compute[i]);
-//        }
-//
-//        httpFsHelper.open("/dir1/INT_DISRUPTOR_1K_T_20200711_00.txt", 0);
     }
 
     @SneakyThrows
