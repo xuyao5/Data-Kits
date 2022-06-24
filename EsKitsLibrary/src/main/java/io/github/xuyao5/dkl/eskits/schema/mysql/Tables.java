@@ -1,393 +1,326 @@
 package io.github.xuyao5.dkl.eskits.schema.mysql;
 
-import javax.annotation.Generated;
 import java.io.Serializable;
 import java.util.Date;
 
 public class Tables implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private static final long serialVersionUID = 1L;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String tableCatalog;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String tableSchema;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String tableName;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String tableType;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String engine;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long version;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String rowFormat;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long tableRows;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long avgRowLength;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long dataLength;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long maxDataLength;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long indexLength;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long dataFree;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long autoIncrement;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date createTime;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date updateTime;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date checkTime;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String tableCollation;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Long checksum;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String createOptions;
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String tableComment;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String tableSchema;
+
+    private String tableName;
+
+    private String tableType;
+
+    private String engine;
+
+    private static final long serialVersionUID = 1L;
+
+    private String rowFormat;
+
+    private Long tableRows;
+
+    private Long avgRowLength;
+
+    private Long dataLength;
+
+    private Long maxDataLength;
+
+    private Long indexLength;
+
+    private Long dataFree;
+
+    private Long autoIncrement;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private Date checkTime;
+
+    private String tableCollation;
+
+    private Long checksum;
+
+    private String createOptions;
+
+    private String tableComment;
+    private Integer version;
+
     public String getTableCatalog() {
         return tableCatalog;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setTableCatalog(String tableCatalog) {
-        this.tableCatalog = tableCatalog == null ? null : tableCatalog.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withTableCatalog(String tableCatalog) {
         this.setTableCatalog(tableCatalog);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTableCatalog(String tableCatalog) {
+        this.tableCatalog = tableCatalog == null ? null : tableCatalog.trim();
+    }
+
     public String getTableSchema() {
         return tableSchema;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setTableSchema(String tableSchema) {
-        this.tableSchema = tableSchema == null ? null : tableSchema.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withTableSchema(String tableSchema) {
         this.setTableSchema(tableSchema);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTableSchema(String tableSchema) {
+        this.tableSchema = tableSchema == null ? null : tableSchema.trim();
+    }
+
     public String getTableName() {
         return tableName;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setTableName(String tableName) {
-        this.tableName = tableName == null ? null : tableName.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withTableName(String tableName) {
         this.setTableName(tableName);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTableName(String tableName) {
+        this.tableName = tableName == null ? null : tableName.trim();
+    }
+
     public String getTableType() {
         return tableType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setTableType(String tableType) {
-        this.tableType = tableType == null ? null : tableType.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withTableType(String tableType) {
         this.setTableType(tableType);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTableType(String tableType) {
+        this.tableType = tableType == null ? null : tableType.trim();
+    }
+
     public String getEngine() {
         return engine;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setEngine(String engine) {
-        this.engine = engine == null ? null : engine.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withEngine(String engine) {
         this.setEngine(engine);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Long getVersion() {
+    public void setEngine(String engine) {
+        this.engine = engine == null ? null : engine.trim();
+    }
+
+    public Integer getVersion() {
         return version;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Tables withVersion(Long version) {
+    public Tables withVersion(Integer version) {
         this.setVersion(version);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     public String getRowFormat() {
         return rowFormat;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setRowFormat(String rowFormat) {
-        this.rowFormat = rowFormat == null ? null : rowFormat.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withRowFormat(String rowFormat) {
         this.setRowFormat(rowFormat);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setRowFormat(String rowFormat) {
+        this.rowFormat = rowFormat == null ? null : rowFormat.trim();
+    }
+
     public Long getTableRows() {
         return tableRows;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setTableRows(Long tableRows) {
-        this.tableRows = tableRows;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withTableRows(Long tableRows) {
         this.setTableRows(tableRows);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTableRows(Long tableRows) {
+        this.tableRows = tableRows;
+    }
+
     public Long getAvgRowLength() {
         return avgRowLength;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setAvgRowLength(Long avgRowLength) {
-        this.avgRowLength = avgRowLength;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withAvgRowLength(Long avgRowLength) {
         this.setAvgRowLength(avgRowLength);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setAvgRowLength(Long avgRowLength) {
+        this.avgRowLength = avgRowLength;
+    }
+
     public Long getDataLength() {
         return dataLength;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setDataLength(Long dataLength) {
-        this.dataLength = dataLength;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withDataLength(Long dataLength) {
         this.setDataLength(dataLength);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setDataLength(Long dataLength) {
+        this.dataLength = dataLength;
+    }
+
     public Long getMaxDataLength() {
         return maxDataLength;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setMaxDataLength(Long maxDataLength) {
-        this.maxDataLength = maxDataLength;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withMaxDataLength(Long maxDataLength) {
         this.setMaxDataLength(maxDataLength);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setMaxDataLength(Long maxDataLength) {
+        this.maxDataLength = maxDataLength;
+    }
+
     public Long getIndexLength() {
         return indexLength;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setIndexLength(Long indexLength) {
-        this.indexLength = indexLength;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withIndexLength(Long indexLength) {
         this.setIndexLength(indexLength);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setIndexLength(Long indexLength) {
+        this.indexLength = indexLength;
+    }
+
     public Long getDataFree() {
         return dataFree;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setDataFree(Long dataFree) {
-        this.dataFree = dataFree;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withDataFree(Long dataFree) {
         this.setDataFree(dataFree);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setDataFree(Long dataFree) {
+        this.dataFree = dataFree;
+    }
+
     public Long getAutoIncrement() {
         return autoIncrement;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setAutoIncrement(Long autoIncrement) {
-        this.autoIncrement = autoIncrement;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withAutoIncrement(Long autoIncrement) {
         this.setAutoIncrement(autoIncrement);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setAutoIncrement(Long autoIncrement) {
+        this.autoIncrement = autoIncrement;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withCreateTime(Date createTime) {
         this.setCreateTime(createTime);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     public Date getUpdateTime() {
         return updateTime;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withUpdateTime(Date updateTime) {
         this.setUpdateTime(updateTime);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public Date getCheckTime() {
         return checkTime;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setCheckTime(Date checkTime) {
-        this.checkTime = checkTime;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withCheckTime(Date checkTime) {
         this.setCheckTime(checkTime);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCheckTime(Date checkTime) {
+        this.checkTime = checkTime;
+    }
+
     public String getTableCollation() {
         return tableCollation;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setTableCollation(String tableCollation) {
-        this.tableCollation = tableCollation == null ? null : tableCollation.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withTableCollation(String tableCollation) {
         this.setTableCollation(tableCollation);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTableCollation(String tableCollation) {
+        this.tableCollation = tableCollation == null ? null : tableCollation.trim();
+    }
+
     public Long getChecksum() {
         return checksum;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setChecksum(Long checksum) {
-        this.checksum = checksum;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withChecksum(Long checksum) {
         this.setChecksum(checksum);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setChecksum(Long checksum) {
+        this.checksum = checksum;
+    }
+
     public String getCreateOptions() {
         return createOptions;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setCreateOptions(String createOptions) {
-        this.createOptions = createOptions == null ? null : createOptions.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withCreateOptions(String createOptions) {
         this.setCreateOptions(createOptions);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCreateOptions(String createOptions) {
+        this.createOptions = createOptions == null ? null : createOptions.trim();
+    }
+
     public String getTableComment() {
         return tableComment;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setTableComment(String tableComment) {
-        this.tableComment = tableComment == null ? null : tableComment.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Tables withTableComment(String tableComment) {
         this.setTableComment(tableComment);
         return this;
     }
 
+    public void setTableComment(String tableComment) {
+        this.tableComment = tableComment == null ? null : tableComment.trim();
+    }
+
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -423,7 +356,6 @@ public class Tables implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -452,7 +384,6 @@ public class Tables implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
