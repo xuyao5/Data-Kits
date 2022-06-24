@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.RowSetDynaClass;
 import org.apache.commons.lang3.StringUtils;
 
-import java.math.BigInteger;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.time.ZoneId;
@@ -46,7 +45,7 @@ public final class InformationSchemaDao {
                 columns.setTableSchema((String) dynaBean.get("table_schema"));
                 columns.setTableName((String) dynaBean.get("table_name"));
                 columns.setColumnName((String) dynaBean.get("column_name"));
-                columns.setOrdinalPosition(((BigInteger) dynaBean.get("ordinal_position")).longValue());
+                columns.setOrdinalPosition((Integer) dynaBean.get("ordinal_position"));
                 columns.setColumnKey((String) dynaBean.get("column_key"));
                 columns.setExtra((String) dynaBean.get("extra"));
                 return columns;
