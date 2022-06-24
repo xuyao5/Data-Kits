@@ -41,8 +41,9 @@ public class Columns implements Serializable {
     private String columnDefault;
 
     private String columnComment;
-    private String columnType;
+
     private String generationExpression;
+    private String columnType;
 
     public String getTableCatalog() {
         return tableCatalog;
