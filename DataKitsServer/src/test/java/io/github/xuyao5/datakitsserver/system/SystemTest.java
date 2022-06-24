@@ -2,9 +2,6 @@ package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
-import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
-import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
-import io.github.xuyao5.dkl.eskits.service.handler.File2EsEventHandler;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
@@ -29,19 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class SystemTest extends AbstractTest {
-
-    @Test
-    void eventTest() {
-        DisruptorBoost.<StandardFileLine>context().create().processOneArgEvent(StandardFileLine::of, translator -> {
-            for (int i = 0; i < 50; i++) {
-                translator.translate((standardFileLine, sequence, count) -> {
-                    standardFileLine.setLineNo(System.currentTimeMillis());
-                    standardFileLine.setLineRecord(DateUtilsPlus.now().toString());
-                }, i);
-            }
-        }, (standardFileLine, value) -> {
-        }, true, new File2EsEventHandler(20));
-    }
 
     @Test
     void compress() {
