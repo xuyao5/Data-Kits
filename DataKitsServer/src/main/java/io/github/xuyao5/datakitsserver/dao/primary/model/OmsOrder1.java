@@ -1,129 +1,121 @@
-package io.github.xuyao5.datakitsserver.dao.mysql1.model;
+package io.github.xuyao5.datakitsserver.dao.primary.model;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class OmsOrder implements Serializable {
-    private Long id;
-
-    private Date applyDate;
-
-    private String custNo;
-
-    private String orderId;
-
-    private Integer lineNo;
-
-    private String lineRecord;
-
-    private Date createDate;
-
-    private Date updateDate;
-
+public class OmsOrder1 implements Serializable {
     private static final long serialVersionUID = 1L;
+    private Long id;
+    private Date applyDate;
+    private String custNo;
+    private String orderId;
+    private Integer lineNo;
+    private String lineRecord;
+    private Date createDate;
+    private Date updateDate;
 
     public Long getId() {
         return id;
-    }
-
-    public OmsOrder withId(Long id) {
-        this.setId(id);
-        return this;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Date getApplyDate() {
-        return applyDate;
+    public OmsOrder1 withId(Long id) {
+        this.setId(id);
+        return this;
     }
 
-    public OmsOrder withApplyDate(Date applyDate) {
-        this.setApplyDate(applyDate);
-        return this;
+    public Date getApplyDate() {
+        return applyDate;
     }
 
     public void setApplyDate(Date applyDate) {
         this.applyDate = applyDate;
     }
 
-    public String getCustNo() {
-        return custNo;
+    public OmsOrder1 withApplyDate(Date applyDate) {
+        this.setApplyDate(applyDate);
+        return this;
     }
 
-    public OmsOrder withCustNo(String custNo) {
-        this.setCustNo(custNo);
-        return this;
+    public String getCustNo() {
+        return custNo;
     }
 
     public void setCustNo(String custNo) {
         this.custNo = custNo == null ? null : custNo.trim();
     }
 
-    public String getOrderId() {
-        return orderId;
+    public OmsOrder1 withCustNo(String custNo) {
+        this.setCustNo(custNo);
+        return this;
     }
 
-    public OmsOrder withOrderId(String orderId) {
-        this.setOrderId(orderId);
-        return this;
+    public String getOrderId() {
+        return orderId;
     }
 
     public void setOrderId(String orderId) {
         this.orderId = orderId == null ? null : orderId.trim();
     }
 
-    public Integer getLineNo() {
-        return lineNo;
+    public OmsOrder1 withOrderId(String orderId) {
+        this.setOrderId(orderId);
+        return this;
     }
 
-    public OmsOrder withLineNo(Integer lineNo) {
-        this.setLineNo(lineNo);
-        return this;
+    public Integer getLineNo() {
+        return lineNo;
     }
 
     public void setLineNo(Integer lineNo) {
         this.lineNo = lineNo;
     }
 
-    public String getLineRecord() {
-        return lineRecord;
+    public OmsOrder1 withLineNo(Integer lineNo) {
+        this.setLineNo(lineNo);
+        return this;
     }
 
-    public OmsOrder withLineRecord(String lineRecord) {
-        this.setLineRecord(lineRecord);
-        return this;
+    public String getLineRecord() {
+        return lineRecord;
     }
 
     public void setLineRecord(String lineRecord) {
         this.lineRecord = lineRecord == null ? null : lineRecord.trim();
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public OmsOrder1 withLineRecord(String lineRecord) {
+        this.setLineRecord(lineRecord);
+        return this;
     }
 
-    public OmsOrder withCreateDate(Date createDate) {
-        this.setCreateDate(createDate);
-        return this;
+    public Date getCreateDate() {
+        return createDate;
     }
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
+    public OmsOrder1 withCreateDate(Date createDate) {
+        this.setCreateDate(createDate);
+        return this;
+    }
+
     public Date getUpdateDate() {
         return updateDate;
     }
 
-    public OmsOrder withUpdateDate(Date updateDate) {
-        this.setUpdateDate(updateDate);
-        return this;
-    }
-
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public OmsOrder1 withUpdateDate(Date updateDate) {
+        this.setUpdateDate(updateDate);
+        return this;
     }
 
     @Override
@@ -137,7 +129,7 @@ public class OmsOrder implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        OmsOrder other = (OmsOrder) that;
+        OmsOrder1 other = (OmsOrder1) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getApplyDate() == null ? other.getApplyDate() == null : this.getApplyDate().equals(other.getApplyDate()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))

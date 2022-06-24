@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder1Mapper">
+    <insert id="mergeSelective" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder2" useGeneratedKeys="true">
+        insert into OMS_ORDER_2
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="applyDate != null">
+                APPLY_DATE,
+            </if>
+            <if test="custNo != null">
+                CUST_NO,
+            </if>
+            <if test="orderId != null">
+                ORDER_ID,
+            </if>
+            <if test="lineNo != null">
+                LINE_NO,
+            </if>
+            <if test="lineRecord != null">
+                LINE_RECORD,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="applyDate != null">
+                #{applyDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="custNo != null">
+                #{custNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="lineNo != null">
+                #{lineNo,jdbcType=INTEGER},
+            </if>
+            <if test="lineRecord != null">
+                #{lineRecord,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+</mapper>
