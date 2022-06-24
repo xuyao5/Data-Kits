@@ -33,16 +33,16 @@ public class Columns implements Serializable {
     private String extra;
 
     private String privileges;
+
+    private Integer srsId;
     private Integer datetimePrecision;
 
-    private String columnDefault;
-    private Integer srsId;
-
-    private String columnType;
     private String dataType;
+    private String columnDefault;
 
-    private String generationExpression;
     private String columnComment;
+    private String columnType;
+    private String generationExpression;
 
     public String getTableCatalog() {
         return tableCatalog;

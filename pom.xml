@@ -94,7 +94,7 @@
                     <artifactId>mybatis-generator-maven-plugin</artifactId>
                     <version>1.4.1</version>
                     <configuration>
-                        <configurationFile>${basedir}/src/test/resources/generatorConfig.xml</configurationFile>
+                        <configurationFile>../MBG.xml</configurationFile>
                         <overwrite>true</overwrite>
                         <includeCompileDependencies>true</includeCompileDependencies>
                     </configuration>
