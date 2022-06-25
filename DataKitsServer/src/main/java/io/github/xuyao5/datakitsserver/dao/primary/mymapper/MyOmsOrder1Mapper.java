@@ -13,5 +13,5 @@ import org.apache.ibatis.session.ResultHandler;
 public interface MyOmsOrder1Mapper {
 
     @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = Integer.MIN_VALUE)
-    void streamQuery(@Param("limit") int limit, ResultHandler<OmsOrder1> handler);
+    void streamQuery(@Param("condition") int condition, ResultHandler<OmsOrder1> handler);
 }

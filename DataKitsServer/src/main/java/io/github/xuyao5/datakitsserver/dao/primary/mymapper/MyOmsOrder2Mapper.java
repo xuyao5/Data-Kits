@@ -1,6 +1,9 @@
 package io.github.xuyao5.datakitsserver.dao.primary.mymapper;
 
 import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder2;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -8,7 +11,5 @@ import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder2;
  */
 public interface MyOmsOrder2Mapper {
 
-//    long mergeSelective(@Param("list") List<OmsOrder2> list);
-
-    long mergeSelective(OmsOrder2 list);
+    void mergeSelective(@Param("orderList") List<OmsOrder2> list);
 }
