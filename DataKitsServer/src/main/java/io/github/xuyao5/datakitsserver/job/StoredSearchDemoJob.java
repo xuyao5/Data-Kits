@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 public final class StoredSearchDemoJob implements Runnable {
 
     @Autowired
-    protected RestHighLevelClient esClient;
+    private RestHighLevelClient esClient;
 
     @Autowired
-    protected EsKitsConfig esKitsConfig;
+    private EsKitsConfig esKitsConfig;
 
     @Override
     public void run() {

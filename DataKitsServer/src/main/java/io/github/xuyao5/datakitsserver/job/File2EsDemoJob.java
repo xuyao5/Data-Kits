@@ -30,10 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class File2EsDemoJob implements Runnable {
 
     @Autowired
-    protected RestHighLevelClient esClient;
+    private RestHighLevelClient esClient;
 
     @Autowired
-    protected EsKitsConfig esKitsConfig;
+    private EsKitsConfig esKitsConfig;
 
     @Override
     public void run() {

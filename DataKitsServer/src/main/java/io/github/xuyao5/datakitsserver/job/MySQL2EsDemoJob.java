@@ -20,10 +20,10 @@ import java.util.function.UnaryOperator;
 public final class MySQL2EsDemoJob implements Runnable {
 
     @Autowired
-    protected RestHighLevelClient esClient;
+    private RestHighLevelClient esClient;
 
     @Autowired
-    protected EsKitsConfig esKitsConfig;
+    private EsKitsConfig esKitsConfig;
 
     @SneakyThrows
     @Override
