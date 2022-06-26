@@ -20,9 +20,6 @@ import java.util.function.ObjLongConsumer;
 @Builder(builderMethodName = "context", buildMethodName = "create")
 public final class DisruptorBoost<T> {
 
-    @Builder.Default
-    private int bufferSize = 1_024 * 4;
-
     @SafeVarargs
     public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, handlers);
@@ -50,7 +47,7 @@ public final class DisruptorBoost<T> {
 
     @SafeVarargs
     private final void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
-        Disruptor<T> disruptor = new Disruptor<>(factory, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        Disruptor<T> disruptor = new Disruptor<>(factory, 4096, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers).then((t, sequence, endOfBatch) -> t = null);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
