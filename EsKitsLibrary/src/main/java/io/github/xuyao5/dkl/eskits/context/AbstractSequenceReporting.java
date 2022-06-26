@@ -16,20 +16,15 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public abstract class AbstractSequenceReporting<T> implements SequenceReportingEventHandler<T>, LifecycleAware {
 
-    private final int THRESHOLD;
+    private final int THRESHOLD = DisruptorBoost.DEFAULT_BUFFER_SIZE;
 
-    private final AtomicLong COUNTER;
+    private final AtomicLong COUNTER = new AtomicLong();
 
     private List<T> list;
 
     private int batchRemaining;
 
     private Sequence sequenceCallback;
-
-    protected AbstractSequenceReporting(int limit) {
-        THRESHOLD = limit;
-        COUNTER = new AtomicLong();
-    }
 
     protected abstract void processEvent(List<T> list) throws Exception;
 

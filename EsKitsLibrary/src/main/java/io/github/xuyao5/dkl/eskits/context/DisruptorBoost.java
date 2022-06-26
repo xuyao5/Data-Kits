@@ -20,6 +20,8 @@ import java.util.function.ObjLongConsumer;
 @Builder(builderMethodName = "context", buildMethodName = "create")
 public final class DisruptorBoost<T> {
 
+    public static final short DEFAULT_BUFFER_SIZE = 4096;
+
     @SafeVarargs
     public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, handlers);

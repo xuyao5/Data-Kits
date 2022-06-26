@@ -34,7 +34,7 @@ public class MyBatisTest extends AbstractTest {
                 //完成关闭
                 true,
                 //事件消费
-                new AbstractSequenceReporting<OmsOrder1>(2000) {
+                new AbstractSequenceReporting<OmsOrder1>() {
                     @Override
                     protected void processEvent(List<OmsOrder1> list) {
                         targetMapper.mergeSelective(list.parallelStream().map(omsOrder1 -> {
