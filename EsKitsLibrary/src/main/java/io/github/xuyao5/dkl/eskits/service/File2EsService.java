@@ -142,9 +142,9 @@ public final class File2EsService extends AbstractExecutor {
                                     document.setCreateDate(DateUtilsPlus.now());
                                     document.setSerialNo(snowflake.nextId());
                                     if (config.getIdColumn() < 0) {
-                                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(document)));
+                                        function.accept(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(document)));
                                     } else {
-                                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
+                                        function.accept(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
                                     }
                                 } else {
                                     if (config.getIdColumn() >= 0) {
@@ -153,7 +153,7 @@ public final class File2EsService extends AbstractExecutor {
                                         updatingDocument.setModifyDate(DateUtilsPlus.now());
                                         document.setCreateDate(DateUtilsPlus.now());
                                         document.setSerialNo(snowflake.nextId());
-                                        function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
+                                        function.accept(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
                                     }
                                 }
 

@@ -42,11 +42,11 @@ public final class ModifyByScrollService extends AbstractExecutor {
     }
 
     public <T extends BaseDocument> void upsertByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), true, (standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)))));
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), true, (standardDocument, sequence, endOfBatch) -> function.accept(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)))));
     }
 
     public <T extends BaseDocument> void deleteByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), true, (standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id()))));
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), true, (standardDocument, sequence, endOfBatch) -> function.accept(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id()))));
     }
 
     public <T extends BaseDocument> void computeByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, Consumer<T> compute) {

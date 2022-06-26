@@ -114,9 +114,9 @@ public final class MySQL2EsService extends AbstractExecutor {
                     List<Serializable> pkList = new ArrayList<>();
                     data.getRows().forEach(objectArray -> {
                         for (int i = 0; i < objectArray.length; i++) {
-                            Field field = tableColumnFieldMap.get(table).get(tableColumnMap.get(table).get(i + 1L));
+                            Field field = tableColumnFieldMap.get(table).get(tableColumnMap.get(table).get(i + 1));
                             if (Objects.nonNull(field) && Objects.nonNull(objectArray[i])) {
-                                if (tablePrimaryMap.get(table).containsKey(i + 1L)) {
+                                if (tablePrimaryMap.get(table).containsKey(i + 1)) {
                                     pkList.add(objectArray[i]);
                                 }
                                 try {
@@ -174,7 +174,7 @@ public final class MySQL2EsService extends AbstractExecutor {
 
                     data.getRows().forEach(objects -> {
                         for (int i = 0; i < objects.length; i++) {
-                            String column = tableColumnMap.get(table).get(i + 1L);
+                            String column = tableColumnMap.get(table).get(i + 1);
                             log.warn("列{}删除数据{}", column, objects[i]);
                         }
                     });
@@ -187,7 +187,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                     data.getRows().forEach(entry -> {
                         if (entry.getKey().length == entry.getValue().length) {
                             for (int i = 0; i < entry.getKey().length; i++) {
-                                String column = tableColumnMap.get(table).get(i + 1L);
+                                String column = tableColumnMap.get(table).get(i + 1);
                                 log.warn("列{}更新前数据{}", column, entry.getKey()[i]);
                                 log.warn("列{}更新后数据{}", column, entry.getValue()[i]);
                             }

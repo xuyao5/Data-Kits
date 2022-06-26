@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
@@ -87,7 +86,7 @@ public final class BulkSupporter {
      * @param consumer 消费者实现
      */
     @SneakyThrows
-    public void bulk(@NonNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    public void bulk(@NonNull RestHighLevelClient client, int threads, Consumer<Consumer<DocWriteRequest<?>>> consumer) {
         try (BulkProcessor bulkProcessor = buildBulkProcessor(client, "default-bulk-processor", threads)) {
             consumer.accept(bulkProcessor::add);
             log.info("BulkProcessor awaitClose is {}", bulkProcessor.awaitClose(6, TimeUnit.MINUTES));
@@ -100,7 +99,7 @@ public final class BulkSupporter {
      * @param bulkProcessor 自定义处理器
      * @param consumer      消费者实现
      */
-    public void bulk(@NonNull BulkProcessor bulkProcessor, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    public void bulk(@NonNull BulkProcessor bulkProcessor, Consumer<Consumer<DocWriteRequest<?>>> consumer) {
         consumer.accept(bulkProcessor::add);
     }
 
