@@ -89,8 +89,6 @@ public final class File2EsService extends AbstractExecutor {
                         translator -> eventConsumer(config, translator),
                         //异常处理
                         (standardFileLine, sequence) -> errorConsumer(config, standardFileLine),
-                        //完成关闭
-                        true,
                         //消费处理
                         (standardFileLine, sequence, endOfBatch) -> {
                             if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {

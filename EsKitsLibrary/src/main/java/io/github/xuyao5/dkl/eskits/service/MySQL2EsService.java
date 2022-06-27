@@ -98,7 +98,7 @@ public final class MySQL2EsService extends AbstractExecutor {
         final LongAdder count = new LongAdder();
 
         DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
-        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArgEvent(StandardMySQLRow::of, translator -> eventConsumer(config, translator), (standardMySQLRow, sequence) -> errorConsumer(config, standardMySQLRow), false, (standardMySQLRow, sequence, endOfBatch) -> {
+        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArgEvent(StandardMySQLRow::of, translator -> eventConsumer(config, translator), (standardMySQLRow, sequence) -> errorConsumer(config, standardMySQLRow), (standardMySQLRow, sequence, endOfBatch) -> {
             EventHeaderV4 eventHeader = standardMySQLRow.getEvent().getHeader();
             EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {
@@ -132,10 +132,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                     IndexSupporter indexSupporter = IndexSupporter.getInstance();
                     final boolean isIndexExist = indexSupporter.exists(client, index);
                     if (!isIndexExist) {
-                        Map<String, String> indexSorting = fieldsListMap.get(table).stream()
-                                .filter(field -> field.getDeclaredAnnotation(TableField.class).priority() > 0)
-                                .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(TableField.class).priority()))
-                                .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(TableField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
+                        Map<String, String> indexSorting = fieldsListMap.get(table).stream().filter(field -> field.getDeclaredAnnotation(TableField.class).priority() > 0).sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(TableField.class).priority())).collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(TableField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
                         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
                         log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
                         if (!indexSorting.isEmpty()) {
@@ -238,8 +235,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     private void eventConsumer(MySQL2EsConfig config, TwoArgEventTranslator<StandardMySQLRow> translator) {
         AtomicInteger rowCount = new AtomicInteger();
         EventDeserializer eventDeserializer = new EventDeserializer();
-        eventDeserializer.setCompatibilityMode(
-                EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
+        eventDeserializer.setCompatibilityMode(EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
 //                StringUtils.toEncodedString()
 //                EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
         );

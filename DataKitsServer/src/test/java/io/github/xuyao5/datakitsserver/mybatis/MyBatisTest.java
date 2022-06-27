@@ -31,8 +31,6 @@ public class MyBatisTest extends AbstractTest {
                 translator -> sourceMapper.streamQuery(1, resultContext -> translator.translate((order, sequence) -> BeanUtils.copyProperties(resultContext.getResultObject(), order))),
                 //错误处理
                 (order, value) -> log.error("异常:{}|{}", value, order),
-                //完成关闭
-                true,
                 //事件消费
                 new AbstractSequenceReporting<OmsOrder1>() {
                     @Override

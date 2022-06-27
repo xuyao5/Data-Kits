@@ -23,32 +23,32 @@ public final class DisruptorBoost<T> {
     public static final short DEFAULT_BUFFER_SIZE = 4096;
 
     @SafeVarargs
-    public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, handlers);
+    public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
     @SafeVarargs
-    public final void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, handlers);
+    public final void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
     @SafeVarargs
-    public final void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, handlers);
+    public final void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
     @SafeVarargs
-    public final void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, handlers);
+    public final void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
     @SafeVarargs
-    public final void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, isShutdownFinally, handlers);
+    public final void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
     @SafeVarargs
-    private final void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, boolean isShutdownFinally, EventHandler<T>... handlers) {
+    private final void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, 4096, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers).then((t, sequence, endOfBatch) -> t = null);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
@@ -71,9 +71,7 @@ public final class DisruptorBoost<T> {
         try {
             eventProducer.accept(disruptor.start());
         } finally {
-            if (isShutdownFinally) {
-                disruptor.shutdown();
-            }
+            disruptor.shutdown();
         }
     }
 }
