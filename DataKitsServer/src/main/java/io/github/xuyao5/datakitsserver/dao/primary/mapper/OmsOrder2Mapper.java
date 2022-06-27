@@ -7,8 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Date;
 
 public interface OmsOrder2Mapper extends MyOmsOrder2Mapper {
-    int deleteByPrimaryKey(@Param("id") Long id, @Param("applyDate") Date applyDate);
-
     int insert(OmsOrder2 row);
 
     int insertSelective(OmsOrder2 row);
