@@ -37,11 +37,11 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="OMS_ORDER_1" enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false">
+        <table tableName="OMS_ORDER_1" enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableDeleteByPrimaryKey="false">
             <property name="rootInterface" value="io.github.xuyao5.datakitsserver.dao.primary.mymapper.MyOmsOrder1Mapper"/>
             <generatedKey column="ID" sqlStatement="JDBC"/>
         </table>
-        <table tableName="OMS_ORDER_2" enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false">
+        <table tableName="OMS_ORDER_2" enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableDeleteByPrimaryKey="false">
             <property name="rootInterface" value="io.github.xuyao5.datakitsserver.dao.primary.mymapper.MyOmsOrder2Mapper"/>
             <generatedKey column="ID" sqlStatement="JDBC"/>
         </table>
