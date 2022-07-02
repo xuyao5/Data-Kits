@@ -6,6 +6,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.translator.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,7 +21,9 @@ import java.util.function.ObjLongConsumer;
 @Builder(builderMethodName = "context", buildMethodName = "create")
 public final class DisruptorBoost<T> {
 
-    public static final short DEFAULT_BUFFER_SIZE = 4096;
+    @Getter
+    @Builder.Default
+    private static short defaultBufferSize = 4096;
 
     @SafeVarargs
     public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
@@ -49,7 +52,7 @@ public final class DisruptorBoost<T> {
 
     @SafeVarargs
     private final void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
-        Disruptor<T> disruptor = new Disruptor<>(factory, 4096, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers).then((t, sequence, endOfBatch) -> t = null);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
