@@ -36,13 +36,16 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
     @Override
     public void onEvent(T t, long sequence, boolean endOfBatch) throws Exception {
         boolean logicalChunkOfWorkComplete = --batchRemaining == 0;
-        boolean isBatch = logicalChunkOfWorkComplete || endOfBatch;
-        if (logicalChunkOfWorkComplete) {
-            sequenceCallback.set(sequence);
+
+        try {
+            list.add(t);
+        } finally {
+            if (logicalChunkOfWorkComplete) {
+                sequenceCallback.set(sequence);
+            }
         }
 
-        list.add(t);
-        if (isBatch) {
+        if (logicalChunkOfWorkComplete || endOfBatch) {
             try {
                 processEvent(list);
                 log.info("Process {}@{} current/total[{}/{}]", getClass().getSimpleName(), Thread.currentThread().getId(), list.size(), COUNTER.addAndGet(list.size()));
@@ -50,10 +53,9 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
                 if (!list.isEmpty()) {
                     list.clear();
                 }
+                batchRemaining = THRESHOLD;
             }
         }
-
-        batchRemaining = isBatch ? THRESHOLD : batchRemaining;
     }
 
     @Override
