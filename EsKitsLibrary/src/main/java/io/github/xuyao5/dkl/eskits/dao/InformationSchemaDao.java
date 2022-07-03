@@ -30,7 +30,7 @@ public final class InformationSchemaDao {
     private final String password;
 
     public InformationSchemaDao(@NonNull String hostname, int port, @NonNull String username, @NonNull String password) {
-        this.url = String.format("jdbc:mysql://%s:%d/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=%s", hostname, port, ZoneId.systemDefault().getId());
+        this.url = String.format("jdbc:mysql://%s:%d/information_schema?useUnicode=true&characterEncoding=utf8&useSSL=false&connectTimeout=3000&socketTimeout=60000&autoReconnect=true&nullCatalogMeansCurrent=true&allowMultiQueries=true&rewriteBatchedStatements=true&serverTimezone=Asia/Shanghai", hostname, port, ZoneId.systemDefault().getId());
         this.username = username;
         this.password = password;
     }
