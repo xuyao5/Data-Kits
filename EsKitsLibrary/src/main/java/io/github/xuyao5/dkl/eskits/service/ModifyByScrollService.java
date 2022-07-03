@@ -3,7 +3,7 @@ package io.github.xuyao5.dkl.eskits.service;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventOneArg;
+import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.service.config.ModifyByScrollConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
@@ -42,21 +42,21 @@ public final class ModifyByScrollService extends AbstractExecutor {
     }
 
     public <T extends BaseDocument> void upsertByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArg(consumer -> eventConsumer(config, consumer), (sequence, t) -> log.error(t.toString()), document, true, (standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)))));
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> function.accept(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)))));
     }
 
     public <T extends BaseDocument> void deleteByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArg(consumer -> eventConsumer(config, consumer), (sequence, t) -> log.error(t.toString()), document, true, (standardDocument, sequence, endOfBatch) -> function.apply(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id()))));
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> function.accept(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id()))));
     }
 
     public <T extends BaseDocument> void computeByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, Consumer<T> compute) {
-        DisruptorBoost.<T>context().create().processOneArg(consumer -> eventConsumer(config, consumer), (sequence, t) -> log.error(t.toString()), document, true, (standardDocument, sequence, endOfBatch) -> compute.accept(standardDocument));
+        DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> compute.accept(standardDocument));
     }
 
-    private void eventConsumer(ModifyByScrollConfig config, EventOneArg<? extends BaseDocument> consumer) {
+    private void eventConsumer(ModifyByScrollConfig config, OneArgEventTranslator<? extends BaseDocument> translator) {
         ScrollSupporter.getInstance().scroll(client, searchHits -> {
             for (SearchHit documentFields : searchHits) {
-                consumer.translate((standardDocument, sequence, searchHit) -> {
+                translator.translate((standardDocument, sequence, searchHit) -> {
                     try {
                         BeanUtils.copyProperties(standardDocument, GsonUtilsPlus.json2Obj(searchHit.getSourceAsString(), standardDocument.getClass()));
                         standardDocument.set_id(searchHit.getId());

@@ -4,7 +4,7 @@ import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
+import io.github.xuyao5.dkl.eskits.context.translator.TwoArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.Strings;
-import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentBuilder;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -63,7 +63,7 @@ public final class File2EsService extends AbstractExecutor {
         }
 
         if (config.getIdColumn() < 0) {
-            log.warn("由于ID列被配置为[{}]，将无法用主键列更新索引", config.getIdColumn());
+            log.warn("由于ID列号被配置为[{}]，系统将自动分配doc_id，此操作将导致无法用主键列更新索引", config.getIdColumn());
         }
 
         //检查索引是否存在
@@ -82,72 +82,84 @@ public final class File2EsService extends AbstractExecutor {
         //执行计数器
         final LongAdder count = new LongAdder();
 
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardFileLine) -> errorConsumer(config, standardFileLine), StandardFileLine::of, true, (standardFileLine, sequence, endOfBatch) -> {
-            if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
-                return;
-            }
+        BulkSupporter.getInstance().bulk(client, bulkThreads,
+                //开始执行
+                function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArgEvent(StandardFileLine::of,
+                        //生产事件
+                        translator -> eventConsumer(config, translator),
+                        //异常处理
+                        (standardFileLine, sequence) -> errorConsumer(config, standardFileLine),
+                        //消费处理
+                        (standardFileLine, sequence, endOfBatch) -> {
+                            if (StringUtils.isBlank(standardFileLine.getLineRecord()) || StringUtils.startsWith(standardFileLine.getLineRecord(), config.getFileComments())) {
+                                return;
+                            }
 
-            String[] recordArray = StringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
+                            String[] recordArray = StringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
 
-            if (standardFileLine.getLineNo() == 1) {
-                metadataArray[0] = recordArray;
-                log.info("索引Mapping:[{}]", Strings.toString(contentBuilder));
-                log.info("文件Metadata行：[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]));
-                if (!isIndexExist) {
-                    Map<String, String> indexSorting = fieldsList.stream()
-                            .filter(field -> field.getDeclaredAnnotation(FileField.class).priority() >= 0)
-                            .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).priority()))
-                            .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
-                    int numberOfDataNodes = config.getPriShards() > 0 ? config.getPriShards() : ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();//自动计算主分片
-                    log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
-                    if (!indexSorting.isEmpty()) {
-                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder, indexSorting);
-                    } else {
-                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder);
-                    }
-                } else {
-                    indexSupporter.putMapping(client, contentBuilder, config.getIndex());
-                    indexSupporter.open(client, config.getIndex());
-                }
-            } else {
-                T document = documentFactory.newInstance();
+                            if (standardFileLine.getLineNo() == 1) {
+                                metadataArray[0] = recordArray;
+                                log.info("文件Metadata行：[{}],索引Mapping:[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]), Strings.toString(contentBuilder));
+                                if (!isIndexExist) {
+                                    Map<String, String> indexSorting = fieldsList.stream()
+                                            //过滤
+                                            .filter(field -> field.getDeclaredAnnotation(FileField.class).sortPriority() >= 0)
+                                            //排序
+                                            .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).sortPriority()))
+                                            //收集
+                                            .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
+                                    int numberOfDataNodes = config.getPriShards() > 0 ? config.getPriShards() : ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();//自动计算主分片
+                                    log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
+                                    if (!indexSorting.isEmpty()) {
+                                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder, indexSorting);
+                                    } else {
+                                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder);
+                                    }
+                                } else {
+                                    indexSupporter.putMapping(client, contentBuilder, config.getIndex());
+                                    indexSupporter.open(client, config.getIndex());
+                                }
+                            } else {
+                                T document = documentFactory.newInstance();
 
-                for (int i = 0; i < metadataArray[0].length; i++) {
-                    Field field = columnFieldMap.get(metadataArray[0][i]);
-                    if (Objects.nonNull(field)) {
-                        if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
-                            FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnClassMap.get(metadataArray[0][i])), true);
-                        }
-                    } else {
-                        log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在", standardFileLine, metadataArray[0][i]);
-                    }
-                }
+                                for (int i = 0; i < metadataArray[0].length; i++) {
+                                    Field field = columnFieldMap.get(metadataArray[0][i]);
+                                    if (Objects.nonNull(field)) {
+                                        if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
+                                            FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnClassMap.get(metadataArray[0][i])), true);
+                                        }
+                                    } else {
+                                        log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在,注:带有BOM的txt/csv文件也会引起此问题", standardFileLine, metadataArray[0][i]);
+                                    }
+                                }
 
-                document.setDateTag(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
-                document.setSourceTag(FilenameUtils.getBaseName(config.getFile().getName()));
+                                document.setDateTag(DateUtilsPlus.format2Date(STD_DATE_FORMAT));
+                                document.setSourceTag(FilenameUtils.getBaseName(config.getFile().getName()));
 
-                if (!isIndexExist) {
-                    document.setCreateDate(DateUtilsPlus.now());
-                    document.setSerialNo(snowflake.nextId());
-                    if (config.getIdColumn() < 0) {
-                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(document)));
-                    } else {
-                        function.apply(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
-                    }
-                } else {
-                    if (config.getIdColumn() >= 0) {
-                        T updatingDocument = documentFactory.newInstance();
-                        BeanUtils.copyProperties(updatingDocument, document);
-                        updatingDocument.setModifyDate(DateUtilsPlus.now());
-                        document.setCreateDate(DateUtilsPlus.now());
-                        document.setSerialNo(snowflake.nextId());
-                        function.apply(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
-                    }
-                }
+                                if (!isIndexExist) {
+                                    document.setCreateDate(DateUtilsPlus.now());
+                                    document.setSerialNo(snowflake.nextId());
+                                    if (config.getIdColumn() < 0) {
+                                        function.accept(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(document)));
+                                    } else {
+                                        function.accept(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
+                                    }
+                                } else {
+                                    if (config.getIdColumn() >= 0) {
+                                        T updatingDocument = documentFactory.newInstance();
+                                        BeanUtils.copyProperties(updatingDocument, document);
+                                        updatingDocument.setModifyDate(DateUtilsPlus.now());
+                                        document.setCreateDate(DateUtilsPlus.now());
+                                        document.setSerialNo(snowflake.nextId());
+                                        function.accept(BulkSupporter.buildUpdateRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(updatingDocument), operator.apply(document)));
+                                    }
+                                }
 
-                count.increment();
-            }
-        }));
+                                count.increment();
+                            }
+                        }));
+
+        contentBuilder.close();
         return count.longValue();
     }
 
@@ -160,11 +172,11 @@ public final class File2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    private void eventConsumer(File2EsConfig config, EventTwoArg<StandardFileLine> consumer) {
+    private void eventConsumer(File2EsConfig config, TwoArgEventTranslator<StandardFileLine> translator) {
         AtomicLong lineCount = new AtomicLong();
         try (LineIterator lineIterator = FileUtils.lineIterator(config.getFile(), config.getCharset().name())) {
             while (lineIterator.hasNext()) {
-                consumer.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
+                translator.translate((standardFileLine, sequence, lineNo, lineRecord) -> {
                     standardFileLine.setLineNo(lineNo);
                     standardFileLine.setLineRecord(lineRecord);
                 }, lineCount.incrementAndGet(), lineIterator.nextLine());

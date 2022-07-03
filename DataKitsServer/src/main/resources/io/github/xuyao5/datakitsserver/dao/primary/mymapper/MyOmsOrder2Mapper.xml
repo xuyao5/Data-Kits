@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder2Mapper">
+    <insert id="mergeSelective" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder2" useGeneratedKeys="true">
+        insert into OMS_ORDER_2
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            APPLY_DATE,
+            CUST_NO,
+            ORDER_ID,
+            LINE_NO,
+            LINE_RECORD,
+            CREATE_DATE,
+            UPDATE_DATE,
+        </trim>
+        <foreach collection="orderList" item="item" separator="," open="values">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.applyDate,jdbcType=TIMESTAMP},
+                #{item.custNo,jdbcType=VARCHAR},
+                #{item.orderId,jdbcType=VARCHAR},
+                #{item.lineNo,jdbcType=INTEGER},
+                #{item.lineRecord,jdbcType=VARCHAR},
+                #{item.createDate,jdbcType=TIMESTAMP},
+                #{item.updateDate,jdbcType=TIMESTAMP},
+            </trim>
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        UPDATE_DATE = NOW()
+    </insert>
+</mapper>

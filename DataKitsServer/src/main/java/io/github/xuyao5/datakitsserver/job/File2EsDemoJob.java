@@ -7,7 +7,6 @@ import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.boost.CleaningSupporter;
-import io.github.xuyao5.dkl.eskits.support.boost.SettingsSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
@@ -31,17 +30,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class File2EsDemoJob implements Runnable {
 
     @Autowired
-    protected RestHighLevelClient esClient;
+    private RestHighLevelClient esClient;
 
     @Autowired
-    protected EsKitsConfig esKitsConfig;
+    private EsKitsConfig esKitsConfig;
 
     @Override
     public void run() {
         String basePath = "/Users/xuyao/Downloads";
 
         Map<String, String> fileMap = new ConcurrentHashMap<>();
-        fileMap.put("FILE2ES_DISRUPTOR", "^INT_DISRUPTOR_100w_T_\\d{8}_\\d{2}.txt$");//可以从配置中读取
+        fileMap.put("FILE2ES_DISRUPTOR", "^INT_DISRUPTOR_1w_T_\\d{8}_\\d{2}.txt$");//可以从配置中读取
 
         fileMap.forEach((alias, filenameRegex) -> FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists()).forEach(file -> {
             //1.索引名称
@@ -53,6 +52,7 @@ public final class File2EsDemoJob implements Runnable {
             //2.写入索引
             File2EsConfig file2EsConfig = File2EsConfig.of(file, index);
             file2EsConfig.setPriShards(1);
+            file2EsConfig.setIdColumn(-1);
             long count = new File2EsService(esClient, esKitsConfig.getEsBulkThreads()).execute(file2EsConfig, MyFileDocument::of, document -> {
                 document.setLocation(new GeoPoint(-41.288837561602826, 174.77854717629864));
                 return document;
@@ -77,8 +77,8 @@ public final class File2EsDemoJob implements Runnable {
                 }
 
                 //6.升副本
-                boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esKitsConfig.getEsIndexReplicas());
-                log.info("索引[{}]升副本返回[{}]", index, isUpdateReplicasSuccess);
+//                boolean isUpdateReplicasSuccess = SettingsSupporter.getInstance().updateNumberOfReplicas(esClient, index, esKitsConfig.getEsIndexReplicas());
+//                log.info("索引[{}]升副本返回[{}]", index, isUpdateReplicasSuccess);
             }
 
             //7.压缩文件

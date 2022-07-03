@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.context.disruptor;
+package io.github.xuyao5.dkl.eskits.context.translator;
 
 import com.lmax.disruptor.EventTranslatorOneArg;
 import lombok.NonNull;
@@ -8,7 +8,7 @@ import lombok.NonNull;
  * @version 5/07/21 00:52
  */
 @FunctionalInterface
-public interface EventOneArg<E> {
+public interface OneArgEventTranslator<E> {
 
     <A> void translate(@NonNull EventTranslatorOneArg<E, A> translator, @NonNull A arg0);
 }

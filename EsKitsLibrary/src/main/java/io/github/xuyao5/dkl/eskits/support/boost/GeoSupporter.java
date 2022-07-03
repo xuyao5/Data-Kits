@@ -13,6 +13,8 @@ import org.elasticsearch.geometry.Circle;
 import org.elasticsearch.index.query.GeoExecType;
 import org.elasticsearch.index.query.QueryBuilders;
 
+import java.util.ArrayList;
+
 /**
  * @author Thomas.XU(xuyao)
  * @version 8/11/21 23:09
@@ -45,7 +47,7 @@ public final class GeoSupporter {
     public SearchResponse geoPolygonQuery(@NonNull RestHighLevelClient client, @NonNull String index) {
         return SearchSupporter.getInstance().search(client, QueryBuilders.boolQuery()
                 .must(QueryBuilders.matchAllQuery())
-                .filter(QueryBuilders.geoPolygonQuery("", null)
+                .filter(QueryBuilders.geoPolygonQuery("", new ArrayList<>())
                         .ignoreUnmapped(false)), 0, 100, index);
     }
 

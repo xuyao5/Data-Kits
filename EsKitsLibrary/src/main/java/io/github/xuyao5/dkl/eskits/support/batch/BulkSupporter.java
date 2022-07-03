@@ -14,13 +14,12 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.xcontent.XContentType;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
@@ -56,16 +55,8 @@ public final class BulkSupporter {
         return new DeleteRequest(index, id);
     }
 
-    /**
-     * Bulk Processor
-     *
-     * @param client   客户端
-     * @param threads  线程数
-     * @param consumer 消费者实现
-     */
-    @SneakyThrows
-    public void bulk(@NonNull RestHighLevelClient client, int threads, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
-        try (BulkProcessor bulkProcessor = BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener), new BulkProcessor.Listener() {
+    public static BulkProcessor buildBulkProcessor(@NonNull RestHighLevelClient client, String name, int threads) {
+        return BulkProcessor.builder((request, bulkListener) -> client.bulkAsync(request, DEFAULT, bulkListener), new BulkProcessor.Listener() {
             @Override
             public void beforeBulk(long executionId, BulkRequest request) {
                 log.info("Executing bulk [{}] with {} requests", executionId, request.numberOfActions());
@@ -84,7 +75,19 @@ public final class BulkSupporter {
             public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
                 log.error("Failed to execute bulk", failure);
             }
-        }).setConcurrentRequests(threads - 1).build()) {
+        }, name).setConcurrentRequests(threads - 1).build();
+    }
+
+    /**
+     * Bulk Processor
+     *
+     * @param client   客户端
+     * @param threads  线程数
+     * @param consumer 消费者实现
+     */
+    @SneakyThrows
+    public void bulk(@NonNull RestHighLevelClient client, int threads, Consumer<Consumer<DocWriteRequest<?>>> consumer) {
+        try (BulkProcessor bulkProcessor = buildBulkProcessor(client, "default-bulk-processor", threads)) {
             consumer.accept(bulkProcessor::add);
             log.info("BulkProcessor awaitClose is {}", bulkProcessor.awaitClose(6, TimeUnit.MINUTES));
         }
@@ -96,7 +99,7 @@ public final class BulkSupporter {
      * @param bulkProcessor 自定义处理器
      * @param consumer      消费者实现
      */
-    public void bulk(@NonNull BulkProcessor bulkProcessor, Consumer<Function<DocWriteRequest<?>, BulkProcessor>> consumer) {
+    public void bulk(@NonNull BulkProcessor bulkProcessor, Consumer<Consumer<DocWriteRequest<?>>> consumer) {
         consumer.accept(bulkProcessor::add);
     }
 

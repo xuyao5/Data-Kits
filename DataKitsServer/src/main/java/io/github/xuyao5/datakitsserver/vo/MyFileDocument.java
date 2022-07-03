@@ -29,12 +29,16 @@ public final class MyFileDocument extends BaseDocument {
     @FileField(column = "CASH_AMOUNT")
     private BigDecimal cashAmount;
 
-    @SerializedName(value = "desc", alternate = {"Desc"})
-    @FileField(column = "DESC", priority = 1, order = DESC)
-    private String desc;
+    @SerializedName(value = "desc1", alternate = {"Desc1"})
+    @FileField(column = "DESC1", sortPriority = -1, order = DESC)
+    private String desc1;
+
+    @SerializedName(value = "desc2", alternate = {"Desc2"})
+    @FileField(column = "DESC2", sortPriority = -1, order = DESC)
+    private StringBuilder desc2;
 
     @SerializedName(value = "dateTime1", alternate = {"DateTime1"})
-    @FileField(column = "DATE_TIME_1", priority = 2, order = ASC)
+    @FileField(column = "DATE_TIME_1", sortPriority = 2, order = ASC)
     private long dateTime1;
 
     @SerializedName(value = "dateTime2", alternate = {"DateTime2"})
@@ -42,7 +46,7 @@ public final class MyFileDocument extends BaseDocument {
     private Date dateTime2;
 
     @SerializedName(value = "discount1", alternate = {"Discount1"})
-    @FileField(priority = 3, order = DESC)
+    @FileField(sortPriority = 3, order = DESC)
     private int discount1;
 
     @SerializedName(value = "discount2", alternate = {"Discount2"})

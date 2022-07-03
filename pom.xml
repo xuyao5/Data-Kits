@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.3</version>
+        <version>2.7.1</version>
         <relativePath/>
     </parent>
     <groupId>io.github.xuyao5</groupId>
@@ -37,9 +37,9 @@
     </modules>
 
     <properties>
-        <revision>0.9</revision>
-        <elasticsearch.version>7.10.2</elasticsearch.version>
+        <revision>0.10</revision>
         <maven.test.skip>true</maven.test.skip>
+        <jakarta-json.version>2.1.0</jakarta-json.version>
     </properties>
 
     <dependencies>
@@ -48,21 +48,20 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.3</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>2.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>co.elastic.clients</groupId>
+                <artifactId>elasticsearch-java</artifactId>
+                <version>8.2.3</version>
+            </dependency>
             <dependency>
                 <groupId>com.lmax</groupId>
                 <artifactId>disruptor</artifactId>
@@ -86,7 +85,7 @@
             <dependency>
                 <groupId>com.zendesk</groupId>
                 <artifactId>mysql-binlog-connector-java</artifactId>
-                <version>0.25.5</version>
+                <version>0.25.6</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -94,6 +93,16 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-maven-plugin</artifactId>
+                    <version>1.4.1</version>
+                    <configuration>
+                        <configurationFile>../MBG.xml</configurationFile>
+                        <overwrite>true</overwrite>
+                        <includeCompileDependencies>true</includeCompileDependencies>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
@@ -119,19 +128,9 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <groupId>org.mybatis.generator</groupId>
-                    <artifactId>mybatis-generator-maven-plugin</artifactId>
-                    <version>1.4.0</version>
-                    <configuration>
-                        <configurationFile>${basedir}/src/test/resources/generatorConfig.xml</configurationFile>
-                        <overwrite>true</overwrite>
-                        <includeCompileDependencies>true</includeCompileDependencies>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.8</version>
+                    <version>1.6.13</version>
                     <extensions>true</extensions>
                     <configuration>
                         <serverId>ossrh</serverId>

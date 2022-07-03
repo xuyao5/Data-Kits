@@ -8,9 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.RowSetDynaClass;
 import org.apache.commons.lang3.StringUtils;
 
-import java.math.BigInteger;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
@@ -40,13 +39,13 @@ public final class InformationSchemaDao {
     public List<Columns> queryColumns(@NonNull String... table) {
         String COLUMNS_QUERY = "SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,COLUMN_KEY,EXTRA FROM COLUMNS WHERE TABLE_NAME in (%s)";
         String sql = String.format(COLUMNS_QUERY, StringUtils.join(Arrays.stream(table).map(s -> StringUtils.wrap(s, APOSTROPHE)).toArray(String[]::new), COMMA));
-        try (ResultSet resultSet = DriverManager.getConnection(url, username, password).prepareStatement(sql).executeQuery()) {
-            return new RowSetDynaClass(resultSet).getRows().stream().map(dynaBean -> {
+        try (PreparedStatement preparedStatement = DriverManager.getConnection(url, username, password).prepareStatement(sql)) {
+            return new RowSetDynaClass(preparedStatement.executeQuery()).getRows().stream().map(dynaBean -> {
                 Columns columns = new Columns();
                 columns.setTableSchema((String) dynaBean.get("table_schema"));
                 columns.setTableName((String) dynaBean.get("table_name"));
                 columns.setColumnName((String) dynaBean.get("column_name"));
-                columns.setOrdinalPosition(((BigInteger) dynaBean.get("ordinal_position")).longValue());
+                columns.setOrdinalPosition((Integer) dynaBean.get("ordinal_position"));
                 columns.setColumnKey((String) dynaBean.get("column_key"));
                 columns.setExtra((String) dynaBean.get("extra"));
                 return columns;
@@ -58,8 +57,8 @@ public final class InformationSchemaDao {
     public List<Tables> queryTables(@NonNull String... table) {
         String COLUMNS_QUERY = "SELECT TABLE_SCHEMA,TABLE_NAME FROM TABLES WHERE TABLE_NAME in (%s)";
         String sql = String.format(COLUMNS_QUERY, StringUtils.join(Arrays.stream(table).map(s -> StringUtils.wrap(s, APOSTROPHE)).toArray(String[]::new), COMMA));
-        try (ResultSet resultSet = DriverManager.getConnection(url, username, password).prepareStatement(sql).executeQuery()) {
-            return new RowSetDynaClass(resultSet).getRows().stream().map(dynaBean -> {
+        try (PreparedStatement preparedStatement = DriverManager.getConnection(url, username, password).prepareStatement(sql)) {
+            return new RowSetDynaClass(preparedStatement.executeQuery()).getRows().stream().map(dynaBean -> {
                 Tables tables = new Tables();
                 tables.setTableSchema((String) dynaBean.get("table_schema"));
                 tables.setTableName((String) dynaBean.get("table_name"));

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder1Mapper">
+    <select id="streamQuery" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from OMS_ORDER_1
+        where APPLY_DATE between #{dateFrom,jdbcType=TIMESTAMP} and #{dateTo,jdbcType=TIMESTAMP}
+    </select>
+</mapper>

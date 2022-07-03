@@ -7,7 +7,7 @@ import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
-import io.github.xuyao5.dkl.eskits.context.disruptor.EventTwoArg;
+import io.github.xuyao5.dkl.eskits.context.translator.TwoArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.dao.InformationSchemaDao;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.mysql.Columns;
@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentBuilder;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -91,14 +91,14 @@ public final class MySQL2EsService extends AbstractExecutor {
 //        final Map<String, Map<String, Class<?>>> tableColumnClassMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Field::getType))));//类型预存
         final Map<String, Tables> tablesMap = getTablesMapRepo(documentFactory.keySet());
         final Map<String, List<Columns>> tableColumnsMap = getTableColumnsMapRepo(documentFactory.keySet());
-        final Map<String, Map<Long, String>> tableColumnMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
-        final Map<String, Map<Long, String>> tablePrimaryMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().filter(columns -> columns.getColumnKey().equalsIgnoreCase("PRI")).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
+        final Map<String, Map<Integer, String>> tableColumnMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
+        final Map<String, Map<Integer, String>> tablePrimaryMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().filter(columns -> columns.getColumnKey().equalsIgnoreCase("PRI")).collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
 
         //执行计数器
         final LongAdder count = new LongAdder();
 
         DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
-        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArg(consumer -> eventConsumer(config, consumer), (sequence, standardMySQLRow) -> errorConsumer(config, standardMySQLRow), StandardMySQLRow::of, false, (standardMySQLRow, sequence, endOfBatch) -> {
+        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArgEvent(StandardMySQLRow::of, translator -> eventConsumer(config, translator), (standardMySQLRow, sequence) -> errorConsumer(config, standardMySQLRow), (standardMySQLRow, sequence, endOfBatch) -> {
             EventHeaderV4 eventHeader = standardMySQLRow.getEvent().getHeader();
             EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {
@@ -114,9 +114,9 @@ public final class MySQL2EsService extends AbstractExecutor {
                     List<Serializable> pkList = new ArrayList<>();
                     data.getRows().forEach(objectArray -> {
                         for (int i = 0; i < objectArray.length; i++) {
-                            Field field = tableColumnFieldMap.get(table).get(tableColumnMap.get(table).get(i + 1L));
+                            Field field = tableColumnFieldMap.get(table).get(tableColumnMap.get(table).get(i + 1));
                             if (Objects.nonNull(field) && Objects.nonNull(objectArray[i])) {
-                                if (tablePrimaryMap.get(table).containsKey(i + 1L)) {
+                                if (tablePrimaryMap.get(table).containsKey(i + 1)) {
                                     pkList.add(objectArray[i]);
                                 }
                                 try {
@@ -132,10 +132,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                     IndexSupporter indexSupporter = IndexSupporter.getInstance();
                     final boolean isIndexExist = indexSupporter.exists(client, index);
                     if (!isIndexExist) {
-                        Map<String, String> indexSorting = fieldsListMap.get(table).stream()
-                                .filter(field -> field.getDeclaredAnnotation(TableField.class).priority() > 0)
-                                .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(TableField.class).priority()))
-                                .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(TableField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
+                        Map<String, String> indexSorting = fieldsListMap.get(table).stream().filter(field -> field.getDeclaredAnnotation(TableField.class).priority() > 0).sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(TableField.class).priority())).collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(TableField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
                         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
                         log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
                         if (!indexSorting.isEmpty()) {
@@ -174,7 +171,7 @@ public final class MySQL2EsService extends AbstractExecutor {
 
                     data.getRows().forEach(objects -> {
                         for (int i = 0; i < objects.length; i++) {
-                            String column = tableColumnMap.get(table).get(i + 1L);
+                            String column = tableColumnMap.get(table).get(i + 1);
                             log.warn("列{}删除数据{}", column, objects[i]);
                         }
                     });
@@ -187,7 +184,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                     data.getRows().forEach(entry -> {
                         if (entry.getKey().length == entry.getValue().length) {
                             for (int i = 0; i < entry.getKey().length; i++) {
-                                String column = tableColumnMap.get(table).get(i + 1L);
+                                String column = tableColumnMap.get(table).get(i + 1);
                                 log.warn("列{}更新前数据{}", column, entry.getKey()[i]);
                                 log.warn("列{}更新后数据{}", column, entry.getValue()[i]);
                             }
@@ -235,17 +232,16 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    private void eventConsumer(MySQL2EsConfig config, EventTwoArg<StandardMySQLRow> consumer) {
+    private void eventConsumer(MySQL2EsConfig config, TwoArgEventTranslator<StandardMySQLRow> translator) {
         AtomicInteger rowCount = new AtomicInteger();
         EventDeserializer eventDeserializer = new EventDeserializer();
-        eventDeserializer.setCompatibilityMode(
-                EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
+        eventDeserializer.setCompatibilityMode(EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
 //                StringUtils.toEncodedString()
 //                EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
         );
         BinaryLogClient binaryLogClient = new BinaryLogClient(hostname, port, schema, username, password);
         binaryLogClient.setEventDeserializer(eventDeserializer);
-        binaryLogClient.registerEventListener(EVENT -> consumer.translate((standardMySQLRow, sequence, count, event) -> {
+        binaryLogClient.registerEventListener(EVENT -> translator.translate((standardMySQLRow, sequence, count, event) -> {
             standardMySQLRow.setRowNo(count);
             standardMySQLRow.setEvent(event);
         }, rowCount.incrementAndGet(), EVENT));
