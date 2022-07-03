@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.ResultHandler;
 
+import java.util.Date;
+
 /**
  * @author Thomas.XU(xuyao)
  * @version 24/06/22 22:26
@@ -13,5 +15,5 @@ import org.apache.ibatis.session.ResultHandler;
 public interface MyOmsOrder1Mapper {
 
     @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = Integer.MIN_VALUE)
-    void streamQuery(@Param("condition") int condition, ResultHandler<OmsOrder1> handler);
+    void streamQuery(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo, ResultHandler<OmsOrder1> handler);
 }
