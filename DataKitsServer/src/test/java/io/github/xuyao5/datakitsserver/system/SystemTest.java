@@ -22,10 +22,28 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATETIME_FORMAT;
 
 @Slf4j
 public class SystemTest extends AbstractTest {
+
+    @Test
+    void splitDateTest() {
+        Date fromDate = DateUtilsPlus.parse2Date("2022-07-02 00:00:11", STD_DATETIME_FORMAT);
+        Date toDate = DateUtilsPlus.parse2Date("2022-07-02 00:00:22", STD_DATETIME_FORMAT);
+        for (int shard = 1; shard <= 20; shard++) {
+            Date[][] dateArray = DateUtilsPlus.dateSharding(fromDate, toDate, shard);
+            System.out.println("开始时间：" + DateUtilsPlus.format2Date(fromDate, STD_DATETIME_FORMAT) + ",结束时间：" + DateUtilsPlus.format2Date(toDate, STD_DATETIME_FORMAT) + ",分片数：" + shard);
+            for (Date[] dates : dateArray) {
+                if (dates[0].before(dates[1]) || dates[0].equals(dates[1])) {
+                    System.out.println(DateUtilsPlus.format2Date(dates[0], STD_DATETIME_FORMAT) + "  ->  " + DateUtilsPlus.format2Date(dates[1], STD_DATETIME_FORMAT) + ",差：" + DateUtilsPlus.secondsPeriod(dates[0], dates[1]) + "秒");
+                }
+            }
+        }
+    }
 
     @Test
     void compress() {

@@ -37,7 +37,7 @@
     </modules>
 
     <properties>
-        <revision>0.10</revision>
+        <revision>0.11</revision>
         <maven.test.skip>true</maven.test.skip>
         <jakarta-json.version>2.1.0</jakarta-json.version>
     </properties>
@@ -53,14 +53,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>co.elastic.clients</groupId>
+                <artifactId>elasticsearch-java</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>2.2.2</version>
-            </dependency>
-            <dependency>
-                <groupId>co.elastic.clients</groupId>
-                <artifactId>elasticsearch-java</artifactId>
-                <version>8.2.3</version>
             </dependency>
             <dependency>
                 <groupId>com.lmax</groupId>
@@ -98,7 +98,7 @@
                     <artifactId>mybatis-generator-maven-plugin</artifactId>
                     <version>1.4.1</version>
                     <configuration>
-                        <configurationFile>../MBG.xml</configurationFile>
+                        <configurationFile>../generatorConfig.xml</configurationFile>
                         <overwrite>true</overwrite>
                         <includeCompileDependencies>true</includeCompileDependencies>
                     </configuration>

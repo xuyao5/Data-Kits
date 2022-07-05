@@ -4,26 +4,22 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class OmsOrder1 implements Serializable {
-    private Long id;
-
-    private Date applyDate;
-
-    private String custNo;
-
-    private String orderId;
-
-    private Integer lineNo;
-
-    private String lineRecord;
-
-    private Date createDate;
-
-    private Date updateDate;
-
     private static final long serialVersionUID = 1L;
+    private Long id;
+    private Date applyDate;
+    private String custNo;
+    private String orderId;
+    private Integer lineNo;
+    private String lineRecord;
+    private Date createDate;
+    private Date updateDate;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public OmsOrder1 withId(Long id) {
@@ -31,12 +27,12 @@ public class OmsOrder1 implements Serializable {
         return this;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Date getApplyDate() {
         return applyDate;
+    }
+
+    public void setApplyDate(Date applyDate) {
+        this.applyDate = applyDate;
     }
 
     public OmsOrder1 withApplyDate(Date applyDate) {
@@ -44,12 +40,12 @@ public class OmsOrder1 implements Serializable {
         return this;
     }
 
-    public void setApplyDate(Date applyDate) {
-        this.applyDate = applyDate;
-    }
-
     public String getCustNo() {
         return custNo;
+    }
+
+    public void setCustNo(String custNo) {
+        this.custNo = custNo == null ? null : custNo.trim();
     }
 
     public OmsOrder1 withCustNo(String custNo) {
@@ -57,12 +53,12 @@ public class OmsOrder1 implements Serializable {
         return this;
     }
 
-    public void setCustNo(String custNo) {
-        this.custNo = custNo == null ? null : custNo.trim();
-    }
-
     public String getOrderId() {
         return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId == null ? null : orderId.trim();
     }
 
     public OmsOrder1 withOrderId(String orderId) {
@@ -70,12 +66,12 @@ public class OmsOrder1 implements Serializable {
         return this;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId == null ? null : orderId.trim();
-    }
-
     public Integer getLineNo() {
         return lineNo;
+    }
+
+    public void setLineNo(Integer lineNo) {
+        this.lineNo = lineNo;
     }
 
     public OmsOrder1 withLineNo(Integer lineNo) {
@@ -83,12 +79,12 @@ public class OmsOrder1 implements Serializable {
         return this;
     }
 
-    public void setLineNo(Integer lineNo) {
-        this.lineNo = lineNo;
-    }
-
     public String getLineRecord() {
         return lineRecord;
+    }
+
+    public void setLineRecord(String lineRecord) {
+        this.lineRecord = lineRecord == null ? null : lineRecord.trim();
     }
 
     public OmsOrder1 withLineRecord(String lineRecord) {
@@ -96,12 +92,12 @@ public class OmsOrder1 implements Serializable {
         return this;
     }
 
-    public void setLineRecord(String lineRecord) {
-        this.lineRecord = lineRecord == null ? null : lineRecord.trim();
-    }
-
     public Date getCreateDate() {
         return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public OmsOrder1 withCreateDate(Date createDate) {
@@ -109,21 +105,17 @@ public class OmsOrder1 implements Serializable {
         return this;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
     public Date getUpdateDate() {
         return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public OmsOrder1 withUpdateDate(Date updateDate) {
         this.setUpdateDate(updateDate);
         return this;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
     }
 
     @Override
