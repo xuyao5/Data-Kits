@@ -4,12 +4,18 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Tables implements Serializable {
-    private static final long serialVersionUID = 1L;
     private String tableCatalog;
+
     private String tableSchema;
+
     private String tableName;
+
     private String tableType;
+
     private String engine;
+
+    private static final long serialVersionUID = 1L;
+
     private String rowFormat;
 
     private Long tableRows;
@@ -45,21 +51,17 @@ public class Tables implements Serializable {
         return tableCatalog;
     }
 
-    public void setTableCatalog(String tableCatalog) {
-        this.tableCatalog = tableCatalog == null ? null : tableCatalog.trim();
-    }
-
     public Tables withTableCatalog(String tableCatalog) {
         this.setTableCatalog(tableCatalog);
         return this;
     }
 
-    public String getTableSchema() {
-        return tableSchema;
+    public void setTableCatalog(String tableCatalog) {
+        this.tableCatalog = tableCatalog == null ? null : tableCatalog.trim();
     }
 
-    public void setTableSchema(String tableSchema) {
-        this.tableSchema = tableSchema == null ? null : tableSchema.trim();
+    public String getTableSchema() {
+        return tableSchema;
     }
 
     public Tables withTableSchema(String tableSchema) {
@@ -67,12 +69,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public String getTableName() {
-        return tableName;
+    public void setTableSchema(String tableSchema) {
+        this.tableSchema = tableSchema == null ? null : tableSchema.trim();
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName == null ? null : tableName.trim();
+    public String getTableName() {
+        return tableName;
     }
 
     public Tables withTableName(String tableName) {
@@ -80,12 +82,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public String getTableType() {
-        return tableType;
+    public void setTableName(String tableName) {
+        this.tableName = tableName == null ? null : tableName.trim();
     }
 
-    public void setTableType(String tableType) {
-        this.tableType = tableType == null ? null : tableType.trim();
+    public String getTableType() {
+        return tableType;
     }
 
     public Tables withTableType(String tableType) {
@@ -93,12 +95,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public String getEngine() {
-        return engine;
+    public void setTableType(String tableType) {
+        this.tableType = tableType == null ? null : tableType.trim();
     }
 
-    public void setEngine(String engine) {
-        this.engine = engine == null ? null : engine.trim();
+    public String getEngine() {
+        return engine;
     }
 
     public Tables withEngine(String engine) {
@@ -106,12 +108,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Integer getVersion() {
-        return version;
+    public void setEngine(String engine) {
+        this.engine = engine == null ? null : engine.trim();
     }
 
-    public void setVersion(Integer version) {
-        this.version = version;
+    public Integer getVersion() {
+        return version;
     }
 
     public Tables withVersion(Integer version) {
@@ -119,12 +121,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public String getRowFormat() {
-        return rowFormat;
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
-    public void setRowFormat(String rowFormat) {
-        this.rowFormat = rowFormat == null ? null : rowFormat.trim();
+    public String getRowFormat() {
+        return rowFormat;
     }
 
     public Tables withRowFormat(String rowFormat) {
@@ -132,12 +134,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Long getTableRows() {
-        return tableRows;
+    public void setRowFormat(String rowFormat) {
+        this.rowFormat = rowFormat == null ? null : rowFormat.trim();
     }
 
-    public void setTableRows(Long tableRows) {
-        this.tableRows = tableRows;
+    public Long getTableRows() {
+        return tableRows;
     }
 
     public Tables withTableRows(Long tableRows) {
@@ -145,12 +147,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Long getAvgRowLength() {
-        return avgRowLength;
+    public void setTableRows(Long tableRows) {
+        this.tableRows = tableRows;
     }
 
-    public void setAvgRowLength(Long avgRowLength) {
-        this.avgRowLength = avgRowLength;
+    public Long getAvgRowLength() {
+        return avgRowLength;
     }
 
     public Tables withAvgRowLength(Long avgRowLength) {
@@ -158,12 +160,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Long getDataLength() {
-        return dataLength;
+    public void setAvgRowLength(Long avgRowLength) {
+        this.avgRowLength = avgRowLength;
     }
 
-    public void setDataLength(Long dataLength) {
-        this.dataLength = dataLength;
+    public Long getDataLength() {
+        return dataLength;
     }
 
     public Tables withDataLength(Long dataLength) {
@@ -171,12 +173,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Long getMaxDataLength() {
-        return maxDataLength;
+    public void setDataLength(Long dataLength) {
+        this.dataLength = dataLength;
     }
 
-    public void setMaxDataLength(Long maxDataLength) {
-        this.maxDataLength = maxDataLength;
+    public Long getMaxDataLength() {
+        return maxDataLength;
     }
 
     public Tables withMaxDataLength(Long maxDataLength) {
@@ -184,12 +186,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Long getIndexLength() {
-        return indexLength;
+    public void setMaxDataLength(Long maxDataLength) {
+        this.maxDataLength = maxDataLength;
     }
 
-    public void setIndexLength(Long indexLength) {
-        this.indexLength = indexLength;
+    public Long getIndexLength() {
+        return indexLength;
     }
 
     public Tables withIndexLength(Long indexLength) {
@@ -197,12 +199,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Long getDataFree() {
-        return dataFree;
+    public void setIndexLength(Long indexLength) {
+        this.indexLength = indexLength;
     }
 
-    public void setDataFree(Long dataFree) {
-        this.dataFree = dataFree;
+    public Long getDataFree() {
+        return dataFree;
     }
 
     public Tables withDataFree(Long dataFree) {
@@ -210,12 +212,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Long getAutoIncrement() {
-        return autoIncrement;
+    public void setDataFree(Long dataFree) {
+        this.dataFree = dataFree;
     }
 
-    public void setAutoIncrement(Long autoIncrement) {
-        this.autoIncrement = autoIncrement;
+    public Long getAutoIncrement() {
+        return autoIncrement;
     }
 
     public Tables withAutoIncrement(Long autoIncrement) {
@@ -223,12 +225,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public void setAutoIncrement(Long autoIncrement) {
+        this.autoIncrement = autoIncrement;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
     public Tables withCreateTime(Date createTime) {
@@ -236,12 +238,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
     public Tables withUpdateTime(Date updateTime) {
@@ -249,12 +251,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Date getCheckTime() {
-        return checkTime;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
-    public void setCheckTime(Date checkTime) {
-        this.checkTime = checkTime;
+    public Date getCheckTime() {
+        return checkTime;
     }
 
     public Tables withCheckTime(Date checkTime) {
@@ -262,12 +264,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public String getTableCollation() {
-        return tableCollation;
+    public void setCheckTime(Date checkTime) {
+        this.checkTime = checkTime;
     }
 
-    public void setTableCollation(String tableCollation) {
-        this.tableCollation = tableCollation == null ? null : tableCollation.trim();
+    public String getTableCollation() {
+        return tableCollation;
     }
 
     public Tables withTableCollation(String tableCollation) {
@@ -275,12 +277,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public Long getChecksum() {
-        return checksum;
+    public void setTableCollation(String tableCollation) {
+        this.tableCollation = tableCollation == null ? null : tableCollation.trim();
     }
 
-    public void setChecksum(Long checksum) {
-        this.checksum = checksum;
+    public Long getChecksum() {
+        return checksum;
     }
 
     public Tables withChecksum(Long checksum) {
@@ -288,12 +290,12 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public String getCreateOptions() {
-        return createOptions;
+    public void setChecksum(Long checksum) {
+        this.checksum = checksum;
     }
 
-    public void setCreateOptions(String createOptions) {
-        this.createOptions = createOptions == null ? null : createOptions.trim();
+    public String getCreateOptions() {
+        return createOptions;
     }
 
     public Tables withCreateOptions(String createOptions) {
@@ -301,17 +303,21 @@ public class Tables implements Serializable {
         return this;
     }
 
-    public String getTableComment() {
-        return tableComment;
+    public void setCreateOptions(String createOptions) {
+        this.createOptions = createOptions == null ? null : createOptions.trim();
     }
 
-    public void setTableComment(String tableComment) {
-        this.tableComment = tableComment == null ? null : tableComment.trim();
+    public String getTableComment() {
+        return tableComment;
     }
 
     public Tables withTableComment(String tableComment) {
         this.setTableComment(tableComment);
         return this;
+    }
+
+    public void setTableComment(String tableComment) {
+        this.tableComment = tableComment == null ? null : tableComment.trim();
     }
 
     @Override

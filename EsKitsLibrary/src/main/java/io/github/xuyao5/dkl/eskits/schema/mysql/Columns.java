@@ -3,11 +3,16 @@ package io.github.xuyao5.dkl.eskits.schema.mysql;
 import java.io.Serializable;
 
 public class Columns implements Serializable {
-    private static final long serialVersionUID = 1L;
     private String tableCatalog;
+
     private String tableSchema;
+
     private String tableName;
+
     private String columnName;
+
+    private static final long serialVersionUID = 1L;
+
     private String isNullable;
 
     private Long characterMaximumLength;
@@ -44,21 +49,17 @@ public class Columns implements Serializable {
         return tableCatalog;
     }
 
-    public void setTableCatalog(String tableCatalog) {
-        this.tableCatalog = tableCatalog == null ? null : tableCatalog.trim();
-    }
-
     public Columns withTableCatalog(String tableCatalog) {
         this.setTableCatalog(tableCatalog);
         return this;
     }
 
-    public String getTableSchema() {
-        return tableSchema;
+    public void setTableCatalog(String tableCatalog) {
+        this.tableCatalog = tableCatalog == null ? null : tableCatalog.trim();
     }
 
-    public void setTableSchema(String tableSchema) {
-        this.tableSchema = tableSchema == null ? null : tableSchema.trim();
+    public String getTableSchema() {
+        return tableSchema;
     }
 
     public Columns withTableSchema(String tableSchema) {
@@ -66,12 +67,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getTableName() {
-        return tableName;
+    public void setTableSchema(String tableSchema) {
+        this.tableSchema = tableSchema == null ? null : tableSchema.trim();
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName == null ? null : tableName.trim();
+    public String getTableName() {
+        return tableName;
     }
 
     public Columns withTableName(String tableName) {
@@ -79,12 +80,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getColumnName() {
-        return columnName;
+    public void setTableName(String tableName) {
+        this.tableName = tableName == null ? null : tableName.trim();
     }
 
-    public void setColumnName(String columnName) {
-        this.columnName = columnName == null ? null : columnName.trim();
+    public String getColumnName() {
+        return columnName;
     }
 
     public Columns withColumnName(String columnName) {
@@ -92,12 +93,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public Integer getOrdinalPosition() {
-        return ordinalPosition;
+    public void setColumnName(String columnName) {
+        this.columnName = columnName == null ? null : columnName.trim();
     }
 
-    public void setOrdinalPosition(Integer ordinalPosition) {
-        this.ordinalPosition = ordinalPosition;
+    public Integer getOrdinalPosition() {
+        return ordinalPosition;
     }
 
     public Columns withOrdinalPosition(Integer ordinalPosition) {
@@ -105,12 +106,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getIsNullable() {
-        return isNullable;
+    public void setOrdinalPosition(Integer ordinalPosition) {
+        this.ordinalPosition = ordinalPosition;
     }
 
-    public void setIsNullable(String isNullable) {
-        this.isNullable = isNullable == null ? null : isNullable.trim();
+    public String getIsNullable() {
+        return isNullable;
     }
 
     public Columns withIsNullable(String isNullable) {
@@ -118,12 +119,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public Long getCharacterMaximumLength() {
-        return characterMaximumLength;
+    public void setIsNullable(String isNullable) {
+        this.isNullable = isNullable == null ? null : isNullable.trim();
     }
 
-    public void setCharacterMaximumLength(Long characterMaximumLength) {
-        this.characterMaximumLength = characterMaximumLength;
+    public Long getCharacterMaximumLength() {
+        return characterMaximumLength;
     }
 
     public Columns withCharacterMaximumLength(Long characterMaximumLength) {
@@ -131,12 +132,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public Long getCharacterOctetLength() {
-        return characterOctetLength;
+    public void setCharacterMaximumLength(Long characterMaximumLength) {
+        this.characterMaximumLength = characterMaximumLength;
     }
 
-    public void setCharacterOctetLength(Long characterOctetLength) {
-        this.characterOctetLength = characterOctetLength;
+    public Long getCharacterOctetLength() {
+        return characterOctetLength;
     }
 
     public Columns withCharacterOctetLength(Long characterOctetLength) {
@@ -144,12 +145,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public Long getNumericPrecision() {
-        return numericPrecision;
+    public void setCharacterOctetLength(Long characterOctetLength) {
+        this.characterOctetLength = characterOctetLength;
     }
 
-    public void setNumericPrecision(Long numericPrecision) {
-        this.numericPrecision = numericPrecision;
+    public Long getNumericPrecision() {
+        return numericPrecision;
     }
 
     public Columns withNumericPrecision(Long numericPrecision) {
@@ -157,12 +158,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public Long getNumericScale() {
-        return numericScale;
+    public void setNumericPrecision(Long numericPrecision) {
+        this.numericPrecision = numericPrecision;
     }
 
-    public void setNumericScale(Long numericScale) {
-        this.numericScale = numericScale;
+    public Long getNumericScale() {
+        return numericScale;
     }
 
     public Columns withNumericScale(Long numericScale) {
@@ -170,12 +171,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public Integer getDatetimePrecision() {
-        return datetimePrecision;
+    public void setNumericScale(Long numericScale) {
+        this.numericScale = numericScale;
     }
 
-    public void setDatetimePrecision(Integer datetimePrecision) {
-        this.datetimePrecision = datetimePrecision;
+    public Integer getDatetimePrecision() {
+        return datetimePrecision;
     }
 
     public Columns withDatetimePrecision(Integer datetimePrecision) {
@@ -183,12 +184,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getCharacterSetName() {
-        return characterSetName;
+    public void setDatetimePrecision(Integer datetimePrecision) {
+        this.datetimePrecision = datetimePrecision;
     }
 
-    public void setCharacterSetName(String characterSetName) {
-        this.characterSetName = characterSetName == null ? null : characterSetName.trim();
+    public String getCharacterSetName() {
+        return characterSetName;
     }
 
     public Columns withCharacterSetName(String characterSetName) {
@@ -196,12 +197,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getCollationName() {
-        return collationName;
+    public void setCharacterSetName(String characterSetName) {
+        this.characterSetName = characterSetName == null ? null : characterSetName.trim();
     }
 
-    public void setCollationName(String collationName) {
-        this.collationName = collationName == null ? null : collationName.trim();
+    public String getCollationName() {
+        return collationName;
     }
 
     public Columns withCollationName(String collationName) {
@@ -209,12 +210,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getColumnKey() {
-        return columnKey;
+    public void setCollationName(String collationName) {
+        this.collationName = collationName == null ? null : collationName.trim();
     }
 
-    public void setColumnKey(String columnKey) {
-        this.columnKey = columnKey == null ? null : columnKey.trim();
+    public String getColumnKey() {
+        return columnKey;
     }
 
     public Columns withColumnKey(String columnKey) {
@@ -222,12 +223,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getExtra() {
-        return extra;
+    public void setColumnKey(String columnKey) {
+        this.columnKey = columnKey == null ? null : columnKey.trim();
     }
 
-    public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+    public String getExtra() {
+        return extra;
     }
 
     public Columns withExtra(String extra) {
@@ -235,12 +236,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getPrivileges() {
-        return privileges;
+    public void setExtra(String extra) {
+        this.extra = extra == null ? null : extra.trim();
     }
 
-    public void setPrivileges(String privileges) {
-        this.privileges = privileges == null ? null : privileges.trim();
+    public String getPrivileges() {
+        return privileges;
     }
 
     public Columns withPrivileges(String privileges) {
@@ -248,12 +249,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public Integer getSrsId() {
-        return srsId;
+    public void setPrivileges(String privileges) {
+        this.privileges = privileges == null ? null : privileges.trim();
     }
 
-    public void setSrsId(Integer srsId) {
-        this.srsId = srsId;
+    public Integer getSrsId() {
+        return srsId;
     }
 
     public Columns withSrsId(Integer srsId) {
@@ -261,12 +262,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getColumnDefault() {
-        return columnDefault;
+    public void setSrsId(Integer srsId) {
+        this.srsId = srsId;
     }
 
-    public void setColumnDefault(String columnDefault) {
-        this.columnDefault = columnDefault == null ? null : columnDefault.trim();
+    public String getColumnDefault() {
+        return columnDefault;
     }
 
     public Columns withColumnDefault(String columnDefault) {
@@ -274,12 +275,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getDataType() {
-        return dataType;
+    public void setColumnDefault(String columnDefault) {
+        this.columnDefault = columnDefault == null ? null : columnDefault.trim();
     }
 
-    public void setDataType(String dataType) {
-        this.dataType = dataType == null ? null : dataType.trim();
+    public String getDataType() {
+        return dataType;
     }
 
     public Columns withDataType(String dataType) {
@@ -287,12 +288,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getColumnType() {
-        return columnType;
+    public void setDataType(String dataType) {
+        this.dataType = dataType == null ? null : dataType.trim();
     }
 
-    public void setColumnType(String columnType) {
-        this.columnType = columnType == null ? null : columnType.trim();
+    public String getColumnType() {
+        return columnType;
     }
 
     public Columns withColumnType(String columnType) {
@@ -300,12 +301,12 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getColumnComment() {
-        return columnComment;
+    public void setColumnType(String columnType) {
+        this.columnType = columnType == null ? null : columnType.trim();
     }
 
-    public void setColumnComment(String columnComment) {
-        this.columnComment = columnComment == null ? null : columnComment.trim();
+    public String getColumnComment() {
+        return columnComment;
     }
 
     public Columns withColumnComment(String columnComment) {
@@ -313,17 +314,21 @@ public class Columns implements Serializable {
         return this;
     }
 
-    public String getGenerationExpression() {
-        return generationExpression;
+    public void setColumnComment(String columnComment) {
+        this.columnComment = columnComment == null ? null : columnComment.trim();
     }
 
-    public void setGenerationExpression(String generationExpression) {
-        this.generationExpression = generationExpression == null ? null : generationExpression.trim();
+    public String getGenerationExpression() {
+        return generationExpression;
     }
 
     public Columns withGenerationExpression(String generationExpression) {
         this.setGenerationExpression(generationExpression);
         return this;
+    }
+
+    public void setGenerationExpression(String generationExpression) {
+        this.generationExpression = generationExpression == null ? null : generationExpression.trim();
     }
 
     @Override
