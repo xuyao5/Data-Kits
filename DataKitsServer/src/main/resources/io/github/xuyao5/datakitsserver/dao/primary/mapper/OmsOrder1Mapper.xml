@@ -1,117 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder1Mapper">
-  <resultMap id="BaseResultMap" type="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
-    <id column="ID" jdbcType="BIGINT" property="id"/>
-    <id column="APPLY_DATE" jdbcType="TIMESTAMP" property="applyDate"/>
-    <result column="CUST_NO" jdbcType="VARCHAR" property="custNo"/>
-    <result column="ORDER_ID" jdbcType="VARCHAR" property="orderId"/>
-    <result column="LINE_NO" jdbcType="INTEGER" property="lineNo"/>
-    <result column="LINE_RECORD" jdbcType="VARCHAR" property="lineRecord"/>
-    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
-    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
-  </resultMap>
-  <sql id="Base_Column_List">
-    ID, APPLY_DATE, CUST_NO, ORDER_ID, LINE_NO, LINE_RECORD, CREATE_DATE, UPDATE_DATE
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
-    from OMS_ORDER_1
-    where ID = #{id,jdbcType=BIGINT}
-    and APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
-  </select>
-  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1" useGeneratedKeys="true">
-    insert into OMS_ORDER_1 (APPLY_DATE, CUST_NO, ORDER_ID,
-    LINE_NO, LINE_RECORD, CREATE_DATE,
-    UPDATE_DATE)
-    values (#{applyDate,jdbcType=TIMESTAMP}, #{custNo,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},
-    #{lineNo,jdbcType=INTEGER}, #{lineRecord,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
-    #{updateDate,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1" useGeneratedKeys="true">
-    insert into OMS_ORDER_1
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="applyDate != null">
-        APPLY_DATE,
-      </if>
-      <if test="custNo != null">
-        CUST_NO,
-      </if>
-      <if test="orderId != null">
-        ORDER_ID,
-      </if>
-      <if test="lineNo != null">
-        LINE_NO,
-      </if>
-      <if test="lineRecord != null">
-        LINE_RECORD,
-      </if>
-      <if test="createDate != null">
-        CREATE_DATE,
-      </if>
-      <if test="updateDate != null">
-        UPDATE_DATE,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="applyDate != null">
-        #{applyDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="custNo != null">
-        #{custNo,jdbcType=VARCHAR},
-      </if>
-      <if test="orderId != null">
-        #{orderId,jdbcType=VARCHAR},
-      </if>
-      <if test="lineNo != null">
-        #{lineNo,jdbcType=INTEGER},
-      </if>
-      <if test="lineRecord != null">
-        #{lineRecord,jdbcType=VARCHAR},
-      </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
-    update OMS_ORDER_1
-    <set>
-      <if test="custNo != null">
-        CUST_NO = #{custNo,jdbcType=VARCHAR},
-      </if>
-      <if test="orderId != null">
+    <resultMap id="BaseResultMap" type="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
+        <id column="ID" jdbcType="BIGINT" property="id"/>
+        <id column="APPLY_DATE" jdbcType="TIMESTAMP" property="applyDate"/>
+        <result column="CUST_NO" jdbcType="VARCHAR" property="custNo"/>
+        <result column="ORDER_ID" jdbcType="VARCHAR" property="orderId"/>
+        <result column="LINE_NO" jdbcType="INTEGER" property="lineNo"/>
+        <result column="LINE_RECORD" jdbcType="VARCHAR" property="lineRecord"/>
+        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, APPLY_DATE, CUST_NO, ORDER_ID, LINE_NO, LINE_RECORD, CREATE_DATE, UPDATE_DATE
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from OMS_ORDER_1
+        where ID = #{id,jdbcType=BIGINT}
+        and APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
+    </select>
+    <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1" useGeneratedKeys="true">
+        insert into OMS_ORDER_1 (APPLY_DATE, CUST_NO, ORDER_ID,
+        LINE_NO, LINE_RECORD, CREATE_DATE,
+        UPDATE_DATE)
+        values (#{applyDate,jdbcType=TIMESTAMP}, #{custNo,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},
+        #{lineNo,jdbcType=INTEGER}, #{lineRecord,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+        #{updateDate,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1" useGeneratedKeys="true">
+        insert into OMS_ORDER_1
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="applyDate != null">
+                APPLY_DATE,
+            </if>
+            <if test="custNo != null">
+                CUST_NO,
+            </if>
+            <if test="orderId != null">
+                ORDER_ID,
+            </if>
+            <if test="lineNo != null">
+                LINE_NO,
+            </if>
+            <if test="lineRecord != null">
+                LINE_RECORD,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="applyDate != null">
+                #{applyDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="custNo != null">
+                #{custNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="lineNo != null">
+                #{lineNo,jdbcType=INTEGER},
+            </if>
+            <if test="lineRecord != null">
+                #{lineRecord,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
+        update OMS_ORDER_1
+        <set>
+            <if test="custNo != null">
+                CUST_NO = #{custNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                ORDER_ID = #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="lineNo != null">
+                LINE_NO = #{lineNo,jdbcType=INTEGER},
+            </if>
+            <if test="lineRecord != null">
+                LINE_RECORD = #{lineRecord,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=BIGINT}
+        and APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
+        update OMS_ORDER_1
+        set CUST_NO = #{custNo,jdbcType=VARCHAR},
         ORDER_ID = #{orderId,jdbcType=VARCHAR},
-      </if>
-      <if test="lineNo != null">
         LINE_NO = #{lineNo,jdbcType=INTEGER},
-      </if>
-      <if test="lineRecord != null">
         LINE_RECORD = #{lineRecord,jdbcType=VARCHAR},
-      </if>
-      <if test="createDate != null">
         CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateDate != null">
-        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where ID = #{id,jdbcType=BIGINT}
-    and APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
-    update OMS_ORDER_1
-    set CUST_NO = #{custNo,jdbcType=VARCHAR},
-    ORDER_ID = #{orderId,jdbcType=VARCHAR},
-    LINE_NO = #{lineNo,jdbcType=INTEGER},
-    LINE_RECORD = #{lineRecord,jdbcType=VARCHAR},
-    CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
-    UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
-    where ID = #{id,jdbcType=BIGINT}
-    and APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
-  </update>
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}
+        where ID = #{id,jdbcType=BIGINT}
+        and APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
+    </update>
 </mapper>
