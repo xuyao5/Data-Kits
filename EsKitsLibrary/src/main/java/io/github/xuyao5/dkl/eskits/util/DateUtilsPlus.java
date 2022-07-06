@@ -88,4 +88,12 @@ public final class DateUtilsPlus {
         }
         return dateArray;
     }
+
+    public static Date firstSecondOfDate(Date date) {
+        return DateUtils.setHours(DateUtils.setMinutes(DateUtils.setSeconds(date, 0), 0), 0);
+    }
+
+    public static Date lastSecondOfDate(Date date) {
+        return DateUtils.setHours(DateUtils.setMinutes(DateUtils.setSeconds(date, 59), 59), 23);
+    }
 }
