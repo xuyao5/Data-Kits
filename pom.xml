@@ -37,7 +37,7 @@
     </modules>
 
     <properties>
-        <revision>0.11</revision>
+        <revision>0.12</revision>
         <maven.test.skip>true</maven.test.skip>
         <jakarta-json.version>2.1.0</jakarta-json.version>
     </properties>
