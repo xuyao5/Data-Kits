@@ -9,7 +9,6 @@ import io.github.xuyao5.dkl.eskits.context.AbstractSequenceReporting;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,8 @@ public class MyBatisTest extends AbstractTest {
 
     @Test
     void mergeTest() {
-        Date toDate = DateUtilsPlus.parse2Date("2022-07-03 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
-        Date fromDate = DateUtils.addMonths(toDate, -30);
+        Date toDate = DateUtilsPlus.parse2Date("2022-07-07 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
+        Date fromDate = DateUtilsPlus.parse2Date("2022-01-01 00:00:00", DateUtilsPlus.STD_DATETIME_FORMAT);
         DisruptorBoost.<OmsOrder1>context().create().processZeroArgEvent(OmsOrder1::new,
                 //事件生产
                 translator -> sourceMapper.streamQuery(fromDate, toDate, resultContext -> translator.translate((order, sequence) -> BeanUtils.copyProperties(resultContext.getResultObject(), order))),
