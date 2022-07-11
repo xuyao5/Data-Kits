@@ -54,7 +54,7 @@
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
                 <configuration>
-                    <contexts>Es-Kits-Server</contexts>
+                    <contexts>Es-Kits-Server-Primary,Es-Kits-Server-Secondary</contexts>
                 </configuration>
             </plugin>
         </plugins>

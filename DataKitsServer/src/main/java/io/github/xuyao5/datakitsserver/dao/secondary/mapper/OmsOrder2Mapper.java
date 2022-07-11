@@ -1,7 +1,7 @@
-package io.github.xuyao5.datakitsserver.dao.primary.mapper;
+package io.github.xuyao5.datakitsserver.dao.secondary.mapper;
 
-import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder2;
-import io.github.xuyao5.datakitsserver.dao.primary.mymapper.MyOmsOrder2Mapper;
+import io.github.xuyao5.datakitsserver.dao.secondary.model.OmsOrder2;
+import io.github.xuyao5.datakitsserver.dao.secondary.mymapper.MyOmsOrder2Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;

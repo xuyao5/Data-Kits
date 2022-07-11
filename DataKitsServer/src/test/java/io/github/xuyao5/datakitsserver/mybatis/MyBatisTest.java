@@ -2,9 +2,9 @@ package io.github.xuyao5.datakitsserver.mybatis;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder1Mapper;
-import io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder2Mapper;
 import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1;
-import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder2;
+import io.github.xuyao5.datakitsserver.dao.secondary.mapper.OmsOrder2Mapper;
+import io.github.xuyao5.datakitsserver.dao.secondary.model.OmsOrder2;
 import io.github.xuyao5.dkl.eskits.context.AbstractSequenceReporting;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;

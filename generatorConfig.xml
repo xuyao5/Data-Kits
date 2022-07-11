@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-    <context id="Es-Kits-Server" defaultModelType="flat" targetRuntime="MyBatis3">
+    <context id="Es-Kits-Server-Primary" defaultModelType="flat" targetRuntime="MyBatis3">
         <property name="autoDelimitKeywords" value="true"/>
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
@@ -19,7 +19,7 @@
 
         <jdbcConnection
                 driverClass="com.mysql.cj.jdbc.Driver"
-                connectionURL="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;connectTimeout=3000&amp;socketTimeout=60000&amp;autoReconnect=true&amp;nullCatalogMeansCurrent=true&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;serverTimezone=Asia/Shanghai"
+                connectionURL="jdbc:mysql://localhost:3306/primary?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;connectTimeout=3000&amp;socketTimeout=60000&amp;autoReconnect=true&amp;nullCatalogMeansCurrent=true&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;serverTimezone=Asia/Shanghai"
                 userId="root"
                 password="123456">
         </jdbcConnection>
@@ -41,8 +41,45 @@
             <property name="rootInterface" value="io.github.xuyao5.datakitsserver.dao.primary.mymapper.MyOmsOrder1Mapper"/>
             <generatedKey column="ID" sqlStatement="JDBC"/>
         </table>
+    </context>
+    <context id="Es-Kits-Server-Secondary" defaultModelType="flat" targetRuntime="MyBatis3">
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.FluentBuilderMethodsPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection
+                driverClass="com.mysql.cj.jdbc.Driver"
+                connectionURL="jdbc:mysql://localhost:3306/secondary?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;connectTimeout=3000&amp;socketTimeout=60000&amp;autoReconnect=true&amp;nullCatalogMeansCurrent=true&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;serverTimezone=Asia/Shanghai"
+                userId="root"
+                password="123456">
+        </jdbcConnection>
+
+        <javaModelGenerator targetPackage="io.github.xuyao5.datakitsserver.dao.secondary.model" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="io.github.xuyao5.datakitsserver.dao.secondary.mapper" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator targetPackage="io.github.xuyao5.datakitsserver.dao.secondary.mapper" targetProject="src/main/java" type="XMLMAPPER">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
         <table tableName="OMS_ORDER_2" enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableDeleteByPrimaryKey="false">
-            <property name="rootInterface" value="io.github.xuyao5.datakitsserver.dao.primary.mymapper.MyOmsOrder2Mapper"/>
+            <property name="rootInterface" value="io.github.xuyao5.datakitsserver.dao.secondary.mymapper.MyOmsOrder2Mapper"/>
             <generatedKey column="ID" sqlStatement="JDBC"/>
         </table>
     </context>
