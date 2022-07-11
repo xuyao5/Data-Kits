@@ -19,7 +19,7 @@ import javax.sql.DataSource;
  * @version 24/06/22 21:52
  */
 @Configuration
-@MapperScan(basePackages = {"io.github.xuyao5.datakitsserver.dao.secondary.mapper"})
+@MapperScan(basePackages = {"io.github.xuyao5.datakitsserver.dao.secondary.mapper"}, sqlSessionTemplateRef = "secondarySqlSessionTemplate")
 public class SecondaryDataSourceConfiguration {
 
     @Bean(name = "secondaryDataSource")
