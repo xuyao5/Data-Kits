@@ -28,7 +28,7 @@ public class MyBatisTest extends AbstractTest {
 
     @Test
     void mergeTest() {
-        Date toDate = DateUtilsPlus.parse2Date("2022-07-07 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
+        Date toDate = DateUtilsPlus.parse2Date("2022-12-31 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
         Date fromDate = DateUtilsPlus.parse2Date("2022-01-01 00:00:00", DateUtilsPlus.STD_DATETIME_FORMAT);
         DisruptorBoost.<OmsOrder1>context().create().processZeroArgEvent(OmsOrder1::new,
                 //事件生产
