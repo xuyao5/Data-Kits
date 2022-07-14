@@ -36,10 +36,10 @@ public class MyBatisTest extends AbstractTest {
                 //错误处理
                 (order, value) -> log.error("异常:{}|{}", value, order),
                 //事件消费
-                new AbstractSequenceReporting<OmsOrder1>() {
+                new AbstractSequenceReporting<OmsOrder1>(5000) {
                     @Override
                     protected void processEvent(List<OmsOrder1> list) {
-                        targetMapper.mergeSelective(list.parallelStream().map(omsOrder1 -> {
+                        targetMapper.mergeSelective(list.stream().map(omsOrder1 -> {
                             OmsOrder2 omsOrder2 = new OmsOrder2();
                             BeanUtils.copyProperties(omsOrder1, omsOrder2);
                             return omsOrder2;

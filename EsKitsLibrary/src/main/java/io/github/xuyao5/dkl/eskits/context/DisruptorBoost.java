@@ -6,7 +6,6 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.github.xuyao5.dkl.eskits.context.translator.*;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,9 +20,8 @@ import java.util.function.ObjLongConsumer;
 @Builder(builderMethodName = "context", buildMethodName = "create")
 public final class DisruptorBoost<T> {
 
-    @Getter
     @Builder.Default
-    private static short defaultBufferSize = 4096;
+    private int defaultBufferSize = 8192;
 
     @SafeVarargs
     public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {

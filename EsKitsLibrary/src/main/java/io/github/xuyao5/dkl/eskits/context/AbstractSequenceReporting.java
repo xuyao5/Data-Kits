@@ -16,9 +16,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public abstract class AbstractSequenceReporting<T> implements SequenceReportingEventHandler<T>, LifecycleAware {
 
-    private final int THRESHOLD = DisruptorBoost.getDefaultBufferSize();
+    private final int THRESHOLD;
 
-    private final AtomicLong COUNTER = new AtomicLong();
+    private AtomicLong counter;//计数器
 
     private List<T> list;
 
@@ -27,6 +27,10 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
     private Sequence sequenceCallback;
 
     protected abstract void processEvent(List<T> list) throws Exception;
+
+    protected AbstractSequenceReporting(int threshold) {
+        THRESHOLD = threshold;
+    }
 
     @Override
     public void setSequenceCallback(Sequence sequence) {
@@ -48,7 +52,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
         if (logicalChunkOfWorkComplete || endOfBatch) {
             try {
                 processEvent(list);
-                log.info("Process {}@{} current/total[{}/{}]", getClass().getSimpleName(), Thread.currentThread().getId(), list.size(), COUNTER.addAndGet(list.size()));
+                log.info("Process {}@{} current/total[{}/{}]", getClass().getSimpleName(), Thread.currentThread().getId(), list.size(), counter.addAndGet(list.size()));
             } finally {
                 if (!list.isEmpty()) {
                     list.clear();
@@ -60,6 +64,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
 
     @Override
     public void onStart() {
+        counter = new AtomicLong();
         list = new ArrayList<>(THRESHOLD);
         batchRemaining = THRESHOLD;
         log.info("Start {}@{}, THRESHOLD [{}]", getClass().getSimpleName(), Thread.currentThread().getId(), THRESHOLD);
@@ -68,6 +73,6 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
     @Override
     public void onShutdown() {
         list = null;
-        log.info("Shutdown {}@{}, total [{}]", getClass().getSimpleName(), Thread.currentThread().getId(), COUNTER.get());
+        log.info("Shutdown {}@{}, total [{}]", getClass().getSimpleName(), Thread.currentThread().getId(), counter.get());
     }
 }
