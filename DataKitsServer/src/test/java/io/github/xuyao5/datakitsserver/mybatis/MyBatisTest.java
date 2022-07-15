@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -92,7 +93,7 @@ public class MyBatisTest extends AbstractTest {
                 omsOrder1 -> {
                     OmsOrder2 omsOrder2 = new OmsOrder2();
                     BeanUtils.copyProperties(omsOrder1, omsOrder2);
-                    targetMapper.insertSelective(omsOrder2);
+                    targetMapper.mergeSelective(Collections.singletonList(omsOrder2));
                 }, 32);
     }
 }
