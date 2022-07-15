@@ -1,6 +1,5 @@
 package io.github.xuyao5.datakitsserver.mybatis;
 
-import com.lmax.disruptor.WorkHandler;
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder1Mapper;
 import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1;
@@ -82,7 +81,6 @@ public class MyBatisTest extends AbstractTest {
 
     @Test
     void workHandlerTest() {
-        WorkHandler<OmsOrder1>[] handlers = new WorkHandler[10];
         Date toDate = DateUtilsPlus.parse2Date("2022-12-31 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
         Date fromDate = DateUtilsPlus.parse2Date("2022-01-01 00:00:00", DateUtilsPlus.STD_DATETIME_FORMAT);
         DisruptorBoost.<OmsOrder1>context().create().processZeroArgEvent(OmsOrder1::new,
@@ -91,6 +89,10 @@ public class MyBatisTest extends AbstractTest {
                 //错误处理
                 (order, value) -> log.error("异常:{}|{}", value, order),
                 //事件消费
-                handlers);
+                omsOrder1 -> {
+                    OmsOrder2 omsOrder2 = new OmsOrder2();
+                    BeanUtils.copyProperties(omsOrder1, omsOrder2);
+                    targetMapper.insertSelective(omsOrder2);
+                }, 32);
     }
 }

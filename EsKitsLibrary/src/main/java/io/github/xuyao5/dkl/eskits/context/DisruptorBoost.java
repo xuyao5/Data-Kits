@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.ObjLongConsumer;
 
@@ -48,28 +50,38 @@ public final class DisruptorBoost<T> {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
-    @SafeVarargs
-    public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+    @SuppressWarnings("unchecked")
+    public void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
+        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
+        Arrays.fill(handlers, handler);
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
-    @SafeVarargs
-    public final void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+    @SuppressWarnings("unchecked")
+    public void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
+        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
+        Arrays.fill(handlers, handler);
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
-    @SafeVarargs
-    public final void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+    @SuppressWarnings("unchecked")
+    public void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
+        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
+        Arrays.fill(handlers, handler);
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
-    @SafeVarargs
-    public final void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+    @SuppressWarnings("unchecked")
+    public void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
+        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
+        Arrays.fill(handlers, handler);
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
-    @SafeVarargs
-    public final void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+    @SuppressWarnings("unchecked")
+    public void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
+        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
+        Arrays.fill(handlers, handler);
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
