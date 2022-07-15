@@ -48,6 +48,31 @@ public final class DisruptorBoost<T> {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
+    @SafeVarargs
+    public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+    }
+
+    @SafeVarargs
+    public final void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+    }
+
+    @SafeVarargs
+    public final void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+    }
+
+    @SafeVarargs
+    public final void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+    }
+
+    @SafeVarargs
+    public final void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+    }
+
     /**
      * 单线程消费者版本
      */
