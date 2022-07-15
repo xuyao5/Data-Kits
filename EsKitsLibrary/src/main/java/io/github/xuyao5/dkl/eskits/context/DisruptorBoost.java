@@ -48,6 +48,9 @@ public final class DisruptorBoost<T> {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
+    /**
+     * 单线程消费者版本
+     */
     @SafeVarargs
     private final void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
@@ -55,18 +58,49 @@ public final class DisruptorBoost<T> {
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
-                log.error(StringUtils.join(sequence, '|', t), throwable);
+                log.error(StringUtils.joinWith("|", "EventHandler", sequence, t), throwable);
                 exceptionHandler.accept(t, sequence);
             }
 
             @Override
             public void handleOnStartException(Throwable throwable) {
-                log.error("Exception during onStart()", throwable);
+                log.error("EventHandler Exception during onStart()", throwable);
             }
 
             @Override
             public void handleOnShutdownException(Throwable throwable) {
-                log.error("Exception during onShutdown()", throwable);
+                log.error("EventHandler Exception during onShutdown()", throwable);
+            }
+        });
+        try {
+            eventProducer.accept(disruptor.start());
+        } finally {
+            disruptor.shutdown();
+        }
+    }
+
+    /**
+     * 多线程消费者版本
+     */
+    @SafeVarargs
+    private final void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>... handlers) {
+        Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
+        disruptor.handleEventsWithWorkerPool(handlers).then((t, sequence, endOfBatch) -> t = null);
+        disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
+            @Override
+            public void handleEventException(Throwable throwable, long sequence, T t) {
+                log.error(StringUtils.joinWith("|", "WorkHandler", sequence, t), throwable);
+                exceptionHandler.accept(t, sequence);
+            }
+
+            @Override
+            public void handleOnStartException(Throwable throwable) {
+                log.error("WorkHandler Exception during onStart()", throwable);
+            }
+
+            @Override
+            public void handleOnShutdownException(Throwable throwable) {
+                log.error("WorkHandler Exception during onShutdown()", throwable);
             }
         });
         try {
