@@ -44,9 +44,9 @@ public final class File2EsDemoJob implements Runnable {
 
         fileMap.forEach((alias, filenameRegex) -> FileUtilsPlus.getDecisionFiles(basePath, filenameRegex, path -> FileUtils.getFile(path.toString().replaceFirst("INT_", "P_").replaceFirst(".txt", ".log")).exists()).forEach(file -> {
             //1.索引名称
-            char splitChar = '_';
+            String splitChar = "_";
             String[] filenames = StringUtils.split(FilenameUtils.getBaseName(file.getName()), splitChar);
-            String index = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, filenames[filenames.length - 2]);
+            String index = StringUtils.joinWith(splitChar, alias.toLowerCase(Locale.ROOT), filenames[filenames.length - 2]);
             log.info("根据文件名日期计算得到写入索引名:[{}]", index);
 
             //2.写入索引
@@ -86,7 +86,7 @@ public final class File2EsDemoJob implements Runnable {
             log.info("压缩文件[{}]是否删除[{}]", file, isDelete);*/
 
             //8.清理历史>7天
-            String deleteIndex = StringUtils.join(alias.toLowerCase(Locale.ROOT), splitChar, "*");
+            String deleteIndex = StringUtils.joinWith(splitChar, alias.toLowerCase(Locale.ROOT), "*");
             CleaningSupporter.getInstance().clearClosedIndex(esClient, deleteIndex, indices4Cat -> {
                 String[] indexNameArray = StringUtils.split(indices4Cat.getIndex(), splitChar);
                 return DateUtilsPlus.daysBetween(indexNameArray[indexNameArray.length - 1]) > 1;

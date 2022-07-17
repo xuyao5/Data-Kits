@@ -107,7 +107,7 @@ public final class MySQL2EsService extends AbstractExecutor {
                     final String table = tableMap.get(data.getTableId()).getTable();//用tableId获取table
                     final String schema = tablesMap.get(table).getTableSchema();
                     final String alias = table.toUpperCase(Locale.ROOT);
-                    final String index = StringUtils.join(schema.toLowerCase(Locale.ROOT), '.', table.toLowerCase(Locale.ROOT));
+                    final String index = StringUtils.joinWith(".", schema.toLowerCase(Locale.ROOT), table.toLowerCase(Locale.ROOT));
 
                     T document = documentFactory.get(table).newInstance();
 
