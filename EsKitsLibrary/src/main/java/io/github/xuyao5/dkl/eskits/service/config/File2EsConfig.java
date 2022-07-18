@@ -22,4 +22,6 @@ public final class File2EsConfig {
     private String fileComments = "#";
 
     private int priShards = -1;
+
+    private int bufferSize = 8192;
 }

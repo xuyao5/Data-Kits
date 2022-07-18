@@ -53,7 +53,7 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
  * @version 8/07/21 11:59
  */
 @Slf4j
-public final class MySQL2EsService extends AbstractExecutor {
+public final class MySQL2EsService<T extends BaseDocument> extends AbstractExecutor {
 
     private final String hostname;
     private final int port;
@@ -82,7 +82,7 @@ public final class MySQL2EsService extends AbstractExecutor {
     }
 
     @SneakyThrows
-    public <T extends BaseDocument> long execute(@NonNull MySQL2EsConfig config, @NonNull Map<String, EventFactory<T>> documentFactory, UnaryOperator<T> writeConsumer) {
+    public long execute(@NonNull MySQL2EsConfig config, @NonNull Map<String, EventFactory<T>> documentFactory, UnaryOperator<T> writeConsumer) {
         final Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//表元数据
         final Map<String, Class<? extends BaseDocument>> docClassMap = documentFactory.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().newInstance().getClass()));//获取Document Class
         final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
@@ -98,7 +98,7 @@ public final class MySQL2EsService extends AbstractExecutor {
         final LongAdder count = new LongAdder();
 
         DocumentSupporter documentSupporter = DocumentSupporter.getInstance();
-        DisruptorBoost.<StandardMySQLRow>context().create().processTwoArgEvent(StandardMySQLRow::of, translator -> eventConsumer(config, translator), (standardMySQLRow, sequence) -> errorConsumer(config, standardMySQLRow), (standardMySQLRow, sequence, endOfBatch) -> {
+        DisruptorBoost.<StandardMySQLRow>context().defaultBufferSize(config.getBufferSize()).create().processTwoArgEvent(StandardMySQLRow::of, translator -> eventConsumer(config, translator), (standardMySQLRow, sequence) -> errorConsumer(config, standardMySQLRow), (standardMySQLRow, sequence, endOfBatch) -> {
             EventHeaderV4 eventHeader = standardMySQLRow.getEvent().getHeader();
             EventType eventType = eventHeader.getEventType();
             if (EventType.isRowMutation(eventType)) {

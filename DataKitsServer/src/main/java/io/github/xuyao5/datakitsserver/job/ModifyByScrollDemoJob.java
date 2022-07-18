@@ -25,8 +25,9 @@ public final class ModifyByScrollDemoJob implements Runnable {
 
         ModifyByScrollConfig modifyByScrollConfig = ModifyByScrollConfig.of(NEW_INDEX);
         modifyByScrollConfig.setQueryBuilder(QueryBuilders.matchAllQuery());
-        new ModifyByScrollService(esClient, esKitsConfig.getEsBulkThreads(), esKitsConfig.getEsScrollSize()).upsertByScroll(modifyByScrollConfig, MyFileDocument::of, myFileDocument -> {
+        new ModifyByScrollService<MyFileDocument>(esClient, esKitsConfig.getEsBulkThreads(), esKitsConfig.getEsScrollSize()).upsertByScroll(modifyByScrollConfig, MyFileDocument::of, myFileDocument -> {
             myFileDocument.setModifyDate(DateUtilsPlus.now());
+            myFileDocument.setDateTime2(DateUtilsPlus.now());
             return myFileDocument;
         });
     }

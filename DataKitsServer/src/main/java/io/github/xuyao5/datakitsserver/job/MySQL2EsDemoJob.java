@@ -29,7 +29,7 @@ public final class MySQL2EsDemoJob implements Runnable {
     @Override
     public void run() {
         Map<String, EventFactory<MyTableDocument>> tableDocument = Collections.singletonMap("MyTable", MyTableDocument::of);
-        long execute = new MySQL2EsService(esClient, esKitsConfig.getMysqlBinlogHostname(), esKitsConfig.getMysqlBinlogPort(), esKitsConfig.getMysqlBinlogSchema(), esKitsConfig.getMysqlBinlogUsername(), esKitsConfig.getMysqlBinlogPassword()).execute(MySQL2EsConfig.of(), tableDocument, UnaryOperator.identity());
+        long execute = new MySQL2EsService<MyTableDocument>(esClient, esKitsConfig.getMysqlBinlogHostname(), esKitsConfig.getMysqlBinlogPort(), esKitsConfig.getMysqlBinlogSchema(), esKitsConfig.getMysqlBinlogUsername(), esKitsConfig.getMysqlBinlogPassword()).execute(MySQL2EsConfig.of(), tableDocument, UnaryOperator.identity());
         log.info("共计算[{}]条数据", execute);
         System.in.read();
     }
