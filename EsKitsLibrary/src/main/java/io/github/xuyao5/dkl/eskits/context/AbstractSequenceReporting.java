@@ -26,11 +26,11 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
 
     private Sequence sequenceCallback;
 
-    protected abstract void processEvent(List<T> list) throws Exception;
-
     protected AbstractSequenceReporting(int threshold) {
         THRESHOLD = threshold;
     }
+
+    protected abstract void processEvent(List<T> list) throws Exception;
 
     @Override
     public void setSequenceCallback(Sequence sequence) {
