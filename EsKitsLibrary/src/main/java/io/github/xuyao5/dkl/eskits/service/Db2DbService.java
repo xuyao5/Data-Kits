@@ -62,7 +62,7 @@ public final class Db2DbService<T> {
                 //事件消费
                 workHandler,
                 //线程数
-                Runtime.getRuntime().availableProcessors() * 2);
+                Runtime.getRuntime().availableProcessors());
 
         return count.intValue();
     }
