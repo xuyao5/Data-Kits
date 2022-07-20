@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface MyOmsOrder2Mapper {
 
-    void mergeSelective(@Param("orderList") List<OmsOrder2> list);
+    int mergeSelective(@Param("orderList") List<OmsOrder2> list);
 }

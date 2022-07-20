@@ -6,6 +6,5 @@
         <include refid="Base_Column_List"/>
         from OMS_ORDER_1
         where APPLY_DATE between #{dateFrom,jdbcType=TIMESTAMP} and #{dateTo,jdbcType=TIMESTAMP}
-        limit #{rowLimit}
     </select>
 </mapper>

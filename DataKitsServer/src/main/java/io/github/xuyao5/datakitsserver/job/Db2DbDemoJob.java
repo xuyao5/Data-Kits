@@ -33,33 +33,36 @@ public final class Db2DbDemoJob implements Runnable {
 
     @Override
     public void run() {
-        final int model = 1;
+        final String model = "BATCH";
         Date toDate = DateUtilsPlus.parse2Date("2022-12-31 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
         Date fromDate = DateUtilsPlus.parse2Date("2022-01-01 00:00:00", DateUtilsPlus.STD_DATETIME_FORMAT);
 
+        Db2DbConfig config = Db2DbConfig.of();
         int count;
         switch (model) {
-            case 0:
-                count = new Db2DbService<OmsOrder1>().execute(Db2DbConfig.of(), OmsOrder1::new,
+            case "BATCH":
+                count = new Db2DbService<OmsOrder1>().execute(config, OmsOrder1::new,
                         //生产
-                        handler -> sourceMapper.streamQuery(fromDate, toDate, 2000, handler),
+                        handler -> sourceMapper.streamQuery(fromDate, toDate, handler),
                         //消费
-                        new AbstractSequenceReporting<OmsOrder1>(5000) {
+                        new AbstractSequenceReporting<OmsOrder1>(8000) {
                             @Override
                             protected void processEvent(List<OmsOrder1> list) {
-                                targetMapper.mergeSelective(list.stream().map(omsOrder1 -> {
+                                int count = targetMapper.mergeSelective(list.stream().map(omsOrder1 -> {
                                     OmsOrder2 omsOrder2 = new OmsOrder2();
                                     BeanUtils.copyProperties(omsOrder1, omsOrder2);
                                     return omsOrder2;
                                 }).collect(Collectors.toList()));
-                                log.info("批处理：{}", list.size());
+                                if (list.size() != count) {
+                                    log.warn("有多条记录DUPLICATE，获取：{}，处理：{}，差额：{}", list.size(), count, count - list.size());
+                                }
                             }
                         });
                 break;
-            case 1:
-                count = new Db2DbService<OmsOrder1>().execute(Db2DbConfig.of(), OmsOrder1::new,
+            case "SINGLE":
+                count = new Db2DbService<OmsOrder1>().execute(config, OmsOrder1::new,
                         //生产
-                        handler -> sourceMapper.streamQuery(fromDate, toDate, 888, handler),
+                        handler -> sourceMapper.streamQuery(fromDate, toDate, handler),
                         //消费
                         omsOrder1 -> {
                             OmsOrder2 omsOrder2 = new OmsOrder2();
