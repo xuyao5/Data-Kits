@@ -44,7 +44,7 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
  * @version 10/10/20 15:41
  */
 @Slf4j
-public final class File2EsService extends AbstractExecutor {
+public final class File2EsService<T extends BaseDocument> extends AbstractExecutor {
 
     private final int bulkThreads;
 
@@ -53,7 +53,7 @@ public final class File2EsService extends AbstractExecutor {
         bulkThreads = threads;
     }
 
-    public <T extends BaseDocument> long execute(@NonNull File2EsConfig config, EventFactory<T> documentFactory, UnaryOperator<T> operator) {
+    public long execute(@NonNull File2EsConfig config, EventFactory<T> documentFactory, UnaryOperator<T> operator) {
         log.info("File2ES服务输入配置为:[{}]", config);
 
         //检查文件是否存在
@@ -84,7 +84,7 @@ public final class File2EsService extends AbstractExecutor {
 
         BulkSupporter.getInstance().bulk(client, bulkThreads,
                 //开始执行
-                function -> DisruptorBoost.<StandardFileLine>context().create().processTwoArgEvent(StandardFileLine::of,
+                function -> DisruptorBoost.<StandardFileLine>context().defaultBufferSize(config.getBufferSize()).create().processTwoArgEvent(StandardFileLine::of,
                         //生产事件
                         translator -> eventConsumer(config, translator),
                         //异常处理

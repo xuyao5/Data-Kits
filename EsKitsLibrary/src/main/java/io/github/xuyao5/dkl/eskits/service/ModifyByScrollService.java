@@ -26,7 +26,7 @@ import static org.elasticsearch.index.reindex.AbstractBulkByScrollRequest.DEFAUL
  * @version 15/03/21 20:57
  */
 @Slf4j
-public final class ModifyByScrollService extends AbstractExecutor {
+public final class ModifyByScrollService<T extends BaseDocument> extends AbstractExecutor {
 
     private final int bulkThreads;
     private final int scrollSize;
@@ -41,16 +41,16 @@ public final class ModifyByScrollService extends AbstractExecutor {
         this(esClient, 3, DEFAULT_SCROLL_SIZE);
     }
 
-    public <T extends BaseDocument> void upsertByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> function.accept(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)))));
+    public void upsertByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, UnaryOperator<T> operator) {
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> function.accept(BulkSupporter.buildUpdateRequest(config.getIndex(), standardDocument.get_id(), operator.apply(standardDocument)))));
     }
 
-    public <T extends BaseDocument> void deleteByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document) {
-        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> function.accept(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id()))));
+    public void deleteByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document) {
+        BulkSupporter.getInstance().bulk(client, bulkThreads, function -> DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> function.accept(BulkSupporter.buildDeleteRequest(config.getIndex(), standardDocument.get_id()))));
     }
 
-    public <T extends BaseDocument> void computeByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, Consumer<T> compute) {
-        DisruptorBoost.<T>context().create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> compute.accept(standardDocument));
+    public void computeByScroll(@NonNull ModifyByScrollConfig config, EventFactory<T> document, Consumer<T> compute) {
+        DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processOneArgEvent(document, translator -> eventConsumer(config, translator), (t, sequence) -> log.error(t.toString()), (standardDocument, sequence, endOfBatch) -> compute.accept(standardDocument));
     }
 
     private void eventConsumer(ModifyByScrollConfig config, OneArgEventTranslator<? extends BaseDocument> translator) {

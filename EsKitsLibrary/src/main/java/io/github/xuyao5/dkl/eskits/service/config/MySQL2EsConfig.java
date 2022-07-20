@@ -15,5 +15,8 @@ import java.util.Map;
 public final class MySQL2EsConfig {
 
     private Map<String, List<String>> tables;//Key是主表，Value是从表
+
     private Charset charset = StandardCharsets.UTF_8;
+
+    private int bufferSize = 8192;
 }

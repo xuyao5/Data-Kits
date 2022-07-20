@@ -54,8 +54,8 @@
     <loggers>
         <!--若是 additivity 设为 false，则子 Logger 只会在自己的 appender 里输出，而不会在父 Logger 的 appender 里输出。-->
         <!--Console、RollingFileInfo 没有配置 ThresholdFilter，默认走的是 AsyncRoot 的 level 级别，
-            com.songo.mapper 为我项目 mapper 的包路径，级别设为 debug，可以打印 sql 语句-->
-        <AsyncLogger name="com.songo.mapper" level="debug" additivity="false">
+            io.github.xuyao5.datakitsserver.dao 为我项目 mapper 的包路径，级别设为 debug，可以打印 sql 语句-->
+        <AsyncLogger name="io.github.xuyao5.datakitsserver.dao" level="info" additivity="false">
             <appender-ref ref="Console"/>
             <appender-ref ref="RollingFileInfo"/>
         </AsyncLogger>

@@ -4,8 +4,10 @@ import lombok.Data;
 
 /**
  * @author Thomas.XU(xuyao)
- * @version 16/06/21 23:34
+ * @version 18/07/22 22:24
  */
 @Data(staticConstructor = "of")
-public final class HttpFS2EsConfig {
+public final class Db2EsConfig {
+
+    private int bufferSize = 8192;
 }

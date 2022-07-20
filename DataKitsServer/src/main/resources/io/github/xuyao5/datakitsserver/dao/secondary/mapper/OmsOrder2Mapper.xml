@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder1Mapper">
-  <resultMap id="BaseResultMap" type="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
+<mapper namespace="io.github.xuyao5.datakitsserver.dao.secondary.mapper.OmsOrder2Mapper">
+  <resultMap id="BaseResultMap" type="io.github.xuyao5.datakitsserver.dao.secondary.model.OmsOrder2">
     <id column="ID" jdbcType="BIGINT" property="id"/>
     <result column="APPLY_DATE" jdbcType="TIMESTAMP" property="applyDate"/>
     <result column="CUST_NO" jdbcType="VARCHAR" property="custNo"/>
@@ -17,19 +17,19 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
-    from OMS_ORDER_1
+    from OMS_ORDER_2
     where ID = #{id,jdbcType=BIGINT}
   </select>
-  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1" useGeneratedKeys="true">
-    insert into OMS_ORDER_1 (APPLY_DATE, CUST_NO, ORDER_ID,
+  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.secondary.model.OmsOrder2" useGeneratedKeys="true">
+    insert into OMS_ORDER_2 (APPLY_DATE, CUST_NO, ORDER_ID,
     LINE_NO, LINE_RECORD, CREATE_DATE,
     UPDATE_DATE)
     values (#{applyDate,jdbcType=TIMESTAMP}, #{custNo,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},
     #{lineNo,jdbcType=INTEGER}, #{lineRecord,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
     #{updateDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1" useGeneratedKeys="true">
-    insert into OMS_ORDER_1
+  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="io.github.xuyao5.datakitsserver.dao.secondary.model.OmsOrder2" useGeneratedKeys="true">
+    insert into OMS_ORDER_2
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="applyDate != null">
         APPLY_DATE,
@@ -77,8 +77,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
-    update OMS_ORDER_1
+  <update id="updateByPrimaryKeySelective" parameterType="io.github.xuyao5.datakitsserver.dao.secondary.model.OmsOrder2">
+    update OMS_ORDER_2
     <set>
       <if test="applyDate != null">
         APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP},
@@ -104,8 +104,8 @@
     </set>
     where ID = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1">
-    update OMS_ORDER_1
+  <update id="updateByPrimaryKey" parameterType="io.github.xuyao5.datakitsserver.dao.secondary.model.OmsOrder2">
+    update OMS_ORDER_2
     set APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP},
     CUST_NO = #{custNo,jdbcType=VARCHAR},
     ORDER_ID = #{orderId,jdbcType=VARCHAR},

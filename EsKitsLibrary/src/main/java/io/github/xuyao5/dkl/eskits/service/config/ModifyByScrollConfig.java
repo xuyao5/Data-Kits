@@ -13,4 +13,6 @@ public final class ModifyByScrollConfig {
     private final String index;
 
     private QueryBuilder queryBuilder;
+
+    private int bufferSize = 8192;
 }

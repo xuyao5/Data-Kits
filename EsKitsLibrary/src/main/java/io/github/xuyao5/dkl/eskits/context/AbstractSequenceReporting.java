@@ -16,15 +16,19 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public abstract class AbstractSequenceReporting<T> implements SequenceReportingEventHandler<T>, LifecycleAware {
 
-    private final int THRESHOLD = DisruptorBoost.getDefaultBufferSize();
+    private final int THRESHOLD;
 
-    private final AtomicLong COUNTER = new AtomicLong();
+    private AtomicLong counter;//计数器
 
     private List<T> list;
 
     private int batchRemaining;
 
     private Sequence sequenceCallback;
+
+    protected AbstractSequenceReporting(int threshold) {
+        THRESHOLD = threshold;
+    }
 
     protected abstract void processEvent(List<T> list) throws Exception;
 
@@ -48,7 +52,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
         if (logicalChunkOfWorkComplete || endOfBatch) {
             try {
                 processEvent(list);
-                log.info("Process {}@{} current/total[{}/{}]", getClass().getSimpleName(), Thread.currentThread().getId(), list.size(), COUNTER.addAndGet(list.size()));
+                log.info("Process Thread:{} current/total[{}/{}]", Thread.currentThread().getId(), list.size(), counter.addAndGet(list.size()));
             } finally {
                 if (!list.isEmpty()) {
                     list.clear();
@@ -60,14 +64,15 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
 
     @Override
     public void onStart() {
+        counter = new AtomicLong();
         list = new ArrayList<>(THRESHOLD);
         batchRemaining = THRESHOLD;
-        log.info("Start {}@{}, THRESHOLD [{}]", getClass().getSimpleName(), Thread.currentThread().getId(), THRESHOLD);
+        log.info("Start Thread:{}, THRESHOLD [{}]", Thread.currentThread().getId(), THRESHOLD);
     }
 
     @Override
     public void onShutdown() {
         list = null;
-        log.info("Shutdown {}@{}, total [{}]", getClass().getSimpleName(), Thread.currentThread().getId(), COUNTER.get());
+        log.info("Shutdown Thread:{}, total [{}]", Thread.currentThread().getId(), counter.get());
     }
 }
