@@ -40,7 +40,7 @@ public final class Db2DbDemoJob implements Runnable {
                 (handler) -> {
                     Date toDate = DateUtilsPlus.parse2Date("2022-12-31 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
                     Date fromDate = DateUtilsPlus.parse2Date("2022-01-01 00:00:00", DateUtilsPlus.STD_DATETIME_FORMAT);
-                    sourceMapper.streamQuery(fromDate, toDate, handler);
+                    sourceMapper.streamQuery(fromDate, toDate, 9999, handler);
                 },
                 //消费
                 targetMapper::mergeSelective);

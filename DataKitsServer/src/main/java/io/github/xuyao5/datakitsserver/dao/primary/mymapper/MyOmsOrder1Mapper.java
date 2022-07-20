@@ -15,5 +15,5 @@ import java.util.Date;
 public interface MyOmsOrder1Mapper {
 
     @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = Integer.MIN_VALUE)
-    void streamQuery(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo, ResultHandler<OmsOrder1> handler);
+    void streamQuery(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo, @Param("rowLimit") int rowLimit, ResultHandler<OmsOrder1> handler);
 }
