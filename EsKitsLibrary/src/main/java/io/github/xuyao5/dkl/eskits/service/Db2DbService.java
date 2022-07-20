@@ -32,11 +32,11 @@ public final class Db2DbService<T> {
                         BeanUtils.copyProperties(t, resultContext.getResultObject());
                         count.set(resultContext.getResultCount());
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        log.error("Db2DbServices#execute#AbstractSequenceReporting", e);
+                        log.error("Db2DbService#execute#AbstractSequenceReporting", e);
                     }
                 })),
                 //错误处理
-                (order, value) -> log.error("异常:{}|{}", value, order),
+                (order, value) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", value, order),
                 //事件消费
                 sequenceReporting);
 
@@ -54,11 +54,11 @@ public final class Db2DbService<T> {
                         BeanUtils.copyProperties(t, resultContext.getResultObject());
                         count.set(resultContext.getResultCount());
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        log.error("Db2DbServices#execute#WorkHandler", e);
+                        log.error("Db2DbService#execute#WorkHandler", e);
                     }
                 })),
                 //错误处理
-                (order, value) -> log.error("异常:{}|{}", value, order),
+                (order, value) -> log.error("Db2DbService#execute#WorkHandler Error:{}|{}", value, order),
                 //事件消费
                 workHandler,
                 //线程数
