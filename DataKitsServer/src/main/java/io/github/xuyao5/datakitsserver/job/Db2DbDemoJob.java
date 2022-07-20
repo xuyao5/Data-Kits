@@ -37,9 +37,10 @@ public final class Db2DbDemoJob implements Runnable {
         Date toDate = DateUtilsPlus.parse2Date("2022-12-31 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
         Date fromDate = DateUtilsPlus.parse2Date("2022-01-01 00:00:00", DateUtilsPlus.STD_DATETIME_FORMAT);
 
+        int count;
         switch (model) {
             case 0:
-                new Db2DbService<OmsOrder1>().execute(Db2DbConfig.of(), OmsOrder1::new,
+                count = new Db2DbService<OmsOrder1>().execute(Db2DbConfig.of(), OmsOrder1::new,
                         //生产
                         handler -> sourceMapper.streamQuery(fromDate, toDate, 2000, handler),
                         //消费
@@ -56,18 +57,21 @@ public final class Db2DbDemoJob implements Runnable {
                         });
                 break;
             case 1:
-                new Db2DbService<OmsOrder1>().execute(Db2DbConfig.of(), OmsOrder1::new,
+                count = new Db2DbService<OmsOrder1>().execute(Db2DbConfig.of(), OmsOrder1::new,
                         //生产
                         handler -> sourceMapper.streamQuery(fromDate, toDate, 888, handler),
                         //消费
                         omsOrder1 -> {
                             OmsOrder2 omsOrder2 = new OmsOrder2();
                             BeanUtils.copyProperties(omsOrder1, omsOrder2);
-                            targetMapper.insertSelective(omsOrder2);
+                            int insertSelective = targetMapper.insertSelective(omsOrder2);
+                            log.info("插入数据{}条，CustNo={}", insertSelective, omsOrder2.getCustNo());
                         });
                 break;
             default:
+                count = -1;
                 break;
         }
+        log.info("模式:{}，获取记录数:{}", model, count);
     }
 }

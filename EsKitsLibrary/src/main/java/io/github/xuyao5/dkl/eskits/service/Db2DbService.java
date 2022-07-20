@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.ibatis.session.ResultHandler;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -20,30 +21,40 @@ import java.util.function.Consumer;
 @Slf4j
 public final class Db2DbService<T> {
 
-    public void execute(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, AbstractSequenceReporting<T> sequenceReporting) {
+    public int execute(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, AbstractSequenceReporting<T> sequenceReporting) {
+        //执行计数器
+        final AtomicInteger count = new AtomicInteger();
+
         DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processZeroArgEvent(factory,
                 //事件生产
                 translator -> mapper.accept(resultContext -> translator.translate((t, sequence) -> {
                     try {
                         BeanUtils.copyProperties(t, resultContext.getResultObject());
+                        count.set(resultContext.getResultCount());
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        log.error("事件生产错误", e);
+                        log.error("Db2DbServices#execute#AbstractSequenceReporting", e);
                     }
                 })),
                 //错误处理
                 (order, value) -> log.error("异常:{}|{}", value, order),
                 //事件消费
                 sequenceReporting);
+
+        return count.intValue();
     }
 
-    public void execute(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, WorkHandler<T> workHandler) {
+    public int execute(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, WorkHandler<T> workHandler) {
+        //执行计数器
+        final AtomicInteger count = new AtomicInteger();
+
         DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processZeroArgEvent(factory,
                 //事件生产
                 translator -> mapper.accept(resultContext -> translator.translate((t, sequence) -> {
                     try {
                         BeanUtils.copyProperties(t, resultContext.getResultObject());
+                        count.set(resultContext.getResultCount());
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        log.error("事件生产错误", e);
+                        log.error("Db2DbServices#execute#WorkHandler", e);
                     }
                 })),
                 //错误处理
@@ -52,5 +63,7 @@ public final class Db2DbService<T> {
                 workHandler,
                 //线程数
                 Runtime.getRuntime().availableProcessors() * 2);
+
+        return count.intValue();
     }
 }
