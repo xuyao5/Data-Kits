@@ -66,22 +66,42 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
             log.warn("由于ID列号被配置为[{}]，系统将自动分配doc_id，此操作将导致无法用主键列更新索引", config.getIdColumn());
         }
 
+        //预存必须数据
+        final Class<? extends BaseDocument> docClass = documentFactory.newInstance().getClass();//获取Document Class
+        final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);//根据Document Class生成ES的Mapping
+        final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);//获取被@FileField注解的成员
+        final Map<String, Field> columnFieldMap = fieldsList.stream().filter(field -> StringUtils.isNotBlank(field.getDeclaredAnnotation(FileField.class).column())).collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));//类型预存
+        final Map<Integer, Field> positionFieldMap = fieldsList.stream().filter(field -> field.getDeclaredAnnotation(FileField.class).position() > -1).collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).position(), Function.identity()));//类型预存
+        final String[][] metadataArray = new String[1][positionFieldMap.size()];//元数据
+
         //检查索引是否存在
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         final boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
         log.info("索引是否存在标志为:[{}]", isIndexExist);
 
-        //预存必须数据
-        final String[][] metadataArray = new String[1][];//元数据
-        final Class<? extends BaseDocument> docClass = documentFactory.newInstance().getClass();//获取Document Class
-        final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);//根据Document Class生成ES的Mapping
-        final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);//获取被@FileField注解的成员
-        final Map<String, Field> columnFieldMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));//类型预存
-        final Map<String, Class<?>> columnClassMap = fieldsList.stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Field::getType));//类型预存
+        //更新Mapping
+        if (!isIndexExist) {
+            Map<String, String> indexSorting = fieldsList.stream()
+                    //过滤
+                    .filter(field -> field.getDeclaredAnnotation(FileField.class).sortPriority() >= 0)
+                    //排序
+                    .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).sortPriority()))
+                    //收集
+                    .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
+            int numberOfDataNodes = config.getPriShards() > 0 ? config.getPriShards() : ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();//自动计算主分片
+            log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
+            if (!indexSorting.isEmpty()) {
+                indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder, indexSorting);
+            } else {
+                indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder);
+            }
+        } else {
+            indexSupporter.putMapping(client, contentBuilder, config.getIndex());
+            indexSupporter.open(client, config.getIndex());
+        }
 
         //执行计数器
         final LongAdder count = new LongAdder();
-
         BulkSupporter.getInstance().bulk(client, bulkThreads,
                 //开始执行
                 function -> DisruptorBoost.<StandardFileLine>context().defaultBufferSize(config.getBufferSize()).create().processTwoArgEvent(StandardFileLine::of,
@@ -96,37 +116,17 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
                             }
 
                             String[] recordArray = StringUtils.splitPreserveAllTokens(standardFileLine.getLineRecord(), config.getRecordSeparator());
-
-                            if (standardFileLine.getLineNo() == 1) {
+                            if (standardFileLine.getLineNo() == 1 && !columnFieldMap.isEmpty()) {
                                 metadataArray[0] = recordArray;
                                 log.info("文件Metadata行：[{}],索引Mapping:[{}]", Strings.arrayToCommaDelimitedString(metadataArray[0]), Strings.toString(contentBuilder));
-                                if (!isIndexExist) {
-                                    Map<String, String> indexSorting = fieldsList.stream()
-                                            //过滤
-                                            .filter(field -> field.getDeclaredAnnotation(FileField.class).sortPriority() >= 0)
-                                            //排序
-                                            .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).sortPriority()))
-                                            //收集
-                                            .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
-                                    int numberOfDataNodes = config.getPriShards() > 0 ? config.getPriShards() : ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();//自动计算主分片
-                                    log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
-                                    if (!indexSorting.isEmpty()) {
-                                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder, indexSorting);
-                                    } else {
-                                        indexSupporter.create(client, config.getIndex(), numberOfDataNodes, 0, contentBuilder);
-                                    }
-                                } else {
-                                    indexSupporter.putMapping(client, contentBuilder, config.getIndex());
-                                    indexSupporter.open(client, config.getIndex());
-                                }
                             } else {
                                 T document = documentFactory.newInstance();
 
                                 for (int i = 0; i < metadataArray[0].length; i++) {
-                                    Field field = columnFieldMap.get(metadataArray[0][i]);
+                                    Field field = !columnFieldMap.isEmpty() ? columnFieldMap.get(metadataArray[0][i]) : positionFieldMap.get(i);
                                     if (Objects.nonNull(field)) {
                                         if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
-                                            FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], columnClassMap.get(metadataArray[0][i])), true);
+                                            FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], field.getType()), true);
                                         }
                                     } else {
                                         log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在,注:带有BOM的txt/csv文件也会引起此问题", standardFileLine, metadataArray[0][i]);

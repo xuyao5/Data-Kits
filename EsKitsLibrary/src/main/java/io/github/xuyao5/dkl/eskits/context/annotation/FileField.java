@@ -15,9 +15,9 @@ import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.ASC;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FileField {
 
-    String column() default "";//列名
+    String column() default "";//列名模式
 
-    int position() default -1;//列号（首先判断column,如果column为空则取position，需要配合includeMetadataLine）
+    int position() default -1;//列号模式
 
     int sortPriority() default -1;//优先级，-1代表不参加排序
 
