@@ -72,6 +72,12 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
         final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);//获取被@FileField注解的成员
         final Map<String, Field> columnFieldMap = fieldsList.stream().filter(field -> StringUtils.isNotBlank(field.getDeclaredAnnotation(FileField.class).column())).collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));//类型预存
         final Map<Integer, Field> positionFieldMap = fieldsList.stream().filter(field -> field.getDeclaredAnnotation(FileField.class).position() > -1).collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).position(), Function.identity()));//类型预存
+
+        if (!columnFieldMap.isEmpty() && !positionFieldMap.isEmpty()) {
+            log.error("文档不能同时设置column和position，列名模式和列号模式不能同时生效，当前文档类型为:[{}]", docClass);
+            return -2;
+        }
+
         final String[][] metadataArray = new String[1][positionFieldMap.size()];//元数据
 
         //检查索引是否存在
