@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -33,19 +36,20 @@ public final class Db2DbDemoJob implements Runnable {
 
     @Override
     public void run() {
-        final String model = "BATCH";
         Date toDate = DateUtilsPlus.parse2Date("2022-12-31 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
         Date fromDate = DateUtilsPlus.parse2Date("2022-01-01 00:00:00", DateUtilsPlus.STD_DATETIME_FORMAT);
+        Date[][] dateSharding = DateUtilsPlus.dateSharding(fromDate, toDate, Runtime.getRuntime().availableProcessors());
 
-        Db2DbConfig config = Db2DbConfig.of();
-        int count;
-        switch (model) {
-            case "BATCH":
-                count = new Db2DbService<OmsOrder1>().execute(config, OmsOrder1::new,
+        int threads = Runtime.getRuntime().availableProcessors() * 2;
+        int batch = 100;
+        ExecutorService executor = Executors.newWorkStealingPool(threads);
+        for (Date[] dates : dateSharding) {
+            executor.execute(() -> {
+                int count = new Db2DbService<OmsOrder1>().execute(Db2DbConfig.of(), OmsOrder1::new,
                         //生产
-                        handler -> sourceMapper.streamQuery(fromDate, toDate, handler),
+                        handler -> sourceMapper.streamQuery(dates[0], dates[1], handler),
                         //消费
-                        new AbstractSequenceReporting<OmsOrder1>(8000) {
+                        new AbstractSequenceReporting<OmsOrder1>(batch) {
                             @Override
                             protected void processEvent(List<OmsOrder1> list) {
                                 int count = targetMapper.mergeSelective(list.stream().map(omsOrder1 -> {
@@ -58,23 +62,18 @@ public final class Db2DbDemoJob implements Runnable {
                                 }
                             }
                         });
-                break;
-            case "SINGLE":
-                count = new Db2DbService<OmsOrder1>().execute(config, OmsOrder1::new,
-                        //生产
-                        handler -> sourceMapper.streamQuery(fromDate, toDate, handler),
-                        //消费
-                        omsOrder1 -> {
-                            OmsOrder2 omsOrder2 = new OmsOrder2();
-                            BeanUtils.copyProperties(omsOrder1, omsOrder2);
-                            int insertSelective = targetMapper.insertSelective(omsOrder2);
-                            log.info("插入数据{}条，CustNo={}", insertSelective, omsOrder2.getCustNo());
-                        });
-                break;
-            default:
-                count = -1;
-                break;
+                log.info("获取记录数:{}", count);
+            });
         }
-        log.info("模式:{}，获取记录数:{}", model, count);
+
+        try {
+            executor.shutdown();
+            boolean termination = executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+            if (!termination) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+        }
     }
 }
