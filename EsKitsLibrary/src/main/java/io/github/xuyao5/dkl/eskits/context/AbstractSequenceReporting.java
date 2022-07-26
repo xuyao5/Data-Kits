@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -18,7 +18,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
 
     private final int THRESHOLD;
 
-    private AtomicLong counter;//计数器
+    private LongAdder counter;//计数器
 
     private List<T> list;
 
@@ -52,7 +52,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
         if (logicalChunkOfWorkComplete || endOfBatch) {
             try {
                 processEvent(list);
-                log.info("Process ThreadId:{} current/total[{}/{}]", Thread.currentThread().getId(), list.size(), counter.addAndGet(list.size()));
+                counter.add(list.size());
             } finally {
                 if (!list.isEmpty()) {
                     list.clear();
@@ -64,7 +64,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
 
     @Override
     public void onStart() {
-        counter = new AtomicLong();
+        counter = new LongAdder();
         list = new ArrayList<>(THRESHOLD);
         batchRemaining = THRESHOLD;
         log.info("Start ThreadId:{}, THRESHOLD [{}]", Thread.currentThread().getId(), THRESHOLD);
@@ -73,6 +73,6 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
     @Override
     public void onShutdown() {
         list = null;
-        log.info("Shutdown ThreadId:{}, total [{}]", Thread.currentThread().getId(), counter.get());
+        log.info("Shutdown ThreadId:{}, total [{}]", Thread.currentThread().getId(), counter.intValue());
     }
 }
