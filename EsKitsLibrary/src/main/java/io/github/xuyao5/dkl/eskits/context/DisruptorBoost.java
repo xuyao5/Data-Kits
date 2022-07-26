@@ -23,7 +23,7 @@ import java.util.function.ObjLongConsumer;
 public final class DisruptorBoost<T> {
 
     @Builder.Default
-    private int defaultBufferSize = 4096;
+    private int defaultBufferSize = 4_096;
 
     @SafeVarargs
     public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {

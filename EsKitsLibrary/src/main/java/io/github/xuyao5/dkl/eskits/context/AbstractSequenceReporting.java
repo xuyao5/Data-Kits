@@ -52,7 +52,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
         if (logicalChunkOfWorkComplete || endOfBatch) {
             try {
                 processEvent(list);
-                log.info("Process Thread:{} current/total[{}/{}]", Thread.currentThread().getId(), list.size(), counter.addAndGet(list.size()));
+                log.info("Process ThreadId:{} current/total[{}/{}]", Thread.currentThread().getId(), list.size(), counter.addAndGet(list.size()));
             } finally {
                 if (!list.isEmpty()) {
                     list.clear();
@@ -67,12 +67,12 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
         counter = new AtomicLong();
         list = new ArrayList<>(THRESHOLD);
         batchRemaining = THRESHOLD;
-        log.info("Start Thread:{}, THRESHOLD [{}]", Thread.currentThread().getId(), THRESHOLD);
+        log.info("Start ThreadId:{}, THRESHOLD [{}]", Thread.currentThread().getId(), THRESHOLD);
     }
 
     @Override
     public void onShutdown() {
         list = null;
-        log.info("Shutdown Thread:{}, total [{}]", Thread.currentThread().getId(), counter.get());
+        log.info("Shutdown ThreadId:{}, total [{}]", Thread.currentThread().getId(), counter.get());
     }
 }
