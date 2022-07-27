@@ -5,7 +5,7 @@ import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceReportingEventHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -65,7 +65,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
     @Override
     public void onStart() {
         counter = new LongAdder();
-        list = new ArrayList<>(THRESHOLD);
+        list = new LinkedList<>();
         batchRemaining = THRESHOLD;
         log.info("Start ThreadId:{}, THRESHOLD [{}]", Thread.currentThread().getId(), THRESHOLD);
     }
