@@ -2,6 +2,8 @@ package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
+import io.github.xuyao5.datakitsserver.vo.MyTableDocument;
+import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
@@ -29,6 +31,29 @@ import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATETIME_FORMAT
 
 @Slf4j
 public class SystemTest extends AbstractTest {
+
+    @Test
+    void disruptorTest() {
+        DisruptorBoost.<MyTableDocument>context().create().processZeroArgEvent(MyTableDocument::of,
+                //生产
+                translator -> {
+                    for (int i = 0; i < 10; i++) {
+                        int finalI = i;
+                        translator.translate(((document, l) -> {
+                            document.setId1(finalI);
+                            log.info("1|{}|{}", Thread.currentThread().getName(), document.getId1());
+                        }));
+                    }
+                },
+                //异常
+                (document, sequence) -> log.info("2|{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence),
+                //消费
+                (document) -> log.info("3|{}|{}", Thread.currentThread().getName(), document.getId1()),
+                //消费
+                (document, sequence, endOfBatch) -> log.info("4|{}|{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence, endOfBatch),
+                //线程
+                6);
+    }
 
     @Test
     void splitDateTest() {
