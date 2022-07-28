@@ -36,7 +36,7 @@ public final class Db2DbService<T> {
                     }
                 })),
                 //错误处理
-                (order, value) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", value, order),
+                (order, sequence) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", sequence, order),
                 //事件消费
                 sequenceReporting);
 
@@ -58,9 +58,35 @@ public final class Db2DbService<T> {
                     }
                 })),
                 //错误处理
-                (order, value) -> log.error("Db2DbService#execute#WorkHandler Error:{}|{}", value, order),
+                (order, sequence) -> log.error("Db2DbService#execute#WorkHandler Error:{}|{}", sequence, order),
                 //事件消费
                 workHandler,
+                //线程数
+                Runtime.getRuntime().availableProcessors());
+
+        return count.intValue();
+    }
+
+    public int execute(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, WorkHandler<T> workHandler, AbstractSequenceReporting<T> sequenceReporting) {
+        //执行计数器
+        final AtomicInteger count = new AtomicInteger();
+
+        DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processZeroArgEvent(factory,
+                //事件生产
+                translator -> mapper.accept(resultContext -> translator.translate((t, sequence) -> {
+                    try {
+                        BeanUtils.copyProperties(t, resultContext.getResultObject());
+                        count.set(resultContext.getResultCount());
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        log.error("Db2DbService#execute#WorkHandler", e);
+                    }
+                })),
+                //错误处理
+                (order, sequence) -> log.error("Db2DbService#execute#WorkHandler Error:{}|{}", sequence, order),
+                //事件消费
+                workHandler,
+                //尾部消费
+                sequenceReporting,
                 //线程数
                 Runtime.getRuntime().availableProcessors());
 
