@@ -10,4 +10,8 @@ import lombok.Data;
 public final class Db2DbConfig {
 
     private int bufferSize = 8192;
+
+    private int threads = Runtime.getRuntime().availableProcessors();
+
+    private int threshold = 256;
 }

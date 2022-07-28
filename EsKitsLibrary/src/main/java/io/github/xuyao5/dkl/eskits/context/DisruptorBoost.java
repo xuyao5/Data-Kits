@@ -86,9 +86,9 @@ public final class DisruptorBoost<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> workHandler, EventHandler<T> eventHandler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(workHandler.getClass(), threads);
-        Arrays.fill(handlers, workHandler);
+    public void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventFactory<WorkHandler<T>> workHandlerFactory, EventHandler<T> eventHandler, int threads) {
+        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(workHandlerFactory.newInstance().getClass(), threads);
+        Arrays.setAll(handlers, i -> workHandlerFactory.newInstance());
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers, eventHandler);
     }
 
