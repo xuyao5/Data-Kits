@@ -37,7 +37,7 @@ public class SystemTest extends AbstractTest {
         DisruptorBoost.<MyTableDocument>context().create().processZeroArgEvent(MyTableDocument::of,
                 //生产
                 translator -> {
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 5; i++) {
                         int finalI = i;
                         translator.translate(((document, l) -> {
                             document.setId1(finalI);
@@ -46,13 +46,13 @@ public class SystemTest extends AbstractTest {
                     }
                 },
                 //异常
-                (document, sequence) -> log.info("2|{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence),
+                (document, sequence) -> log.info("{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence),
                 //消费
-                () -> (document) -> log.info("3|{}|{}", Thread.currentThread().getName(), document.getId1()),
+                () -> (document) -> log.info("2|{}|{}", Thread.currentThread().getName(), document.getId1()),
                 //消费
-                (document, sequence, endOfBatch) -> log.info("4|{}|{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence, endOfBatch),
+                (document, sequence, endOfBatch) -> log.info("3|{}|{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence, endOfBatch),
                 //线程
-                6);
+                3);
     }
 
     @Test
