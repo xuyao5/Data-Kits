@@ -24,7 +24,7 @@ public final class Db2DbService<T> {
     /**
      * 单线程批量
      */
-    public int executeBySequenceReportingEventHandler(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, AbstractBatchEventHandler<T> sequenceReporting) {
+    public int executeByBatchEventHandler(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, AbstractBatchEventHandler<T> batchEventHandler) {
         //执行计数器
         final AtomicInteger count = new AtomicInteger();
 
@@ -41,7 +41,7 @@ public final class Db2DbService<T> {
                 //错误处理
                 (order, sequence) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", sequence, order),
                 //事件消费
-                sequenceReporting);
+                batchEventHandler);
 
         return count.intValue();
     }

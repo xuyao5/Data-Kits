@@ -48,9 +48,7 @@ public class SystemTest extends AbstractTest {
                 //异常
                 (document, sequence) -> log.info("{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence),
                 //消费
-                () -> (document) -> log.info("2|{}|{}", Thread.currentThread().getName(), document.getId1()),
-                //消费
-                (document, sequence, endOfBatch) -> log.info("3|{}|{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence, endOfBatch),
+                document -> log.info("2|{}|{}", Thread.currentThread().getName(), document.getId1()),
                 //线程
                 3);
     }
