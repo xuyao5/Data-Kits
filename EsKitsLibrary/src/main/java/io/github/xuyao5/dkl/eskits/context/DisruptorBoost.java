@@ -90,7 +90,7 @@ public final class DisruptorBoost<T> {
      */
     private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, EventHandler<T>[] handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWith(handlers).then((t, sequence, endOfBatch) -> t = null);
+        disruptor.handleEventsWith(handlers);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
@@ -120,7 +120,7 @@ public final class DisruptorBoost<T> {
      */
     private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>[] handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWithWorkerPool(handlers).then((t, sequence, endOfBatch) -> t = null);
+        disruptor.handleEventsWithWorkerPool(handlers);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
