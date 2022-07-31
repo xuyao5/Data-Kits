@@ -21,9 +21,6 @@ import java.util.function.Consumer;
 @Slf4j
 public final class Db2DbService<T> {
 
-    /**
-     * 单线程批量
-     */
     public int executeByBatchEventHandler(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, AbstractBatchEventHandler<T> batchEventHandler) {
         //执行计数器
         final AtomicInteger count = new AtomicInteger();
@@ -46,9 +43,6 @@ public final class Db2DbService<T> {
         return count.intValue();
     }
 
-    /**
-     * 多线程
-     */
     public int executeByWorkerPool(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, WorkHandler<T> workHandler) {
         //执行计数器
         final AtomicInteger count = new AtomicInteger();

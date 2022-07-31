@@ -85,9 +85,6 @@ public final class DisruptorBoost<T> {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
-    /**
-     * 单线程消费者版本
-     */
     private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, EventHandler<T>[] handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers);
@@ -115,9 +112,6 @@ public final class DisruptorBoost<T> {
         }
     }
 
-    /**
-     * 多线程消费者版本
-     */
     private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>[] handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWithWorkerPool(handlers);
