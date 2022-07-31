@@ -85,41 +85,6 @@ public final class DisruptorBoost<T> {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
-    @SuppressWarnings("unchecked")
-    public void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventFactory<WorkHandler<T>> workHandlerFactory, EventHandler<T> eventHandler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(workHandlerFactory.newInstance().getClass(), threads);
-        Arrays.setAll(handlers, i -> workHandlerFactory.newInstance());
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers, eventHandler);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> workHandler, EventHandler<T> eventHandler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(workHandler.getClass(), threads);
-        Arrays.fill(handlers, workHandler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers, eventHandler);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> workHandler, EventHandler<T> eventHandler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(workHandler.getClass(), threads);
-        Arrays.fill(handlers, workHandler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers, eventHandler);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> workHandler, EventHandler<T> eventHandler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(workHandler.getClass(), threads);
-        Arrays.fill(handlers, workHandler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers, eventHandler);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> workHandler, EventHandler<T> eventHandler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(workHandler.getClass(), threads);
-        Arrays.fill(handlers, workHandler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers, eventHandler);
-    }
-
     /**
      * 单线程消费者版本
      */
@@ -156,36 +121,6 @@ public final class DisruptorBoost<T> {
     private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>[] handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWithWorkerPool(handlers).then((t, sequence, endOfBatch) -> t = null);
-        disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
-            @Override
-            public void handleEventException(Throwable throwable, long sequence, T t) {
-                log.error(StringUtils.joinWith("|", "WorkHandler", sequence, t), throwable);
-                exceptionHandler.accept(t, sequence);
-            }
-
-            @Override
-            public void handleOnStartException(Throwable throwable) {
-                log.error("WorkHandler Exception during onStart()", throwable);
-            }
-
-            @Override
-            public void handleOnShutdownException(Throwable throwable) {
-                log.error("WorkHandler Exception during onShutdown()", throwable);
-            }
-        });
-        try {
-            eventProducer.accept(disruptor.start());
-        } finally {
-            disruptor.shutdown();
-        }
-    }
-
-    /**
-     * 菱形结构
-     */
-    private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>[] handlers, EventHandler<T> handler) {
-        Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
-        disruptor.handleEventsWithWorkerPool(handlers).then(handler).then((t, sequence, endOfBatch) -> t = null);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
