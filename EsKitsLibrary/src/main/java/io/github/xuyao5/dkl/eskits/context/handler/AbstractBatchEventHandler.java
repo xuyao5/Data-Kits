@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.context;
+package io.github.xuyao5.dkl.eskits.context.handler;
 
 import com.lmax.disruptor.LifecycleAware;
 import com.lmax.disruptor.Sequence;
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.LongAdder;
  * @version 18/06/22 21:32
  */
 @Slf4j
-public abstract class AbstractSequenceReporting<T> implements SequenceReportingEventHandler<T>, LifecycleAware {
+public abstract class AbstractBatchEventHandler<T> implements SequenceReportingEventHandler<T>, LifecycleAware {
 
     private final int THRESHOLD;
 
@@ -26,7 +26,7 @@ public abstract class AbstractSequenceReporting<T> implements SequenceReportingE
 
     private Sequence sequenceCallback;
 
-    protected AbstractSequenceReporting(int threshold) {
+    protected AbstractBatchEventHandler(int threshold) {
         THRESHOLD = threshold;
     }
 

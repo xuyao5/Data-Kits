@@ -2,8 +2,8 @@ package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.WorkHandler;
-import io.github.xuyao5.dkl.eskits.context.AbstractSequenceReporting;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
+import io.github.xuyao5.dkl.eskits.context.handler.AbstractBatchEventHandler;
 import io.github.xuyao5.dkl.eskits.service.config.Db2DbConfig;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public final class Db2DbService<T> {
     /**
      * 单线程批量
      */
-    public int executeBySequenceReportingEventHandler(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, AbstractSequenceReporting<T> sequenceReporting) {
+    public int executeBySequenceReportingEventHandler(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, AbstractBatchEventHandler<T> sequenceReporting) {
         //执行计数器
         final AtomicInteger count = new AtomicInteger();
 
