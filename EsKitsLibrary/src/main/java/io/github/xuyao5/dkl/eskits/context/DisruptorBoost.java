@@ -118,7 +118,7 @@ public final class DisruptorBoost<T> {
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
             @Override
             public void handleEventException(Throwable throwable, long sequence, T t) {
-                log.error(StringUtils.joinWith("|", "WorkHandler", sequence, t), throwable);
+                log.error(StringUtils.joinWith("|", "WorkerPoolHandler", sequence, t), throwable);
                 exceptionHandler.accept(t, sequence);
             }
 
