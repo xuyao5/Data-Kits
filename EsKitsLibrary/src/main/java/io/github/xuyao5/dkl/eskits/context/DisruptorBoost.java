@@ -50,39 +50,24 @@ public final class DisruptorBoost<T> {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
-    @SuppressWarnings("unchecked")
     public void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
-        Arrays.fill(handlers, handler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handler, threads);
     }
 
-    @SuppressWarnings("unchecked")
     public void processOneArgEvent(EventFactory<T> factory, Consumer<OneArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
-        Arrays.fill(handlers, handler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handler, threads);
     }
 
-    @SuppressWarnings("unchecked")
     public void processTwoArgEvent(EventFactory<T> factory, Consumer<TwoArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
-        Arrays.fill(handlers, handler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handler, threads);
     }
 
-    @SuppressWarnings("unchecked")
     public void processThreeArgEvent(EventFactory<T> factory, Consumer<ThreeArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
-        Arrays.fill(handlers, handler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handler, threads);
     }
 
-    @SuppressWarnings("unchecked")
     public void processVarargEvent(EventFactory<T> factory, Consumer<VarargEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
-        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
-        Arrays.fill(handlers, handler);
-        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
+        processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handler, threads);
     }
 
     private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, EventHandler<T>[] handlers) {
@@ -112,7 +97,10 @@ public final class DisruptorBoost<T> {
         }
     }
 
-    private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, WorkHandler<T>[] handlers) {
+    @SuppressWarnings("unchecked")
+    private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, WorkHandler<T> handler, int threads) {
+        WorkHandler<T>[] handlers = (WorkHandler<T>[]) Array.newInstance(handler.getClass(), threads);
+        Arrays.fill(handlers, handler);
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWithWorkerPool(handlers);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
