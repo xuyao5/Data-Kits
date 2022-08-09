@@ -10,7 +10,6 @@ import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 
 /**
@@ -41,7 +40,7 @@ public final class GsonUtilsPlus {
         }
     }
 
-    public static <T extends Serializable> String obj2Json(@NonNull T obj) {
+    public static <T> String obj2Json(@NonNull T obj) {
         return GSON.toJson(obj);
     }
 
@@ -49,19 +48,19 @@ public final class GsonUtilsPlus {
         return GSON.fromJson(GSON.toJson(obj), TypeToken.get(clz).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {
+    public static <T> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {
         return GSON.fromJson(json, TypeToken.get(clz).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull Type rawType, @NonNull Type... typeArguments) {
+    public static <T> T json2Obj(@NonNull String json, @NonNull Type rawType, @NonNull Type... typeArguments) {
         return GSON.fromJson(json, TypeToken.getParameterized(rawType, typeArguments).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull JsonReader reader, @NonNull Class<T> clz) {
+    public static <T> T json2Obj(@NonNull JsonReader reader, @NonNull Class<T> clz) {
         return GSON.fromJson(reader, TypeToken.get(clz).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull JsonReader reader, @NonNull Type rawType, @NonNull Type... typeArguments) {
+    public static <T> T json2Obj(@NonNull JsonReader reader, @NonNull Type rawType, @NonNull Type... typeArguments) {
         return GSON.fromJson(reader, TypeToken.getParameterized(rawType, typeArguments).getType());
     }
 
