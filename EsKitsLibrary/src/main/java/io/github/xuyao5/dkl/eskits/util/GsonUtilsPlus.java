@@ -48,6 +48,11 @@ public final class GsonUtilsPlus {
         return GSON.fromJson(GSON.toJson(obj), TypeToken.get(clz).getType());
     }
 
+    public static <T> T json2Obj(@NonNull String json) {
+        return GSON.fromJson(json, new TypeToken<T>() {
+        }.getType());
+    }
+
     public static <T> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {
         return GSON.fromJson(json, TypeToken.get(clz).getType());
     }
