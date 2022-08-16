@@ -39,7 +39,7 @@
     <properties>
         <revision>0.13</revision>
         <maven.test.skip>true</maven.test.skip>
-        <jakarta-json.version>2.1.0</jakarta-json.version>
+        <jakarta-json.version>2.1.1</jakarta-json.version>
     </properties>
 
     <dependencies>
@@ -91,7 +91,6 @@
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>3.5.10</version>
-                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
