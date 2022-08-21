@@ -74,4 +74,27 @@ public final class DisruptorBoost<T> {
             disruptor.shutdown();
         }
     }
+
+    private void processEvent(EventFactory<T> factory, ObjLongConsumer<T> exceptionHandler, EventHandler<T>[] handlers) {
+        Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.MULTI, new BlockingWaitStrategy());
+        disruptor.handleEventsWith(handlers);
+        disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
+            @Override
+            public void handleEventException(Throwable throwable, long sequence, T t) {
+                log.error(StringUtils.joinWith("|", "EventHandler", sequence, t), throwable);
+                exceptionHandler.accept(t, sequence);
+            }
+
+            @Override
+            public void handleOnStartException(Throwable throwable) {
+                log.error("EventHandler Exception during onStart()", throwable);
+            }
+
+            @Override
+            public void handleOnShutdownException(Throwable throwable) {
+                log.error("EventHandler Exception during onShutdown()", throwable);
+            }
+        });
+        disruptor.start();
+    }
 }
