@@ -1,7 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.EventFactory;
-import com.lmax.disruptor.WorkHandler;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.handler.AbstractBatchEventHandler;
 import io.github.xuyao5.dkl.eskits.service.config.Db2DbConfig;
@@ -39,30 +38,6 @@ public final class Db2DbService<T> {
                 (order, sequence) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", sequence, order),
                 //事件消费
                 batchEventHandler);
-
-        return count.intValue();
-    }
-
-    public int executeByWorkerPool(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, WorkHandler<T> workHandler) {
-        //执行计数器
-        final AtomicInteger count = new AtomicInteger();
-
-        DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processZeroArgEvent(factory,
-                //事件生产
-                translator -> mapper.accept(resultContext -> translator.translate((t, sequence) -> {
-                    try {
-                        BeanUtils.copyProperties(t, resultContext.getResultObject());
-                        count.set(resultContext.getResultCount());
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        log.error("Db2DbService#execute#WorkHandler", e);
-                    }
-                })),
-                //错误处理
-                (order, sequence) -> log.error("Db2DbService#execute#WorkHandler Error:{}|{}", sequence, order),
-                //事件消费
-                workHandler,
-                //线程数
-                config.getThreads());
 
         return count.intValue();
     }
