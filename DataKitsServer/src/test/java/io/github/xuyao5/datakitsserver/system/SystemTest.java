@@ -4,6 +4,7 @@ import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.datakitsserver.vo.MyTableDocument;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
+import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
@@ -34,23 +35,19 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void disruptorTest() {
-        DisruptorBoost.<MyTableDocument>context().create().processZeroArgEvent(MyTableDocument::of,
-                //生产
-                translator -> {
-                    for (int i = 0; i < 5; i++) {
-                        int finalI = i;
-                        translator.translate(((document, l) -> {
-                            document.setId1(finalI);
-                            log.info("1|{}|{}", Thread.currentThread().getName(), document.getId1());
-                        }));
-                    }
-                },
+        OneArgEventTranslator<MyTableDocument> translator = DisruptorBoost.<MyTableDocument>context().create().createOneArgEventTranslator(MyTableDocument::of,
                 //异常
                 (document, sequence) -> log.info("{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence),
                 //消费
-                document -> log.info("2|{}|{}", Thread.currentThread().getName(), document.getId1()),
-                //线程
-                3);
+                (document, sequence, endOfBatch) -> log.info("2|{}|{}", Thread.currentThread().getName(), document.getId1()));
+
+        for (int i = 0; i < 50000; i++) {
+            int finalI = i;
+            translator.translate(((document, sequence, count) -> {
+                document.setId1(finalI);
+                log.info("1|{}|{}", Thread.currentThread().getName(), document.getId1());
+            }), 0);
+        }
     }
 
     @Test

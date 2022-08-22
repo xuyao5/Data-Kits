@@ -48,6 +48,31 @@ public final class DisruptorBoost<T> {
         processEvent(factory, ringBuffer -> publisher.accept(ringBuffer::publishEvent), exceptionHandler, handlers);
     }
 
+    @SafeVarargs
+    public final ZeroArgEventTranslator<T> createZeroArgEventTranslator(EventFactory<T> factory, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        return processEvent(factory, exceptionHandler, handlers)::publishEvent;
+    }
+
+    @SafeVarargs
+    public final OneArgEventTranslator<T> createOneArgEventTranslator(EventFactory<T> factory, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        return processEvent(factory, exceptionHandler, handlers)::publishEvent;
+    }
+
+    @SafeVarargs
+    public final TwoArgEventTranslator<T> createTwoArgEventTranslator(EventFactory<T> factory, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        return processEvent(factory, exceptionHandler, handlers)::publishEvent;
+    }
+
+    @SafeVarargs
+    public final ThreeArgEventTranslator<T> createThreeArgEventTranslator(EventFactory<T> factory, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        return processEvent(factory, exceptionHandler, handlers)::publishEvent;
+    }
+
+    @SafeVarargs
+    public final VarargEventTranslator<T> createVarargEventTranslator(EventFactory<T> factory, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {
+        return processEvent(factory, exceptionHandler, handlers)::publishEvent;
+    }
+
     private void processEvent(EventFactory<T> factory, Consumer<RingBuffer<T>> eventProducer, ObjLongConsumer<T> exceptionHandler, EventHandler<T>[] handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers);
@@ -75,7 +100,7 @@ public final class DisruptorBoost<T> {
         }
     }
 
-    private void processEvent(EventFactory<T> factory, ObjLongConsumer<T> exceptionHandler, EventHandler<T>[] handlers) {
+    private RingBuffer<T> processEvent(EventFactory<T> factory, ObjLongConsumer<T> exceptionHandler, EventHandler<T>[] handlers) {
         Disruptor<T> disruptor = new Disruptor<>(factory, defaultBufferSize, DaemonThreadFactory.INSTANCE, ProducerType.MULTI, new BlockingWaitStrategy());
         disruptor.handleEventsWith(handlers);
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<T>() {
@@ -95,6 +120,6 @@ public final class DisruptorBoost<T> {
                 log.error("EventHandler Exception during onShutdown()", throwable);
             }
         });
-        disruptor.start();
+        return disruptor.start();
     }
 }
