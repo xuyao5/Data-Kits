@@ -120,6 +120,7 @@ public final class DisruptorBoost<T> {
                 log.error("EventHandler Exception during onShutdown()", throwable);
             }
         });
+        Runtime.getRuntime().addShutdownHook(new Thread(disruptor::shutdown));
         return disruptor.start();
     }
 }
