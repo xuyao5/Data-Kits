@@ -5,6 +5,7 @@ import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.datakitsserver.vo.MyTableDocument;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
+import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
 import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
@@ -123,5 +124,20 @@ public class SystemTest extends AbstractTest {
 
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.matchAllQuery()).from(0).size(1000).sort(SortBuilders.fieldSort("id").order(SortOrder.ASC));
         System.out.println(searchSourceBuilder);
+    }
+
+    @SneakyThrows
+    @Test
+    void snowflakeTest() {
+        SnowflakeHelper snowflakeHelper = new SnowflakeHelper(6, 5);
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println(snowflakeHelper.nextId());
+        }
+        System.out.println("====================================");
+        for (int i = 0; i < 10; i++) {
+            System.out.println(snowflakeHelper.nextId());
+            Thread.sleep(100);
+        }
     }
 }

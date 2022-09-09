@@ -5,6 +5,7 @@ package io.github.xuyao5.dkl.eskits.helper;
  * @version 5/07/20 18:55
  */
 public final class SnowflakeHelper {
+
     /**
      * 起始的时间戳
      */
@@ -53,17 +54,7 @@ public final class SnowflakeHelper {
             throw new RuntimeException("Clock moved backwards.  Refusing to generate id");
         }
 
-        if (currStamp == lastStamp) {
-            //相同毫秒内，序列号自增
-            sequence = (sequence + 1) & MAX_SEQUENCE;
-            //同一毫秒的序列数已经达到最大
-            if (sequence == 0L) {
-                currStamp = getNextMill();
-            }
-        } else {
-            //不同毫秒内，序列号置为0
-            sequence = 0L;
-        }
+        sequence = (sequence + 1) & MAX_SEQUENCE;
 
         lastStamp = currStamp;
 
