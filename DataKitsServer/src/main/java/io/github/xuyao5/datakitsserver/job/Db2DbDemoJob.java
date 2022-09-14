@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public final class Db2DbDemoJob implements Runnable {
                                     return omsOrder2;
                                 })
                                 //收集
-                                .collect(Collectors.toList()));
+                                .collect(Collectors.toCollection(LinkedList::new)));
                         if (list.size() != count) {
                             log.warn("有多条记录DUPLICATE，获取：{}，处理：{}，差额：{}", list.size(), count, count - list.size());
                         }

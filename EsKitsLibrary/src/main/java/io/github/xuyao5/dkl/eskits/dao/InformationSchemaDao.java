@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public final class InformationSchemaDao {
                 columns.setColumnKey((String) dynaBean.get("column_key"));
                 columns.setExtra((String) dynaBean.get("extra"));
                 return columns;
-            }).collect(Collectors.toList());
+            }).collect(Collectors.toCollection(LinkedList::new));
         }
     }
 
@@ -63,7 +64,7 @@ public final class InformationSchemaDao {
                 tables.setTableSchema((String) dynaBean.get("table_schema"));
                 tables.setTableName((String) dynaBean.get("table_name"));
                 return tables;
-            }).collect(Collectors.toList());
+            }).collect(Collectors.toCollection(LinkedList::new));
         }
     }
 }
