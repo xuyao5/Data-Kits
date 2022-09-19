@@ -1,5 +1,7 @@
 package io.github.xuyao5.dkl.eskits.helper;
 
+import io.github.xuyao5.dkl.eskits.util.RandomUtilsPlus;
+
 /**
  * @author Thomas.XU(xuyao)
  * @version 5/07/20 18:55
@@ -58,11 +60,12 @@ public final class SnowflakeHelper {
             sequence = (sequence + 1) & MAX_SEQUENCE;
             //同一毫秒的序列数已经达到最大
             if (sequence == 0L) {
+                sequence = RandomUtilsPlus.getInt(100);
                 currStamp = getNextMill();
             }
         } else {
             //不同毫秒内，序列号置为0
-            sequence = 0L;
+            sequence = RandomUtilsPlus.getInt(100);
         }
 
         lastStamp = currStamp;

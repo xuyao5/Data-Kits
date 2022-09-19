@@ -5,11 +5,9 @@ import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.datakitsserver.vo.MyTableDocument;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
+import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
-import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
-import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
-import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
-import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
+import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.join.ScoreMode;
@@ -26,7 +24,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATETIME_FORMAT;
 
@@ -123,5 +123,27 @@ public class SystemTest extends AbstractTest {
 
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.matchAllQuery()).from(0).size(1000).sort(SortBuilders.fieldSort("id").order(SortOrder.ASC));
         System.out.println(searchSourceBuilder);
+    }
+
+    @SneakyThrows
+    @Test
+    void snowflakeTest() {
+        SnowflakeHelper snowflakeHelper = new SnowflakeHelper(6, 5);
+
+        final Set<Long> set = new ConcurrentSkipListSet<>();
+        for (int i = 0; i < 20; i++) {
+            ThreadPoolUtilsPlus.run(() -> {
+                for (int ji = 0; ji < 1000000; ji++) {
+                    long id = snowflakeHelper.nextId();
+                    if (!set.contains(id)) {
+                        set.add(id);
+                    } else {
+                        System.out.println("重复了");
+                    }
+                }
+            });
+        }
+
+        System.out.println("结束：" + set.size());
     }
 }
