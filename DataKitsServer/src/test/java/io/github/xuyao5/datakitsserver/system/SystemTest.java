@@ -7,6 +7,7 @@ import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
+import io.github.xuyao5.dkl.eskits.support.general.SearchSupporterV2;
 import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -145,5 +147,19 @@ public class SystemTest extends AbstractTest {
         }
 
         System.out.println("结束：" + set.size());
+    }
+
+    @Test
+    void searchTest() {
+        SearchSupporterV2 searchSupporterV2 = SearchSupporterV2.getInstance();
+        List<MyTableDocument> search = searchSupporterV2.search(elasticsearchClient, 0, 100,
+                //Query
+                builder -> {
+                    return builder.term(t -> t.field("name").value(v -> v.stringValue("bicycle")));
+                },
+                //Sort
+                builder -> {
+                    return null;
+                });
     }
 }

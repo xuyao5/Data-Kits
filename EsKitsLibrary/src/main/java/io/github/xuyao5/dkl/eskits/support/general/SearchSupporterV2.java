@@ -1,12 +1,21 @@
 package io.github.xuyao5.dkl.eskits.support.general;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.util.ObjectBuilder;
+import com.google.gson.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -21,38 +30,17 @@ public final class SearchSupporterV2 {
     }
 
     @SneakyThrows
-    public <T> SearchResponse<T> search(@NonNull ElasticsearchClient client, @NonNull Class<T> docClass) {
-        return client.search(_0 -> _0
-                .query(_1 -> _1
-                        .intervals(_2 -> _2
-                                .field("my_text")
-                                .allOf(_3 -> _3
-                                        .ordered(true)
-                                        .intervals(_4 -> _4
-                                                .match(_5 -> _5
-                                                        .query("my favorite food")
-                                                        .maxGaps(0)
-                                                        .ordered(true)
-                                                )
-                                        )
-                                        .intervals(_4 -> _4
-                                                .anyOf(_5 -> _5
-                                                        .intervals(_6 -> _6
-                                                                .match(_7 -> _7
-                                                                        .query("hot water")
-                                                                )
-                                                        )
-                                                        .intervals(_6 -> _6
-                                                                .match(_7 -> _7
-                                                                        .query("cold porridge")
-                                                                )
-                                                        )
-                                                )
-                                        )
-                                )
-                        )
-                ), docClass
-        );
+    @SuppressWarnings("unchecked")
+    public <T> List<T> search(@NonNull ElasticsearchClient client, int from, int size, Function<Query.Builder, ObjectBuilder<Query>> query) {
+        return client.search(builder -> builder.query(query).from(from).size(size), (Class<T>) new TypeToken<T>() {
+        }.getRawType()).hits().hits().parallelStream().map(Hit::source).collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    @SneakyThrows
+    @SuppressWarnings("unchecked")
+    public <T> List<T> search(@NonNull ElasticsearchClient client, int from, int size, Function<Query.Builder, ObjectBuilder<Query>> query, Function<SortOptions.Builder, ObjectBuilder<SortOptions>> sort) {
+        return client.search(builder -> builder.query(query).from(from).size(size).sort(sort), (Class<T>) new TypeToken<T>() {
+        }.getRawType()).hits().hits().parallelStream().map(Hit::source).collect(Collectors.toCollection(LinkedList::new));
     }
 
     private static class SingletonHolder {
