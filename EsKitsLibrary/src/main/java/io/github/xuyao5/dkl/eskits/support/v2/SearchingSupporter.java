@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.support.general;
+package io.github.xuyao5.dkl.eskits.support.v2;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOptions;
@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SearchSupporterV2 {
+public final class SearchingSupporter {
 
-    public static SearchSupporterV2 getInstance() {
-        return SearchSupporterV2.SingletonHolder.INSTANCE;
+    public static SearchingSupporter getInstance() {
+        return SearchingSupporter.SingletonHolder.INSTANCE;
     }
 
     @SneakyThrows
@@ -44,6 +44,6 @@ public final class SearchSupporterV2 {
     }
 
     private static class SingletonHolder {
-        private static final SearchSupporterV2 INSTANCE = new SearchSupporterV2();
+        private static final SearchingSupporter INSTANCE = new SearchingSupporter();
     }
 }

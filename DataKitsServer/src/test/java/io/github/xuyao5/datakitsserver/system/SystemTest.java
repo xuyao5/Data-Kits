@@ -7,7 +7,7 @@ import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
-import io.github.xuyao5.dkl.eskits.support.general.SearchSupporterV2;
+import io.github.xuyao5.dkl.eskits.support.v2.SearchingSupporter;
 import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -151,8 +151,8 @@ public class SystemTest extends AbstractTest {
 
     @Test
     void searchTest() {
-        SearchSupporterV2 searchSupporterV2 = SearchSupporterV2.getInstance();
-        List<MyTableDocument> search = searchSupporterV2.search(elasticsearchClient, 0, 100,
+        SearchingSupporter searchingSupporter = SearchingSupporter.getInstance();
+        List<MyTableDocument> search = searchingSupporter.search(elasticsearchClient, 0, 100,
                 //Query
                 builder -> {
                     return builder.term(t -> t.field("name").value(v -> v.stringValue("bicycle")));
