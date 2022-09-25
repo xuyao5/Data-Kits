@@ -1,5 +1,6 @@
 package io.github.xuyao5.datakitsserver.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.annotations.SerializedName;
 import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
@@ -39,10 +40,12 @@ public final class MyFileDocument extends BaseDocument {
 
     @SerializedName(value = "dateTime1", alternate = {"DateTime1"})
     @FileField(position = 4, sortPriority = 2, order = ASC)//column = "DATE_TIME_1"
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private long dateTime1;
 
     @SerializedName(value = "dateTime2", alternate = {"DateTime2"})
     @FileField(position = 5)//column = "DATE_TIME_2"
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date dateTime2;
 
     @SerializedName(value = "discount1", alternate = {"Discount1"})

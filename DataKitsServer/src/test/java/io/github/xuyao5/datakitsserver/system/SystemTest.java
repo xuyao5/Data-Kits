@@ -152,14 +152,9 @@ public class SystemTest extends AbstractTest {
     @Test
     void searchTest() {
         SearchingSupporter searchingSupporter = SearchingSupporter.getInstance();
-        List<MyTableDocument> search = searchingSupporter.search(elasticsearchClient, 0, 100,
+        List<MyFileDocument> result = searchingSupporter.search(elasticsearchClient, "FILE2ES_DISRUPTOR", MyFileDocument.class, 0, 2,
                 //Query
-                builder -> {
-                    return builder.term(t -> t.field("name").value(v -> v.stringValue("bicycle")));
-                },
-                //Sort
-                builder -> {
-                    return null;
-                });
+                builder -> builder.matchAll(t -> t));
+        System.out.println(result.size());
     }
 }

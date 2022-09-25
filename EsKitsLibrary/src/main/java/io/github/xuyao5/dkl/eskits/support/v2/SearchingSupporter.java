@@ -5,7 +5,6 @@ import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.util.ObjectBuilder;
-import com.google.gson.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -30,17 +29,13 @@ public final class SearchingSupporter {
     }
 
     @SneakyThrows
-    @SuppressWarnings("unchecked")
-    public <T> List<T> search(@NonNull ElasticsearchClient client, int from, int size, Function<Query.Builder, ObjectBuilder<Query>> query) {
-        return client.search(builder -> builder.query(query).from(from).size(size), (Class<T>) new TypeToken<T>() {
-        }.getRawType()).hits().hits().parallelStream().map(Hit::source).collect(Collectors.toCollection(LinkedList::new));
+    public <T> List<T> search(@NonNull ElasticsearchClient client, @NonNull String index, @NonNull Class<T> clz, int from, int size, Function<Query.Builder, ObjectBuilder<Query>> query) {
+        return client.search(builder -> builder.index(index).query(query).from(from).size(size), clz).hits().hits().parallelStream().map(Hit::source).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @SneakyThrows
-    @SuppressWarnings("unchecked")
-    public <T> List<T> search(@NonNull ElasticsearchClient client, int from, int size, Function<Query.Builder, ObjectBuilder<Query>> query, Function<SortOptions.Builder, ObjectBuilder<SortOptions>> sort) {
-        return client.search(builder -> builder.query(query).from(from).size(size).sort(sort), (Class<T>) new TypeToken<T>() {
-        }.getRawType()).hits().hits().parallelStream().map(Hit::source).collect(Collectors.toCollection(LinkedList::new));
+    public <T> List<T> search(@NonNull ElasticsearchClient client, @NonNull String index, @NonNull Class<T> clz, int from, int size, Function<Query.Builder, ObjectBuilder<Query>> query, Function<SortOptions.Builder, ObjectBuilder<SortOptions>> sort) {
+        return client.search(builder -> builder.index(index).query(query).from(from).size(size).sort(sort), clz).hits().hits().parallelStream().map(Hit::source).collect(Collectors.toCollection(LinkedList::new));
     }
 
     private static class SingletonHolder {
