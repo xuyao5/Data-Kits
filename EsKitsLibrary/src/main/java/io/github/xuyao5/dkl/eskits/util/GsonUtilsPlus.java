@@ -23,12 +23,7 @@ public final class GsonUtilsPlus {
     private static final Gson GSON;
 
     static {
-        GSON = new GsonBuilder()
-                .enableComplexMapKeySerialization()
-                .serializeSpecialFloatingPointValues()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .registerTypeAdapter(GeoPoint.class, new GeoPointJsonDeserializer())
-                .create();
+        GSON = new GsonBuilder().enableComplexMapKeySerialization().serializeSpecialFloatingPointValues().setDateFormat("yyyy-MM-dd HH:mm:ss").registerTypeAdapter(GeoPoint.class, new GeoPointJsonDeserializer()).create();
     }
 
     public static boolean isJsonString(@NonNull String json) {
@@ -46,11 +41,6 @@ public final class GsonUtilsPlus {
 
     public static Object deserialize(@NonNull String obj, @NonNull Class<?> clz) {
         return GSON.fromJson(GSON.toJson(obj), TypeToken.get(clz).getType());
-    }
-
-    public static <T> T json2Obj(@NonNull String json) {
-        return GSON.fromJson(json, new TypeToken<T>() {
-        }.getType());
     }
 
     public static <T> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {
@@ -79,15 +69,13 @@ public final class GsonUtilsPlus {
                 } else if (jsonElement.isJsonArray() && jsonElement.getAsJsonArray().size() == 2) {
                     JsonElement longitude = jsonElement.getAsJsonArray().get(0);
                     JsonElement latitude = jsonElement.getAsJsonArray().get(1);
-                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber()
-                            && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
+                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber() && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
                         return new GeoPoint(latitude.getAsDouble(), longitude.getAsDouble());
                     }
                 } else if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().has("lat") && jsonElement.getAsJsonObject().has("lon")) {
                     JsonElement longitude = jsonElement.getAsJsonObject().get("lon");
                     JsonElement latitude = jsonElement.getAsJsonObject().get("lat");
-                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber()
-                            && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
+                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber() && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
                         return new GeoPoint(latitude.getAsDouble(), longitude.getAsDouble());
                     }
                 } else if (jsonElement.isJsonNull()) {
