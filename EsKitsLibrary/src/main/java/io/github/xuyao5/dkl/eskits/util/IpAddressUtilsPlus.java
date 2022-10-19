@@ -19,4 +19,10 @@ public final class IpAddressUtilsPlus {
         byte[] address = InetAddress.getLocalHost().getAddress();
         return IntStream.range(0, address.length).map(i -> address[i] & 0xFF).sum();
     }
+
+    @SneakyThrows
+    public static int getIpAddressHash() {
+        byte[] address = InetAddress.getLocalHost().getAddress();
+        return IntStream.range(0, address.length).map(i -> address[i] & 0xFF).hashCode();
+    }
 }
