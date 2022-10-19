@@ -9,7 +9,7 @@
 <dependency>
     <groupId>io.github.xuyao5</groupId>
     <artifactId>es-kits-lib</artifactId>
-    <version>0.12</version>
+    <version>0.13</version>
 </dependency>
 
 ```

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public final class CleaningSupporter {
         return CatSupporter.getInstance().getCatIndices(client, index).stream()
                 .filter(indices4Cat -> predicate.test(indices4Cat) && "close".equals(indices4Cat.getStatus()))
                 .map(indices4Cat -> IndexSupporter.getInstance().delete(client, indices4Cat.getIndex()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
     private static class SingletonHolder {

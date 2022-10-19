@@ -59,6 +59,12 @@ public final class EsClient implements Closeable {
         if (Objects.nonNull(restHighLevelClient)) {
             restHighLevelClient.close();
         }
+        if (Objects.nonNull((elasticsearchClient))) {
+            elasticsearchClient.shutdown();
+        }
+        if (Objects.nonNull(elasticsearchAsyncClient)) {
+            elasticsearchAsyncClient.shutdown();
+        }
     }
 
     private HttpHost[] url2HttpHost(@NonNull String[] url) {

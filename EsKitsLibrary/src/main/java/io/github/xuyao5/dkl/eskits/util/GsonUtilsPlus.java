@@ -10,7 +10,6 @@ import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 
 /**
@@ -24,12 +23,7 @@ public final class GsonUtilsPlus {
     private static final Gson GSON;
 
     static {
-        GSON = new GsonBuilder()
-                .enableComplexMapKeySerialization()
-                .serializeSpecialFloatingPointValues()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .registerTypeAdapter(GeoPoint.class, new GeoPointJsonDeserializer())
-                .create();
+        GSON = new GsonBuilder().enableComplexMapKeySerialization().serializeSpecialFloatingPointValues().setDateFormat("yyyy-MM-dd HH:mm:ss").registerTypeAdapter(GeoPoint.class, new GeoPointJsonDeserializer()).create();
     }
 
     public static boolean isJsonString(@NonNull String json) {
@@ -41,7 +35,7 @@ public final class GsonUtilsPlus {
         }
     }
 
-    public static <T extends Serializable> String obj2Json(@NonNull T obj) {
+    public static <T> String obj2Json(@NonNull T obj) {
         return GSON.toJson(obj);
     }
 
@@ -49,19 +43,19 @@ public final class GsonUtilsPlus {
         return GSON.fromJson(GSON.toJson(obj), TypeToken.get(clz).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {
+    public static <T> T json2Obj(@NonNull String json, @NonNull Class<T> clz) {
         return GSON.fromJson(json, TypeToken.get(clz).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull String json, @NonNull Type rawType, @NonNull Type... typeArguments) {
+    public static <T> T json2Obj(@NonNull String json, @NonNull Type rawType, @NonNull Type... typeArguments) {
         return GSON.fromJson(json, TypeToken.getParameterized(rawType, typeArguments).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull JsonReader reader, @NonNull Class<T> clz) {
+    public static <T> T json2Obj(@NonNull JsonReader reader, @NonNull Class<T> clz) {
         return GSON.fromJson(reader, TypeToken.get(clz).getType());
     }
 
-    public static <T extends Serializable> T json2Obj(@NonNull JsonReader reader, @NonNull Type rawType, @NonNull Type... typeArguments) {
+    public static <T> T json2Obj(@NonNull JsonReader reader, @NonNull Type rawType, @NonNull Type... typeArguments) {
         return GSON.fromJson(reader, TypeToken.getParameterized(rawType, typeArguments).getType());
     }
 
@@ -75,15 +69,13 @@ public final class GsonUtilsPlus {
                 } else if (jsonElement.isJsonArray() && jsonElement.getAsJsonArray().size() == 2) {
                     JsonElement longitude = jsonElement.getAsJsonArray().get(0);
                     JsonElement latitude = jsonElement.getAsJsonArray().get(1);
-                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber()
-                            && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
+                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber() && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
                         return new GeoPoint(latitude.getAsDouble(), longitude.getAsDouble());
                     }
                 } else if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().has("lat") && jsonElement.getAsJsonObject().has("lon")) {
                     JsonElement longitude = jsonElement.getAsJsonObject().get("lon");
                     JsonElement latitude = jsonElement.getAsJsonObject().get("lat");
-                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber()
-                            && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
+                    if (longitude.isJsonPrimitive() && longitude.getAsJsonPrimitive().isNumber() && latitude.isJsonPrimitive() && latitude.getAsJsonPrimitive().isNumber()) {
                         return new GeoPoint(latitude.getAsDouble(), longitude.getAsDouble());
                     }
                 } else if (jsonElement.isJsonNull()) {

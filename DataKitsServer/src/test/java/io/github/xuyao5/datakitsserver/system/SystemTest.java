@@ -2,11 +2,13 @@ package io.github.xuyao5.datakitsserver.system;
 
 import io.github.xuyao5.datakitsserver.context.AbstractTest;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
+import io.github.xuyao5.datakitsserver.vo.MyTableDocument;
+import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
+import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
+import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
 import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
-import io.github.xuyao5.dkl.eskits.util.CompressUtilsPlus;
-import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
-import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
-import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
+import io.github.xuyao5.dkl.eskits.support.v2.SearchingSupporter;
+import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.join.ScoreMode;
@@ -23,12 +25,32 @@ import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATETIME_FORMAT;
 
 @Slf4j
 public class SystemTest extends AbstractTest {
+
+    @Test
+    void disruptorTest() {
+        OneArgEventTranslator<MyTableDocument> translator = DisruptorBoost.<MyTableDocument>context().create().createOneArgEventTranslator(MyTableDocument::of,
+                //异常
+                (document, sequence) -> log.info("{}|{}|{}", Thread.currentThread().getName(), document.getId1(), sequence),
+                //消费
+                (document, sequence, endOfBatch) -> log.info("2|{}|{}", Thread.currentThread().getName(), document.getId1()));
+
+        for (int i = 0; i < 50000; i++) {
+            int finalI = i;
+            translator.translate(((document, sequence, count) -> {
+                document.setId1(finalI);
+                log.info("1|{}|{}", Thread.currentThread().getName(), document.getId1());
+            }), 0);
+        }
+    }
 
     @Test
     void splitDateTest() {
@@ -103,5 +125,36 @@ public class SystemTest extends AbstractTest {
 
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.matchAllQuery()).from(0).size(1000).sort(SortBuilders.fieldSort("id").order(SortOrder.ASC));
         System.out.println(searchSourceBuilder);
+    }
+
+    @SneakyThrows
+    @Test
+    void snowflakeTest() {
+        SnowflakeHelper snowflakeHelper = new SnowflakeHelper();
+
+        final Set<Long> set = new ConcurrentSkipListSet<>();
+        for (int i = 0; i < 20; i++) {
+            ThreadPoolUtilsPlus.run(() -> {
+                for (int ji = 0; ji < 10000000; ji++) {
+                    long id = snowflakeHelper.nextId();
+                    if (!set.contains(id)) {
+                        set.add(id);
+                    } else {
+                        System.out.println("重复了");
+                    }
+                }
+            });
+        }
+
+        System.out.println("结束：" + (set.size() == (20 * 10000000)));
+    }
+
+    @Test
+    void searchTest() {
+        SearchingSupporter searchingSupporter = SearchingSupporter.getInstance();
+        List<MyFileDocument> result = searchingSupporter.search(elasticsearchClient, "FILE2ES_DISRUPTOR", MyFileDocument.class, 0, 2,
+                //Query
+                builder -> builder.matchAll(t -> t));
+        System.out.println(result.size());
     }
 }

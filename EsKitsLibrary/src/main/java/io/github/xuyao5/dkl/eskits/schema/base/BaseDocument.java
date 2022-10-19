@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.schema.base;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
@@ -27,9 +28,11 @@ public abstract class BaseDocument implements Serializable {
     @SerializedName(value = "sourceTag", alternate = {"SourceTag"})
     private String sourceTag;//数据源Tag
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @SerializedName(value = "createDate", alternate = {"CreateDate"})
     private Date createDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @SerializedName(value = "modifyDate", alternate = {"ModifyDate"})
     private Date modifyDate;
 }

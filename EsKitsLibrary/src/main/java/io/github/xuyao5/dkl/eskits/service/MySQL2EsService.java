@@ -74,7 +74,7 @@ public final class MySQL2EsService<T extends BaseDocument> extends AbstractExecu
 
     private Map<String, List<Columns>> getTableColumnsMapRepo(@NonNull Set<String> tables) {
         List<Columns> columnsList = informationSchemaDao.queryColumns(tables.toArray(new String[]{}));
-        return tables.stream().collect(Collectors.toMap(Function.identity(), table -> columnsList.stream().filter(col -> col.getTableName().equals(table)).collect(Collectors.toList())));
+        return tables.stream().collect(Collectors.toMap(Function.identity(), table -> columnsList.stream().filter(col -> col.getTableName().equals(table)).collect(Collectors.toCollection(LinkedList::new))));
     }
 
     private Map<String, Tables> getTablesMapRepo(@NonNull Set<String> tables) {

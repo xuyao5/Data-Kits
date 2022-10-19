@@ -3,9 +3,9 @@
 <generatorConfiguration>
     <context id="Es-Kits-Server-Primary" defaultModelType="flat" targetRuntime="MyBatis3">
         <property name="autoDelimitKeywords" value="true"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
-        <property name="javaFileEncoding" value="UTF-8"/>
 
         <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
         <plugin type="org.mybatis.generator.plugins.FluentBuilderMethodsPlugin"/>
@@ -44,9 +44,9 @@
     </context>
     <context id="Es-Kits-Server-Secondary" defaultModelType="flat" targetRuntime="MyBatis3">
         <property name="autoDelimitKeywords" value="true"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
-        <property name="javaFileEncoding" value="UTF-8"/>
 
         <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
         <plugin type="org.mybatis.generator.plugins.FluentBuilderMethodsPlugin"/>

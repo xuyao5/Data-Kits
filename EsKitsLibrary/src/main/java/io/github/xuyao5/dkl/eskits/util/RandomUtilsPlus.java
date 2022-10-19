@@ -22,6 +22,10 @@ public final class RandomUtilsPlus {
         return RANDOM.nextInt();
     }
 
+    public static int getInt(int bound) {
+        return RANDOM.nextInt(bound);
+    }
+
     public static double getDouble() {
         return RANDOM.nextDouble();
     }
