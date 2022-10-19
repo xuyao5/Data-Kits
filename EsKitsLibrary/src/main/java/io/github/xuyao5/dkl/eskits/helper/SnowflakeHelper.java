@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.helper;
 
+import io.github.xuyao5.dkl.eskits.util.IpAddressUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.RandomUtilsPlus;
 
 /**
@@ -37,6 +38,10 @@ public final class SnowflakeHelper {
     private final long machineId;     //机器标识
     private long sequence = 0L; //序列号
     private long lastStamp = -1L;//上一次时间戳
+
+    public SnowflakeHelper() {
+        this(IpAddressUtilsPlus.getIpAddressSum() % (MAX_DATACENTER_NUM + 1), IpAddressUtilsPlus.getIpAddressHash() % (MAX_MACHINE_NUM + 1));
+    }
 
     public SnowflakeHelper(long datacenterId, long machineId) {
         if (datacenterId > MAX_DATACENTER_NUM || datacenterId < 0) {

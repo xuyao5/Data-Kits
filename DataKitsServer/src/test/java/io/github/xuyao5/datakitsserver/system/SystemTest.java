@@ -130,12 +130,12 @@ public class SystemTest extends AbstractTest {
     @SneakyThrows
     @Test
     void snowflakeTest() {
-        SnowflakeHelper snowflakeHelper = new SnowflakeHelper(6, 5);
+        SnowflakeHelper snowflakeHelper = new SnowflakeHelper();
 
         final Set<Long> set = new ConcurrentSkipListSet<>();
         for (int i = 0; i < 20; i++) {
             ThreadPoolUtilsPlus.run(() -> {
-                for (int ji = 0; ji < 1000000; ji++) {
+                for (int ji = 0; ji < 10000000; ji++) {
                     long id = snowflakeHelper.nextId();
                     if (!set.contains(id)) {
                         set.add(id);
@@ -146,7 +146,7 @@ public class SystemTest extends AbstractTest {
             });
         }
 
-        System.out.println("结束：" + set.size());
+        System.out.println("结束：" + (set.size() == (20 * 10000000)));
     }
 
     @Test
