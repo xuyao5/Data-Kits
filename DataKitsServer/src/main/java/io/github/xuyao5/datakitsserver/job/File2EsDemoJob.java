@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.job;
 
-import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
+import io.github.xuyao5.datakitsserver.configuration.elasticsearch.EsKitsConfig;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;

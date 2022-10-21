@@ -1,7 +1,7 @@
 package io.github.xuyao5.datakitsserver.job;
 
 import com.lmax.disruptor.EventFactory;
-import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
+import io.github.xuyao5.datakitsserver.configuration.elasticsearch.EsKitsConfig;
 import io.github.xuyao5.datakitsserver.vo.MyTableDocument;
 import io.github.xuyao5.dkl.eskits.service.MySQL2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.MySQL2EsConfig;

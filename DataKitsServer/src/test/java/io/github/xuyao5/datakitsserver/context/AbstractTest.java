@@ -2,7 +2,7 @@ package io.github.xuyao5.datakitsserver.context;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import io.github.xuyao5.datakitsserver.DataKitsApplication;
-import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
+import io.github.xuyao5.datakitsserver.configuration.elasticsearch.EsKitsConfig;
 import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
 import io.github.xuyao5.dkl.eskits.util.IpAddressUtilsPlus;
 import org.elasticsearch.client.RestHighLevelClient;

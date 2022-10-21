@@ -1,4 +1,4 @@
-package io.github.xuyao5.datakitsserver.configuration;
+package io.github.xuyao5.datakitsserver.configuration.elasticsearch;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
