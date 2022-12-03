@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workflowConfiguration>
+<workflowConfig>
+    <work name="flow1" threads="SYSTEM">
+        <begin>
 
-</workflowConfiguration>
+        </begin>
+        <flow ref="common">
+
+        </flow>
+        <end>
+
+        </end>
+    </work>
+    <work name="flow2" threads="SINGLE">
+
+    </work>
+    <flow id="common">
+
+    </flow>
+</workflowConfig>
