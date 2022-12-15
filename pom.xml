@@ -34,6 +34,7 @@
     <modules>
         <module>EsKitsLibrary</module>
         <module>DataKitsServer</module>
+        <module>DataKitsBatch</module>
     </modules>
 
     <properties>
