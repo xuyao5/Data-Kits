@@ -20,22 +20,22 @@ import java.util.function.Consumer;
 @Slf4j
 public final class Db2DbService<T> {
 
-    public int executeByBatchEventHandler(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> mapper, AbstractBatchEventHandler<T> batchEventHandler) {
+    public int executeByBatchEventHandler(@NonNull Db2DbConfig config, EventFactory<T> factory, Consumer<ResultHandler<T>> consumer, AbstractBatchEventHandler<T> batchEventHandler) {
         //执行计数器
-        final AtomicInteger count = new AtomicInteger();
+        AtomicInteger count = new AtomicInteger();
 
-        DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processZeroArgEvent(factory,
+        DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processTwoArgEvent(factory,
                 //事件生产
-                translator -> mapper.accept(resultContext -> translator.translate((t, sequence) -> {
+                translator -> consumer.accept(resultContext -> translator.translate((dest, sequence, orig, resultCount) -> {
                     try {
-                        BeanUtils.copyProperties(t, resultContext.getResultObject());
-                        count.set(resultContext.getResultCount());
+                        BeanUtils.copyProperties(dest, orig);
+                        count.set(resultCount);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         log.error("Db2DbService#execute#AbstractSequenceReporting", e);
                     }
-                })),
+                }, resultContext.getResultObject(), resultContext.getResultCount())),
                 //错误处理
-                (order, sequence) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", sequence, order),
+                (t, sequence) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", sequence, t),
                 //事件消费
                 batchEventHandler);
 
