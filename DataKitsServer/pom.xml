@@ -55,6 +55,7 @@
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
                 <configuration>
                     <contexts>Es-Kits-Server-Primary,Es-Kits-Server-Secondary</contexts>
+                    <configurationFile>${project.basedir}/src/test/resources/generator/generatorConfig.xml</configurationFile>
                 </configuration>
             </plugin>
         </plugins>
