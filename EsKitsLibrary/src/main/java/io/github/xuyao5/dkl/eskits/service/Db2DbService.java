@@ -1,7 +1,7 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.EventFactory;
-import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
+import io.github.xuyao5.dkl.eskits.context.boost.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.handler.AbstractBatchEventHandler;
 import io.github.xuyao5.dkl.eskits.service.config.Db2DbConfig;
 import lombok.NonNull;
