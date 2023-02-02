@@ -5,14 +5,13 @@ import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.handler.AbstractBatchEventHandler;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
-import io.github.xuyao5.dkl.eskits.service.config.Db2EsConfig;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.ibatis.session.ResultHandler;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -27,24 +26,29 @@ public final class Db2EsService<T, R extends BaseDocument> extends AbstractExecu
         super(client);
     }
 
-    public int execute(@NonNull Db2EsConfig config, EventFactory<T> rowFactory, EventFactory<R> documentFactory, Consumer<ResultHandler<T>> rowMapper, AbstractBatchEventHandler<T> batchEventHandler) {
+    public int execute(int bufferSize, EventFactory<T> rowFactory, Consumer<ResultHandler<T>> consumer, Consumer<List<T>> listConsumer) {
         //执行计数器
         AtomicInteger count = new AtomicInteger();
 
-        DisruptorBoost.<T>context().defaultBufferSize(config.getBufferSize()).create().processZeroArgEvent(rowFactory,
+        DisruptorBoost.<T>context().defaultBufferSize(bufferSize).create().processTwoArgEvent(rowFactory,
                 //事件生产
-                translator -> rowMapper.accept(resultContext -> translator.translate((t, sequence) -> {
+                translator -> consumer.accept(resultContext -> translator.translate((dest, sequence, orig, resultCount) -> {
                     try {
-                        BeanUtils.copyProperties(t, resultContext.getResultObject());
-                        count.set(resultContext.getResultCount());
+                        BeanUtils.copyProperties(dest, orig);
+                        count.set(resultCount);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         log.error("Db2DbService#execute#AbstractSequenceReporting", e);
                     }
-                })),
+                }, resultContext.getResultObject(), resultContext.getResultCount())),
                 //错误处理
-                (order, sequence) -> log.error("Db2EsService#execute#AbstractSequenceReporting Error:{}|{}", sequence, order),
+                (t, sequence) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", sequence, t),
                 //事件消费
-                batchEventHandler);
+                new AbstractBatchEventHandler<T>(100) {
+                    @Override
+                    protected void processEvent(List<T> list) {
+                        listConsumer.accept(list);
+                    }
+                });
 
         return count.intValue();
     }
