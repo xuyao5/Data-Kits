@@ -40,6 +40,7 @@
         <revision>0.14</revision>
         <maven.test.skip>true</maven.test.skip>
         <jakarta-json.version>2.1.1</jakarta-json.version>
+        <mysql.version>8.0.19</mysql.version>
     </properties>
 
     <dependencies>
