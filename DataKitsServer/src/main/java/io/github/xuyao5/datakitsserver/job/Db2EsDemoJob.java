@@ -30,7 +30,7 @@ public class Db2EsDemoJob implements Runnable {
 
     @Override
     public void run() {
-        new Db2EsService<OmsOrder1, MyFileDocument>(esClient).execute(8192, OmsOrder1::new,
+        new Db2EsService<OmsOrder1>().execute(8192, 200, OmsOrder1::new,
                 //生产
                 (handler) -> {
                     Date toDate = DateUtilsPlus.parse2Date("2022-12-31 23:59:59", DateUtilsPlus.STD_DATETIME_FORMAT);
