@@ -1,8 +1,8 @@
-package io.github.xuyao5.dkl.eskits.service;
+package io.github.xuyao5.dkl.eskits.context.boost;
 
 import com.lmax.disruptor.EventFactory;
-import io.github.xuyao5.dkl.eskits.context.boost.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.handler.AbstractBatchEventHandler;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.ibatis.session.ResultHandler;
@@ -16,10 +16,17 @@ import java.util.function.Consumer;
  * @version 18/07/22 22:22
  */
 @Slf4j
-public final class Db2EsService<T> {
+@Builder(builderMethodName = "context", buildMethodName = "create")
+public final class DuplicateBoost<T> {
 
-    public void execute(int bufferSize, int threshold, EventFactory<T> factory, Consumer<ResultHandler<T>> origConsumer, Consumer<List<T>> destConsumer) {
-        DisruptorBoost.<T>context().defaultBufferSize(bufferSize).create().processOneArgEvent(factory,
+    @Builder.Default
+    private int defaultBufferSize = 4_096;
+
+    @Builder.Default
+    private int defaultThreshold = 1_024;
+
+    public void execute(EventFactory<T> factory, Consumer<ResultHandler<T>> origConsumer, Consumer<List<T>> destConsumer) {
+        DisruptorBoost.<T>context().defaultBufferSize(defaultBufferSize).create().processOneArgEvent(factory,
                 //事件生产
                 translator -> origConsumer.accept(resultContext -> translator.translate((dest, sequence, orig) -> {
                     try {
@@ -31,7 +38,7 @@ public final class Db2EsService<T> {
                 //错误处理
                 (orig, sequence) -> log.error("Db2DbService#execute#AbstractSequenceReporting Error:{}|{}", sequence, orig),
                 //事件消费
-                new AbstractBatchEventHandler<T>(threshold) {
+                new AbstractBatchEventHandler<T>(defaultThreshold) {
                     @Override
                     protected void processEvent(List<T> list) {
                         destConsumer.accept(list);
