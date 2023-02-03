@@ -3,6 +3,7 @@ package io.github.xuyao5.datakitsserver.job;
 import io.github.xuyao5.datakitsserver.dao.primary.mapper.OmsOrder1Mapper;
 import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
+import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import io.github.xuyao5.dkl.eskits.context.boost.DuplicateBoost;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.AutoMappingSupporter;
@@ -35,9 +36,9 @@ public class Db2EsDemoJob implements Runnable {
         AutoMappingSupporter.getInstance().mapping(esClient, INDEX, 1, MyFileDocument.class);
         DuplicateBoost.<OmsOrder1>context()
                 //读取buffer
-                .defaultBufferSize(8_192 * Runtime.getRuntime().availableProcessors())
+                .defaultBufferSize(DisruptorThresholdConst.BUFFER_SIZE.getThreshold() * 4)
                 //写入threshold
-                .defaultThreshold(1_024)
+                .defaultThreshold(DisruptorThresholdConst.BATCH_SIZE.getThreshold() * 2)
                 //创建并执行
                 .create().execute(OmsOrder1::new,
                         //生产

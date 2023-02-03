@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service.config;
 
+import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import lombok.Data;
 
 import java.io.File;
@@ -23,5 +24,5 @@ public final class File2EsConfig {
 
     private int priShards = -1;
 
-    private int bufferSize = 8192;
+    private int bufferSize = DisruptorThresholdConst.BUFFER_SIZE.getThreshold();
 }

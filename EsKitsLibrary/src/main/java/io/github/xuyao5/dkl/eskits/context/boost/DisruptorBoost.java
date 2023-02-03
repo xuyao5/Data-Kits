@@ -4,6 +4,7 @@ import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
+import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import io.github.xuyao5.dkl.eskits.context.translator.*;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import java.util.function.ObjLongConsumer;
 public final class DisruptorBoost<T> {
 
     @Builder.Default
-    private int defaultBufferSize = 4_096;
+    private int defaultBufferSize = DisruptorThresholdConst.BUFFER_SIZE.getThreshold();
 
     @SafeVarargs
     public final void processZeroArgEvent(EventFactory<T> factory, Consumer<ZeroArgEventTranslator<T>> publisher, ObjLongConsumer<T> exceptionHandler, EventHandler<T>... handlers) {

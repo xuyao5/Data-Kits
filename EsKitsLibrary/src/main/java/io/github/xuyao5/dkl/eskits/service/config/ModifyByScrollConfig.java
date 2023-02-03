@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service.config;
 
+import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import lombok.Data;
 import org.elasticsearch.index.query.QueryBuilder;
 
@@ -14,5 +15,5 @@ public final class ModifyByScrollConfig {
 
     private QueryBuilder queryBuilder;
 
-    private int bufferSize = 8192;
+    private int bufferSize = DisruptorThresholdConst.BUFFER_SIZE.getThreshold();
 }

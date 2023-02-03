@@ -1,6 +1,7 @@
 package io.github.xuyao5.dkl.eskits.context.boost;
 
 import com.lmax.disruptor.EventFactory;
+import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import io.github.xuyao5.dkl.eskits.context.handler.AbstractBatchEventHandler;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,10 @@ import java.util.function.Consumer;
 public final class DuplicateBoost<T> {
 
     @Builder.Default
-    private int defaultBufferSize = 4_096;
+    private int defaultBufferSize = DisruptorThresholdConst.BUFFER_SIZE.getThreshold();
 
     @Builder.Default
-    private int defaultThreshold = 1_024;
+    private int defaultThreshold = DisruptorThresholdConst.BATCH_SIZE.getThreshold();
 
     public void execute(EventFactory<T> factory, Consumer<ResultHandler<T>> origConsumer, Consumer<List<T>> destConsumer) {
         DisruptorBoost.<T>context().defaultBufferSize(defaultBufferSize).create().processOneArgEvent(factory,

@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service.config;
 
+import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import lombok.Data;
 
 import java.nio.charset.Charset;
@@ -18,5 +19,5 @@ public final class MySQL2EsConfig {
 
     private Charset charset = StandardCharsets.UTF_8;
 
-    private int bufferSize = 8192;
+    private int bufferSize = DisruptorThresholdConst.BUFFER_SIZE.getThreshold();
 }
