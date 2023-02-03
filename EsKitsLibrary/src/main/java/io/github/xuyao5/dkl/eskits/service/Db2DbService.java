@@ -17,6 +17,7 @@ import java.util.function.Consumer;
  * @author Thomas.XU(xuyao)
  * @version 18/07/22 20:32
  */
+@Deprecated
 @Slf4j
 public final class Db2DbService<T> {
 

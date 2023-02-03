@@ -82,7 +82,7 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
 
         //检查索引是否存在
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        final boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
+        boolean isIndexExist = indexSupporter.exists(client, config.getIndex());
         log.info("索引是否存在标志为:[{}]", isIndexExist);
 
         //更新Mapping
