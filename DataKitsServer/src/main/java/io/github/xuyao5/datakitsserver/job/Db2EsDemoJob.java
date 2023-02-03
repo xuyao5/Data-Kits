@@ -5,6 +5,7 @@ import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.context.boost.DuplicateBoost;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
+import io.github.xuyao5.dkl.eskits.support.mapping.AutoMappingSupporter;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -30,9 +31,11 @@ public class Db2EsDemoJob implements Runnable {
 
     @Override
     public void run() {
+        String INDEX = "db2es";
+        AutoMappingSupporter.getInstance().mapping(esClient, INDEX, 1, MyFileDocument.class);
         DuplicateBoost.<OmsOrder1>context()
                 //读取buffer
-                .defaultBufferSize(4_096)
+                .defaultBufferSize(8_192 * Runtime.getRuntime().availableProcessors())
                 //写入threshold
                 .defaultThreshold(1_024)
                 //创建并执行
@@ -47,7 +50,7 @@ public class Db2EsDemoJob implements Runnable {
                         omsOrder1List -> BulkSupporter.getInstance().bulk(esClient, omsOrder1List.stream().map(omsOrder1 -> {
                             MyFileDocument document = MyFileDocument.of();
                             document.setUuid(omsOrder1.getOrderId());
-                            return BulkSupporter.buildIndexRequest("db2es", document);
+                            return BulkSupporter.buildIndexRequest(INDEX, document);
                         }).collect(Collectors.toList())));
     }
 }
