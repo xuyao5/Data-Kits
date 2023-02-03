@@ -6,7 +6,7 @@ import io.github.xuyao5.datakitsserver.vo.MyTableDocument;
 import io.github.xuyao5.dkl.eskits.context.boost.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.translator.OneArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.helper.SnowflakeHelper;
-import io.github.xuyao5.dkl.eskits.support.boost.CatSupporter;
+import io.github.xuyao5.dkl.eskits.support.auxiliary.CatSupporter;
 import io.github.xuyao5.dkl.eskits.support.v2.SearchingSupporter;
 import io.github.xuyao5.dkl.eskits.util.*;
 import lombok.SneakyThrows;

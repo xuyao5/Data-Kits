@@ -3,7 +3,7 @@ package io.github.xuyao5.dkl.eskits.service;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardSearchSource;
 import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
-import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
+import io.github.xuyao5.dkl.eskits.support.auxiliary.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.DocumentSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
