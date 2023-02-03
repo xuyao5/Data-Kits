@@ -36,7 +36,7 @@ public class Db2EsDemoJob implements Runnable {
         AutoMappingSupporter.getInstance().mapping(esClient, INDEX, 1, MyFileDocument.class);
         DuplicateBoost.<OmsOrder1>context()
                 //读取buffer
-                .defaultBufferSize(DisruptorThresholdConst.BUFFER_SIZE.getThreshold() * 4)
+                .defaultBufferSize(DisruptorThresholdConst.BUFFER_SIZE.getThreshold() * 8)
                 //写入threshold
                 .defaultThreshold(DisruptorThresholdConst.BATCH_SIZE.getThreshold() * 2)
                 //创建并执行
