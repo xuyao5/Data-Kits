@@ -64,7 +64,7 @@ public final class File2EsDemoJob implements Runnable {
 
                 //3.别名重定向
                 String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, alias, index);
-                log.info("迁移别名[{}]到新索引[{}]，原索引{}", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
+                log.info("迁移别名[{}]到新索引[{}]，全索引{}", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
 
                 if (indexArray.length > 0) {
                     //4.迁移老索引数据，如果有rejected execution of coordinating operation reindex，调整ScrollSize

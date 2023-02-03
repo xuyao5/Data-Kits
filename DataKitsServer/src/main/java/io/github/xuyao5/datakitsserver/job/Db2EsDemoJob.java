@@ -5,16 +5,21 @@ import io.github.xuyao5.datakitsserver.dao.primary.model.OmsOrder1;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import io.github.xuyao5.dkl.eskits.context.boost.DuplicateBoost;
+import io.github.xuyao5.dkl.eskits.support.auxiliary.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.AutoMappingSupporter;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import static io.github.xuyao5.dkl.eskits.util.DateUtilsPlus.STD_DATE_FORMAT;
 
 /**
  * @author Thomas.XU(xuyao)
@@ -32,13 +37,14 @@ public class Db2EsDemoJob implements Runnable {
 
     @Override
     public void run() {
-        String INDEX = "db2es";
+        String ALIAS = "OMS_ORDER_LIST";
+        String INDEX = StringUtils.join("order_list_", DateUtilsPlus.format2Date(DateUtils.addDays(DateUtilsPlus.now(), -1), STD_DATE_FORMAT));
         AutoMappingSupporter.getInstance().mapping(esClient, INDEX, 1, MyFileDocument.class);
         DuplicateBoost.<OmsOrder1>context()
                 //读取buffer
                 .defaultBufferSize(DisruptorThresholdConst.BUFFER_SIZE.getThreshold() * 8)
                 //写入threshold
-                .defaultThreshold(DisruptorThresholdConst.BATCH_SIZE.getThreshold() * 2)
+                .defaultThreshold(DisruptorThresholdConst.BATCH_SIZE.getThreshold())
                 //创建并执行
                 .create().execute(OmsOrder1::new,
                         //生产
@@ -51,7 +57,13 @@ public class Db2EsDemoJob implements Runnable {
                         omsOrder1List -> BulkSupporter.getInstance().bulk(esClient, omsOrder1List.stream().map(omsOrder1 -> {
                             MyFileDocument document = MyFileDocument.of();
                             document.setUuid(omsOrder1.getOrderId());
-                            return BulkSupporter.buildIndexRequest(INDEX, document);
+                            document.setDiscount1(1);
+                            document.setDiscount2(2);
+                            return BulkSupporter.buildIndexRequest(INDEX, String.valueOf(omsOrder1.getId()), document);
                         }).collect(Collectors.toList())));
+
+        //3.别名重定向
+        String[] indexArray = AliasesSupporter.getInstance().increase(esClient, ALIAS, INDEX);
+        log.info("迁移别名[{}]到新索引[{}]，原索引{}", ALIAS, INDEX, indexArray.length > 0 ? indexArray : "无别名迁移");
     }
 }
