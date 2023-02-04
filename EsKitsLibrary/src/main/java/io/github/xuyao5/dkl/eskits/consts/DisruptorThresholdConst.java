@@ -14,7 +14,7 @@ import java.util.Optional;
 public enum DisruptorThresholdConst {
 
     BUFFER_SIZE(8_192), //Disruptor BufferSize
-    BATCH_SIZE(1_024);//AbstractBatchEventHandler BatchRemaining
+    BATCH_SIZE(1_000);//AbstractBatchEventHandler BatchRemaining
 
     @Getter
     private final int threshold;

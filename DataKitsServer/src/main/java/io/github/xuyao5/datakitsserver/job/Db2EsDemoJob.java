@@ -38,7 +38,7 @@ public class Db2EsDemoJob implements Runnable {
     @Override
     public void run() {
         String ALIAS = "OMS_ORDER_LIST";
-        String INDEX = StringUtils.join("order_list_", DateUtilsPlus.format2Date(DateUtils.addDays(DateUtilsPlus.now(), -1), STD_DATE_FORMAT));
+        String INDEX = StringUtils.join("order_list_", DateUtilsPlus.format2Date(DateUtils.addDays(DateUtilsPlus.now(), -2), STD_DATE_FORMAT));
         AutoMappingSupporter.getInstance().mapping(esClient, INDEX, 1, MyFileDocument.class);
         DuplicateBoost.<OmsOrder1>context()
                 //读取buffer

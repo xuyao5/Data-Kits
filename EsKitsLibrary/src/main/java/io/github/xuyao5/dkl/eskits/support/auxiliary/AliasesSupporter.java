@@ -40,7 +40,7 @@ public final class AliasesSupporter {
     public String[] increase(@NonNull RestHighLevelClient client, @NonNull String alias, @NonNull String targetIndex) {
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
         if (indexSupporter.exists(client, targetIndex)) {
-            List<IndicesAliasesRequest.AliasActions> actionsList = Collections.singletonList(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index(targetIndex).alias(alias).writeIndex(true));
+            List<IndicesAliasesRequest.AliasActions> actionsList = Collections.singletonList(new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD).index(targetIndex).alias(alias));
             return indexSupporter.updateAliases(client, actionsList).isAcknowledged() ? indexSupporter.getAlias(client, alias).getAliases().keySet().toArray(new String[0]) : Strings.EMPTY_ARRAY;
         }
         return Strings.EMPTY_ARRAY;
