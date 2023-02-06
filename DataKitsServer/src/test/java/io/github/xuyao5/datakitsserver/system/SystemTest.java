@@ -82,8 +82,8 @@ public class SystemTest extends AbstractTest {
 //        System.out.println(catSupporter.getCatMaster(esClient));
 //        System.out.println(catSupporter.getCatNodes(esClient));
 //        System.out.println(catSupporter.getCatTasks(esClient));
-        System.out.println(catSupporter.getCatIndices(esClient));
-        System.out.println(catSupporter.getCatIndices(esClient, "file2es_disruptor_*"));
+//        System.out.println(catSupporter.getCatIndices(esClient));
+        System.out.println(catSupporter.getCatIndices(esClient, "order_list_20230202"));
 //        System.out.println(catSupporter.getCatSegments(esClient));
 //        System.out.println(catSupporter.getCatSegments(esClient, "file2es_disruptor_*"));
 //        System.out.println(catSupporter.getCatCount(esClient, "file2es_disruptor_*"));

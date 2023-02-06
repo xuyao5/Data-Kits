@@ -1,6 +1,7 @@
 package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.EventFactory;
+import io.github.xuyao5.dkl.eskits.consts.IndexStatusConst;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
 import io.github.xuyao5.dkl.eskits.context.annotation.AutoMappingField;
 import io.github.xuyao5.dkl.eskits.context.boost.DisruptorBoost;
@@ -8,6 +9,7 @@ import io.github.xuyao5.dkl.eskits.context.translator.TwoArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.schema.standard.StandardFileLine;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
+import io.github.xuyao5.dkl.eskits.support.auxiliary.CatSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
@@ -103,7 +105,7 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
             }
         } else {
             indexSupporter.putMapping(client, contentBuilder, config.getIndex());
-            indexSupporter.open(client, config.getIndex());
+            CatSupporter.getInstance().getCatIndices(client, config.getIndex()).stream().filter(indices4Cat -> indices4Cat.getIndex().equals(config.getIndex()) && indices4Cat.getStatus().equals(IndexStatusConst.CLOSE.getStatus())).findFirst().ifPresent(indices4Cat -> indexSupporter.open(client, indices4Cat.getIndex()));
         }
 
         //执行计数器
