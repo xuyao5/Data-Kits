@@ -33,11 +33,10 @@ public final class AutoMappingSupporter {
     public void mapping(RestHighLevelClient client, String index, int priShards, Class<? extends BaseDocument> clz) {
         List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(clz, AutoMappingField.class);//获取被@AutoMappingField注解的成员
         XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(clz);//根据Document Class生成ES的Mapping
-        //检查索引是否存在
-        IndexSupporter indexSupporter = IndexSupporter.getInstance();
-        boolean isIndexExist = indexSupporter.exists(client, index);
 
-        if (!isIndexExist) {
+        IndexSupporter indexSupporter = IndexSupporter.getInstance();
+
+        if (!indexSupporter.exists(client, index)) {
             Map<String, String> indexSorting = fieldsList.stream()
                     //过滤
                     .filter(field -> field.getDeclaredAnnotation(AutoMappingField.class).sortPriority() >= 0)
@@ -56,7 +55,6 @@ public final class AutoMappingSupporter {
             indexSupporter.putMapping(client, contentBuilder, index);
             indexSupporter.open(client, index);
         }
-
     }
 
     private static class SingletonHolder {
