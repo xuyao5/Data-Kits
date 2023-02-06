@@ -5,7 +5,7 @@ import com.github.shyiko.mysql.binlog.event.*;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.context.annotation.TableField;
+import io.github.xuyao5.dkl.eskits.context.annotation.AutoMappingField;
 import io.github.xuyao5.dkl.eskits.context.boost.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.translator.TwoArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.dao.InformationSchemaDao;
@@ -86,9 +86,9 @@ public final class MySQL2EsService<T extends BaseDocument> extends AbstractExecu
         final Map<Long, TableMapEventData> tableMap = new ConcurrentHashMap<>();//表元数据
         final Map<String, Class<? extends BaseDocument>> docClassMap = documentFactory.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().newInstance().getClass()));//获取Document Class
         final Map<String, XContentBuilder> contentBuilderMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> XContentSupporter.getInstance().buildMapping(entry.getValue())));//根据Document Class生成ES的Mapping
-        final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), TableField.class)));//获取被@TableField注解的成员
-        final Map<String, Map<String, Field>> tableColumnFieldMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Function.identity()))));//类型预存
-//        final Map<String, Map<String, Class<?>>> tableColumnClassMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(TableField.class).column(), Field::getType))));//类型预存
+        final Map<String, List<Field>> fieldsListMap = docClassMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> FieldUtils.getFieldsListWithAnnotation(entry.getValue(), AutoMappingField.class)));//获取被@AutoMappingField注解的成员
+        final Map<String, Map<String, Field>> tableColumnFieldMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(AutoMappingField.class).column(), Function.identity()))));//类型预存
+//        final Map<String, Map<String, Class<?>>> tableColumnClassMap = fieldsListMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(field -> field.getDeclaredAnnotation(AutoMappingField.class).column(), Field::getType))));//类型预存
         final Map<String, Tables> tablesMap = getTablesMapRepo(documentFactory.keySet());
         final Map<String, List<Columns>> tableColumnsMap = getTableColumnsMapRepo(documentFactory.keySet());
         final Map<String, Map<Integer, String>> tableColumnMap = tableColumnsMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream().collect(Collectors.toMap(Columns::getOrdinalPosition, Columns::getColumnName))));
@@ -132,7 +132,7 @@ public final class MySQL2EsService<T extends BaseDocument> extends AbstractExecu
                     IndexSupporter indexSupporter = IndexSupporter.getInstance();
                     final boolean isIndexExist = indexSupporter.exists(client, index);
                     if (!isIndexExist) {
-                        Map<String, String> indexSorting = fieldsListMap.get(table).stream().filter(field -> field.getDeclaredAnnotation(TableField.class).priority() > 0).sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(TableField.class).priority())).collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(TableField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
+                        Map<String, String> indexSorting = fieldsListMap.get(table).stream().filter(field -> field.getDeclaredAnnotation(AutoMappingField.class).sortPriority() > 0).sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(AutoMappingField.class).sortPriority())).collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(AutoMappingField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
                         int numberOfDataNodes = ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();
                         log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
                         if (!indexSorting.isEmpty()) {
