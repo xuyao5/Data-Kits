@@ -13,7 +13,7 @@ import static io.github.xuyao5.dkl.eskits.consts.SortTypeConst.ASC;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FileField {
+public @interface AutoMappingField {
 
     String column() default "";//列名模式
 

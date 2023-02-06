@@ -2,7 +2,7 @@ package io.github.xuyao5.dkl.eskits.service;
 
 import com.lmax.disruptor.EventFactory;
 import io.github.xuyao5.dkl.eskits.context.AbstractExecutor;
-import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
+import io.github.xuyao5.dkl.eskits.context.annotation.AutoMappingField;
 import io.github.xuyao5.dkl.eskits.context.boost.DisruptorBoost;
 import io.github.xuyao5.dkl.eskits.context.translator.TwoArgEventTranslator;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
@@ -69,9 +69,9 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
         //预存必须数据
         final Class<? extends BaseDocument> docClass = documentFactory.newInstance().getClass();//获取Document Class
         final XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(docClass);//根据Document Class生成ES的Mapping
-        final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, FileField.class);//获取被@FileField注解的成员
-        final Map<String, Field> columnFieldMap = fieldsList.stream().filter(field -> StringUtils.isNotBlank(field.getDeclaredAnnotation(FileField.class).column())).collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).column(), Function.identity()));//类型预存
-        final Map<Integer, Field> positionFieldMap = fieldsList.stream().filter(field -> field.getDeclaredAnnotation(FileField.class).position() > -1).collect(Collectors.toMap(field -> field.getDeclaredAnnotation(FileField.class).position(), Function.identity()));//类型预存
+        final List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(docClass, AutoMappingField.class);//获取被@AutoMappingField注解的成员
+        final Map<String, Field> columnFieldMap = fieldsList.stream().filter(field -> StringUtils.isNotBlank(field.getDeclaredAnnotation(AutoMappingField.class).column())).collect(Collectors.toMap(field -> field.getDeclaredAnnotation(AutoMappingField.class).column(), Function.identity()));//类型预存
+        final Map<Integer, Field> positionFieldMap = fieldsList.stream().filter(field -> field.getDeclaredAnnotation(AutoMappingField.class).position() > -1).collect(Collectors.toMap(field -> field.getDeclaredAnnotation(AutoMappingField.class).position(), Function.identity()));//类型预存
 
         if (!columnFieldMap.isEmpty() && !positionFieldMap.isEmpty()) {
             log.error("文档不能同时设置column和position，列名模式和列号模式不能同时生效，当前文档类型为:[{}]", docClass);
@@ -89,11 +89,11 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
         if (!isIndexExist) {
             Map<String, String> indexSorting = fieldsList.stream()
                     //过滤
-                    .filter(field -> field.getDeclaredAnnotation(FileField.class).sortPriority() >= 0)
+                    .filter(field -> field.getDeclaredAnnotation(AutoMappingField.class).sortPriority() >= 0)
                     //排序
-                    .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).sortPriority()))
+                    .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(AutoMappingField.class).sortPriority()))
                     //收集
-                    .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
+                    .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(AutoMappingField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
             int numberOfDataNodes = config.getPriShards() > 0 ? config.getPriShards() : ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();//自动计算主分片
             log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
             if (!indexSorting.isEmpty()) {
@@ -131,11 +131,11 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
                                 for (int i = 0; i < metadataArray[0].length; i++) {
                                     Field field = !columnFieldMap.isEmpty() ? columnFieldMap.get(metadataArray[0][i]) : positionFieldMap.get(i);
                                     if (Objects.nonNull(field)) {
-                                        if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(FileField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
+                                        if (StringUtils.isNotEmpty(field.getDeclaredAnnotation(AutoMappingField.class).column()) && StringUtils.isNotBlank(recordArray[i])) {
                                             FieldUtils.writeField(field, document, GsonUtilsPlus.deserialize(recordArray[i], field.getType()), true);
                                         }
                                     } else {
-                                        log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@FileField的column属性配置是否正确或检查元数据行是否存在,注:带有BOM的txt/csv文件也会引起此问题", standardFileLine, metadataArray[0][i]);
+                                        log.error("行[{}]使用列名[{}]无法找到映射关系，请检查@AutoMappingField的column属性配置是否正确或检查元数据行是否存在,注:带有BOM的txt/csv文件也会引起此问题", standardFileLine, metadataArray[0][i]);
                                     }
                                 }
 

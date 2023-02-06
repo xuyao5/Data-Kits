@@ -1,6 +1,6 @@
 package io.github.xuyao5.dkl.eskits.support.mapping;
 
-import io.github.xuyao5.dkl.eskits.context.annotation.FileField;
+import io.github.xuyao5.dkl.eskits.context.annotation.AutoMappingField;
 import io.github.xuyao5.dkl.eskits.schema.base.BaseDocument;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
@@ -31,7 +31,7 @@ public final class AutoMappingSupporter {
     }
 
     public void mapping(RestHighLevelClient client, String index, int priShards, Class<? extends BaseDocument> clz) {
-        List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(clz, FileField.class);//获取被@FileField注解的成员
+        List<Field> fieldsList = FieldUtils.getFieldsListWithAnnotation(clz, AutoMappingField.class);//获取被@AutoMappingField注解的成员
         XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(clz);//根据Document Class生成ES的Mapping
         //检查索引是否存在
         IndexSupporter indexSupporter = IndexSupporter.getInstance();
@@ -40,11 +40,11 @@ public final class AutoMappingSupporter {
         if (!isIndexExist) {
             Map<String, String> indexSorting = fieldsList.stream()
                     //过滤
-                    .filter(field -> field.getDeclaredAnnotation(FileField.class).sortPriority() >= 0)
+                    .filter(field -> field.getDeclaredAnnotation(AutoMappingField.class).sortPriority() >= 0)
                     //排序
-                    .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(FileField.class).sortPriority()))
+                    .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(AutoMappingField.class).sortPriority()))
                     //收集
-                    .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(FileField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
+                    .collect(Collectors.toMap(Field::getName, field -> field.getDeclaredAnnotation(AutoMappingField.class).order().getOrder(), (o1, o2) -> null, LinkedHashMap::new));
             int numberOfDataNodes = priShards > 0 ? priShards : ClusterSupporter.getInstance().health(client).getNumberOfDataNodes();//自动计算主分片
             log.info("ES服务器数据节点数为:[{}]", numberOfDataNodes);
             if (!indexSorting.isEmpty()) {
