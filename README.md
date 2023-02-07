@@ -62,7 +62,7 @@ public class DataKitsConfiguration {
 - 支持MySQL2ES：以Binlog监听模式将MySQL中的数据全量/增量同步到ES中去，支持无锁式高性能异步自定义计算，支持多表智能denormalization（通过智能反范式将数据扁平化处理），从而在访问时避免进行关联操作；
 - 支持大批量异步更新：ES常规的同步更新机制非常容易发生问题且性能不佳，SDK开发了数据异步更新的最佳实践方案，调用一个API即可实现高性能数据更新；
 - 服务端存储查询：通过在服务器中存储查询的DSL/SQL，客户端只需要简单使用Search ID + Params Map即可进行查询，并支持多租户跨领域复用查询；
-- 智能Mapping：框架开发了@FileField等注解，实现了普通JavaBeans和ES字段的自动类型映射，智能识别数据类型，避免了手工定义Mapping导致的问题；
+- 智能Mapping：框架开发了@AutoMappingField等注解，实现了普通JavaBeans和ES字段的自动类型映射，智能识别数据类型，避免了手工定义Mapping导致的问题；
 - 高性能ES Client：在ES High Level Client的基础上进行了全新的封装，支持client全周期的管理和高并发访问的支持；
 - 断点续传：对处理过程中的异常不会直接中断处理过程，框架会将问题数据原格式持久化到磁盘，供开发运维人员进一步处理；
 - 预定义字段：框架中会在写入索引时自动加入一系列预定义字段，开发人员可开箱即用；

@@ -1,6 +1,6 @@
 package io.github.xuyao5.datakitsserver.job;
 
-import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
+import io.github.xuyao5.datakitsserver.configuration.elasticsearch.EsKitsConfig;
 import io.github.xuyao5.dkl.eskits.service.StoredSearchService;
 import io.github.xuyao5.dkl.eskits.service.config.StoredSearchConfig;
 import org.elasticsearch.client.RestHighLevelClient;

@@ -1,5 +1,6 @@
 package io.github.xuyao5.dkl.eskits.service.config;
 
+import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import lombok.Data;
 
 /**
@@ -9,9 +10,9 @@ import lombok.Data;
 @Data(staticConstructor = "of")
 public final class Db2DbConfig {
 
-    private int bufferSize = 8192;
+    private int bufferSize = DisruptorThresholdConst.BUFFER_SIZE.getThreshold();
 
     private int threads = Runtime.getRuntime().availableProcessors();
 
-    private int threshold = 256;
+    private int threshold = DisruptorThresholdConst.BATCH_SIZE.getThreshold();
 }

@@ -1,4 +1,4 @@
-package io.github.xuyao5.datakitsserver.configuration;
+package io.github.xuyao5.datakitsserver.configuration.elasticsearch;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import io.github.xuyao5.dkl.eskits.client.EsClient;

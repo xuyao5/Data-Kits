@@ -1,4 +1,4 @@
-package io.github.xuyao5.datakitsserver.configuration;
+package io.github.xuyao5.datakitsserver.configuration.database;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -19,30 +19,30 @@ import javax.sql.DataSource;
  * @version 24/06/22 21:52
  */
 @Configuration
-@MapperScan(basePackages = {"io.github.xuyao5.datakitsserver.dao.primary.mapper"}, sqlSessionTemplateRef = "primarySqlSessionTemplate")
-public class PrimaryDataSourceConfiguration {
+@MapperScan(basePackages = {"io.github.xuyao5.datakitsserver.dao.secondary.mapper"}, sqlSessionTemplateRef = "secondarySqlSessionTemplate")
+public class SecondaryDataSourceConfiguration {
 
-    @Bean(name = "primaryDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.primary")
+    @Bean(name = "secondaryDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.secondary")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "primarySqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("primaryDataSource") DataSource dataSource) throws Exception {
+    @Bean(name = "secondarySqlSessionFactory")
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("secondaryDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:io/github/xuyao5/datakitsserver/dao/primary/**/*Mapper.xml"));
+        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:io/github/xuyao5/datakitsserver/dao/secondary/**/*Mapper.xml"));
         return bean.getObject();
     }
 
-    @Bean(name = "primaryTransactionManager")
-    public DataSourceTransactionManager transactionManager(@Qualifier("primaryDataSource") DataSource dataSource) {
+    @Bean(name = "secondaryTransactionManager")
+    public DataSourceTransactionManager transactionManager(@Qualifier("secondaryDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
-    @Bean(name = "primarySqlSessionTemplate")
-    public SqlSessionTemplate sqlSessionTemplate(@Qualifier("primarySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    @Bean(name = "secondarySqlSessionTemplate")
+    public SqlSessionTemplate sqlSessionTemplate(@Qualifier("secondarySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

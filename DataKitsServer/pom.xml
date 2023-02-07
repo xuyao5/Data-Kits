@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -55,6 +55,7 @@
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
                 <configuration>
                     <contexts>Es-Kits-Server-Primary,Es-Kits-Server-Secondary</contexts>
+                    <configurationFile>${project.basedir}/src/test/resources/generator/generatorConfig.xml</configurationFile>
                 </configuration>
             </plugin>
         </plugins>

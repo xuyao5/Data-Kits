@@ -1,12 +1,12 @@
 package io.github.xuyao5.datakitsserver.job;
 
-import io.github.xuyao5.datakitsserver.configuration.EsKitsConfig;
+import io.github.xuyao5.datakitsserver.configuration.elasticsearch.EsKitsConfig;
 import io.github.xuyao5.datakitsserver.vo.MyFileDocument;
 import io.github.xuyao5.dkl.eskits.service.File2EsService;
 import io.github.xuyao5.dkl.eskits.service.config.File2EsConfig;
+import io.github.xuyao5.dkl.eskits.support.auxiliary.AliasesSupporter;
+import io.github.xuyao5.dkl.eskits.support.auxiliary.CleaningSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.ReindexSupporter;
-import io.github.xuyao5.dkl.eskits.support.boost.AliasesSupporter;
-import io.github.xuyao5.dkl.eskits.support.boost.CleaningSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import io.github.xuyao5.dkl.eskits.util.FileUtilsPlus;
@@ -64,7 +64,7 @@ public final class File2EsDemoJob implements Runnable {
 
                 //3.别名重定向
                 String[] indexArray = AliasesSupporter.getInstance().migrate(esClient, alias, index);
-                log.info("迁移别名[{}]到新索引[{}]，原索引{}", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
+                log.info("迁移别名[{}]到新索引[{}]，全索引{}", alias, index, indexArray.length > 0 ? indexArray : "无别名迁移");
 
                 if (indexArray.length > 0) {
                     //4.迁移老索引数据，如果有rejected execution of coordinating operation reindex，调整ScrollSize

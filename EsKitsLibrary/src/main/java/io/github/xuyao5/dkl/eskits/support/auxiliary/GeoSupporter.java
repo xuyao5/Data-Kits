@@ -1,4 +1,4 @@
-package io.github.xuyao5.dkl.eskits.support.boost;
+package io.github.xuyao5.dkl.eskits.support.auxiliary;
 
 import io.github.xuyao5.dkl.eskits.support.general.SearchSupporter;
 import lombok.AccessLevel;

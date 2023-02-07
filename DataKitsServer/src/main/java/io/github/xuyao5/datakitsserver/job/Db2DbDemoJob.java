@@ -43,7 +43,7 @@ public final class Db2DbDemoJob implements Runnable {
                 //消费
                 new AbstractBatchEventHandler<OmsOrder1>(100) {
                     @Override
-                    protected void processEvent(List<OmsOrder1> list) throws Exception {
+                    protected void processEvent(List<OmsOrder1> list) {
                         int count = targetMapper.mergeSelective(list.stream().map(omsOrder1 -> {
                                     OmsOrder2 omsOrder2 = new OmsOrder2();
                                     BeanUtils.copyProperties(omsOrder1, omsOrder2);
