@@ -7,6 +7,7 @@ import io.github.xuyao5.dkl.eskits.consts.DisruptorThresholdConst;
 import io.github.xuyao5.dkl.eskits.context.boost.DuplicateBoost;
 import io.github.xuyao5.dkl.eskits.support.auxiliary.AliasesSupporter;
 import io.github.xuyao5.dkl.eskits.support.batch.BulkSupporter;
+import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
 import io.github.xuyao5.dkl.eskits.support.mapping.AutoMappingSupporter;
 import io.github.xuyao5.dkl.eskits.util.DateUtilsPlus;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +36,21 @@ public class Db2EsDemoJob implements Runnable {
     @Autowired
     private RestHighLevelClient esClient;
 
+    private volatile static boolean isDone = false;
+
     @Override
     public void run() {
         String ALIAS = "OMS_ORDER_LIST";
         String INDEX = StringUtils.join("order_list_", DateUtilsPlus.format2Date(DateUtils.addDays(DateUtilsPlus.now(), -1), STD_DATE_FORMAT));
-        AutoMappingSupporter.getInstance().autoMappingField(esClient, INDEX, 1, 0, MyFileDocument.class);
+        AutoMappingSupporter autoMappingSupporter = AutoMappingSupporter.getInstance();
+
+        if (!IndexSupporter.getInstance().exists(esClient, INDEX)) {
+            autoMappingSupporter.autoMappingField(esClient, INDEX, 1, 0, MyFileDocument.class);
+        } else if (!autoMappingSupporter.isSameMapping(esClient, INDEX, MyFileDocument.class) && !isDone) {
+            autoMappingSupporter.autoMappingField(esClient, INDEX, 1, 0, MyFileDocument.class);
+            isDone = true;
+        }
+
         DuplicateBoost.<OmsOrder1>context()
                 //读取buffer
                 .defaultBufferSize(DisruptorThresholdConst.BUFFER_SIZE.getThreshold() * 8)

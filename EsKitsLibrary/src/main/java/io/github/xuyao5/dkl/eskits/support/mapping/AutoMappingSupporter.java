@@ -3,6 +3,7 @@ package io.github.xuyao5.dkl.eskits.support.mapping;
 import io.github.xuyao5.dkl.eskits.context.annotation.AutoMappingField;
 import io.github.xuyao5.dkl.eskits.support.general.ClusterSupporter;
 import io.github.xuyao5.dkl.eskits.support.general.IndexSupporter;
+import io.github.xuyao5.dkl.eskits.util.GsonUtilsPlus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -28,6 +29,12 @@ public final class AutoMappingSupporter {
 
     public static AutoMappingSupporter getInstance() {
         return AutoMappingSupporter.SingletonHolder.INSTANCE;
+    }
+
+    public boolean isSameMapping(@NonNull RestHighLevelClient client, String index, @NonNull Class<?> clz) {
+        try (XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(clz)) {
+            return GsonUtilsPlus.json2Obj(Strings.toString(contentBuilder), clz).equals(GsonUtilsPlus.json2Obj(IndexSupporter.getInstance().getMapping(client, index).mappings().get(index).source().toString(), clz));
+        }
     }
 
     public void autoMappingField(@NonNull RestHighLevelClient client, String index, int shards, int replicas, @NonNull Class<?> clz) {
