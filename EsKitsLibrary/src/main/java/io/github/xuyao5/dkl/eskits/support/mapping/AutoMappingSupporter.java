@@ -30,7 +30,7 @@ public final class AutoMappingSupporter {
         return AutoMappingSupporter.SingletonHolder.INSTANCE;
     }
 
-    public void run4AutoMappingFieldAnnotation(@NonNull RestHighLevelClient client, String index, int shards, int replicas, @NonNull Class<?> clz) {
+    public void autoMappingField(@NonNull RestHighLevelClient client, String index, int shards, int replicas, @NonNull Class<?> clz) {
         try (XContentBuilder contentBuilder = XContentSupporter.getInstance().buildMapping(clz)) {
             log.info("索引Mapping:[{}],[{}]", index, Strings.toString(contentBuilder));
 

@@ -88,7 +88,7 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
         log.info("索引是否存在标志为:[{}],[{}]", config.getIndex(), isIndexExist);
 
         //自动映射，索引不存在会自动新建索引，索引存在会更新Mapping
-        AutoMappingSupporter.getInstance().run4AutoMappingFieldAnnotation(client, config.getIndex(), config.getPriShards(), 0, docClass);
+        AutoMappingSupporter.getInstance().autoMappingField(client, config.getIndex(), config.getPriShards(), 0, docClass);
 
         //如果close了就重新OPEN
         if (isIndexExist) {

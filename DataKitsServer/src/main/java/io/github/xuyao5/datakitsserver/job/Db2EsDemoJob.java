@@ -39,7 +39,7 @@ public class Db2EsDemoJob implements Runnable {
     public void run() {
         String ALIAS = "OMS_ORDER_LIST";
         String INDEX = StringUtils.join("order_list_", DateUtilsPlus.format2Date(DateUtils.addDays(DateUtilsPlus.now(), -1), STD_DATE_FORMAT));
-        AutoMappingSupporter.getInstance().run4AutoMappingFieldAnnotation(esClient, INDEX, 1, 0, MyFileDocument.class);
+        AutoMappingSupporter.getInstance().autoMappingField(esClient, INDEX, 1, 0, MyFileDocument.class);
         DuplicateBoost.<OmsOrder1>context()
                 //读取buffer
                 .defaultBufferSize(DisruptorThresholdConst.BUFFER_SIZE.getThreshold() * 8)
