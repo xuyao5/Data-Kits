@@ -140,7 +140,11 @@ public final class File2EsService<T extends BaseDocument> extends AbstractExecut
                                         function.accept(BulkSupporter.buildIndexRequest(config.getIndex(), recordArray[config.getIdColumn()], operator.apply(document)));
                                     }
                                 } else {
-                                    if (config.getIdColumn() >= 0) {
+                                    if (config.getIdColumn() < 0) {
+                                        document.setCreateDate(DateUtilsPlus.now());
+                                        document.setSerialNo(snowflake.nextId());
+                                        function.accept(BulkSupporter.buildIndexRequest(config.getIndex(), operator.apply(document)));
+                                    } else {
                                         T updatingDocument = documentFactory.newInstance();
                                         BeanUtils.copyProperties(updatingDocument, document);
                                         updatingDocument.setModifyDate(DateUtilsPlus.now());
