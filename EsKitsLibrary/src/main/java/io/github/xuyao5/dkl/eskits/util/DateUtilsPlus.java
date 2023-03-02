@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Locale;
 
 import static org.apache.commons.lang3.time.DateUtils.parseDate;
 
@@ -35,7 +34,7 @@ public final class DateUtilsPlus {
     }
 
     public static String format2Date(@NonNull Date date, @NonNull FastDateFormat format) {
-        return DateFormatUtils.format(date, format.getPattern(), Locale.ROOT);
+        return DateFormatUtils.format(date, format.getPattern());
     }
 
     @SneakyThrows
@@ -45,7 +44,7 @@ public final class DateUtilsPlus {
 
     @SneakyThrows
     public static Date parse2Date(@NonNull String date, @NonNull FastDateFormat format) {
-        return parseDate(date, Locale.ROOT, format.getPattern());
+        return parseDate(date, format.getPattern());
     }
 
     public static Date parse2Date(long date) {

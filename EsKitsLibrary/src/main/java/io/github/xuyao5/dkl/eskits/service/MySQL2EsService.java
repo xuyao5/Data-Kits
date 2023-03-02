@@ -106,8 +106,8 @@ public final class MySQL2EsService<T extends BaseDocument> extends AbstractExecu
                     final WriteRowsEventData data = standardMySQLRow.getEvent().getData();//原始Data
                     final String table = tableMap.get(data.getTableId()).getTable();//用tableId获取table
                     final String schema = tablesMap.get(table).getTableSchema();
-                    final String alias = table.toUpperCase(Locale.ROOT);
-                    final String index = StringUtils.joinWith(".", schema.toLowerCase(Locale.ROOT), table.toLowerCase(Locale.ROOT));
+                    final String alias = table.toUpperCase();
+                    final String index = StringUtils.joinWith(".", schema.toLowerCase(), table.toLowerCase());
 
                     T document = documentFactory.get(table).newInstance();
 

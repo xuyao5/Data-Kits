@@ -21,7 +21,6 @@ import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,7 +45,7 @@ public final class File2EsDemoJob implements Runnable {
             //1.索引名称
             String splitChar = "_";
             String[] filenames = StringUtils.split(FilenameUtils.getBaseName(file.getName()), splitChar);
-            String index = StringUtils.joinWith(splitChar, alias.toLowerCase(Locale.ROOT), filenames[filenames.length - 2]);
+            String index = StringUtils.joinWith(splitChar, alias.toLowerCase(), filenames[filenames.length - 2]);
             log.info("根据文件名日期计算得到写入索引名:[{}]", index);
 
             //2.写入索引
@@ -86,7 +85,7 @@ public final class File2EsDemoJob implements Runnable {
             log.info("压缩文件[{}]是否删除[{}]", file, isDelete);*/
 
             //8.清理历史>7天
-            String deleteIndex = StringUtils.joinWith(splitChar, alias.toLowerCase(Locale.ROOT), "*");
+            String deleteIndex = StringUtils.joinWith(splitChar, alias.toLowerCase(), "*");
             CleaningSupporter.getInstance().clearClosedIndex(esClient, deleteIndex, indices4Cat -> {
                 String[] indexNameArray = StringUtils.split(indices4Cat.getIndex(), splitChar);
                 return DateUtilsPlus.daysBetween(indexNameArray[indexNameArray.length - 1]) > 1;
