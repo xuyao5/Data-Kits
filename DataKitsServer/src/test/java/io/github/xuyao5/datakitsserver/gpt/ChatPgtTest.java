@@ -15,9 +15,11 @@ final class ChatPgtTest extends AbstractTest {
     void test() {
         OpenAiService service = new OpenAiService(PGT_TOKEN);
         CompletionRequest completionRequest = CompletionRequest.builder()
-                .prompt("这是我第一个测试代码，请告诉我新西兰是怎么样一个国家？")
+                .prompt("这是我第一个chatGPT测试代码，请给我的小猫起个好听的名字，名字必须可爱!")
                 .model("gpt-3.5-turbo")
                 .echo(true)
+                .user(PGT_USER)
+                .n(1)
                 .build();
         service.createCompletion(completionRequest).getChoices().forEach(System.out::println);
     }

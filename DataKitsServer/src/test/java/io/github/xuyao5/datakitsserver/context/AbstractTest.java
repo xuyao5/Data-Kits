@@ -23,5 +23,7 @@ public abstract class AbstractTest {
     @Autowired
     protected EsKitsConfig esKitsConfig;
 
-    protected static final String PGT_TOKEN = "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";
+    protected static final String PGT_TOKEN = "";
+
+    protected static final String PGT_USER = "ertrtesr@gmail.com";
 }
