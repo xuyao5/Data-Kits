@@ -9,7 +9,7 @@
     </parent>
     <artifactId>es-kits-lib</artifactId>
     <packaging>jar</packaging>
-    <name>Es Kits Library</name>
+    <name>ES Kits Library</name>
 
     <dependencies>
         <dependency>
