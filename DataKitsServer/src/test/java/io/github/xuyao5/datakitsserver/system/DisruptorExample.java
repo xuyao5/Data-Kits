@@ -73,7 +73,7 @@ public class DisruptorExample {
 
     @SneakyThrows
     static void doSomething() {
-        Thread.sleep(2);
+        Thread.sleep(1);
     }
 }
 
