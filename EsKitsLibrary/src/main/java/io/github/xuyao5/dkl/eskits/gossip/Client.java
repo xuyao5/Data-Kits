@@ -95,7 +95,7 @@ public class Client implements NotificationListener {
 	 */
 	private ArrayList<String> parseStartupMembers() {
 		ArrayList<String> startupHostsList = new ArrayList<>();
-		File startupConfig = new File("config", "startup_members");
+		File startupConfig = new File("EsKitsLibrary/src/main/java/io/github/xuyao5/dkl/eskits/gossip/config", "startup_members");
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(startupConfig));
