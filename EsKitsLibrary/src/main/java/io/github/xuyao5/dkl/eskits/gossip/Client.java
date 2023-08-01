@@ -31,21 +31,17 @@ public class Client implements NotificationListener {
 
 	/**
 	 * Setup the client's lists, gossiping parameters, and parse the startup config file.
+	 *
 	 * @throws SocketException
-	 * @throws InterruptedException
 	 * @throws UnknownHostException
 	 */
-	public Client() throws SocketException, InterruptedException, UnknownHostException {
+	public Client() throws SocketException, UnknownHostException {
 
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			public void run() {
-				System.out.println("Goodbye my friends...");
-			}
-		}));
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("Goodbye my friends...")));
 
-		memberList = new ArrayList<Member>();
+		memberList = new ArrayList<>();
 
-		deadList = new ArrayList<Member>();
+		deadList = new ArrayList<>();
 
 		t_gossip = 100; // 1 second TODO: make configurable
 
@@ -98,7 +94,7 @@ public class Client implements NotificationListener {
 	 * @return List of <IP address:port> Strings
 	 */
 	private ArrayList<String> parseStartupMembers() {
-		ArrayList<String> startupHostsList = new ArrayList<String>();
+		ArrayList<String> startupHostsList = new ArrayList<>();
 		File startupConfig = new File("config", "startup_members");
 
 		try {
@@ -107,9 +103,6 @@ public class Client implements NotificationListener {
 			while ((line = br.readLine()) != null) {
 				startupHostsList.add(line.trim());
 			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -228,7 +221,6 @@ public class Client implements NotificationListener {
 	}
 
 	public static void main(String[] args) throws InterruptedException, SocketException, UnknownHostException {
-
 		Client client = new Client();
 		client.start();
 	}
