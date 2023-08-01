@@ -13,10 +13,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client implements NotificationListener {
 
-	public int t_cleanup; //in ms
 	private final ArrayList<Member> memberList;
+
 	private final ArrayList<Member> deadList;
+
 	private final int t_gossip; //in ms
+
+	public int t_cleanup; //in ms
+
 	private final Random random;
 
 	private DatagramSocket server;
@@ -27,7 +31,6 @@ public class Client implements NotificationListener {
 
 	/**
 	 * Setup the client's lists, gossiping parameters, and parse the startup config file.
-	 *
 	 * @throws SocketException
 	 * @throws InterruptedException
 	 * @throws UnknownHostException
@@ -89,16 +92,9 @@ public class Client implements NotificationListener {
 		}
 	}
 
-	public static void main(String[] args) throws InterruptedException, SocketException, UnknownHostException {
-
-		Client client = new Client();
-		client.start();
-	}
-
 	/**
 	 * In order to have some membership lists at startup, we read the IP addresses
 	 * and port at a newline delimited config file.
-	 *
 	 * @return List of <IP address:port> Strings
 	 */
 	private ArrayList<String> parseStartupMembers() {
@@ -199,6 +195,45 @@ public class Client implements NotificationListener {
 	}
 
 	/**
+	 * The class handles gossiping the membership list.
+	 * This information is important to maintaining a common
+	 * state among all the nodes, and is important for detecting
+	 * failures.
+	 */
+	private class MembershipGossiper implements Runnable {
+
+		private AtomicBoolean keepRunning;
+
+		public MembershipGossiper() {
+			this.keepRunning = new AtomicBoolean(true);
+		}
+
+		@Override
+		public void run() {
+			while (this.keepRunning.get()) {
+				try {
+					TimeUnit.MILLISECONDS.sleep(t_gossip);
+					sendMembershipList();
+				} catch (InterruptedException e) {
+					// TODO: handle exception
+					// This membership thread was interrupted externally, shutdown
+					e.printStackTrace();
+					keepRunning.set(false);
+				}
+			}
+
+			this.keepRunning = null;
+		}
+
+	}
+
+	public static void main(String[] args) throws InterruptedException, SocketException, UnknownHostException {
+
+		Client client = new Client();
+		client.start();
+	}
+
+	/**
 	 * Starts the client.  Specifically, start the various cycles for this protocol.
 	 * Start the gossip thread and start the receiver thread.
 	 *
@@ -218,7 +253,7 @@ public class Client implements NotificationListener {
 		//  The receiver thread is a passive player that handles
 		//  merging incoming membership lists from other neighbors.
 		executor.execute(new AsychronousReceiver());
-		//  The gossiper thread is an active player that
+		//  The gossiper thread is an active player that 
 		//  selects a neighbor to share its membership list
 		executor.execute(new MembershipGossiper());
 
@@ -249,39 +284,6 @@ public class Client implements NotificationListener {
 
 		synchronized (this.deadList) {
 			this.deadList.add(deadMember);
-		}
-
-	}
-
-	/**
-	 * The class handles gossiping the membership list.
-	 * This information is important to maintaining a common
-	 * state among all the nodes, and is important for detecting
-	 * failures.
-	 */
-	private class MembershipGossiper implements Runnable {
-
-		private AtomicBoolean keepRunning;
-
-		public MembershipGossiper() {
-			this.keepRunning = new AtomicBoolean(true);
-		}
-
-		@Override
-		public void run() {
-			while (this.keepRunning.get()) {
-				try {
-					TimeUnit.MILLISECONDS.sleep(t_gossip);
-					sendMembershipList();
-				} catch (InterruptedException e) {
-					// TODO: handle exception
-					// This membership thread was interrupted externally, shutdown
-					e.printStackTrace();
-					keepRunning.set(false);
-				}
-			}
-
-			this.keepRunning = null;
 		}
 
 	}
@@ -344,7 +346,6 @@ public class Client implements NotificationListener {
 		 * our list.  Also, some additional logic is needed to make sure we have
 		 * not timed out a member and then immediately received a list with that
 		 * member.
-		 *
 		 * @param remoteList
 		 */
 		private void mergeLists(ArrayList<Member> remoteList) {

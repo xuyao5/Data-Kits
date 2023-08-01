@@ -14,7 +14,6 @@ public class TimeoutTimer extends Timer {
 
 	/**
 	 * Creates a reset-able timer that wakes up after millisecondsSleepTime.
-	 *
 	 * @param millisecondsSleepTime The time for this timer to wait before an event.
 	 * @param client
 	 * @param member
@@ -41,7 +40,6 @@ public class TimeoutTimer extends Timer {
 
 	/**
 	 * Adds a new wake-up time for this timer.
-	 *
 	 * @param milliseconds
 	 */
 	private void setWakeupTime(long milliseconds) {
